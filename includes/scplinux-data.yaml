@@ -1,0 +1,23 @@
+---
+authors:
+  all_rules: 
+    names:
+      - Allen Wilkinson|National Institute of Standards and Technology
+      - Bob Gendler|National Aeronautics and Space Administration
+  800-53r5_high:
+    names:
+      - Allen Wilkinson|National Institute of Standards and Technology
+      - Bob Gendler|National Aeronautics and Space Administration
+  800-53r5_moderate: 
+    names:
+      - Allen Wilkinson|National Institute of Standards and Technology
+      - Bob Gendler|National Aeronautics and Space Administration
+  800-53r5_low:
+    names:
+      - Allen Wilkinson|National Institute of Standards and Technology
+      - Bob Gendler|National Aeronautics and Space Administration
+titles:
+  all_rules: All Rules
+  800-53r5_high: NIST SP 800-53 Rev 5 High Impact
+  800-53r5_moderate: NIST SP 800-53 Rev 5 Moderate Impact
+  800-53r5_low: NIST SP 800-53 Rev 5 Low Impact

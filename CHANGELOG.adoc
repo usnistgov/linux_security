@@ -1,0 +1,9 @@
+= Changelog
+
+This document provides a high-level view of the changes to the Security Compliance Project for Linux.
+
+== [Place holder] - 2023-05-22
+
+* Rules
+** Added Rules
+*** All the rules
