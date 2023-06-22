@@ -45,9 +45,17 @@ os_specifics:
         cce: 
           - N/A
       check: |
-        
+        enabled="$(/usr/bin/systemctl is-enabled auditd)"
+        active="$(/usr/bin/systemctl is-active auditd)"
+
+        if [[ "$enabled" != "enabled" ]] && [[ "$active" != "active" ]]; then
+          /usr/bin/echo "0"
+        else
+          /usr/bin/echo "1"
+        fi
       fix: |
         [source,bash]
         ---
-        
+        /usr/bin/systemctl enable auditd
+        /usr/bin/systemctl start auditd
         ---
