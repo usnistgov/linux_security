@@ -1,5 +1,5 @@
 id: audit_auditd_installed
-title: "The operating system MUST have an auditd installed"
+title: "The Operating System MUST have auditd Installed"
 discussion: |
   Auditd _MUST_ be installed to generate audit records.
   
