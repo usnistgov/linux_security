@@ -34,9 +34,11 @@ references:
   disa_stig:
     - N/A
 tags:
-  - 800-53r5_low 
-  - 800-53r5_moderate 
-  - 800-53r5_high 
+  - 800-53r5_low
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
 severity: "medium"
 os_specifics:
   ubuntu:
