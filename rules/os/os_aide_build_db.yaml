@@ -1,0 +1,42 @@
+id: os_aide_build_db
+title: "Build and Test AIDE Database"
+discussion: |
+  For AIDE to be effective, an initial database of "known-good" information about files must be captured and it should be able to be verified against the installed files.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r5:
+    - N/A
+  srg:
+    - N/A
+  disa_stig:
+    - N/A
+tags:
+  - 800-53r5_low
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2204':
+      references:
+        cce:
+          - N/A
+        check: |
+          /bin/ls -al /var/lib/aide/aide.db
+        fix: |
+          [source,bash]
+          ---
+          /usr/sbin/aide --init
+          /bin/cp /var/lib/aide/aide.db.new /var/lib/aide/aide.db
+          ---

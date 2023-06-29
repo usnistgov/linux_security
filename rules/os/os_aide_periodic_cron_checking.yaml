@@ -1,0 +1,47 @@
+id: os_aide_periodic_cron_checking
+title: "The Operating System MUST have AIDE Installed"
+discussion: |
+  By default, AIDE does not install itself for periodic execution. Periodically running AIDE is necessary to reveal unexpected changes in installed files.
+
+  Unauthorized changes to the baseline configuration could make the system vulnerable to various attacks or allow unauthorized access to the operating system. Changes to operating system configurations can have unintended side effects, some of which may be relevant to security.
+
+  Detecting such changes and providing an automated response can help avoid unintended, negative consequences that could ultimately affect the security state of the operating system. The operating system's Information Management Officer (IMO)/Information System Security Officer (ISSO) and System Administrators (SAs) must be notified via email and/or monitoring system trap when there is an unauthorized modification of a configuration item.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r5:
+    - CM-6(a)
+    - SI-7
+    - SI-7(1)
+  srg:
+    - N/A
+  disa_stig:
+    - N/A
+tags:
+  - 800-53r5_low
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2204':
+      references:
+        cce:
+          - N/A
+        check: |
+          /usr/bin/grep -c "aide --check" /etc/crontab
+        fix: |
+          [source,bash]
+          ---
+          echo "Do something to check with aide"
+          ---

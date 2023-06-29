@@ -1,0 +1,42 @@
+id: os_aide_check_audit_tools
+title: "The Operating System file integrity tool MUST be comfigured to protect the integrity of the audit tools."
+discussion: |
+  Protecting the integrity of the tools used for auditing purposes is a critical step toward ensuring the integrity of audit information. Audit information includes all information (e.g., audit records, audit settings, and audit reports) needed to successfully audit information system activity. Audit tools include but are not limited to vendor-provided and open-source audit tools needed to successfully view and manipulate audit information system activity and records. Audit tools include custom queries and report generators. It is not uncommon for attackers to replace the audit tools or inject code into the existing tools to provide the capability to hide or erase system activity from the audit logs. To address this risk, audit tools must be cryptographically signed to provide the capability to identify when the audit tools have been modified, manipulated, or replaced. An example is a checksum hash of the file or files.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - 001496
+  800-53r5:
+    - AU-9(3)
+    - AU-9(3).1
+  srg:
+    - SRG-OS-000278-GPOS-00108
+  disa_stig:
+    - UBTU-20-010205
+tags:
+  - 800-53r5_low
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2204':
+      references:
+        cce:
+          - N/A
+        check: |
+          echo "Lots to do for the check!!"
+        fix: |
+          [source,bash]
+          ---
+          echo "Lots to do to fix!! Look at USG STIG results for guidance."
+          ---
