@@ -1,0 +1,54 @@
+id: os_fips_mode_enabled
+title: "The Operating System MUST have FIPS Mode enabled."
+discussion: |
+  Use of weak or untested encryption algorithms undermines the purposes of utilizing encryption to protect data. The operating system must implement cryptographic modules adhering to the higher standards approved by the federal government since this provides assurance they have been tested and validated.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-002450
+  800-53r5:
+    - SC-13 
+  srg:
+    - SRG-OS-000396-GPOS-00176
+    - SRG-OS-000478-GPOS-00223
+  disa_stig:
+    - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010442
+        check: |
+          /bin/cat /proc/sys/crypto/fips_enabled
+        fix: |
+          [source,bash]
+          ---
+          echo "How do you fix this?"
+          ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        check: |
+          /bin/cat /proc/sys/crypto/fips_enabled
+        fix: |
+          [source,bash]
+          ---
+          echo "How do you fix this?"
+          ---
