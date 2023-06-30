@@ -1,0 +1,85 @@
+id: os_sudo_pty_used
+title: "Ensure Only Users Logged Into Real tty Can Execute Sudo"
+discussion: |
+  Requiring that sudo commands be run in a pseudo-terminal can prevent an attacker from retaining access to the user's terminal after the main program has finished executing.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r5:
+    - N/A
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+tags:
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          /bin/grep -c '^[\s]*Defaults.*\buse_pty\b.*$' /etc/sudoers 
+        fix: |
+          [source,bash]
+          ---
+          if /usr/sbin/visudo -qcf /etc/sudoers; then
+            /bin/cp /etc/sudoers /etc/sudoers.bak
+            if ! /bin/grep -P '^[\s]*Defaults.*\buse_pty\b.*$' /etc/sudoers; then
+              /bin/echo "Defaults use_pty" >> /etc/sudoers
+            fi
+            
+            if /usr/sbin/visudo -qcf /etc/sudoers; then
+              /bin/rm -f /etc/sudoers.bak
+            else
+              /bin/echo "Fail to validate remediated /etc/sudoers, reverting to original file."
+              /bin/mv /etc/sudoers.bak /etc/sudoers
+              false
+            fi
+          else
+            /bin/echo "Skipping remediation, /etc/sudoers failed to validate"
+            false
+          fi
+          ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          /bin/grep -c '^[\s]*Defaults.*\buse_pty\b.*$' /etc/sudoers 
+        fix: |
+          [source,bash]
+          ---
+          if /usr/sbin/visudo -qcf /etc/sudoers; then
+            /bin/cp /etc/sudoers /etc/sudoers.bak
+            if ! /bin/grep -P '^[\s]*Defaults.*\buse_pty\b.*$' /etc/sudoers; then
+              /bin/echo "Defaults use_pty" >> /etc/sudoers
+            fi
+            
+            if /usr/sbin/visudo -qcf /etc/sudoers; then
+              /bin/rm -f /etc/sudoers.bak
+            else
+              /bin/echo "Fail to validate remediated /etc/sudoers, reverting to original file."
+              /bin/mv /etc/sudoers.bak /etc/sudoers
+              false
+            fi
+          else
+            /bin/echo "Skipping remediation, /etc/sudoers failed to validate"
+            false
+          fi
+          ---
