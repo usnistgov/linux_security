@@ -31,7 +31,7 @@ references:
 tags:
   - client
   - server
-severity: "medium"
+severity: "high"
 os_specifics:
   ubuntu:
     '2004':

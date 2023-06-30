@@ -25,7 +25,7 @@ tags:
   - 800-53r5_high
   - client
   - server
-severity: "medium"
+severity: "high"
 os_specifics:
   ubuntu:
     '2004':
