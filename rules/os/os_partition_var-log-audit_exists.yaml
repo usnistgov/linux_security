@@ -1,0 +1,57 @@
+id: os_partition_var-log-audit_exists
+title: "Ensure /var/log/audit Located On Separate Partition"
+discussion: |
+  Placing /var/log/audit in its own partition enables better separation between audit files and other files, and helps ensure that auditing cannot be halted due to the partition running out of space.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000366
+    - CCI-001849
+  800-53r5:
+    - AU-4
+    - SC-5(2) 
+  srg:
+    - SRG-OS-000480-GPOS-00227
+    - SRG-OS-000341-GPOS-00132
+    - SRG-OS-000341-VMM-001220
+  disa_stig:
+    - $OS_VALUE
+tags:
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          /bin/mount | /bin/grep -E "/var/log/audit "
+        fix: |
+          [source,bash]
+          ---
+          echo "No automated fix"
+          ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          /bin/mount | /bin/grep -E "/var/log/audit "
+        fix: |
+          [source,bash]
+          ---
+          echo "No automated fix"
+          ---

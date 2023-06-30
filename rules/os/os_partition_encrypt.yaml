@@ -1,0 +1,62 @@
+id: os_partition_encrypt
+title: "Encrypt Partitions"
+discussion: |
+  The risk of a system's physical compromise, particularly mobile systems such as laptops, places its data at risk of compromise. Encrypting this data mitigates the risk of its loss if the system is lost.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-001199
+    - CCI-002475
+    - CCI-002476
+  800-53r5:
+    - AU-9(3)
+    - SC-13
+    - SC-28
+    - SC-28(1)
+  srg:
+    - SRG-OS-000405-GPOS-00184
+    - SRG-OS-000185-GPOS-00079
+    - SRG-OS-000404-GPOS-00183
+    - SRG-OS-000404-VMM-001650
+    - SRG-OS-000405-VMM-001660
+  disa_stig:
+    - $OS_VALUE
+tags:
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010414
+        check: |
+          echo "No applicable check"
+        fix: |
+          [source,bash]
+          ---
+          echo "No automated fix"
+          ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          echo "No applicable check"
+        fix: |
+          [source,bash]
+          ---
+          echo "No automated fix"
+          ---
