@@ -8,14 +8,14 @@ discussion: |
   System use notifications are required only for access via login interfaces with human users and are not required when such human interfaces do not exist.
 check: |
   bannerText="$ODV"
-  test "$(cat /etc/issues)" = "$bannerText" && echo "1" || echo "0"
+  test "$(cat /etc/issue)" = "$bannerText" && echo "1" || echo "0"
 result:
   integer: 1
 fix: |
   [source,bash]
   ----
   bannerText="$ODV"
-  /bin/echo "${bannerText}" > /etc/issues
+  /bin/echo "${bannerText}" > /etc/issue
   ----
 references:
   cce:
