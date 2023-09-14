@@ -1,4 +1,4 @@
-id: os_partition_tmp_exists
+id: os_partition_tmp_ensure
 title: "Ensure /tmp Located On Separate Partition"
 discussion: |
   The /tmp partition is used as temporary storage by many programs. Placing /tmp in its own partition enables the setting of more restrictive mount options, which can help protect programs which use it.

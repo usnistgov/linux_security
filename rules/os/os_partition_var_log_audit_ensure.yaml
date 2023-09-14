@@ -1,4 +1,4 @@
-id: os_partition_var-log-audit_exists
+id: os_partition_var_log_audit_ensure
 title: "Ensure /var/log/audit Located On Separate Partition"
 discussion: |
   Placing /var/log/audit in its own partition enables better separation between audit files and other files, and helps ensure that auditing cannot be halted due to the partition running out of space.

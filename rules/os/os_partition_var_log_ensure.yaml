@@ -1,4 +1,4 @@
-id: os_partition_var-log_exists
+id: os_partition_var_log_ensure
 title: "Ensure /var/log Located On Separate Partition"
 discussion: |
   Placing /var/log in its own partition enables better separation between log files and other files in /var/.

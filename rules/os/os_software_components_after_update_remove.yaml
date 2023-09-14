@@ -1,5 +1,4 @@
-id: os_remove_software_components_after_updates
-id: os_
+id: os_software_components_after_update_remove
 title: "Ensure Package Management Removes Previous Package Versions"
 discussion: |
     Previous versions of software components that are not removed from the information system after updates have been installed may be exploited by adversaries. Some information technology products may remove older versions of software automatically from the information system.
