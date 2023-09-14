@@ -25,6 +25,7 @@ tags:
   - 800-53r5_high
   - client
   - server
+  - manual
 severity: "high"
 os_specifics:
   ubuntu:
@@ -37,10 +38,7 @@ os_specifics:
         check: |
           /bin/cat /proc/sys/crypto/fips_enabled
         fix: |
-          [source,bash]
-          ---
-          echo "How do you fix this?"
-          ---
+          No automated fix
     '2204':
       references:
         cce:
@@ -48,7 +46,4 @@ os_specifics:
         check: |
           /bin/cat /proc/sys/crypto/fips_enabled
         fix: |
-          [source,bash]
-          ---
-          echo "How do you fix this?"
-          ---
+          No automated fix

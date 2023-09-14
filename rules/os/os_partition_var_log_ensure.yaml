@@ -23,6 +23,7 @@ references:
 tags:
   - client
   - server
+  - manual
 severity: "medium"
 os_specifics:
   ubuntu:
@@ -35,10 +36,7 @@ os_specifics:
         check: |
           /bin/mount | /bin/grep -E "/var/log "
         fix: |
-          [source,bash]
-          ---
-          echo "No automated fix"
-          ---
+          No automated fix
     '2204':
       references:
         cce:
@@ -48,7 +46,4 @@ os_specifics:
         check: |
           /bin/mount | /bin/grep -E "/var/log "
         fix: |
-          [source,bash]
-          ---
-          echo "No automated fix"
-          ---
+          No automated fix
