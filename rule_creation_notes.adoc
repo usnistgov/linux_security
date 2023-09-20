@@ -1,0 +1,36 @@
+Mapping SSG rules to SCPLinux Rules
+
+SSG files can be found in resources folder.  These are easiest to read if opened in a browser.
+
+Use rules/os/os_aide_installed.yaml as an example.
+
+Determine what "type" of rule this is (audit, auth, networking, os, pwpolicy, serivices, or ssh)
+The above type list is not exhaustive but is our starting point.  We can discuss creating additional types.
+
+File names are <type>_<descriptive noun>_<verb>.yaml
+    For our example above
+        type = "os"
+        descriptive noun = "aide"
+        verb = "installed"
+    Descriptive Nouns can me multiple words like in the rule "os_fips_mode_enabled.yaml".  The descriptive
+    noun is "fips_mode"
+
+Rules are located in their "type" directory.  Thus all of the "os" rules are in the rules/os directory.
+
+In the rule the following should be filled out as follows
+    id: is the file name minus the .yaml (i.e os_aide_installed)
+    title: is a reasonable title for this rule, direct and too the point.
+    discussion: use the SSG "Rationale" section or something descriptive like it.  This should answer the
+        question "Why do this?" if possible, more verbose than the title.
+    check: leave as in the example
+    results: leave as in the example
+    fix: leave as in the example
+    references: this has several subcategories that should be included
+        cce: leave ask in the example
+        cci: pull from the SSG "Identifiers and References" section, will start with CCI
+        800_53r5: pull from the SSG "Identifiers and References" section
+        srg: pull from the SSG "Identifiers and References" section, will start with SRG
+        disa_stig: leave ask in the example
+    tags: leave as in the example, we will be revisiting these
+    severity: pull from the SSG "Severity" section
+    os_specifics: this can be filled in if you want but for now can be left empty
