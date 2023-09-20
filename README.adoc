@@ -39,7 +39,7 @@ Part 39 of the Federal Acquisition Regulations, section 39.101 paragraph (c) sta
 
 [width="100%",cols="1,1"]
 |===
-|Allen Wilkinson|NIST
+|R. Allen Wilkinson|NIST
 |Bob Gendler|NIST
 |===
 
