@@ -33,4 +33,5 @@ In the rule the following should be filled out as follows
         disa_stig: leave ask in the example
     tags: leave as in the example, we will be revisiting these
     severity: pull from the SSG "Severity" section
-    os_specifics: this can be filled in if you want but for now can be left empty
+    os_specifics: this can be filled in if you want but for now can be left empty but I will not complain
+        if you take a stab at it. <smiley>
