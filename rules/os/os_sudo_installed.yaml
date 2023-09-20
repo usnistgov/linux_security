@@ -1,5 +1,5 @@
-id: os_aide_installed
-title: "The Operating System MUST have AIDE Installed"
+id: os_sudo_installed
+title: "The Operating System MUST have sudo installed"
 discussion: |
   The AIDE package must be installed if it is to be available for integrity checking.
 check: |
@@ -12,14 +12,11 @@ references:
   cce:
     - $OS_VALUE
   cci:
-    - CCI-002696
-    - CCI-002699
-    - CCI-001744
+    - N/A 
   800-53r5:
-    - SI-7 
+    - N/A 
   srg:
-    - SRG-OS-000363-GPOS-00150
-    - SRG-OS-000445-GPOS-00199
+    - SRG-OS-000324-GPOS-00125
   disa_stig:
     - $OS_VALUE
 tags:
@@ -35,22 +32,24 @@ os_specifics:
         cce:
           - N/A
         disa_stig:
-          - UBTU-20-010450
+          - N/A
         check: |
-          /usr/bin/dpkg -l | /usr/bin/grep -c "aide"
+          /usr/bin/dpkg -l | /usr/bin/grep -c "sudo"
         fix: |
           [source,bash]
           ---
-          /usr/bin/apt-get -y install aide
+          /usr/bin/apt-get -y install sudo
           ---
     '2204':
       references:
         cce:
           - N/A
+        disa_stig:
+          - N/A
         check: |
-          /usr/bin/dpkg -l | /usr/bin/grep -c "aide"
+          /usr/bin/dpkg -l | /usr/bin/grep -c "sudo"
         fix: |
           [source,bash]
           ---
-          /usr/bin/apt-get -y install aide
+          /usr/bin/apt-get -y install sudo
           ---
