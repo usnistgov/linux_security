@@ -1,4 +1,4 @@
-id: os_sudo_pty_used
+id: os_sudo_pty_ensure
 title: "Ensure Only Users Logged Into Real tty Can Execute Sudo"
 discussion: |
   Requiring that sudo commands be run in a pseudo-terminal can prevent an attacker from retaining access to the user's terminal after the main program has finished executing.

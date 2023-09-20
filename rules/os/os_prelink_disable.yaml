@@ -1,7 +1,7 @@
-id: os_prelink_removed
+id: os_prelink_disable
 title: "Disable Prelink"
 discussion: |
-  Because the prelinking feature changes binaries, it can interfere with the operation of certain software and/or modes such as AIDE, FIPS, etc.
+  The prelinking feature can potentially change binaries, which can interfere with the operation of certain software and/or modes such as AIDE, FIPS, etc.
 check: |
   $OS_VALUE
 result:

@@ -1,4 +1,4 @@
-id: os_aide_build_db
+id: os_aide_db_build
 title: "Build and Test AIDE Database"
 discussion: |
   For AIDE to be effective, an initial database of "known-good" information about files must be captured and it should be able to be verified against the installed files.

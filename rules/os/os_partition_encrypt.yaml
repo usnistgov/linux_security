@@ -31,6 +31,7 @@ references:
 tags:
   - client
   - server
+  - manual
 severity: "high"
 os_specifics:
   ubuntu:
@@ -43,10 +44,7 @@ os_specifics:
         check: |
           echo "No applicable check"
         fix: |
-          [source,bash]
-          ---
-          echo "No automated fix"
-          ---
+          No automated fix
     '2204':
       references:
         cce:
@@ -56,7 +54,4 @@ os_specifics:
         check: |
           echo "No applicable check"
         fix: |
-          [source,bash]
-          ---
-          echo "No automated fix"
-          ---
+          No automated fix

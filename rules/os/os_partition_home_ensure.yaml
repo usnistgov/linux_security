@@ -1,4 +1,4 @@
-id: os_partition_home_exists
+id: os_partition_home_ensure
 title: "Ensure /home Located On Separate Partition"
 discussion: |
   Ensuring that /home is mounted on its own partition enables the setting of more restrictive mount options, and also helps ensure that users cannot trivially fill partitions used for log or audit data storage.
@@ -23,6 +23,7 @@ references:
 tags:
   - client
   - server
+  - manual
 severity: "low"
 os_specifics:
   ubuntu:
@@ -35,10 +36,7 @@ os_specifics:
         check: |
           /bin/mount | /bin/grep -E "/home "
         fix: |
-          [source,bash]
-          ---
-          echo "No automated fix"
-          ---
+          No automated fix
     '2204':
       references:
         cce:
@@ -48,7 +46,4 @@ os_specifics:
         check: |
           /bin/mount | /bin/grep -E "/home "
         fix: |
-          [source,bash]
-          ---
-          echo "No automated fix"
-          ---
+          No automated fix

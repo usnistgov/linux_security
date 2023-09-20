@@ -1,5 +1,5 @@
-id: os_aide_periodic_cron_checking
-title: "The Operating System MUST have AIDE Installed"
+id: os_aide_periodic_ensure
+title: "The Operating System Must AID Periodically Run"
 discussion: |
   By default, AIDE does not install itself for periodic execution. Periodically running AIDE is necessary to reveal unexpected changes in installed files.
 
