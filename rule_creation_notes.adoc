@@ -26,11 +26,11 @@ In the rule the following should be filled out as follows
     results: leave as in the example
     fix: leave as in the example
     references: this has several subcategories that should be included
-        cce: leave ask in the example
+        cce: leave as in the example
         cci: pull from the SSG "Identifiers and References" section, will start with CCI
         800_53r5: pull from the SSG "Identifiers and References" section
         srg: pull from the SSG "Identifiers and References" section, will start with SRG
-        disa_stig: leave ask in the example
+        disa_stig: leave as in the example
     tags: leave as in the example, we will be revisiting these
     severity: pull from the SSG "Severity" section
     os_specifics: this can be filled in if you want but for now can be left empty but I will not complain
