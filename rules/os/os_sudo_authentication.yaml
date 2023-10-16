@@ -1,0 +1,131 @@
+id: os_sudo_authentication.yaml
+title: The Ubuntu operating system must require users to reauthenticate for privilege escalation or when changing roles.
+discussion: |
+  Without reauthentication, users may access resources or perform tasks for which they do not have authorization. When operating systems provide the capability to escalate a functional capability, it is critical the user reauthenticate.  Check and fix look for nopassword or !authenticated in the /etc/sudoers.d directory
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references: 
+    cce: 
+      - $OS_VALUE
+    cci:  
+      - CCI-002038
+    800_53r5: 
+      - CM-06(a)
+      - IA-11
+    srg: 
+      - SRG-OS-000373-GPOS-00156
+      - SRG-OS-000373-GPOS-00157
+    disa_stig: 
+      - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+  - manual
+severity: 
+  - medium
+os_specifics: 
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010014
+        check: |
+          #! /bin/bash
+          pattern="nopasswd|!authenticate"
+          sudoers_dir="/etc/sudoers.d/"
+          if [ -d "$sudoers_dir" ]; then
+              # Use grep to search for the pattern
+              if grep -qi "$pattern" "$sudoers_dir"*; then
+                  echo "FAIL"
+              else
+                  echo "PASS"
+              fi
+          else
+              echo "Sudoers directory not found at $sudoers_dir."
+          fi
+        fix: |
+          #! /bin/bash
+          # Fix taken from Ubuntu Pro fix script
+          for f in /etc/sudoers /etc/sudoers.d/* ; do
+            if [ ! -e "$f" ] ; then
+              continue
+            fi
+            matching_list=$(grep -P '^(?!#).*[\s]+NOPASSWD[\s]*\:.*$' $f | uniq )
+            if ! test -z "$matching_list"; then
+              while IFS= read -r entry; do
+                # comment out "NOPASSWD" matches to preserve user data
+                sed -i "s/^${entry}$/# &/g" $f
+              done <<< "$matching_list"
+              /usr/sbin/visudo -cf $f &> /dev/null || echo "Fail to validate $f with visudo"
+            fi
+          done
+          for f in /etc/sudoers /etc/sudoers.d/* ; do
+            if [ ! -e "$f" ] ; then
+              continue
+            fi
+            matching_list=$(grep -P '^(?!#).*[\s]+\!authenticate.*$' $f | uniq )
+            if ! test -z "$matching_list"; then
+              while IFS= read -r entry; do
+                # comment out "!authenticate" matches to preserve user data
+                sed -i "s/^${entry}$/# &/g" $f
+              done <<< "$matching_list"
+              /usr/sbin/visudo -cf $f &> /dev/null || echo "Fail to validate $f with visudo"
+            fi
+          done
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010014
+        check: |
+          #! /bin/bash
+          pattern="nopasswd|!authenticate"
+          sudoers_dir="/etc/sudoers.d/"
+          if [ -d "$sudoers_dir" ]; then
+              # Use grep to search for the pattern
+              if grep -qi "$pattern" "$sudoers_dir"*; then
+                  echo "FAIL"
+              else
+                  echo "PASS"
+              fi
+          else
+              echo "Sudoers directory not found at $sudoers_dir."
+          fi
+        fix: |
+          #! /bin/bash
+          # Fix taken from Ubuntu Pro fix script
+          for f in /etc/sudoers /etc/sudoers.d/* ; do
+            if [ ! -e "$f" ] ; then
+              continue
+            fi
+            matching_list=$(grep -P '^(?!#).*[\s]+NOPASSWD[\s]*\:.*$' $f | uniq )
+            if ! test -z "$matching_list"; then
+              while IFS= read -r entry; do
+                # comment out "NOPASSWD" matches to preserve user data
+                sed -i "s/^${entry}$/# &/g" $f
+              done <<< "$matching_list"
+              /usr/sbin/visudo -cf $f &> /dev/null || echo "Fail to validate $f with visudo"
+            fi
+          done
+          for f in /etc/sudoers /etc/sudoers.d/* ; do
+            if [ ! -e "$f" ] ; then
+              continue
+            fi
+            matching_list=$(grep -P '^(?!#).*[\s]+\!authenticate.*$' $f | uniq )
+            if ! test -z "$matching_list"; then
+              while IFS= read -r entry; do
+                # comment out "!authenticate" matches to preserve user data
+                sed -i "s/^${entry}$/# &/g" $f
+              done <<< "$matching_list"
+              /usr/sbin/visudo -cf $f &> /dev/null || echo "Fail to validate $f with visudo"
+            fi
+          done

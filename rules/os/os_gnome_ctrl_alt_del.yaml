@@ -1,0 +1,153 @@
+id: os_gnome_ctrl_alt_del.yaml
+title: The Ubuntu operating system must disable the x86 Ctrl-Alt-Delete key sequence if a graphical user interface is installed.
+discussion: |
+  A locally logged-on user who presses Ctrl-Alt-Delete, when at the console, can reboot the system. If accidentally pressed, as could happen in the case of a mixed OS environment, this can create the risk of short-term loss of availability of systems due to unintentional reboot. In the graphical environment, risk of unintentional reboot from the Ctrl-Alt-Delete sequence is reduced because the user will be prompted before any action is taken.  The check and fix look at org.gnome.settings-daemon.plugins.media-keys logout setting.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references: 
+    cce: 
+      - $OS_VALUE
+    cci:  
+      - CCI-000366
+    800_53r5: 
+      - CM-06(a)
+    srg: 
+      - SRG-OS-000480-GPOS-00227
+    disa_stig: 
+      - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+  - manual
+severity: 
+  - high
+os_specifics: 
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010459
+        check: |
+          #! /bin/bash
+          if [[ $(gsettings get org.gnome.settings-daemon.plugins.media-keys logout) = "['<Control><Alt>Delete']" ]]; then
+            echo "FAIL"
+          else
+            echo "PASS"
+          fi
+        fix: |
+          #! /bin/bash
+          # Remediation take from Ubuntu Pro scripts
+          # Remediation is applicable only in certain platforms
+          if dpkg-query --show --showformat='${db:Status-Status}\n' 'gdm3' 2>/dev/null | grep -q installed && { [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; }; then
+
+          # Check for setting in any of the DConf db directories
+          # If files contain ibus or distro, ignore them.
+          # The assignment assumes that individual filenames don't contain :
+          readarray -t SETTINGSFILES < <(grep -r "\\[org/gnome/settings-daemon/plugins/media-keys\\]" "/etc/dconf/db/" | grep -v 'distro\|ibus' | cut -d":" -f1)
+          DCONFFILE="/etc/dconf/db/local.d/00-security-settings"
+          DBDIR="/etc/dconf/db/local.d"
+
+          mkdir -p "${DBDIR}"
+
+          if [ "${#SETTINGSFILES[@]}" -eq 0 ]
+          then
+              [ ! -z ${DCONFFILE} ] || echo "" >> ${DCONFFILE}
+              printf '%s\n' "[org/gnome/settings-daemon/plugins/media-keys]" >> ${DCONFFILE}
+              printf '%s=%s\n' "logout" "''" >> ${DCONFFILE}
+          else
+              escaped_value="$(sed -e 's/\\/\\\\/g' <<< "''")"
+              if grep -q "^\\s*logout\\s*=" "${SETTINGSFILES[@]}"
+              then
+                  
+                  sed -i "s/\\s*logout\\s*=\\s*.*/logout=${escaped_value}/g" "${SETTINGSFILES[@]}"
+              else
+                  sed -i "\\|\\[org/gnome/settings-daemon/plugins/media-keys\\]|a\\logout=${escaped_value}" "${SETTINGSFILES[@]}"
+              fi
+          fi
+
+          dconf update
+          # Check for setting in any of the DConf db directories
+          LOCKFILES=$(grep -r "^/org/gnome/settings-daemon/plugins/media-keys/logout$" "/etc/dconf/db/" | grep -v 'distro\|ibus' | cut -d":" -f1)
+          LOCKSFOLDER="/etc/dconf/db/local.d/locks"
+
+          mkdir -p "${LOCKSFOLDER}"
+
+          if [[ -z "${LOCKFILES}" ]]
+          then
+              echo "/org/gnome/settings-daemon/plugins/media-keys/logout" >> "/etc/dconf/db/local.d/locks/00-security-settings-lock"
+          fi
+
+          dconf update
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010459
+        check: |
+          #! /bin/bash
+          if [[ $(gsettings get org.gnome.settings-daemon.plugins.media-keys logout) = "['<Control><Alt>Delete']" ]]; then
+            echo "FAIL"
+          else
+            echo "PASS"
+          fi
+        fix: |
+          #! /bin/bash
+          # Remediation take from Ubuntu Pro scripts
+          # Remediation is applicable only in certain platforms
+          if dpkg-query --show --showformat='${db:Status-Status}\n' 'gdm3' 2>/dev/null | grep -q installed && { [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; }; then
+
+          # Check for setting in any of the DConf db directories
+          # If files contain ibus or distro, ignore them.
+          # The assignment assumes that individual filenames don't contain :
+          readarray -t SETTINGSFILES < <(grep -r "\\[org/gnome/settings-daemon/plugins/media-keys\\]" "/etc/dconf/db/" | grep -v 'distro\|ibus' | cut -d":" -f1)
+          DCONFFILE="/etc/dconf/db/local.d/00-security-settings"
+          DBDIR="/etc/dconf/db/local.d"
+
+          mkdir -p "${DBDIR}"
+
+          if [ "${#SETTINGSFILES[@]}" -eq 0 ]
+          then
+              [ ! -z ${DCONFFILE} ] || echo "" >> ${DCONFFILE}
+              printf '%s\n' "[org/gnome/settings-daemon/plugins/media-keys]" >> ${DCONFFILE}
+              printf '%s=%s\n' "logout" "''" >> ${DCONFFILE}
+          else
+              escaped_value="$(sed -e 's/\\/\\\\/g' <<< "''")"
+              if grep -q "^\\s*logout\\s*=" "${SETTINGSFILES[@]}"
+              then
+                  
+                  sed -i "s/\\s*logout\\s*=\\s*.*/logout=${escaped_value}/g" "${SETTINGSFILES[@]}"
+              else
+                  sed -i "\\|\\[org/gnome/settings-daemon/plugins/media-keys\\]|a\\logout=${escaped_value}" "${SETTINGSFILES[@]}"
+              fi
+          fi
+
+          dconf update
+          # Check for setting in any of the DConf db directories
+          LOCKFILES=$(grep -r "^/org/gnome/settings-daemon/plugins/media-keys/logout$" "/etc/dconf/db/" | grep -v 'distro\|ibus' | cut -d":" -f1)
+          LOCKSFOLDER="/etc/dconf/db/local.d/locks"
+
+          mkdir -p "${LOCKSFOLDER}"
+
+          if [[ -z "${LOCKFILES}" ]]
+          then
+              echo "/org/gnome/settings-daemon/plugins/media-keys/logout" >> "/etc/dconf/db/local.d/locks/00-security-settings-lock"
+          fi
+
+          dconf update
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi

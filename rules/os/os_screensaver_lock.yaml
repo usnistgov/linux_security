@@ -1,0 +1,153 @@
+id: os_screensaver_lock.yaml
+title: The Ubuntu operating system must retain a user's session lock until that user reestablishes access using established identification and authentication procedures.
+discussion: |
+  A session lock is a temporary action taken when a user stops work and moves away from the immediate physical vicinity of the information system but does not want to log out because of the temporary nature of the absence. The session lock is implemented at the point where session activity can be determined. Regardless of where the session lock is determined and implemented, once invoked, a session lock of the Ubuntu operating system must remain in place until the user reauthenticates. No other activity aside from reauthentication must unlock the system.  The check and fix look at gsettings configureations.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references: 
+    cce: 
+      - $OS_VALUE
+    cci:  
+      - CCI-000056
+      - CCI-000057
+    800_53r5: 
+      - CM-06(a)
+    srg: 
+      - SRG-OS-000028-GPOS-00009
+      - SRG-OS-000029-GPOS-00010
+    disa_stig: 
+      - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+  - manual
+severity: 
+  - medium
+os_specifics: 
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010004
+        check: |
+          #! /bin/bash
+          if gsettings get org.gnome.desktop.screensaver lock-enabled | grep -q true; then
+            echo "PASS"
+          else
+            echo "FAIL"
+        fix: |
+          #! /bin/bash
+          # Script taken from Ubuntu Pro script
+          # Remediation is applicable only in certain platforms
+          if dpkg-query --show --showformat='${db:Status-Status}\n' 'gdm3' 2>/dev/null | grep -q installed && { [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; }; then
+
+          # Check for setting in any of the DConf db directories
+          # If files contain ibus or distro, ignore them.
+          # The assignment assumes that individual filenames don't contain :
+          readarray -t SETTINGSFILES < <(grep -r "\\[org/gnome/desktop/screensaver\\]" "/etc/dconf/db/" | grep -v 'distro\|ibus' | cut -d":" -f1)
+          DCONFFILE="/etc/dconf/db/local.d/00-security-settings"
+          DBDIR="/etc/dconf/db/local.d"
+
+          mkdir -p "${DBDIR}"
+
+          if [ "${#SETTINGSFILES[@]}" -eq 0 ]
+          then
+              [ ! -z ${DCONFFILE} ] || echo "" >> ${DCONFFILE}
+              printf '%s\n' "[org/gnome/desktop/screensaver]" >> ${DCONFFILE}
+              printf '%s=%s\n' "lock-enabled" "true" >> ${DCONFFILE}
+          else
+              escaped_value="$(sed -e 's/\\/\\\\/g' <<< "true")"
+              if grep -q "^\\s*lock-enabled\\s*=" "${SETTINGSFILES[@]}"
+              then
+                  
+                  sed -i "s/\\s*lock-enabled\\s*=\\s*.*/lock-enabled=${escaped_value}/g" "${SETTINGSFILES[@]}"
+              else
+                  sed -i "\\|\\[org/gnome/desktop/screensaver\\]|a\\lock-enabled=${escaped_value}" "${SETTINGSFILES[@]}"
+              fi
+          fi
+
+          dconf update
+          # Check for setting in any of the DConf db directories
+          LOCKFILES=$(grep -r "^/org/gnome/desktop/screensaver/lock-enabled$" "/etc/dconf/db/" | grep -v 'distro\|ibus' | cut -d":" -f1)
+          LOCKSFOLDER="/etc/dconf/db/local.d/locks"
+
+          mkdir -p "${LOCKSFOLDER}"
+
+          if [[ -z "${LOCKFILES}" ]]
+          then
+              echo "/org/gnome/desktop/screensaver/lock-enabled" >> "/etc/dconf/db/local.d/locks/00-security-settings-lock"
+          fi
+
+          dconf update
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010004
+        check: |
+          #! /bin/bash
+          if gsettings get org.gnome.desktop.screensaver lock-enabled | grep -q true; then
+            echo "PASS"
+          else
+            echo "FAIL"
+        fix: |
+          #! /bin/bash
+          # Script taken from Ubuntu Pro script
+          # Remediation is applicable only in certain platforms
+          if dpkg-query --show --showformat='${db:Status-Status}\n' 'gdm3' 2>/dev/null | grep -q installed && { [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; }; then
+
+          # Check for setting in any of the DConf db directories
+          # If files contain ibus or distro, ignore them.
+          # The assignment assumes that individual filenames don't contain :
+          readarray -t SETTINGSFILES < <(grep -r "\\[org/gnome/desktop/screensaver\\]" "/etc/dconf/db/" | grep -v 'distro\|ibus' | cut -d":" -f1)
+          DCONFFILE="/etc/dconf/db/local.d/00-security-settings"
+          DBDIR="/etc/dconf/db/local.d"
+
+          mkdir -p "${DBDIR}"
+
+          if [ "${#SETTINGSFILES[@]}" -eq 0 ]
+          then
+              [ ! -z ${DCONFFILE} ] || echo "" >> ${DCONFFILE}
+              printf '%s\n' "[org/gnome/desktop/screensaver]" >> ${DCONFFILE}
+              printf '%s=%s\n' "lock-enabled" "true" >> ${DCONFFILE}
+          else
+              escaped_value="$(sed -e 's/\\/\\\\/g' <<< "true")"
+              if grep -q "^\\s*lock-enabled\\s*=" "${SETTINGSFILES[@]}"
+              then
+                  
+                  sed -i "s/\\s*lock-enabled\\s*=\\s*.*/lock-enabled=${escaped_value}/g" "${SETTINGSFILES[@]}"
+              else
+                  sed -i "\\|\\[org/gnome/desktop/screensaver\\]|a\\lock-enabled=${escaped_value}" "${SETTINGSFILES[@]}"
+              fi
+          fi
+
+          dconf update
+          # Check for setting in any of the DConf db directories
+          LOCKFILES=$(grep -r "^/org/gnome/desktop/screensaver/lock-enabled$" "/etc/dconf/db/" | grep -v 'distro\|ibus' | cut -d":" -f1)
+          LOCKSFOLDER="/etc/dconf/db/local.d/locks"
+
+          mkdir -p "${LOCKSFOLDER}"
+
+          if [[ -z "${LOCKFILES}" ]]
+          then
+              echo "/org/gnome/desktop/screensaver/lock-enabled" >> "/etc/dconf/db/local.d/locks/00-security-settings-lock"
+          fi
+
+          dconf update
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi
