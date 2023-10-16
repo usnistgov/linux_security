@@ -16,6 +16,7 @@ references:
       - CCI-000057
     800_53r5: 
       - CM-06(a)
+      - AC-11
     srg: 
       - SRG-OS-000028-GPOS-00009
       - SRG-OS-000029-GPOS-00010
