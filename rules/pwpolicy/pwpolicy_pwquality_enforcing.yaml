@@ -1,0 +1,93 @@
+id: pwpolicy_pwquality_enforcing
+title: "Ensure PAM Enforces Password Requirements - Enforcing"
+discussion: |
+  Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks. Using enforcing=1 ensures "pwquality" enforces complex password construction configuration and has the ability to limit brute-force attacks on the system.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000366
+  800-53r5:
+    - N/A
+  srg:
+    - SRG-OS-000480-GPOS-00225
+  disa_stig:
+    - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010057
+        check: |
+          echo "Check This"
+        fix: |
+          [source,bash]
+          ---
+          # Remediation is applicable only in certain platforms
+          if dpkg-query --show --showformat='${db:Status-Status}\n' 'libpam-runtime' 2>/dev/null | grep -q installed; then
+
+          if [ -e "/etc/security/pwquality.conf" ] ; then
+              
+              LC_ALL=C sed -i "/^\s*enforcing = 1/Id" "/etc/security/pwquality.conf"
+          else
+              touch "/etc/security/pwquality.conf"
+          fi
+          # make sure file has newline at the end
+          sed -i -e '$a\' "/etc/security/pwquality.conf"
+
+          cp "/etc/security/pwquality.conf" "/etc/security/pwquality.conf.bak"
+          # Insert at the end of the file
+          printf '%s\n' "enforcing = 1" >> "/etc/security/pwquality.conf"
+          # Clean up after ourselves.
+          rm "/etc/security/pwquality.conf.bak"
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi
+          ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        check: |
+          echo "Check This"
+        fix: |
+          [source,bash]
+          ---
+          # Remediation is applicable only in certain platforms
+          if dpkg-query --show --showformat='${db:Status-Status}\n' 'libpam-runtime' 2>/dev/null | grep -q installed; then
+
+          if [ -e "/etc/security/pwquality.conf" ] ; then
+              
+              LC_ALL=C sed -i "/^\s*enforcing = 1/Id" "/etc/security/pwquality.conf"
+          else
+              touch "/etc/security/pwquality.conf"
+          fi
+          # make sure file has newline at the end
+          sed -i -e '$a\' "/etc/security/pwquality.conf"
+
+          cp "/etc/security/pwquality.conf" "/etc/security/pwquality.conf.bak"
+          # Insert at the end of the file
+          printf '%s\n' "enforcing = 1" >> "/etc/security/pwquality.conf"
+          # Clean up after ourselves.
+          rm "/etc/security/pwquality.conf.bak"
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi
+          ---
