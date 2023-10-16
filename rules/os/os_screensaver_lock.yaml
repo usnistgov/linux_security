@@ -1,11 +1,7 @@
-id: os_screensave_lock.yaml
+id: os_screensaver_lock.yaml
 title: The Ubuntu operating system must retain a user's session lock until that user reestablishes access using established identification and authentication procedures.
 discussion: |
-  A session lock is a temporary action taken when a user stops work and moves away from the immediate physical vicinity of the information system but does not want to log out because of the temporary nature of the absence. 
- 
-  The session lock is implemented at the point where session activity can be determined. 
-  
-  Regardless of where the session lock is determined and implemented, once invoked, a session lock of the Ubuntu operating system must remain in place until the user reauthenticates. No other activity aside from reauthentication must unlock the system.
+  A session lock is a temporary action taken when a user stops work and moves away from the immediate physical vicinity of the information system but does not want to log out because of the temporary nature of the absence. The session lock is implemented at the point where session activity can be determined. Regardless of where the session lock is determined and implemented, once invoked, a session lock of the Ubuntu operating system must remain in place until the user reauthenticates. No other activity aside from reauthentication must unlock the system.  The check and fix look at gsettings configureations.
 check: |
   $OS_VALUE
 result:
@@ -44,13 +40,13 @@ os_specifics:
         check: |
           #! /bin/bash
           if gsettings get org.gnome.desktop.screensaver lock-enabled | grep -q true; then
-            echo "Lock Enabled"
+            echo "PASS"
           else
-            echo "Lock Disabled"
+            echo "FAIL"
         fix: |
           #! /bin/bash
-          # Fix enables the screen lock and sets the idle time to 5 minutes/300 seconds
-          gsettings set org.gnome.desktop.screensaver lock-enabled true
+          # Fix enables the screen lock
+          sudo gsettings set org.gnome.desktop.screensaver lock-enabled true
     '2204':
       references:
         cce:
@@ -60,10 +56,10 @@ os_specifics:
         check: |
           #! /bin/bash
           if gsettings get org.gnome.desktop.screensaver lock-enabled | grep -q true; then
-            echo "Lock Enabled"
+            echo "PASS"
           else
-            echo "Lock Disabled"
+            echo "FAIL"
         fix: |
           #! /bin/bash
-          # Fix enables the screen lock and sets the idle time to 5 minutes/300 seconds
-          gsettings set org.gnome.desktop.screensaver lock-enabled true
+          # Fix enables the screen lock
+          sudo gsettings set org.gnome.desktop.screensaver lock-enabled true
