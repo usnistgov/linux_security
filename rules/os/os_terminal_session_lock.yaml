@@ -1,0 +1,67 @@
+id: os__terminal_session_lock.yaml
+title: The Ubuntu operating system must allow users to directly initiate a session lock for all connection types.
+discussion: |
+  A session lock is a temporary action taken when a user stops work and moves away from the immediate physical vicinity of the information system but does not want to log out because of the temporary nature of the absence. The session lock is implemented at the point where session activity can be determined. Rather than be forced to wait for a period of time to expire before the user session can be locked, the Ubuntu operating systems need to provide users with the ability to manually invoke a session lock so users may secure their session if they need to temporarily vacate the immediate physical vicinity. The check and fix look for the installation of vlock.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references: 
+    cce: 
+      - $OS_VALUE
+    cci:  
+      - CCI-000058
+      - CCI-000059
+    800_53r5: 
+      - CM-06(a)
+    srg: 
+      - SRG-OS-000030-GPOS-00011
+      - SRG-OS-000031-GPOS-00012
+    disa_stig: 
+      - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+  - manual
+severity: 
+  - medium
+os_specifics: 
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010005
+        check: |
+          #! /bin/bash
+          if [[ $(dpkg -l | grep vlock) == "vlock" ]]; then
+            echo "PASS"
+          else
+            echo "FAIL"
+          fi
+        fix: |
+          #! /bin/bash
+          # Fix enables user initiated session lock
+          sudo apt-get install vlock
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010005
+        check: |
+          #! /bin/bash
+          if [[ $(dpkg -l | grep vlock) == "vlock" ]]; then
+            echo "PASS"
+          else
+            echo "FAIL"
+          fi
+        fix: |
+          #! /bin/bash
+          # Fix enables user initiated session lock
+          sudo apt-get install vlock
