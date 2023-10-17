@@ -1,0 +1,79 @@
+id: os_smart_card_revoke
+title: "Configure Smart Card Local Cache of Revocation Data"
+discussion: |
+  Without configuring a local cache of revocation data, there is the potential to allow access to users who are no longer authorized (users with revoked certificates).
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-001991
+  800-53r5:
+    - N/A
+  srg:
+    - SRG-OS-000384-GPOS-00167
+  disa_stig:
+    - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010066
+        check: |
+          echo "Check This"
+        fix: |
+          [source,bash]
+          ---
+          # Remediation is applicable only in certain platforms
+          if [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; then
+
+          if [ ! -f /etc/pam_pkcs11/pam_pkcs11.conf ]; then
+              cp /usr/share/doc/libpam-pkcs11/examples/pam_pkcs11.conf.example /etc/pam_pkcs11/pam_pkcs11.conf
+          fi
+
+          if grep -v "^\s*\#+cert_policy" /etc/pam_pkcs11/pam_pkcs11.conf | grep -Eqv 'crl_auto|crl_offline'; then
+              sed -i "s/\(^[[:blank:]]*\)\(\(\#*[[:blank:]]*cert_policy[[:blank:]]*=[[:blank:]]*.*;\)[^ $]*\)/\1cert_policy = ca,signature,ocsp_on,crl_auto;/" /etc/pam_pkcs11/pam_pkcs11.conf
+          fi
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi
+          ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        check: |
+          echo "Check This"
+        fix: |
+          [source,bash]
+          ---
+          # Remediation is applicable only in certain platforms
+          if [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; then
+
+          if [ ! -f /etc/pam_pkcs11/pam_pkcs11.conf ]; then
+              cp /usr/share/doc/libpam-pkcs11/examples/pam_pkcs11.conf.example /etc/pam_pkcs11/pam_pkcs11.conf
+          fi
+
+          if grep -v "^\s*\#+cert_policy" /etc/pam_pkcs11/pam_pkcs11.conf | grep -Eqv 'crl_auto|crl_offline'; then
+              sed -i "s/\(^[[:blank:]]*\)\(\(\#*[[:blank:]]*cert_policy[[:blank:]]*=[[:blank:]]*.*;\)[^ $]*\)/\1cert_policy = ca,signature,ocsp_on,crl_auto;/" /etc/pam_pkcs11/pam_pkcs11.conf
+          fi
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi
+          ---

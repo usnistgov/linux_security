@@ -1,0 +1,54 @@
+id: auth_offline_creds_expire
+title: "Configure SSSD to Expire Offline Credentials"
+discussion: |
+  If cached authentication information is out-of-date, the validity of the authentication information may be questionable.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-002007
+  800-53r5:
+    - CM-6(a)
+    - IA-5(13)
+  srg:
+    - SRG-OS-000383-GPOS-00166
+  disa_stig:
+    - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010441
+        check: |
+          echo "Check This"
+        fix: |
+          [source,bash]
+          ---
+          cat /etc/sssd/ssd.conf | grep "offline_credentials_expiration" | grep 1
+          ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        check: |
+          echo "Check This"
+        fix: |
+          [source,bash]
+          ---
+          cat /etc/sssd/ssd.conf | grep "offline_credentials_expiration" | grep 1
+          ---
