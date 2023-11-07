@@ -1,0 +1,64 @@
+id: os_accounts_maximum_age_login_defs.yaml
+title: The Ubuntu operating system must enforce a 60-day maximum password lifetime restriction. Passwords for new users must have a 60-day maximum password lifetime restriction.
+discussion: |
+  Any password, no matter how complex, can eventually be cracked. Therefore, passwords need to be changed periodically. If the operating system does not limit the lifetime of passwords and force users to change their passwords, there is the risk that the operating system passwords could be compromised.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references: 
+    cce: 
+      - $OS_VALUE
+    cci:  
+      - CCI-000199
+    800_53r5: 
+      - IA-5
+    srg: 
+      - SRG-OS-000076-GPOS-00044
+    disa_stig: 
+      - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+  - manual
+severity: 
+  - medium
+os_specifics: 
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010008
+        check: |
+          #!/bin/bash
+          # This script tests the settings for useradd for default settings on disabling accounts after 35 days
+          # Define the maximum number of inactive days
+          max_days=60
+          # Check if INACTIVE is set and greater than or equal to 35
+          if [ -z "$max_days" ]; then
+            echo "MAX_DAYS is not defined in $login_defs_file"
+            exit 1
+          else
+            echo "MAX_DAYS is set to $max_days days"
+          fi
+        fix: |
+          #!/bin/bash
+          # Remediation is applicable only in certain platforms
+          # Fix extracted from Ubuntu_Pro_Ubuntu_20-04_LTS_STIG.sh
+          if dpkg-query --show --showformat='${db:Status-Status}\n' 'login' 2>/dev/null | grep -q installed; then
+            var_accounts_maximum_age_login_defs='60'
+            grep -q ^PASS_MAX_DAYS /etc/login.defs && \
+              sed -i "s/PASS_MAX_DAYS.*/PASS_MAX_DAYS     $var_accounts_maximum_age_login_defs/g" /etc/login.defs
+            if ! [ $? -eq 0 ]; then
+                echo "PASS_MAX_DAYS      $var_accounts_maximum_age_login_defs" >> /etc/login.defs
+            fi
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi
+          # END fix for 'accounts_maximum_age_login_defs'
