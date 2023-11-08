@@ -37,10 +37,9 @@ os_specifics:
           - UBTU-20-010008
         check: |
           #!/bin/bash
-          # This script tests the settings for useradd for default settings on disabling accounts after 35 days
-          # Define the maximum number of inactive days
+          # Define the maximum number of days for the life of a password
           max_days=60
-          # Check if INACTIVE is set and greater than or equal to 35
+          # Check if less than or equal to 60
           if [ -z "$max_days" ]; then
             echo "MAX_DAYS is not defined in $login_defs_file"
             exit 1
