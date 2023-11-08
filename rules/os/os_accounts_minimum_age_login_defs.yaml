@@ -1,0 +1,61 @@
+id: os_accounts_minimum_age_login_defs.yaml
+title: The Ubuntu operating system must enforce 24 hours/1 day as the minimum password lifetime. Passwords for new users must have a 24 hours/1 day minimum password lifetime restriction.
+discussion: |
+  Enforcing a minimum password lifetime helps to prevent repeated password changes to defeat the password reuse or history enforcement requirement. If users are allowed to immediately and continually change their password, then the password could be repeatedly changed in a short period of time to defeat the organization's policy regarding password reuse.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references: 
+    cce: 
+      - $OS_VALUE
+    cci:  
+      - CCI-000198
+    800_53r5: 
+      - IA-5
+    srg: 
+      - SRG-OS-000076-GPOS-00043
+    disa_stig: 
+      - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+  - manual
+severity: 
+  - medium
+os_specifics: 
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010007
+        check: |
+          #!/bin/bash
+          # Define the min number of days after a password change
+          min_days=1
+          # Check if INACTIVE is set and greater than or equal to 1
+          if [ -z "$min_days" ]; then
+            echo "PASS_MIN_DAYS is not defined in $login_defs_file"
+            exit 1
+          else
+            echo "PASS_MIN_DAYS is set to $min_days days"
+          fi
+        fix: |
+          # Remediation is applicable only in certain platforms
+          if dpkg-query --show --showformat='${db:Status-Status}\n' 'login' 2>/dev/null | grep -q installed; then
+          var_accounts_minimum_age_login_defs='1'
+          grep -q ^PASS_MIN_DAYS /etc/login.defs && \
+            sed -i "s/PASS_MIN_DAYS.*/PASS_MIN_DAYS     $var_accounts_minimum_age_login_defs/g" /etc/login.defs
+          if ! [ $? -eq 0 ]; then
+              echo "PASS_MIN_DAYS      $var_accounts_minimum_age_login_defs" >> /etc/login.defs
+          fi
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi
+          # END fix for 'accounts_minimum_age_login_defs'
