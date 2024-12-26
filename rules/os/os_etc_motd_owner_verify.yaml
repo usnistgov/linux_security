@@ -1,0 +1,54 @@
+id: os_etc_motd_owner_verify
+title: "Verify Ownership of System Post-Login Banner"
+discussion: |
+  Display of a standardized and approved use notification after granting access to the operating system ensures privacy and security notification verbiage used is consistent with applicable federal laws, Executive Orders, directives, policies, regulations, standards, and guidance.
+Proper owner will ensure that only root user can modify the banner.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r5:
+    - N/A 
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          /bin/ls -al /etc/motd | /usr/bin/awk '{print $3}' | /bin/grep root
+        fix: |
+          [source,bash]
+          ---
+          sudo chown root /etc/motd
+          ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        check: |
+          /bin/ls -al /etc/motd | /usr/bin/awk '{print $3}' | /bin/grep root
+        fix: |
+          [source,bash]
+          ---
+          sudo chown root /etc/motd
+          ---

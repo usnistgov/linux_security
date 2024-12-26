@@ -1,4 +1,4 @@
-id: os_account_disable_post_pw_expiration.yaml
+id: os_account_disable_post_pw_expiration
 title: The Ubuntu operating system must disable account identifiers (individuals,groups, roles, and devices) after 35 days of inactivity.
 discussion: |
   Inactive identifiers pose a risk to systems and applications because attackers may exploit an inactive identifier and potentially obtain undetected access to the system. Owners of inactive accounts will not notice if unauthorized access to their user account has been obtained. Operating systems need to track periods of inactivity and disable application identifiers after 35 days of inactivity.

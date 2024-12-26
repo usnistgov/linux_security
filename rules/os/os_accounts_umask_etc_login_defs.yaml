@@ -1,4 +1,4 @@
-id: os_accounts_umask_etc_login_defs.yaml
+id: os_accounts_umask_etc_login_defs
 title: |
   The Ubuntu operating system default filesystem permissions must be defined in such a way that all authenticated users can read and modify only their own files.
 discussion: |

@@ -1,0 +1,79 @@
+id: os_systemd_ctrl_alt_del_burst.yaml
+title: The Ubuntu operating system must disable the x86 Ctrl-Alt-Delete reboot action which is by default enabled through Systemd.
+discussion: |
+  A locally logged-on user who presses Ctrl-Alt-Delete at the console can trigger a system reboot. If accidentally pressed, as could happen in the case of a mixed OS environment, this can create the risk of short-term loss of availability of systems due to unintentional reboot. This fix disables the functionality via a system.conf file change.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references: 
+    cce: 
+      - $OS_VALUE
+    cci:  
+      - CCI-000366
+    800_53r5: 
+      - CM-06(a)
+      - AC-6(1)
+    srg: 
+      - SRG-OS-000324-GPOS-00125
+      - SRG-OS-000480-GPOS-00227
+    disa_stig: 
+      - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+  - manual
+severity: 
+  - high
+os_specifics: 
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010460
+        check: |
+          #! /bin/bash
+          if grep -q -m 1 -i -e "systemd" "/etc/systemd/system/ctrl-alt-del.target"; then
+            echo "FAIL"
+          else
+            echo "PASS"
+          fi
+        fix: |
+          # Remediation is applicable only in certain platforms
+          if [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; then
+
+          systemctl disable --now ctrl-alt-del.target
+          systemctl mask --now ctrl-alt-del.target
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010460
+        check: |
+          #! /bin/bash
+          if grep -q -m 1 -i -e "systemd" "/etc/systemd/system/ctrl-alt-del.target"; then
+            echo "FAIL"
+          else
+            echo "PASS"
+          fi
+        fix: |
+          # Remediation is applicable only in certain platforms
+          if [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; then
+
+          systemctl disable --now ctrl-alt-del.target
+          systemctl mask --now ctrl-alt-del.target
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi

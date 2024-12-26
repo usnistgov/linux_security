@@ -1,4 +1,4 @@
-id: os_accounts_minimum_age_login_defs.yaml
+id: os_accounts_minimum_age_login_defs
 title: The Ubuntu operating system must enforce 24 hours/1 day as the minimum password lifetime. Passwords for new users must have a 24 hours/1 day minimum password lifetime restriction.
 discussion: |
   Enforcing a minimum password lifetime helps to prevent repeated password changes to defeat the password reuse or history enforcement requirement. If users are allowed to immediately and continually change their password, then the password could be repeatedly changed in a short period of time to defeat the organization's policy regarding password reuse.

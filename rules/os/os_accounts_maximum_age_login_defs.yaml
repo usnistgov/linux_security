@@ -1,4 +1,4 @@
-id: os_accounts_maximum_age_login_defs.yaml
+id: os_accounts_maximum_age_login_defs
 title: The Ubuntu operating system must enforce a 60-day maximum password lifetime restriction. Passwords for new users must have a 60-day maximum password lifetime restriction.
 discussion: |
   Any password, no matter how complex, can eventually be cracked. Therefore, passwords need to be changed periodically. If the operating system does not limit the lifetime of passwords and force users to change their passwords, there is the risk that the operating system passwords could be compromised.
