@@ -1,7 +1,7 @@
 id: os_sudo_installed
 title: "The Operating System MUST have sudo installed"
 discussion: |
-  The AIDE package must be installed if it is to be available for integrity checking.
+  The sudo package must be installed to add a layer of additional security for superuser actions.
 check: |
   $OS_VALUE
 result:
