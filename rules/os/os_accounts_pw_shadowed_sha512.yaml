@@ -1,0 +1,71 @@
+id: os_accounts_pw_shadowed_sha512.yaml
+title: Ensure that all accounts on the system that are usable have a password hashed in SHA512.
+discussion: |
+  Passwords hashed with an algorithm below SHA512 could be more vulnerable to hash-cracking attacks if an attacker was able to access /etc/shadow.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000196
+    - CCI-000803
+  800-53r5:
+    - IA-5(1)
+    - IA-5(1c)
+    - IA-7.1 
+  srg:
+    - SRG-OS-000073-GPOS-00041
+    - SRG-OS-000120-GPOS-00061
+  disa_stig:
+    - $OS_VALUE
+tags:
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          #! /bin/bash
+          BAD_HASHES=$(sudo cut -d: -f2 /etc/shadow | awk '!/\$6|\*|!/' | wc -l)
+          if [ $BAD_HASHES -ne 0 ]; then
+            echo "FAIL"
+          else
+            echo "PASS"
+          fi
+        fix: |
+          [source,bash]
+          ---
+          echo "No automatic remediation at this time."
+          echo "Future remediations could consider resetting passwords for non SHA512 hashes so users must set it on next login?"
+          ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          #! /bin/bash
+          BAD_HASHES=$(sudo cut -d: -f2 /etc/shadow | awk '!/\$6|\*|!/' | wc -l)
+          if [ $BAD_HASHES -ne 0 ]; then
+            echo "FAIL"
+          else
+            echo "PASS"
+          fi
+        fix: |
+          [source,bash]
+          ---
+          echo "No automatic remediation at this time."
+          echo "Future remediations could consider resetting passwords for non SHA512 hashes so users must set it on next login?"
+          ---

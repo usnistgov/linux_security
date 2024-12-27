@@ -1,0 +1,89 @@
+id: os_extraneous_passwd_gids.yaml
+title: The operating system should ensure that all accounts defined in /etc/passwd should have GIDs which exist in /etc/group.
+discussion: |
+  User accounts with GIDs that are not present in /etc/group could present security concerns in the future if a group with that GID is subsequently created.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000764
+  800-53r5:
+    - IA-2
+    - CM-6(a)
+  srg:
+    - SRG-OS-000104-GPOS-00051
+  disa_stig:
+    - $OS_VALUE
+tags:
+  - client
+  - server
+severity: "low"
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          #! /bin/bash
+          # TODO: Rewrite this to be much cleaner
+          sudo getent passwd | while read -r line; do
+            USERNAME=$(echo $line | cut -d: -f1)
+            USERGROUPS=$(groups $USERNAME | cut -d: -f2)
+            for group in $USERGROUPS
+            do
+              if [ $(sudo getent group $group | wc -l) -eq 0 ]; then
+                touch /tmp/nonexistent_groups
+                break
+              fi
+            done
+          done
+          if test -e /tmp/nonexistent_groups; then
+            echo "FAIL"
+            rm /tmp/nonexistent_groups
+          else
+            echo "PASS"
+          fi
+        fix: |
+          [source,bash]
+          ---
+          echo "No automatic remediation at this time."
+          echo "Future remediations could consider replacing the bad group with a valid one"
+          ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          #! /bin/bash
+          EPOCHTODAY=$(date +%s)
+          FUTUREPWCHANGES=0
+          sudo passwd -S -a | while read -r line; do
+            DATESTR=$(echo $line | grep -P -o "\d{2}/\d{2}/\d{4}")
+            EPOCHDATE=$(date --date=$DATESTR +%s)
+            if [ $EPOCHDATE -gt $EPOCHTODAY ]; then
+              FUTUREPWCHANGES=1
+              break
+            fi
+          done
+          if [ $FUTUREPWCHANGES -gt 0 ]; then
+            echo "FAIL"
+          else
+            echo "PASS"
+          fi
+        fix: |
+          [source,bash]
+          ---
+          echo "No automatic remediation at this time."
+          echo "Future remediations could consider resetting passwords for non SHA512 hashes so users must set it on next login?"
+          ---
