@@ -1,0 +1,63 @@
+id: os_no_forward_files.yaml
+title: "The Operating System must remove .forward files from the user home directories."
+discussion: |
+  The presence of a .forward file in a user home directory means that all incoming mail to that user may be forwarded to the address specified in .forward. This could result in data spillage.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r5:
+    - N/A
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+tags:
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          #!/bin/bash
+          HOMEDIRS=$(find /home/ -name ".forward" | wc -l)
+          ROOTDIR=$(find /root/ -name ".forward" | wc -l )
+          if [[ $HOMEDIRS -gt 0 ]] || [[ $ROOTDIR -gt 0 ]] then
+            echo "FAIL"
+          else
+            echo "PASS"
+          fi
+        fix: |
+        #!/bin/bash
+        find /root -name ".forward" -delete
+        find /home/ -name ".forward" -delete
+    '2204':
+      references:
+        cce:
+          - N/A
+        check: |
+          #!/bin/bash
+          HOMEDIRS=$(find /home/ -name ".forward" | wc -l)
+          ROOTDIR=$(find /root/ -name ".forward" | wc -l )
+          if [[ $HOMEDIRS -gt 0 ]] || [[ $ROOTDIR -gt 0 ]] then
+            echo "FAIL"
+          else
+            echo "PASS"
+          fi
+        fix: |
+        #!/bin/bash
+        find /root -name ".forward" -delete
+        find /home/ -name ".forward" -delete
