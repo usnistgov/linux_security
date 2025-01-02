@@ -1,0 +1,69 @@
+id: os_ensure_groups_unique_names
+title: "The operating system must ensure that all groups have unique names assigned to them."
+discussion: |
+  Duplicate names could lead to confusion for end-users and potentially create dangerous circumstances on a system.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r5:
+    -  N/A
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+tags:
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          #! /bin/bash
+          # TODO: This prints out the result of the DUPLICATES variable
+          DUPLICATES=$(sudo getent group | awk -F: '{print $1}' | uniq -d | wc -l)
+          if [[ $DUPLICATES > 0 ]]; then
+            echo "FAIL"
+          else
+            echo "PASS"
+          fi
+        fix: |
+          [source,bash]
+          ---
+          echo "No automatic remediation at this time."
+          echo "This is primarily due to the fact that each system may have unique name requirements."
+          ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          #! /bin/bash
+          # TODO: This prints out the result of the DUPLICATES variable
+          DUPLICATES=$(sudo getent group | awk -F: '{print $1}' | uniq -d | wc -l)
+          if [[ $DUPLICATES > 0 ]]; then
+            echo "FAIL"
+          else
+            echo "PASS"
+          fi
+        fix: |
+          [source,bash]
+          ---
+          echo "No automatic remediation at this time."
+          echo "This is primarily due to the fact that each system may have unique name requirements."
+          ---
