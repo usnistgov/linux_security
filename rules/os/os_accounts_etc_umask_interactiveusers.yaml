@@ -1,0 +1,65 @@
+id: os_account_etc_umask_interactiveusers
+title: The Ubuntu operating system must set a secure umask value for all interactive user initialization files.
+discussion: |
+  A properly configured user initialization file ensures that files created by users are only readable by users in their group and no one else.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references: 
+    cce: 
+      - $OS_VALUE
+    cci:  
+      - CCI-000366
+      - CCI-001814
+    800_53r5: 
+      - AC-6(1)
+      - CM-6(a)
+    srg: 
+      - SRG-OS-000480-GPOS-00228
+      - SRG-OS-000480-GPOS-00227
+    disa_stig: 
+      - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+  - manual
+severity: 
+  - medium
+os_specifics: 
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          #!/bin/bash
+          BADMASKS=0
+           while IFS= read -r dir; do
+              while IFS= read -r -d '' file; do
+                FILEMASK=$(grep -P "UMASK" $file | wc -l)
+                if [[ $FILEMASK > 0 ]]; then
+                    BADMASKS=1
+                fi
+              done <   <(find $dir -maxdepth 1 -type f -name ".*" -print0)
+          done <   <(awk -F':' '{ if ($3 >= 1000 && $3 != 65534) print $6}' /etc/passwd)
+          if [[ $BADMASKS == 0 ]]; then
+             echo "PASS"
+          else
+             echo "FAIL"
+          fi
+          
+        fix: |
+          while IFS= read -r dir; do
+              while IFS= read -r -d '' file; do
+                  if [ "$(basename $file)" != ".bash_history" ]; then
+                      sed -i 's/^\([\s]*umask\s*\)/#\1/g' "$file"
+                  fi
+              done <   <(find $dir -maxdepth 1 -type f -name ".*" -print0)
+          done <   <(awk -F':' '{ if ($3 >= 1000 && $3 != 65534) print $6}' /etc/passwd)
