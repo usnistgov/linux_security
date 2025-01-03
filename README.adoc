@@ -41,6 +41,7 @@ Part 39 of the Federal Acquisition Regulations, section 39.101 paragraph (c) sta
 |===
 |R. Allen Wilkinson|NIST
 |Bob Gendler|NIST
+|Zachary Amoss|NIST
 |===
 
 == Changelog
