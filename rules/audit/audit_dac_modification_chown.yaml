@@ -1,7 +1,7 @@
 id: audit_dac_modification_chown
 title: "Auditing controls should monitor all usage of chown and provide logging"
 discussion: |
-  Auditing controls should monitor usage of the chown command to ensure that changes to file permissions are accurately logged and audited. Changes to the file system could represent changes to the overall security of the operating system.
+  Auditing controls should monitor usage of the chown system call to ensure that changes to file permissions are accurately logged and audited. Changes to the file system could represent changes to the overall security of the operating system.
 check: |
   $OS_VALUE
 result: 

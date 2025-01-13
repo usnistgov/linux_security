@@ -1,7 +1,7 @@
 id: audit_dac_modification_chmod
 title: "Auditing controls should monitor all usage of chmod and provide logging"
 discussion: |
-  Auditing controls should monitor usage of the chmod command to ensure that changes to file permissions are accurately logged and audited. Changes to the file system could represent changes to the overall security of the operating system.
+  Auditing controls should monitor usage of the chmod system call to ensure that changes to file permissions are accurately logged and audited. Changes to the file system could represent changes to the overall security of the operating system.
 check: |
   $OS_VALUE
 result: 

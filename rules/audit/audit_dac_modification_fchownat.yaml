@@ -1,7 +1,7 @@
-id: audit_dac_modification_fchmod
-title: "Auditing controls should monitor all usage of fchmod and provide logging"
+id: audit_dac_modification_fchownat
+title: "Auditing controls should monitor all usage of fchownat and provide logging"
 discussion: |
-  Auditing controls should monitor usage of the fchmod system call to ensure that changes to file permissions are accurately logged and audited. Changes to the file system could represent changes to the overall security of the operating system.
+  Auditing controls should monitor usage of the fchownat system call to ensure that changes to file permissions are accurately logged and audited. Changes to the file system could represent changes to the overall security of the operating system.
 check: |
   $OS_VALUE
 result: 
@@ -34,7 +34,7 @@ references:
     - SRG-OS-000458-GPOS-00203
     - SRG-OS-000474-GPOS-00219
   disa_stig:
-    - UBTU-20-010148
+    - UBTU-20-010150
 tags:
   - 800-53r5_low
   - 800-53r5_moderate
@@ -50,8 +50,8 @@ os_specifics:
           - N/A
       check: |
         #!/bin/bash
-        CHMOD32=$( grep -R -P "always,exit.*arch=b32.*\-S.*[ |,]fchmod[ |,].*\-F auid\>\=1000 \-F auid\!\=unset \-F key\=perm\_mod" /etc/audit/* | wc -l)
-        CHMOD64=$(grep -R -P "always,exit.*arch=b64.*\-S.*[ |,]fchmod[ |,].*\-F auid\>\=1000 \-F auid\!\=unset \-F key\=perm\_mod" /etc/audit/* | wc -l)
+        CHMOD32=$( grep -R -P "always,exit.*arch=b32.*\-S.*[ |,]fchownat[ |,].*\-F auid\>\=1000 \-F auid\!\=unset \-F key\=perm\_mod" /etc/audit/* | wc -l)
+        CHMOD64=$(grep -R -P "always,exit.*arch=b64.*\-S.*[ |,]fchownat[ |,].*\-F auid\>\=1000 \-F auid\!\=unset \-F key\=perm\_mod" /etc/audit/* | wc -l)
         if [ $CHMOD32 -e 0 ]; then
         echo "FAIL"
         elif [ $CHMOD64 -e 0]; then
@@ -62,43 +62,7 @@ os_specifics:
       fix: |
         [source,bash]
         ---
-          # Remediation is applicable only in certain platforms
-          if [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ] && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q installed; then
-
-          # First perform the remediation of the syscall rule
-          # Retrieve hardware architecture of the underlying system
-          [ "$(getconf LONG_BIT)" = "32" ] && RULE_ARCHS=("b32") || RULE_ARCHS=("b32" "b64")
-
-          for ARCH in "${RULE_ARCHS[@]}"
-          do
-            ACTION_ARCH_FILTERS="-a always,exit -F arch=$ARCH"
-            OTHER_FILTERS=""
-            AUID_FILTERS="-F auid>=1000 -F auid!=unset"
-            SYSCALL="fchmod"
-            KEY="perm_mod"
-            SYSCALL_GROUPING="chmod fchmod fchmodat"
-
-            # Perform the remediation for both possible tools: 'auditctl' and 'augenrules'
-            unset syscall_a
-          unset syscall_grouping
-          unset syscall_string
-          unset syscall
-          unset file_to_edit
-          unset rule_to_edit
-          unset rule_syscalls_to_edit
-          unset other_string
-          unset auid_string
-          unset full_rule
-
-          # Load macro arguments into arrays
-          read -a syscall_a <<< $SYSCALL
-          read -a syscall_grouping <<< $SYSCALL_GROUPING
-
-          # Create a list of audit *.rules files that should be inspected for presence and correctness
-          # of a particular audit rule. The scheme is as follows:
-          #
-          # -----------------------------------------------------------------------------------------
-          #  Tool used to load audit rules | Rule already defined  |  Audit rules file to inspect    |
+          audit rules | Rule already defined  |  Audit rules file to inspect    |
           # -----------------------------------------------------------------------------------------
           #        auditctl                |     Doesn't matter    |  /etc/audit/audit.rules         |
           # -----------------------------------------------------------------------------------------

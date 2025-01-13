@@ -1,7 +1,7 @@
-id: audit_dac_modification_fchmod
-title: "Auditing controls should monitor all usage of fchmod and provide logging"
+id: audit_dac_modification_fchmodat
+title: "Auditing controls should monitor all usage of fchmodat and provide logging"
 discussion: |
-  Auditing controls should monitor usage of the fchmod system call to ensure that changes to file permissions are accurately logged and audited. Changes to the file system could represent changes to the overall security of the operating system.
+  Auditing controls should monitor usage of the fchmodat system call to ensure that changes to file permissions are accurately logged and audited. Changes to the file system could represent changes to the overall security of the operating system.
 check: |
   $OS_VALUE
 result: 
@@ -32,9 +32,8 @@ references:
     - SRG-OS-000064-GPOS-00033
     - SRG-OS-000466-GPOS-00210
     - SRG-OS-000458-GPOS-00203
-    - SRG-OS-000474-GPOS-00219
   disa_stig:
-    - UBTU-20-010148
+    - UBTU-20-010154
 tags:
   - 800-53r5_low
   - 800-53r5_moderate
@@ -50,8 +49,8 @@ os_specifics:
           - N/A
       check: |
         #!/bin/bash
-        CHMOD32=$( grep -R -P "always,exit.*arch=b32.*\-S.*[ |,]fchmod[ |,].*\-F auid\>\=1000 \-F auid\!\=unset \-F key\=perm\_mod" /etc/audit/* | wc -l)
-        CHMOD64=$(grep -R -P "always,exit.*arch=b64.*\-S.*[ |,]fchmod[ |,].*\-F auid\>\=1000 \-F auid\!\=unset \-F key\=perm\_mod" /etc/audit/* | wc -l)
+        CHMOD32=$( grep -R -P "always,exit.*arch=b32.*\-S.*[ |,]fchmodat[ |,].*\-F auid\>\=1000 \-F auid\!\=unset \-F key\=perm\_mod" /etc/audit/* | wc -l)
+        CHMOD64=$(grep -R -P "always,exit.*arch=b64.*\-S.*[ |,]fchmodat[ |,].*\-F auid\>\=1000 \-F auid\!\=unset \-F key\=perm\_mod" /etc/audit/* | wc -l)
         if [ $CHMOD32 -e 0 ]; then
         echo "FAIL"
         elif [ $CHMOD64 -e 0]; then
@@ -74,7 +73,7 @@ os_specifics:
             ACTION_ARCH_FILTERS="-a always,exit -F arch=$ARCH"
             OTHER_FILTERS=""
             AUID_FILTERS="-F auid>=1000 -F auid!=unset"
-            SYSCALL="fchmod"
+            SYSCALL="fchmodat"
             KEY="perm_mod"
             SYSCALL_GROUPING="chmod fchmod fchmodat"
 
