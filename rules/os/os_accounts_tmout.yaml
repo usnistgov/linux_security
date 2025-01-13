@@ -1,0 +1,102 @@
+id: os_accounts_tmout
+title: |
+  The Ubuntu operating system must set the TMOUT option to ensure user sessions terminate based on inactivity.
+discussion: |
+  The TMOUT option reduces the window of opportunity for unauthorized personnel to take control of a management session enabled on a console.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references: 
+    cce: 
+      - $OS_VALUE
+    cci:  
+      - CCI-000057
+      - CCI-001133
+      - CCI-002361
+    800_53r5: 
+      - AC-12
+      - SC-10
+      - AC-2(5)
+      - CM-6(a)
+    srg: 
+      - SRG-OS-000163-GPOS-00072
+      - SRG-OS-000029-GPOS-00010
+    disa_stig: 
+      - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+  - manual
+severity: 
+  - medium
+os_specifics: 
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010013
+        check: |
+          # Remediation is applicable only in certain platforms
+          if [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; then
+
+          var_accounts_tmout='600'
+
+
+          # if 0, no occurence of tmout found, if 1, occurence found
+          tmout_found=0
+
+          for f in /etc/bash.bashrc /etc/profile /etc/profile.d/*.sh; do
+              if grep --silent '^\s*TMOUT' $f; then
+                  tmout_found=1
+              fi
+          done
+
+          if [ $tmout_found -eq 1 ]; then
+            echo "PASS"
+          else
+            echo "FAIL"
+          fi
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi
+        fix: |
+          # Remediation is applicable only in certain platforms
+          if [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; then
+
+          var_accounts_tmout='600'
+
+
+          # if 0, no occurence of tmout found, if 1, occurence found
+          tmout_found=0
+
+          for f in /etc/bash.bashrc /etc/profile /etc/profile.d/*.sh; do
+              if grep --silent '^\s*TMOUT' $f; then
+                  sed -i -E "s/^(\s*)TMOUT\s*=\s*(\w|\$)*(.*)$/\1TMOUT=$var_accounts_tmout\3/g" $f
+                  tmout_found=1
+                  if ! grep --silent '^\s*readonly TMOUT' $f ; then
+                      echo "readonly TMOUT" >> $f
+                  fi
+                  if ! grep --silent '^\s*export TMOUT' $f ; then
+                      echo "export TMOUT" >> $f
+                  fi
+              fi
+          done
+
+          if [ $tmout_found -eq 0 ]; then
+                  echo -e "\n# Set TMOUT to $var_accounts_tmout per security requirements" >> /etc/profile.d/tmout.sh
+                  echo "TMOUT=$var_accounts_tmout" >> /etc/profile.d/tmout.sh
+                  echo "readonly TMOUT" >> /etc/profile.d/tmout.sh
+                  echo "export TMOUT" >> /etc/profile.d/tmout.sh
+          fi
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi

@@ -1,0 +1,59 @@
+id: os_accounts_homedirs_permissions
+title: The Ubuntu operating system must ensure that user home directories have proper permissions.
+discussion: |
+  The home directory provided to an interactive user should have the least permissions required for the system usage.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references: 
+    cce: 
+      - $OS_VALUE
+    cci:  
+      - CCI-000366
+    800_53r5: 
+      - N/A
+    srg: 
+      - SRG-OS-000480-GPOS-00227
+    disa_stig: 
+      - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+  - manual
+severity: 
+  - medium
+os_specifics: 
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          #!/bin/bash
+          BADPERMS=0
+          for home_dir in $(awk -F':' '{ if ($3 >= 1000 && $3 != 65534) print $6 }' /etc/passwd); do
+              matches=$(find "$home_dir" -maxdepth 0 -perm /7027 | wc -l)
+              if [[ $matches > 0 ]]; then
+                BADPERMS=1
+              fi
+          done
+          if [[ $BADPERMS -gt 0 ]]; then
+            echo "FAIL"
+          else
+            echo "PASS"
+          fi
+        fix: |
+          #!/bin/bash
+          for home_dir in $(awk -F':' '{ if ($3 >= 1000 && $3 != 65534) print $6 }' /etc/passwd); do
+              # Only update the permissions when necessary. This will avoid changing the inode timestamp when
+              # the permission is already defined as expected, therefore not impacting in possible integrity
+              # check systems that also check inodes timestamps.
+              find "$home_dir" -maxdepth 0 -perm /7027 -exec chmod u-s,g-w-s,o=- {} \;
+          done
