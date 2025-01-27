@@ -1,7 +1,7 @@
-id: audit_rules_privileged_commands_at
-title: "Auditing controls should monitor execution of the at command"
+id: audit_rules_privileged_commands_newgrp
+title: "Auditing controls should monitor execution of the newgrp command"
 discussion: |
-  Without generating audit records specific to security and the organization, it would be difficult to perform incident response. In this case, the at command allows for scheduled task creation, which is sometimes used by attackers.
+  Without generating audit records specific to security and the organization, it would be difficult to perform incident response. In this case, the newgrp command allows for changing the GID during a login session.
 check: |
   $OS_VALUE
 result: 
@@ -12,15 +12,26 @@ references:
   cce:
     - $OS_VALUE
   cci: 
+    - CCI-000130
+    - CCI-000169
     - CCI-000172
+    - CCI-000135
+    - CCI-002884
   800-53r5:
+    - AC-2(4)
     - AU-2(d)
     - AU-12(c)
+    - AC-6(9)
     - CM-6(a)
   srg:
-    - N/A
+    - SRG-OS-000037-GPOS-00015
+    - SRG-OS-000042-GPOS-00020
+    - SRG-OS-000062-GPOS-00031
+    - SRG-OS-000392-GPOS-00172
+    - SRG-OS-000462-GPOS-00206
+    - SRG-OS-000471-GPOS-00215
   disa_stig:
-    - N/A
+    - UBTU-20-010164
 tags:
   - 800-53r5_low
   - 800-53r5_moderate
@@ -36,8 +47,8 @@ os_specifics:
           - N/A
       check: |
         #!/bin/bash
-        ATCHECK=$( grep -R -P "always,exit.*\-F path=\/usr\/bin\/at.*-F perm\=x.*\-F auid\>\=1000 \-F auid\!\=unset \-F key\=privileged" /etc/audit/* | wc -l)
-        if [ $ATCHECK -e 0 ]; then
+        NEWGRPCHECK=$( grep -R -P "always,exit.*\-F path=\/usr\/bin\/newgrp.*-F perm\=x.*\-F auid\>\=1000 \-F auid\!\=unset \-F key\=privileged" /etc/audit/* | wc -l)
+        if [ $NEWGRPCHECK -e 0 ]; then
           echo "FAIL"
         else
           echo "PASS"
@@ -49,7 +60,7 @@ os_specifics:
           if [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ] && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q installed; then
 
           ACTION_ARCH_FILTERS="-a always,exit"
-          OTHER_FILTERS="-F path=/usr/bin/at -F perm=x"
+          OTHER_FILTERS="-F path=/usr/bin/newgrp -F perm=x"
           AUID_FILTERS="-F auid>=1000 -F auid!=unset"
           SYSCALL=""
           KEY="privileged"

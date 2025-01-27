@@ -1,7 +1,7 @@
-id: audit_rules_privileged_commands_at
-title: "Auditing controls should monitor execution of the at command"
+id: audit_rules_privileged_commands_newgidmap
+title: "Auditing controls should monitor execution of the newgidmap command"
 discussion: |
-  Without generating audit records specific to security and the organization, it would be difficult to perform incident response. In this case, the at command allows for scheduled task creation, which is sometimes used by attackers.
+  Without generating audit records specific to security and the organization, it would be difficult to perform incident response. In this case, the newgidmap command allows for setting GID mappings for a user namespace.
 check: |
   $OS_VALUE
 result: 
@@ -14,8 +14,10 @@ references:
   cci: 
     - CCI-000172
   800-53r5:
+    - AC-2(4)
     - AU-2(d)
     - AU-12(c)
+    - AC-6(9)
     - CM-6(a)
   srg:
     - N/A
@@ -36,8 +38,8 @@ os_specifics:
           - N/A
       check: |
         #!/bin/bash
-        ATCHECK=$( grep -R -P "always,exit.*\-F path=\/usr\/bin\/at.*-F perm\=x.*\-F auid\>\=1000 \-F auid\!\=unset \-F key\=privileged" /etc/audit/* | wc -l)
-        if [ $ATCHECK -e 0 ]; then
+        NEWGIDCHECK=$( grep -R -P "always,exit.*\-F path=\/usr\/bin\/newgidmap.*-F perm\=x.*\-F auid\>\=1000 \-F auid\!\=unset \-F key\=privileged" /etc/audit/* | wc -l)
+        if [ $NEWGIDCHECK -e 0 ]; then
           echo "FAIL"
         else
           echo "PASS"
@@ -49,7 +51,7 @@ os_specifics:
           if [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ] && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q installed; then
 
           ACTION_ARCH_FILTERS="-a always,exit"
-          OTHER_FILTERS="-F path=/usr/bin/at -F perm=x"
+          OTHER_FILTERS="-F path=/usr/bin/newgidmap -F perm=x"
           AUID_FILTERS="-F auid>=1000 -F auid!=unset"
           SYSCALL=""
           KEY="privileged"
