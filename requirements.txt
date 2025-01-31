@@ -4,3 +4,4 @@ xlwt
 openpyxl
 beautifulsoup4
 lxml
+chardet
