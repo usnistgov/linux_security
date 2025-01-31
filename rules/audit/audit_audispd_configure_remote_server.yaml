@@ -1,0 +1,106 @@
+id: audit_audispd_configure_remote_server
+title: "The Operating System should be configured to perform off-loading of audit records"
+discussion: |
+  Information stored in one location is vulnerable to accidental or incidental deletion or alteration.
+  Off-loading is a common process in information systems with limited audit storage capacity.
+check: |
+  $OS_VALUE
+result: 
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci: 
+    - CCI-001851
+  800-53r5:
+    - N/A  
+  srg:
+    - SRG-OS-000342-GPOS-00133
+    - SRG-OS-000479-GPOS-00224
+  disa_stig:
+    - UBTU-20-010216
+tags:
+  - 800-53r5_low
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2204':
+      references:
+        cce: 
+          - N/A
+      check: |
+        SERVERSET=$(cat /etc/audit/audisp-remote.conf | grep -e "remote_server \= [a-zA-Z]" | wc -l)
+        ACTIVE=$(cat /etc/audit/plugins.d/au-remote.conf | grep "active = yes" | wc -l)
+        if [[ $SERVERSET -ne 0 ]] && [[ $ACTIVE -ne 0 ]]; then
+           echo "PASS"
+        else
+           echo "FAIL"
+        fi
+      fix: |
+        [source,bash]
+        ---
+          # This will almost certainly NOT work automatically since how would it know the server you'd like to use.
+
+          
+          # Remediation is applicable only in certain platforms
+          if [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ] && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q installed; then
+
+          var_audispd_remote_server='logcollector'
+
+
+          AUDITCONFIG=/etc/audit/audisp-remote.conf
+
+
+          AUREMOTECONFIG=/etc/audisp/plugins.d/au-remote.conf
+
+          # Strip any search characters in the key arg so that the key can be replaced without
+          # adding any search characters to the config file.
+          stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^active")
+
+          # shellcheck disable=SC2059
+          printf -v formatted_output "%s = %s" "$stripped_key" "yes"
+
+          # If the key exists, change it. Otherwise, add it to the config_file.
+          # We search for the key string followed by a word boundary (matched by \>),
+          # so if we search for 'setting', 'setting2' won't match.
+          if LC_ALL=C grep -q -m 1 -i -e "^active\\>" "$AUREMOTECONFIG"; then
+              escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+              LC_ALL=C sed -i --follow-symlinks "s/^active\\>.*/$escaped_formatted_output/gi" "$AUREMOTECONFIG"
+          else
+              if [[ -s "$AUREMOTECONFIG" ]] && [[ -n "$(tail -c 1 -- "$AUREMOTECONFIG" || true)" ]]; then
+                  LC_ALL=C sed -i --follow-symlinks '$a'\\ "$AUREMOTECONFIG"
+              fi
+              printf '%s\n' "$formatted_output" >> "$AUREMOTECONFIG"
+          fi
+
+
+          # Strip any search characters in the key arg so that the key can be replaced without
+          # adding any search characters to the config file.
+          stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^remote_server")
+
+          # shellcheck disable=SC2059
+          printf -v formatted_output "%s = %s" "$stripped_key" "$var_audispd_remote_server"
+
+          # If the key exists, change it. Otherwise, add it to the config_file.
+          # We search for the key string followed by a word boundary (matched by \>),
+          # so if we search for 'setting', 'setting2' won't match.
+          if LC_ALL=C grep -q -m 1 -i -e "^remote_server\\>" "$AUDITCONFIG"; then
+              escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+              LC_ALL=C sed -i --follow-symlinks "s/^remote_server\\>.*/$escaped_formatted_output/gi" "$AUDITCONFIG"
+          else
+              if [[ -s "$AUDITCONFIG" ]] && [[ -n "$(tail -c 1 -- "$AUDITCONFIG" || true)" ]]; then
+                  LC_ALL=C sed -i --follow-symlinks '$a'\\ "$AUDITCONFIG"
+              fi
+              printf '%s\n' "$formatted_output" >> "$AUDITCONFIG"
+          fi
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi
+        ---

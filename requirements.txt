@@ -1,2 +1,6 @@
 pyyaml
+ruamel.yaml<0.18.0
 xlwt
+openpyxl
+beautifulsoup4
+lxml
