@@ -1,5 +1,5 @@
 #
-# YAML Rule Producer Script
+# YAML Rule Producer Script V2
 #
 # This script automatically creates and populates yaml files with the requisite data from OpenSCAP reports.
 # Create check filename based off of OpenSCAP rule name + category, check if exists, if not, create yaml file in proper folder.
@@ -71,8 +71,8 @@
 #    - Systemd Manipulation (systemctl?), labeled linux:systemdunitdependency_object
 #    - Package Management Info (dpkg), labeled linux:dpkginfo
 
-# TODO: In the long term future, the ssg-ubuntu2004-xccdf.xml contains all the same text as the HTML. In theory, it should be easier (and more reliable to parse), as it contains both STIGs and CIS.
-# Definitely something that may be worth pursuing down the road, since parsing the HTML is more of a stopgap and I only went down that road since I was unaware of the XML files until now.
+# TODO: Double check and improve tagging, some of it seems not fully correct
+# TODO: Implement ODV in the yaml output
 
 #!/usr/bin/env python3
 import openpyxl
@@ -82,11 +82,7 @@ import glob
 import argparse
 import sys
 import re
-# See comment above line 323 on why I wanted to switch from pyyaml
-# TODO: ruamel.yaml has switched away from mimicking pyyaml syntax, meaning 0.18 and above break this code.
-# It would be nice to make the code work with 0.18, but since I wrote it all for pyyaml and am last-min changing, no time now
 import yaml
-#import ruamel.yaml as yaml
 import time
 from timeit import timeit
 from pathlib import Path
@@ -110,6 +106,13 @@ def regex_and_return_first_match(compiledre,targetstring):
     else:
         return None
     
+# Check if the provided value already exists in the list
+# If not, append the value to the list
+# Otherwise, do nothing
+def unique_append_lists(list1,list2):
+    for value in list2:
+        unique_append(list1, value)
+
 # Check if the provided value already exists in the list
 # If not, append the value to the list
 # Otherwise, do nothing
@@ -170,6 +173,32 @@ yaml.representer.Representer.add_representer(multiline, str_presenter)
 
 yaml.representer.Representer.add_representer(str, str_presenter)
 
+# TODO: This will be in DESPERATE need of optimization
+# We went from roughly 20-30 rules a second to 1 at best! But that makes sense, we have to search a giant XML file...
+# We may have to consider preloading and creating an optimized file?
+def generate_check(check, ssg_controls_dictionary, os_type):
+    ovalref = check.find("xccdf-1.2:check-content-ref")["name"]
+    #print(f"Got ovalref: {ovalref}")
+    ovaldef = ssg_controls_dictionary[os_type].find("oval-def:definition", attrs={"id":ovalref})
+    print(f"Got ovaldef: {ovaldef}")
+    # Criteria appears to be structured like so:
+    # There is a criteria block, with an operator, generally AND or OR
+    # Inside of this, there can be multiple more criteria blocks, which are evaluated as well
+    # Inside of each criteria block, there are one of three things: a subcriteria, a criterion, or an extend_definition, which links to more criteria
+    # This is reminding me of BPF/functional programming...
+    # Our evaluation order should probably be: 
+    # Expand subcriteria first
+    # Then criterion
+    # Then extended_definitions?
+    ovaltref = ovaldef.find("oval-def:criterion")["test_ref"]
+    #print(f"Got ovaltref: {ovaltref}")
+    testref = ssg_controls_dictionary[os_type].find(attrs={"id":ovaltref})
+    #print(f"Got testref: {testref}")
+    objref = testref.find(text=False)["object_ref"]
+    #print(f"Got objref: {objref}")
+    endref = ssg_controls_dictionary[os_type].find(attrs={"id":objref})
+    #print(f"Check found! {endref}")
+
 def main():
 
     # Get the root directory of the git repo we should be inside of
@@ -215,17 +244,30 @@ def main():
     # This is a second dict that purely stores text, for the sake of speed up efficiency.
     # The get_text() call otherwise has to be called all 444 times, this way we only do it once per read of each SSG
     ssg_rawtext_dictionary = {}
-    # This is a third dict for experimental performance optimization, which aims to speed up te search calls for each rule
-    ssg_labeledcontrols_dictionary = {}
+
+    ssg_rules_dictionary = {}
 
     # Defining resources path
-    resources_path = root_dir + "/resources"
+    resources_path = root_dir + "/resources/xml/"
 
     # Starting a timer to see how long it takes to generate all these rules (could definitely be made more efficient)
-    # One big improvement, initializing BeautifulSoup for each site only once, and then storing it in the dict
     start_time = time.time()
 
-    for ssg_control_file in glob.iglob(f"{resources_path}/*.html"):
+    # Create a global compiled regex cache to increase performance
+    regex_cache=[
+        re.compile(r"[a-z]+"),
+        re.compile(r"\d+"),
+        re.compile(r"level\d{1}"),
+        re.compile(r"(server|workstation){1}"),
+        re.compile(r"(stig_gui|stig){1}"),
+        re.compile(r"CCE\-\d{5}\-\d{1}"),
+        re.compile(r"SRG\-OS\-\d{6}\-GPOS\-\d{5}"),
+        re.compile(r"^[A-Z]{2}\-\d{1,2}(?:\.\d{1,2})?(?:\(\w{1,3}\))?$"),
+        re.compile(r"CCI\-\d{6}"),
+        re.compile(r"[A-Z]{4}\-\d{1,2}\-\d{6}")  
+    ]
+
+    for ssg_control_file in glob.iglob(f"{resources_path}/*.xml"):
         # Determine all OS variants in play, by listing all files and doing prefix comparisons
         # Essentially, we need to look through the files, find every rhel8, rhel9, ubuntu2204, etc guide
         # Then, we need to pick out the one we'd like to use, and load that one into the dictionary.
@@ -240,27 +282,64 @@ def main():
         # - If the rule exists in CIS Level 1, we will tag it cis_lvl1
         # - If the rule exists in CIS Level 2, we will tag it cis_lvl2.
         # - If the rule exists in any of the CIS, we will tag it cis.
-        # In theory, this could result in dictionary collisions if we did normal prefix comparisons.
-        # To resolve this, we will use the second split and the last split, concatenated together. 
-        # Let's try preloading all the relevant sections into a giant dictionary, since right now our Soup calls are up to 0.04secs
-        # We may need to look at lots more SSG html files at once, and make more rules, so speed is key!
         ssg_file_path = os.path.join(resources_path,ssg_control_file)
         try:
             with open(ssg_file_path, 'r', encoding='utf-8') as file:
-                basename = os.path.basename(ssg_file_path)
+                basename = os.path.basename(ssg_file_path).split("-")[1]
+                os_name = basename #basename.split("-")[1]
                 print(f"Saving into SSG dictionary with the key {basename}") 
-                ssg_controls_dictionary[basename] = BeautifulSoup(file.read(),"lxml")
+                ssg_controls_dictionary[basename] = BeautifulSoup(file.read(), "lxml-xml")
                 ssg_rawtext_dictionary[basename] = ssg_controls_dictionary[basename].get_text()
-                # Let's run a find_all on this, and then place all the finds into a dictionary, titled by their ID
-                ssg_labeledcontrols_dictionary[basename] = {}
-                for control in ssg_controls_dictionary[basename].find_all("tr",attrs={"data-tt-id":True},class_="guide-tree-leaf"):
-                    ssg_labeledcontrols_dictionary[basename][control["data-tt-id"]] = control
+                ssg_benchmarks_dict = {}
+                for benchmark in ssg_controls_dictionary[basename].find_all("xccdf-1.2:Profile"):
+                    tags = []
+                    cis_level = regex_and_return_first_match(regex_cache[2],benchmark["id"])
+                    cis_type = regex_and_return_first_match(regex_cache[3],benchmark["id"])
+                    stig_type = regex_and_return_first_match(regex_cache[4],benchmark["id"])
+                    # TODO: Consider tagging "standard" rules?
+                    if cis_level:
+                        if cis_level == "level1":
+                            unique_append(tags,"cis_lvl1")
+                        elif cis_level == "level2":
+                            unique_append(tags, "cis_lvl2")
+                        else:
+                            print("WARNING: THIS STATEMENT SHOULD NOT BE REACHED WITH ACCURATE PARSING.")
+                    if cis_type:
+                        if cis_type == "server":
+                            unique_append(tags,"server")
+                        elif cis_type == "workstation":
+                            unique_append(tags,"client")
+                    # TODO: This might need to be refactored, there doesn't seem to be a STIG_GUI in the datastreams
+                    if stig_type:
+                        unique_append(tags,"stig")
+                        if stig_type == "stig":
+                            unique_append(tags,"server")
+                        elif stig_type == "stig_gui":
+                            unique_append(tags, "client")
+                    values =  benchmark.find_all("xccdf-1.2:refine-value")
+                    ssg_benchmarks_dict[benchmark["id"]] = {
+                        # We are matching selected as true because groups are listed as rules as well, but they all appear to be unselected
+                        "rules":[rule["idref"] for rule in benchmark.find_all("xccdf-1.2:select",attrs={"selected":"true"})],
+                        # These are going to be substitution values in checks and fixes that are specific to a guide (STIG, CIS, etc)
+                        # In Bob's repo, these are called ODVs, so I am borrowing that concept for our yaml schema 
+                        "odv_ids":[value["idref"] for value in values],
+                        "odv_values":[value["selector"] for value in values],
+                        "tags":tags
+                    }
+                # Let's run a find_all on this, and then place all the finds into a dictionary, correlated by their ID
+                for control in ssg_controls_dictionary[basename].find_all("xccdf-1.2:Rule"):
+                    if control["id"] not in ssg_rules_dictionary.keys():
+                        ssg_rules_dictionary[control["id"]] = {"rules":[],"os_name":[]}
+                    ssg_rules_dictionary[control["id"]]["rules"].append(control)
+                    ssg_rules_dictionary[control["id"]]["os_name"].append(os_name)
                 #print(ssg_labeledcontrols_dictionary[basename])
-                print(f"Successfully found and loaded SSG HTML file: {ssg_file_path}")
+                print(f"Successfully found and loaded SSG XML file: {ssg_file_path}")
         except Exception:
             # TODO: More advanced error reporting
-            print(f"Unable to load SSG HTML file: {ssg_file_path}")
+            print(f"Unable to load SSG XML file: {ssg_file_path}")
 
+    end_time1 = time.time()
+    print(f"Time taken to load all datastreams: {end_time1-start_time}")
 
     # Change to rules dir to begin creating test rules
     os.chdir(root_dir)
@@ -273,19 +352,6 @@ def main():
     valid_rules=0
     # Count successful populations
     populated_rules = 0
-    # Create a global compiled regex cache to increase performance
-    regex_cache=[
-        re.compile(r"[a-z]+"),
-        re.compile(r"\d+"),
-        re.compile(r"level\d{1}"),
-        re.compile(r"(server|workstation){1}"),
-        re.compile(r"(stig_gui|stig){1}"),
-        re.compile(r"CCE\-\d{5}\-\d{1}"),
-        re.compile(r"SRG\-OS\-\d{6}\-GPOS\-\d{5}"),
-        re.compile(r"^[A-Z]{2}\-\d{1,2}(?:\.\d{1,2})?(?:\(\w{1,3}\))?$"),
-        re.compile(r"CCI\-\d{6}"),
-        re.compile(r"[A-Z]{4}\-\d{1,2}\-\d{6}")  
-    ]
     # Skip the first row as this is the column titles
     for row in sheet.iter_rows(min_row=2,values_only=True):
         # Look for rows with a valid name set AND a valid CIS or STIG rule
@@ -294,196 +360,99 @@ def main():
             filepath=Path(os.getcwd() + "/rules/" + row[1] + "/" + row[0])
             # Create the os, audit, pwpolicy, etc dirs if they don't already exist in output dir
             os.makedirs(os.path.dirname(Path(os.getcwd() + "/" + results.outputdir + "/" + row[1] + "/" + row[0])), exist_ok=True)
-            yaml_dict=dict(
-                id = "",
-                title = "",
-                discussion = "",
+            
+            if not filepath.is_file() or results.overwrite:
+                # This sets the control ID to be the CIS one, if no CIS one, set to STIG, since one must exist
+                # (In our schema, both columns contain SSG-type rules, so defaulting to CIS is fine if both exist)
+                control_id = row[2] if row[2] else row[4]
+
+
+                # TODO: Probably should check if it exists or not in our rules dict
+                # One of the big benefits of DataStream over HTML is we can just straight up autofill this
+                # TODO: It would be really nice to create a "generic" XML file that contains all the values that are the same for every datastream
+                # For now, I guess we can grab every variant's value, compare, if any are unique, make it OS_VALUE, otherwise, make global the value
+                if control_id in [None, " "] or control_id not in ssg_rules_dictionary.keys():
+                    continue
+                benchtags = []
+                for id, benchmark in ssg_benchmarks_dict.items():
+                    if control_id in benchmark["rules"]:
+                        unique_append_lists(benchtags,benchmark["tags"])
+                first_rule = ssg_rules_dictionary[control_id]["rules"][0]
+                yaml_dict=dict(
+                id = row[0].split(".")[0],
+                title = str(first_rule.title.get_text()),
+                discussion = str(first_rule.rationale.get_text()),
                 check = multiline("$OS_VALUE"),
                 result = {"integer":1},
                 fix = multiline("$OS_VALUE"),
                 references={
                     "cce":["$OS_VALUE"],
                     "cci":[],
-                    "800-53r5":[],
+                    "800-53r4":[],
                     "srg":[],
                     "disa_stig":["$OS_VALUE"],
                     "cis":{
                         "benchmark":["$OS_VALUE"]
                     },
                 },
-                tags = [],
-                severity = "",
+                tags = benchtags,
+                severity = str(first_rule["severity"]),
                 os_specifics = {},
-            )
-            if not filepath.is_file() or results.overwrite:
-                #if not filepath.is_file():
-                #    print(f"{row[0]} does not exist.")
-                #elif results.overwrite:
-                #    print(f"{row[0]} does exist, but overwrite enabled. Recreating...")
-                # Grab the data from the HTML file dictionary for each, and propogate it into the yaml file we need to create
-                # TODO: at some point down the road might be nice to not have to search the entire file each time, maybe preload it into a data structure
-                # This sets the control ID to be the CIS one, if no CIS one, set to STIG, since one must exist
-                # (In our schema, both columns contain SSG-type rules, so defaulting to CIS is fine if both exist)
-                control_id = row[2] if row[2] else row[4]
-                #start1 = time.time()
-                for name, ssg_html in ssg_controls_dictionary.items():
-                    # Try and find the tr item in each based off the ID we want.
-                    soup = ssg_html
-                    # TODO: This is all repetitive data grabbing that probably doesn't need to happen. 
-                    # TODO: In theory, all the files should have the same CCI's etc as well. 
-                    # Test doing this for efficiency, since we eat 0.03-0.05 per each failed SSG search
-                    # In contrast, successful searches are within 0.002-0.003, so order of magnitude faster
-                    # if text in string checks are very fast, so if we can precache the text then search it, this should remove a lot of wasted time
-                    # Time efficiency for the inside check is e-05 efficiency, so HUGE benefit! 
-                    #start = time.time()
-                    if control_id in ssg_labeledcontrols_dictionary[name].keys():
-                        control = ssg_labeledcontrols_dictionary[name][control_id]
-                        #control = soup.find("tr", {"data-tt-id":control_id})
-                    else:
-                        control = None
-                    #end = time.time()
-                    #exect = end - start
-                    # It seems like relative execution time for this is 0.001-0.01 per SSG, and with 9-10 SSGs, this gets you a max of 0.1 and a min of 0.01
-                    # On average, I'm seeing about 0.05 here, from a total execution time of about 0.15 per rule. For now, let's focus on that remaining 0.10 and not here
-                    #print(f"Soup Execution time for {control_id} in {name}: {exect} seconds. Match: {(control is not None)}")
-                    if control:
+                )
+                start1 = time.time()
+                for rule, os_type in zip(ssg_rules_dictionary[control_id]["rules"],ssg_rules_dictionary[control_id]["os_name"]):
+                    # TODO: This is probably redundant
+                    if rule:
                         # Define the os specifics category here, since we don't care if it doesn't have the control :)
-                        os_blob = name.split("-")[1]
-                        os_title = regex_and_return_first_match(regex_cache[0],os_blob)
-                        os_version = regex_and_return_first_match(regex_cache[1],os_blob)
-                        cis_level = regex_and_return_first_match(regex_cache[2],name)
-                        cis_type = regex_and_return_first_match(regex_cache[3],name)
-                        stig_type = regex_and_return_first_match(regex_cache[4],name)
+                        os_title = regex_and_return_first_match(regex_cache[0],os_type)
+                        os_version = regex_and_return_first_match(regex_cache[1],os_type)
                         if os_title not in yaml_dict["os_specifics"].keys():
                             yaml_dict["os_specifics"][os_title] = {}
                         if os_version not in yaml_dict["os_specifics"][os_title].keys():
                             yaml_dict["os_specifics"][os_title][os_version] = {}
                         yaml_dict["os_specifics"][os_title][os_version] = {"references":{"cce":[],"disa_stig":[]},"check":None,"fix":None}
-                        yaml_dict["id"] = row[0].split(".")[0]
-                        # TODO: In theory, all of these values should be the same for every rule. If they are not, we may want to do something about this
-                        #print(f"{control_id} is defined in SSG {name}.")
-                        # Now we need to extract relevant information from it.
-                        # Let's start with the title, as the id is already defined
-                        title = control.find("h4")
-                        if title:
-                            yaml_dict["title"] = title.get_text().split("\n")[1].strip()
-                            #print(f"Control Title is {title.get_text().split("\n")[1].strip()}")
-                        #Now let's grab the discussion (labeled as rationale)
-                        discussion = control.find(class_="rationale")
-                        if discussion:
-                            # TODO: Do we actually need these multiline tags?
-                            yaml_dict["discussion"] = multiline(discussion.get_text(strip=False))
-                            #print(f"Control Discussion field is {discussion.get_text(strip=True)}")
-                        # And the severity
-                        severity = control.find(class_="severity")
-                        if severity:
-                            yaml_dict["severity"] = severity.get_text(strip=True)
-                            #print(f"Control Severity field is {severity.get_text(strip=True)}")
-                        # Let's add tags based on the kind of SSG this is
-                        # TODO: This maybe could/should be done with the content, rather than the title, as the title can be changed
-                        if cis_level:
-                            if cis_level == "level1":
-                                unique_append(yaml_dict["tags"],"cis_lvl1")
-                            elif cis_level == "level2":
-                                unique_append(yaml_dict["tags"], "cis_lvl2")
-                            else:
-                                print("WARNING: THIS STATEMENT SHOULD NOT BE REACHED WITH ACCURATE PARSING.")
-                        if cis_type:
-                            if cis_type == "server":
-                                unique_append(yaml_dict["tags"],"server")
-                            elif cis_type == "workstation":
-                                unique_append(yaml_dict["tags"],"client")
-                        if stig_type:
-                            unique_append(yaml_dict["tags"],"stig")
-                            if stig_type == "stig":
-                                unique_append(yaml_dict["tags"],"server")
-                            elif stig_type == "stig_gui":
-                                unique_append(yaml_dict["tags"], "client")
+                        yaml_references = yaml_dict["references"]
+                        yaml_os_specificrefs = yaml_dict["os_specifics"][os_title][os_version]["references"]                        
                         # Now for the fun part! Grabbing the various CCIs, STIGs, and 800-53's from identifiers
-                        identifiers = control.find(class_="identifiers")
-                        if identifiers:
-                            # We'll need to process this, split out the right ones, and place them into the file
-                            # You might be wondering why I'm using re.compile rather than just the letter a.
-                            # This is because in SSG files, specifically RHEL ones, the CCE field is an "addr" tag, not an "a" tag.
-                            # But guess what letter both start with? :)
-                            for identifier in identifiers.find_all(re.compile("^a")):
-                                # Let's get the actual text, without the tags and such
-                                # Technically, if we wanted to be really sure that each match was right, we could check the HREFs of the a tags instea
-                                # Since every single CCI should go to the CCI site, 800-53r5 to NIST, et cetera
-                                # But I've taken a look at the current dataset and am making the execute decision that this isn't necessary at this time.
-                                # TODO: Maybe a future idea?
-                                raw_identifier = identifier.get_text(strip=True)
-                                yaml_references = yaml_dict["references"]
-                                yaml_os_specificrefs = yaml_dict["os_specifics"][os_title][os_version]["references"]
-                                ccematch = regex_and_return_first_match(regex_cache[5], raw_identifier)
-                                if ccematch:
-                                    # We have a CCE match!
-                                    # Since these are OS-specific, let's place them in the specific subsection for the OS this guide references from
-                                    unique_append(yaml_os_specificrefs["cce"],ccematch)
-                                    continue
-                                srgmatch = regex_and_return_first_match(regex_cache[6], raw_identifier)
-                                if srgmatch:
-                                    # We have an SRG match!
-                                    unique_append(yaml_references["srg"],srgmatch)
-                                    continue
-                                # Turns out there are a LOT of items that look weirdly similar to the 800-53s... such as DE.AE-2
-                                nistmatch = regex_and_return_first_match(regex_cache[7], raw_identifier)
-                                if nistmatch:
-                                    # We have an 800-53 match!
-                                    unique_append(yaml_references["800-53r5"],nistmatch)
-                                    # For these, since we have 800-53r5 scorings as well, we'll want to calculate those here as well.
-                                    if nistmatch in nist_yaml["low"]:
-                                        unique_append(yaml_dict["tags"],"800-53r5_low")
-                                    if nistmatch in nist_yaml["moderate"]:
-                                        unique_append(yaml_dict["tags"],"800-53r5_moderate")
-                                    if nistmatch in nist_yaml["high"]:
-                                        unique_append(yaml_dict["tags"],"800-53r5_high")
-                                    continue
-                                ccimatch = regex_and_return_first_match(regex_cache[8], raw_identifier)
-                                if ccimatch:
-                                    # We have a CCI match!
-                                    unique_append(yaml_references["cci"],ccimatch)
-                                    continue
-                                stigmatch = regex_and_return_first_match(regex_cache[9],raw_identifier)
-                                if stigmatch:
-                                    # We have a STIG match!
-                                    # Since these are OS-specific, let's place them in the specific subsection for the OS this guide references from
-                                    unique_append(yaml_os_specificrefs["disa_stig"],stigmatch)
-                                    continue
-                                #print(f"CCE Match: {compile_and_return_first_match(r"CCE\-\d{5}\-\d{1}", raw_identifier)}")
-                                #print(f"SRG Match: {compile_and_return_first_match(r"SRG\-OS\-\d{6}\-GPOS\-\d{5}", raw_identifier)}")
-                                #print(f"CCI Match: {compile_and_return_first_match(r"CCI\-\d{6}", raw_identifier)}")
-                                #print(f"800-53r5 Match: {compile_and_return_first_match(r"[A-Z]{2}\-\d{1,2}\({0,1}\d{0,2}\){0,1}", raw_identifier)}")
-                                #print(identifier.get_text())
-                        shellbutton = control.find(string="Remediation Shell script ⇲")
-                        if shellbutton:
-                            # The array indexing at 1 is to remove the # prefixing the ID
-                            # Need to add the code tag since there can be other tags in this div
-                            remediation = "[source,bash]\n---\n" + control.find(id=shellbutton.parent["data-target"][1:]).code.get_text() + "\n---"
+                        identifiers = rule.find_all("xccdf-1.2:reference")
+                        for identifier in identifiers:
+                            #idstr += str(identifier.string) + " "
+                            if identifier["href"] == "https://public.cyber.mil/stigs/cci/":
+                                #This is a CCI, add this to the global refs
+                                unique_append(yaml_references["cci"], str(identifier.get_text()))
+                            if identifier["href"] ==  "http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf":
+                                # This is an 800-53, so check against severity grading + add to global refs
+                                nistmatch = str(identifier.string)
+                                unique_append(yaml_references["800-53r4"], nistmatch)
+                                if nistmatch in nist_yaml["low"]:
+                                    unique_append(yaml_dict["tags"],"800-53r5_low")
+                                if nistmatch in nist_yaml["moderate"]:
+                                    unique_append(yaml_dict["tags"],"800-53r5_moderate")
+                                if nistmatch in nist_yaml["high"]:
+                                    unique_append(yaml_dict["tags"],"800-53r5_high")
+                            if identifier["href"] ==  "https://public.cyber.mil/stigs/downloads/?_dl_facet_stigs=operating-systems%2Cgeneral-purpose-os":
+                                # This is an SRG, so add to global refs
+                                unique_append(yaml_references["srg"],str(identifier.get_text()))
+                            if identifier["href"] ==  "https://public.cyber.mil/stigs/downloads/?_dl_facet_stigs=operating-systems%2Cunix-linux":
+                                # This is a STIG, so add it to os_specifics
+                                unique_append(yaml_os_specificrefs["disa_stig"],str(identifier.get_text()))
+                        cce = rule.find("xccdf-1.2:ident")
+                        if cce:
+                            unique_append(yaml_os_specificrefs["cce"],str(cce.get_text()))
+                        fix = rule.find("xccdf-1.2:fix",attrs={"system":"urn:xccdf:fix:script:sh"})
+                        if fix:
+                            remediation = "[source,bash]\n---\n" + str(fix.get_text()) + "\n---"
                             yaml_dict["os_specifics"][os_title][os_version]["fix"] = multiline(remediation)
-                            #print(yaml_dict)
+                        # Now for the new and exciting part, autogenerating bash code using the check definitions in the xml :)
+                        # We'll make the decision to go primarily with the oval checks
+                        check = rule.find("xccdf-1.2:check",attrs={"system":"http://oval.mitre.org/XMLSchema/oval-definitions-5"})
+                        if check:
+                            # This is gonna be slow... definitely future optimization candidate
+                            # There seems to be recursive definitions... Guess we have to write a function for this...
+                            generate_check(check,ssg_controls_dictionary,os_type)
+                        #print(yaml_dict)
                 try:
-                    # This is the biggest slowdown I can find, taking sometimes 0.04 seconds to complete. 
                     with open(Path(os.getcwd() + "/" + results.outputdir + "/" + row[1] + "/" + row[0]), 'w') as file:
-                    #with open(Path(os.getcwd() + "/" + results.outputdir + "/" + row[0]), 'w') as file:
-                        # Apparently custom dumpers don't work with safe_dump. Not awesome
-                        # Another really frustrating behavior is that pyyaml handles multi lines like below weird:
-                        # A multiline string SHOULD look like this:
-                        # key: |
-                        #    value value value
-                        #    value value value
-                        # But pyyaml writes below, no matter what you do (see issue #411 on their github, unresolved since 2022)
-                        # key: "value\\\
-                        # \\ value \\ \n value \\ value"
-                        # Nearly gotten it working using a custom parser further up, except for a frustrating issue! Instead of:
-                        # |
-                        # text 
-                        # text
-                        # We instead get 
-                        # |-
-                        # text 
-                        # text
-                        # Thanks to this amazing article https://joekiller.com/2023/10/21/yaml-pipe-dash-what/ I've learned block chomping!
                         yaml.dump(yaml_dict, file, default_style=False, sort_keys=False, allow_unicode=True, Dumper=IndentDumper)
                     print(f"Successfully populated and wrote {row[0]}!")
                 except Exception as error:
@@ -491,9 +460,9 @@ def main():
                     print(traceback.format_exc())
                     sys.exit(-1)
                 populated_rules += 1
-                #end1 = time.time()
-                #exect = end1 - start1
-                #print(f"Total time taken for {control_id} is {exect}.")
+                end1 = time.time()
+                exect = end1 - start1
+                print(f"Total time taken for {control_id} is {exect}.")
             else:
                 print(f"{row[0]} already exists.")
             valid_rules += 1
