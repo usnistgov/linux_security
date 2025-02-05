@@ -173,14 +173,59 @@ yaml.representer.Representer.add_representer(multiline, str_presenter)
 
 yaml.representer.Representer.add_representer(str, str_presenter)
 
+def evaluate_criterion(criterion, ssg_os_controls, layer=0):
+    print(f"{"-- " * layer}Criterion {criterion["test_ref"]}")
+    test=ssg_os_controls.find(attrs={"id":criterion["test_ref"]})
+    if test:
+        print(f"{"-- " * (layer + 1)}Test {test.name} {test["id"]}")
+        object=ssg_os_controls.find(attrs={"id":test.findChildren(name=True,string=False)[0]["object_ref"]})
+        if object:
+            print(f"{"-- " * (layer + 2)}Object {object.name} {object["id"]}")
+            # Here's where we do the granular handling of operations
+            children = object.findChildren(name=True,string=False)
+            if object.name == "textfilecontent54_object":
+                # There can be all sorts of stuff such as behaviors,filepath,pattern,instance in here
+                # This is basically like writing a compiler...
+                for child in children:
+                    print(f"{"-- " * (layer + 3)}Attribute {child.name} {child.get_text()}")
+            else:
+                for child in children:
+                    print(f"{"-- " * (layer + 3)}Attribute {child.name} {child.get_text()}")
+
+def evaluate_criteria(criteria, ssg_os_controls, layer=0):
+    print(f"{"-- " * layer}Criteria operator is {criteria["operator"]}")
+    # AND, means we need to evaluate all of them
+    # OR, means we can stop when one is true
+    segments = []
+    for child in criteria.children:
+        #print(f"{child} name {child.name}")
+        if child.name == "extend_definition":
+            print(f"{"-- " * layer}Recursing extend_def..")
+            segments.append(evaluate_definition(ssg_os_controls.find("oval-def:definition",attrs={"id":child["definition_ref"]}), ssg_os_controls, layer=layer+1))
+            print(f"{"-- " * layer}Finished recursion layer...")
+        elif child.name == "criterion":
+            print(f"{"-- " * layer}Found criterion!")
+            segments.append(evaluate_criterion(child, ssg_os_controls, layer=layer+1))
+            print(f"{"-- " * layer}Finished evaluating criterion..")
+        elif child.name == "criteria":
+            print(f"{"-- " * layer}Recursing criteria..")
+            segments.append(evaluate_criteria(child, ssg_os_controls, layer=layer+1))
+            print(f"{"-- " * layer}Finished criteria recursion...")
+    
+def evaluate_definition(definition, ssg_os_controls, layer=0):
+    if definition.criteria:
+        print(f"{"-- " * layer}Found criteria in definition {definition["id"]}! Evaluating...")
+        return evaluate_criteria(definition.find("oval-def:criteria"), ssg_os_controls, layer=layer+1)
+    
 # TODO: This will be in DESPERATE need of optimization
 # We went from roughly 20-30 rules a second to 1 at best! But that makes sense, we have to search a giant XML file...
 # We may have to consider preloading and creating an optimized file?
-def generate_check(check, ssg_controls_dictionary, os_type):
+def generate_check(check, ssg_os_controls):
     ovalref = check.find("xccdf-1.2:check-content-ref")["name"]
     #print(f"Got ovalref: {ovalref}")
-    ovaldef = ssg_controls_dictionary[os_type].find("oval-def:definition", attrs={"id":ovalref})
-    print(f"Got ovaldef: {ovaldef}")
+    ovaldef = ssg_os_controls.find("oval-def:definition", attrs={"id":ovalref})
+    #print(f"Got ovaldef: {ovaldef}")
+    evaluate_definition(ovaldef, ssg_os_controls)
     # Criteria appears to be structured like so:
     # There is a criteria block, with an operator, generally AND or OR
     # Inside of this, there can be multiple more criteria blocks, which are evaluated as well
@@ -190,13 +235,13 @@ def generate_check(check, ssg_controls_dictionary, os_type):
     # Expand subcriteria first
     # Then criterion
     # Then extended_definitions?
-    ovaltref = ovaldef.find("oval-def:criterion")["test_ref"]
+    #ovaltref = ovaldef.find("oval-def:criterion")["test_ref"]
     #print(f"Got ovaltref: {ovaltref}")
-    testref = ssg_controls_dictionary[os_type].find(attrs={"id":ovaltref})
+    #testref = ssg_os_controls.find(attrs={"id":ovaltref})
     #print(f"Got testref: {testref}")
-    objref = testref.find(text=False)["object_ref"]
+    #objref = testref.find(text=False)["object_ref"]
     #print(f"Got objref: {objref}")
-    endref = ssg_controls_dictionary[os_type].find(attrs={"id":objref})
+    #endref = ssg_os_controls.find(attrs={"id":objref})
     #print(f"Check found! {endref}")
 
 def main():
@@ -449,7 +494,7 @@ def main():
                         if check:
                             # This is gonna be slow... definitely future optimization candidate
                             # There seems to be recursive definitions... Guess we have to write a function for this...
-                            generate_check(check,ssg_controls_dictionary,os_type)
+                            generate_check(check,ssg_controls_dictionary[os_type])
                         #print(yaml_dict)
                 try:
                     with open(Path(os.getcwd() + "/" + results.outputdir + "/" + row[1] + "/" + row[0]), 'w') as file:
