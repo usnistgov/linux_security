@@ -181,6 +181,70 @@ class Object:
     def __init__(self):
         print(self)
 
+class IndependentObject:
+    def __init__(self):
+        super.__init__()
+
+class UnixObject:
+    def __init__(self):
+        super.__init__()
+
+class LinuxObject:
+    def __init__(self):
+        super.__init__()
+
+class SysctlObject(UnixObject):
+    def __init__(self):
+        print(self)
+
+class SymlinkObject(UnixObject):
+    def __init__(self):
+        print(self)
+
+class SelinuxSecurityContextObject(LinuxObject):
+    def __init__(self):
+        print(self)
+
+class ShadowObject(UnixObject):
+    def __init__(self):
+        print(self)
+      
+class PasswordObject(UnixObject):
+    def __init__(self):
+        print(self)
+
+class EnvironmentVariableObject(IndependentObject):
+    def __init__(self):
+        print(self)
+
+class RPMVerifyFileObject(LinuxObject):
+    def __init__(self):
+        print(self)
+
+class VariableObject(IndependentObject):
+    def __init__(self):
+        print(self)
+
+class PartitionObject(LinuxObject):
+    def __init__(self):
+        print(self)
+
+class FileObject(UnixObject):
+    def __init__(self):
+        print(self)
+
+class XmlFileContentObject(IndependentObject):
+    def __init__(self):
+        print(self)
+
+class InterfaceObject(UnixObject):
+    def __init__(self):
+        print(self)
+
+class TextFileObject(IndependentObject):
+    def __init__(self):
+        print(self)
+
 class State:
     def __init__(self):
         print(self)
