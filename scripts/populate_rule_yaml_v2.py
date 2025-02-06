@@ -173,7 +173,77 @@ yaml.representer.Representer.add_representer(multiline, str_presenter)
 
 yaml.representer.Representer.add_representer(str, str_presenter)
 
+class Variable:
+    def __init__(self):
+        print(self)
+
+class Object:
+    def __init__(self):
+        print(self)
+
+class State:
+    def __init__(self):
+        print(self)
+
+class Test:
+    test_id = ""
+    test_comment = ""
+    test_version = "1"
+    test_check = "all"
+    test_states = None
+    test_object = None
+    test_check_existence = ""
+    test_operator = None
+
+    def __init__(self, id, comment, states, object, operator, check_existence=None):
+        print(self)
+        self.test_id = id
+        self.test_comment = comment
+        self.test_states = states
+        self.test_object = object
+        self.test_operator = operator
+        if check_existence:
+            self.test_check_existence = check_existence
+
+# Definitions can be children of criteria too, called Extend_Definitions
+class Criterion:
+    crit_test = None
+    def __init__(self, comment, test):
+        print(self)
+        self.crit_test = test
+
+class Criteria:
+    criteria_operator = ""
+    children = None
+
+    def __init__(self, criteria_operator):
+        self.criteria_operator = criteria_operator
+        print(self)
+
+    def add_child(self, child):
+        # This can be either a extend_def, another criteria, or a criterion
+        self.children.append(child)
+
+class Definition:
+    def_version = "1"
+    def_class = "compliance"
+    def_id = ""
+    def_title = ""
+    def_description = ""
+    def_references = {}
+    def_criteria = None
+
+    def __init__(self, id, title, description):
+        print(self)
+        self.id = id
+        self.def_title = title
+        self.def_description = description
+
+
+
+
 def evaluate_criterion(criterion, ssg_os_controls, layer=0):
+    # This should create a BASH inline variable, called something creative if at all possible
     print(f"{"-- " * layer}Criterion {criterion["test_ref"]}")
     test=ssg_os_controls.find(attrs={"id":criterion["test_ref"]})
     if test:
@@ -190,12 +260,11 @@ def evaluate_criterion(criterion, ssg_os_controls, layer=0):
                     print(f"{"-- " * (layer + 3)}Attribute {child.name} {child.get_text()}")
             else:
                 for child in children:
-                    print(f"{"-- " * (layer + 3)}Attribute {child.name} {child.get_text()}")
+                    print(f"{"-- " * (layer + 3)}Attribute x{child.name} {child.get_text()}")
 
 def evaluate_criteria(criteria, ssg_os_controls, layer=0):
     print(f"{"-- " * layer}Criteria operator is {criteria["operator"]}")
-    # AND, means we need to evaluate all of them
-    # OR, means we can stop when one is true
+    # This is where we will want to assemble the equivalency statements 
     segments = []
     for child in criteria.children:
         #print(f"{child} name {child.name}")
