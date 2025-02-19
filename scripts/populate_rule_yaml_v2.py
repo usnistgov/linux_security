@@ -87,7 +87,18 @@ import time
 from timeit import timeit
 from pathlib import Path
 from bs4 import BeautifulSoup, SoupStrainer
-
+import lxml
+from xsdata.formats.dataclass.parsers.handlers import LxmlEventHandler
+from xsdata.formats.dataclass.parsers import XmlParser
+from xsdata.formats.dataclass.parsers.config import ParserConfig
+#from oval.definitions.gov.nist.checklists.xccdf import *
+#from oval.definitions.org.mitre.oval.xmlschema import *
+#from oval.definitions.org.w3.pkg_2000.pkg_09.xmldsig import *
+#from oval.definitions.org.mitre.oval import *
+#from oval.definitions.gov.nist.scap.schema.scap.source import *
+#from oval.definitions.gov.nist.checklists.xccdf import *
+from oval.definitions import *
+from lxml import etree
 # TODO: This entire dumper section can definitely be cleaned up
 
 # Thanks to Reorx Xiao for this code that helps nicely format the yaml dumps!
@@ -173,158 +184,159 @@ yaml.representer.Representer.add_representer(multiline, str_presenter)
 
 yaml.representer.Representer.add_representer(str, str_presenter)
 
-class Variable:
-    def __init__(self):
-        print(self)
+def evaluate_behavior(behavior, ssg_os_controls, layer=0):
+    print(f"{"-- " * layer}Behavior")        
 
-class Object:
-    def __init__(self):
-        print(self)
+def evaluate_variable(var, ssg_os_controls, layer=0):
+    print(f"{"-- " * layer}Var")
 
-class IndependentObject:
-    def __init__(self):
-        super.__init__()
+def evaluate_state(state, ssg_os_controls, layer=0):
+    statereftype = state.prefix + ":" + state.name
+    print(f"{"-- " * layer}State {state["state_ref"]} {statereftype}")
+    # Now we need to find the actual state
+    stateobj = ssg_os_controls.find(attrs={"id":state["state_ref"]})
+    stateobjtype = stateobj.prefix + ":" + stateobj.name
+    print(f"{"-- " * layer}State Obj {stateobj["id"]} {stateobjtype}")
 
-class UnixObject:
-    def __init__(self):
-        super.__init__()
+def evaluate_object(object, ssg_os_controls, layer=0):
+    objtype = object.prefix + ":" + object.name
+    print(f"{"-- " * layer}Object {object["object_ref"]} {objtype}")
+    # Now we need to find the actual object object (lol)
+    objobj = ssg_os_controls.find(attrs={"id":object["object_ref"]})
+    objobjtype = objobj.prefix + ":" + objobj.name
+    print(f"{"-- " * layer}Object Obj {objobj["id"]} {objobjtype}")
 
-class LinuxObject:
-    def __init__(self):
-        super.__init__()
-
-class SysctlObject(UnixObject):
-    def __init__(self):
-        print(self)
-
-class SymlinkObject(UnixObject):
-    def __init__(self):
-        print(self)
-
-class SelinuxSecurityContextObject(LinuxObject):
-    def __init__(self):
-        print(self)
-
-class ShadowObject(UnixObject):
-    def __init__(self):
-        print(self)
-      
-class PasswordObject(UnixObject):
-    def __init__(self):
-        print(self)
-
-class EnvironmentVariableObject(IndependentObject):
-    def __init__(self):
-        print(self)
-
-class RPMVerifyFileObject(LinuxObject):
-    def __init__(self):
-        print(self)
-
-class VariableObject(IndependentObject):
-    def __init__(self):
-        print(self)
-
-class PartitionObject(LinuxObject):
-    def __init__(self):
-        print(self)
-
-class FileObject(UnixObject):
-    def __init__(self):
-        print(self)
-
-class XmlFileContentObject(IndependentObject):
-    def __init__(self):
-        print(self)
-
-class InterfaceObject(UnixObject):
-    def __init__(self):
-        print(self)
-
-class TextFileObject(IndependentObject):
-    def __init__(self):
-        print(self)
-
-class State:
-    def __init__(self):
-        print(self)
-
-class Test:
-    test_id = ""
-    test_comment = ""
-    test_version = "1"
-    test_check = "all"
-    test_states = None
-    test_object = None
-    test_check_existence = ""
-    test_operator = None
-
-    def __init__(self, id, comment, states, object, operator, check_existence=None):
-        print(self)
-        self.test_id = id
-        self.test_comment = comment
-        self.test_states = states
-        self.test_object = object
-        self.test_operator = operator
-        if check_existence:
-            self.test_check_existence = check_existence
-
-# Definitions can be children of criteria too, called Extend_Definitions
-class Criterion:
-    crit_test = None
-    def __init__(self, comment, test):
-        print(self)
-        self.crit_test = test
-
-class Criteria:
-    criteria_operator = ""
-    children = None
-
-    def __init__(self, criteria_operator):
-        self.criteria_operator = criteria_operator
-        print(self)
-
-    def add_child(self, child):
-        # This can be either a extend_def, another criteria, or a criterion
-        self.children.append(child)
-
-class Definition:
-    def_version = "1"
-    def_class = "compliance"
-    def_id = ""
-    def_title = ""
-    def_description = ""
-    def_references = {}
-    def_criteria = None
-
-    def __init__(self, id, title, description):
-        print(self)
-        self.id = id
-        self.def_title = title
-        self.def_description = description
+    # TODO: Would be great to make this into a functional language evaluator (Bison/ANTLR) or an XML transformer (xsl)
+    # So much duplication of code...
+    
+    # We will not support the old textfilecontent version, for now
+    if objobj.name == "textfilecontent54_object":
+        # We have a textfilecontent object, which is defined in independent-definitions-schema.xsd
+        # This is what generates the "set" of data we expect to get from this file
+        # It appears to do greedy perl matching, we should use -P for sure
+        pattern = objobj.find("pattern")
+        # This is how much of that set to return, e.g if equal to 1, return first, if greater than or equal to 1, return all
+        instance = objobj.find("instance")
+        # We are guaranteed one of two choices, either a full filepath, or a path and a filename
+        print(pattern)
+        print(instance)
+        print(objobj)
+        if objobj.find("filepath"):
+            filepath = objobj.find("filepath")
+            # Since we only need to search a filepath, we can just use grep
+            aggregator_command=f"grep -P '{pattern.get_text()}' {filepath.get_text()})"
+        else:
+            # We should have a path + filename
+            filename = objobj.find("filename")
+            path = objobj.find("path")
+            # Since we need to search a path for filenames, we should probably use find
+            # We also have to support recursion and recurse directions, along with max depth, if not pattern
+            if path.operation and path.operation == "pattern match":
+                # We have options for two layers of pattern matching here
+                if filename.operation and filename.operation == "pattern match":
+                    aggregator_command=f"find / -regex '{path.get_text() + "/" + filename.get_text()}' -exec grep -P '{pattern.get_text()}'" + r" \{} +"
+                else:
+                    # Need to test if this works the way I think it does
+                    aggregator_command=f"find / -regex '{path.get_text() + "/" + filename.get_text()}' -exec grep -P '{pattern.get_text()}'" + r" \{} +"
+            elif not path.operation or (path.operation and path.operation == "equals"):
+                # Now for recurse + depth + maybe file pattern matching
+                # Technically the spec says we have to support upwards recursion (why?)
+                # Since find does not support this, and as far as I can tell none of the XML files feature it, we will not support this.
+                behavior = objobj.find("behaviors")
+                extraargs = ""
+                if behavior:
+                    behaviors = behavior.attrs
+                    if "max_depth" in behaviors.keys():
+                        extraargs += f" -maxdepth {behaviors["max_depth"]} "
+                    if "recurse" in behaviors.keys():
+                        recursetype = behaviors["recurse"]
+                        if recursetype == "symlinks and directories":
+                            # Find follows dirs by default, so just add symlinks
+                            # We don't need to do anything if the type is directories, since that's default behavior too
+                            extraargs += " -L "
+                        elif recursetype == "symlinks":
+                            # This is an interesting variant from the OVAL standard and is difficult to implement. 
+                            # Since it is not natively supported by find, I am choosing to throw an error if this condition is ever encountered
+                            # Rather than generate a broken check.
+                            print("FATAL ERROR: XML Parsing encountered a recursion type of symlinks only, which is not currently implemented.")
+                            os.exit(-1)
+                    if "recurse_direction" in behaviors.keys():
+                        # By default this is down, but we aren't implementing upwards recursion, so we will inform the user and throw an error
+                        # For some reason this also has a "none" value, we will also not be implementing that.
+                        if behaviors["recurse_direction"] in ["upward","none"]:
+                            print("FATAL ERROR: XML Parsing encountered a recursion direction of down or none, which are not currently implemented.")
+                            os.exit(-1)
+                    if "recurse_file_system" in behaviors.keys():
+                        # The spec here is not clear, but it seems like "all" represents all file systems it encounters, e.g spare media mounted to /run, etc
+                        # "local" and "defined" seem mostly synonymous, in that "local" means to stick to the current file system, e.g if your path is /, do not check other fs
+                        # "defined" appears to also mean to stick to the file system defined, e.g if your path is /, do not check /run/media or other fs
+                        # In find, recursing other file systems is the default, so we only need to do something for restrictions on this
+                        if behaviors["recurse_file_system"] in ["local","defined"]:
+                            extraargs += " -mount "
+                aggregator_command=f"find {extraargs} / -regex '{path.get_text() + "/" + filename.get_text()}' -exec grep -P '{pattern.get_text()}'" + r" \{} +"
+            else:
+                print("FATAL ERROR: XML Parsing encountered an unexpected operation type.")
+                os.exit(-1)
+        processor = None
+        if instance and "operation" in instance.attrs.keys():
+            # Now we need to filter the set through the instance, which can basically subset n...m from our generated set
+            # For instance, if instance is 1 and the operation is equals, we go from 1..1 and get the first match
+            # Now if we have greater than or equal and 1, we go from 1...m and get every match in the set
+            operation = instance["operation"]
+            instancevalue = instance.get_text()
+            if operation == "equals":
+                # This prints exactly that line
+                processor = f"sed -n {instancevalue}p"
+            elif operation == "greater than or equal":
+                # This prints all remaining lines, starting at the value
+                processor = f"tail -n {instancevalue}"
+            else:
+                # This is unimplemented, so throw an error
+                print("FATAL ERROR: XML Parsing encountered an instance operation that is not == or >=, which means it is unimplemented.")
+                sys.exit(-1)
+        # Since I really would not like to make code with variables named 1234ABD=$()
+        # Let's start with lazy naming, and just remove symbols from the ID and cap it at 16 chars
+        variable_name=re.sub(r'[^a-zA-Z]', '', objobj["id"]).replace("ovalssgobject","")
+        # The object should produce a bash command that stores to a variable, which we can then compare to the state in our test
+        final_command=f"{variable_name}=$({aggregator_command} {str("| " + processor) if processor else ""})"
+        print(f"Created a bash command variable: {final_command}")
+                
 
 
 
+def evaluate_test(test, ssg_os_controls, layer=0):
+    print(f"{"-- " * layer}Test {test["id"]} {test.prefix + ":" + test.name}")
+    object=test.find(object_ref=True)
+    if object:
+        object = evaluate_object(object,ssg_os_controls,layer+1)
+    states=test.find_all(state_ref=True)
+    for state in states:
+        states = evaluate_state(state,ssg_os_controls,layer+1)
+    # Now, if we were doing a proper implementation, we'd evaluate here
+    # However, instead we want to generate some bash code that matches these states + object requirements 
+    # Unfortunately, we are going to need to do 26 different if statements here
+    # I guess we could make 26 classes instead? Maybe at some point
 
 def evaluate_criterion(criterion, ssg_os_controls, layer=0):
     # This should create a BASH inline variable, called something creative if at all possible
     print(f"{"-- " * layer}Criterion {criterion["test_ref"]}")
     test=ssg_os_controls.find(attrs={"id":criterion["test_ref"]})
     if test:
+        evaluate_test(test,ssg_os_controls,layer+1)
         print(f"{"-- " * (layer + 1)}Test {test.name} {test["id"]}")
-        object=ssg_os_controls.find(attrs={"id":test.findChildren(name=True,string=False)[0]["object_ref"]})
-        if object:
-            print(f"{"-- " * (layer + 2)}Object {object.name} {object["id"]}")
-            # Here's where we do the granular handling of operations
-            children = object.findChildren(name=True,string=False)
-            if object.name == "textfilecontent54_object":
-                # There can be all sorts of stuff such as behaviors,filepath,pattern,instance in here
-                # This is basically like writing a compiler...
-                for child in children:
-                    print(f"{"-- " * (layer + 3)}Attribute {child.name} {child.get_text()}")
-            else:
-                for child in children:
-                    print(f"{"-- " * (layer + 3)}Attribute x{child.name} {child.get_text()}")
+        #object=ssg_os_controls.find(attrs={"id":test.findChildren(name=True,string=False)[0]["object_ref"]})
+        #if object:
+        #    print(f"{"-- " * (layer + 2)}Object {object.name} {object["id"]}")
+        #    # Here's where we do the granular handling of operations
+        #    children = object.findChildren(name=True,string=False)
+        #    if object.name == "textfilecontent54_object":
+        #        # There can be all sorts of stuff such as behaviors,filepath,pattern,instance in here
+        #        # This is basically like writing a compiler...
+        #        for child in children:
+        #            print(f"{"-- " * (layer + 3)}Attribute {child.name} {child.get_text()}")
+        #    else:
+        #        for child in children:
+        #            print(f"{"-- " * (layer + 3)}Attribute x{child.name} {child.get_text()}")
 
 def evaluate_criteria(criteria, ssg_os_controls, layer=0):
     print(f"{"-- " * layer}Criteria operator is {criteria["operator"]}")
@@ -358,7 +370,7 @@ def generate_check(check, ssg_os_controls):
     #print(f"Got ovalref: {ovalref}")
     ovaldef = ssg_os_controls.find("oval-def:definition", attrs={"id":ovalref})
     #print(f"Got ovaldef: {ovaldef}")
-    evaluate_definition(ovaldef, ssg_os_controls)
+    #evaluate_definition(ovaldef, ssg_os_controls)
     # Criteria appears to be structured like so:
     # There is a criteria block, with an operator, generally AND or OR
     # Inside of this, there can be multiple more criteria blocks, which are evaluated as well
@@ -460,12 +472,32 @@ def main():
         # - If the rule exists in CIS Level 1, we will tag it cis_lvl1
         # - If the rule exists in CIS Level 2, we will tag it cis_lvl2.
         # - If the rule exists in any of the CIS, we will tag it cis.
+        
+        # We probably need to preprocess and link every single element of this, thanks to all the IDREFs not autolinking...
+
+        #XSDATA commands
+        # xsdata generate ..\resources\xml\sources\ --recursive --package oval.definitions -ss single-package --debug\
         ssg_file_path = os.path.join(resources_path,ssg_control_file)
         try:
             with open(ssg_file_path, 'r', encoding='utf-8') as file:
                 basename = os.path.basename(ssg_file_path).split("-")[1]
                 os_name = basename #basename.split("-")[1]
                 print(f"Saving into SSG dictionary with the key {basename}") 
+
+            
+                # Test loading a definition here
+                parser = XmlParser(handler=LxmlEventHandler)
+                tree = lxml.etree.parse(ssg_file_path)
+                root = tree.getroot()
+                datastream = parser.parse(ssg_file_path,DataStreamCollection)
+                print(datastream)
+                # There has got to be a better way to do this... having to load the rule, then go find the def, then go find the checks, then go find the variables.. yeesh!
+                definition_test = parser.parse(tree.find(".//xccdf-1.2:Rule",namespaces=root.nsmap), Rule)
+                print(definition_test.check[0].check_content_ref)
+                defactual = parser.parse(tree.find(f"//oval-def:definition[@id='{definition_test.check[0].check_content_ref.name}']",namespaces=root.nsmap), Definition)
+                print(defactual) 
+                crit1 = parser.parse(tree.find(f"//*[@id='{defactual.criteria.criterion[0].test_ref}']"))
+                print(crit1)
                 ssg_controls_dictionary[basename] = BeautifulSoup(file.read(), "lxml-xml")
                 ssg_rawtext_dictionary[basename] = ssg_controls_dictionary[basename].get_text()
                 ssg_benchmarks_dict = {}
@@ -512,9 +544,9 @@ def main():
                     ssg_rules_dictionary[control["id"]]["os_name"].append(os_name)
                 #print(ssg_labeledcontrols_dictionary[basename])
                 print(f"Successfully found and loaded SSG XML file: {ssg_file_path}")
-        except Exception:
+        except Exception as e:
             # TODO: More advanced error reporting
-            print(f"Unable to load SSG XML file: {ssg_file_path}")
+            print(f"Unable to load SSG XML file: {ssg_file_path} {e}")
 
     end_time1 = time.time()
     print(f"Time taken to load all datastreams: {end_time1-start_time}")
