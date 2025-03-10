@@ -97,7 +97,10 @@ from xsdata.formats.dataclass.parsers.config import ParserConfig
 #from oval.definitions.org.mitre.oval import *
 #from oval.definitions.gov.nist.scap.schema.scap.source import *
 #from oval.definitions.gov.nist.checklists.xccdf import *
-from oval.definitions import *
+from scap import *
+#from scap.csrc.nist.gov.schema.scap.pkg_1.pkg_3 import *
+#from scap.scap.nist.gov.schema.xccdf.pkg_1.pkg_2.xccdf_1_2 import *
+#from scap.raw.githubusercontent.com.ovalproject.language.pkg_5.pkg_11.pkg_2.schemas import *
 from lxml import etree
 # TODO: This entire dumper section can definitely be cleaned up
 
@@ -361,14 +364,57 @@ def evaluate_definition(definition, ssg_os_controls, layer=0):
     if definition.criteria:
         print(f"{"-- " * layer}Found criteria in definition {definition["id"]}! Evaluating...")
         return evaluate_criteria(definition.find("oval-def:criteria"), ssg_os_controls, layer=layer+1)
+
+def generate_state(state, vars, depth=0):
+    print(f"{"--" * depth}State {state.id}")
+
+def generate_object(object, vars, depth=0):
+    print(f"{"--" * depth}Obj {object.generate_check()}")
+    # This is where we're going to need to call class functions, and where it probably makes sense to add a "parse" function to the root
+
+def generate_test(test_ref, tests, states, objects, vars, depth=0):
+    test = tests[test_ref]
+    print(f"{"--" * depth}Test {test.id}")
+    # Get object which should exist
+    objectref = test.object_value.object_ref
+    generate_object(objects[objectref], vars, depth+1)
+    # Get states if they exist
+    staterefs = test.state
+    for stateref in staterefs:
+        generate_state(states[stateref.state_ref], vars, depth+1)
+
+def generate_criteria(criteria, tests, states, objects, vars, depth=0):
+    print(f"{"--" * depth}Criteria: {criteria.comment}")
+    # Check the relevant operator
+    operator = criteria.operator
+    print(f"{"--" * depth}Operator {operator}")
+    # Get the operands (criterion)
+    criterions = criteria.criterion
+    for criterion in criterions:
+        generate_test(criterion.test_ref, tests, states, objects, vars, depth+1)
+    #print(f"Criterions: {criterions}")
+    # Get the operands (criteria)
+    criterias = criteria.criteria
+    for crit in criterias:
+        generate_criteria(crit, tests, states, objects, vars, depth+1)
+    
     
 # TODO: This will be in DESPERATE need of optimization
 # We went from roughly 20-30 rules a second to 1 at best! But that makes sense, we have to search a giant XML file...
 # We may have to consider preloading and creating an optimized file?
-def generate_check(check, ssg_os_controls):
+def generate_check(check, defs, tests, states, objects, vars):
     ovalref = check.find("xccdf-1.2:check-content-ref")["name"]
-    #print(f"Got ovalref: {ovalref}")
-    ovaldef = ssg_os_controls.find("oval-def:definition", attrs={"id":ovalref})
+    # Grab Dictionary Object from Ref ID
+    definition = defs[ovalref]
+
+    # print(f"\n\n {definition} \n\n")
+    # Evaluate criteria and criterion 
+    # We have a tree of CriteriaType nodes
+    criteriaroot = definition.criteria
+    print(f"\n\n Criteria Root: {criteriaroot}")
+    # Then we need to DFS down the criteria chain, and grab all criterion on each level. 
+    # Recursion? 
+    criteriachain = definition.generate_check(data={"tests":tests,"definitions":defs,"states":states,"objects":objects,"vars":vars})
     #print(f"Got ovaldef: {ovaldef}")
     #evaluate_definition(ovaldef, ssg_os_controls)
     # Criteria appears to be structured like so:
@@ -437,6 +483,13 @@ def main():
 
     ssg_rules_dictionary = {}
 
+    # We need to make dicts for each separate list of tests, states, etc, so that we can quickly parse based off of that
+    ssg_defs_dict = {}
+    ssg_tests_dict = {}
+    ssg_objects_dict = {}
+    ssg_states_dict = {}
+    ssg_vars_dict = {}
+
     # Defining resources path
     resources_path = root_dir + "/resources/xml/"
 
@@ -477,6 +530,7 @@ def main():
 
         #XSDATA commands
         # xsdata generate ..\resources\xml\sources\ --recursive --package oval.definitions -ss single-package --debug\
+        # test
         ssg_file_path = os.path.join(resources_path,ssg_control_file)
         try:
             with open(ssg_file_path, 'r', encoding='utf-8') as file:
@@ -489,15 +543,41 @@ def main():
                 parser = XmlParser(handler=LxmlEventHandler)
                 tree = lxml.etree.parse(ssg_file_path)
                 root = tree.getroot()
-                datastream = parser.parse(ssg_file_path,DataStreamCollection)
-                print(datastream)
-                # There has got to be a better way to do this... having to load the rule, then go find the def, then go find the checks, then go find the variables.. yeesh!
-                definition_test = parser.parse(tree.find(".//xccdf-1.2:Rule",namespaces=root.nsmap), Rule)
-                print(definition_test.check[0].check_content_ref)
-                defactual = parser.parse(tree.find(f"//oval-def:definition[@id='{definition_test.check[0].check_content_ref.name}']",namespaces=root.nsmap), Definition)
-                print(defactual) 
-                crit1 = parser.parse(tree.find(f"//*[@id='{defactual.criteria.criterion[0].test_ref}']"))
-                print(crit1)
+                # There has got to be a better way to do this... having to load the rule, then go find the def, then go find the checks, then go find the variables.. yeesh!d
+                # This data structure is so bad... it autocreated a specific list for each type, rather than a generic!
+                # Why even use the source schemas at all... I may have to go back and redo this 
+                # I don't even think it's XSDATA's fault... just that the OVAL schema is such a cluster..
+                states = tree.find(".//oval-def:states",namespaces=root.nsmap)
+                ssg_states_dict[basename] = {}
+                for state in states.getchildren():
+                    parsed = parser.parse(state)
+                    ssg_states_dict[basename][parsed.id] = parsed
+
+                objects = tree.find(".//oval-def:objects",namespaces=root.nsmap)
+                ssg_objects_dict[basename] = {}
+                for object in objects.getchildren():
+                    parsed = parser.parse(object)
+                    ssg_objects_dict[basename][parsed.id] = parsed
+
+                tests = tree.find(".//oval-def:tests",namespaces=root.nsmap)
+                ssg_tests_dict[basename] = {}
+                for test in tests.getchildren():
+                    parsed = parser.parse(test)
+                    ssg_tests_dict[basename][parsed.id] = parsed
+
+                variables = tree.find(".//oval-def:variables",namespaces=root.nsmap)
+                ssg_vars_dict[basename] = {}
+                for variable in variables.getchildren():
+                    parsed = parser.parse(variable)
+                    ssg_vars_dict[basename][parsed.id] = parsed
+                 
+                definitions = tree.find(".//oval-def:definitions",namespaces=root.nsmap)
+                ssg_defs_dict[basename] = {}
+                for definition in definitions.getchildren():
+                    parsed = parser.parse(definition)
+                    ssg_defs_dict[basename][parsed.id] = parsed    
+                print(f"Successfully populated definitions, objects, tests, states, and variable dictionaries for {basename}.")
+                
                 ssg_controls_dictionary[basename] = BeautifulSoup(file.read(), "lxml-xml")
                 ssg_rawtext_dictionary[basename] = ssg_controls_dictionary[basename].get_text()
                 ssg_benchmarks_dict = {}
@@ -546,7 +626,7 @@ def main():
                 print(f"Successfully found and loaded SSG XML file: {ssg_file_path}")
         except Exception as e:
             # TODO: More advanced error reporting
-            print(f"Unable to load SSG XML file: {ssg_file_path} {e}")
+            print(f"Unable to load SSG XML file: {ssg_file_path} {e.with_traceback} {e.args} {(type(e))}")
 
     end_time1 = time.time()
     print(f"Time taken to load all datastreams: {end_time1-start_time}")
@@ -659,7 +739,7 @@ def main():
                         if check:
                             # This is gonna be slow... definitely future optimization candidate
                             # There seems to be recursive definitions... Guess we have to write a function for this...
-                            generate_check(check,ssg_controls_dictionary[os_type])
+                            generate_check(check,ssg_defs_dict[os_type],ssg_tests_dict[os_type],ssg_states_dict[os_type],ssg_objects_dict[os_type],ssg_vars_dict[os_type])
                         #print(yaml_dict)
                 try:
                     with open(Path(os.getcwd() + "/" + results.outputdir + "/" + row[1] + "/" + row[0]), 'w') as file:

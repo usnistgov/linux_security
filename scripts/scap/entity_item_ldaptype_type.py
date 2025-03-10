@@ -1,0 +1,211 @@
+from enum import Enum
+
+__NAMESPACE__ = (
+    "http://oval.mitre.org/XMLSchema/oval-system-characteristics-5#independent"
+)
+
+
+class EntityItemLdaptypeType(Enum):
+    """The EntityItemLdaptypeType complex type restricts a string value to a
+    specific set of values that specify the different types of information that an
+    ldap attribute can represent.
+
+    The empty string value is permitted here to allow for detailed error
+    reporting.
+
+    :cvar LDAPTYPE_ACI_ITEM: ACI Item, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.1
+    :cvar LDAPTYPE_ACCESS_POINT: Access Point, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.2
+    :cvar LDAPTYPE_ATTRIBUTE_TYPE_DESCRIP_STRING: Attribute Type
+        Description, corresponding to OID 1.3.6.1.4.1.1466.115.121.1.3
+    :cvar LDAPTYPE_AUDIO: Audio, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.4
+    :cvar LDAPTYPE_BINARY: Binary, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.5
+    :cvar LDAPTYPE_BIT_STRING: Bit String, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.6
+    :cvar LDAPTYPE_BOOLEAN: Boolean, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.7
+    :cvar LDAPTYPE_CERTIFICATE: Certificate, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.8
+    :cvar LDAPTYPE_CERTIFICATE_LIST: Certificate List, corresponding to
+        OID 1.3.6.1.4.1.1466.115.121.1.9
+    :cvar LDAPTYPE_CERTIFICATE_PAIR: Certificate Pair, corresponding to
+        OID 1.3.6.1.4.1.1466.115.121.1.10
+    :cvar LDAPTYPE_COUNTRY_STRING: Country String, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.11
+    :cvar LDAPTYPE_DN_STRING: DN, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.12
+    :cvar LDAPTYPE_DATA_QUALITY_SYNTAX: Data Quality Syntax,
+        corresponding to OID 1.3.6.1.4.1.1466.115.121.1.13
+    :cvar LDAPTYPE_DELIVERY_METHOD: Delivery Method, corresponding to
+        OID 1.3.6.1.4.1.1466.115.121.1.14
+    :cvar LDAPTYPE_DIRECTORY_STRING: Directory String, corresponding to
+        OID 1.3.6.1.4.1.1466.115.121.1.15
+    :cvar LDAPTYPE_DIR_CONTENT_RULE_DESCRIPTION: DIT Content Rule
+        Description, corresponding to OID 1.3.6.1.4.1.1466.115.121.1.16
+    :cvar LDAPTYPE_DIT_STRUCTURE_RULE_DESCRIPTION: DIT Structure Rule
+        Description, corresponding to OID 1.3.6.1.4.1.1466.115.121.1.17
+    :cvar LDAPTYPE_DL_SUBMIT_PERMISSION: DL Submit Permission,
+        corresponding to OID Y  1.3.6.1.4.1.1466.115.121.1.18
+    :cvar LDAPTYPE_DSA_QUALITY_SYNTAX: DSA Quality Syntax, corresponding
+        to OID 1.3.6.1.4.1.1466.115.121.1.19
+    :cvar LDAPTYPE_DSE_TYPE: DSE Type, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.20
+    :cvar LDAPTYPE_ENHANCED_GUIDE: Enhanced Guide, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.21
+    :cvar LDAPTYPE_FAX_TEL_NUMBER: Facsimile Telephone Number,
+        corresponding to OID 1.3.6.1.4.1.1466.115.121.1.22
+    :cvar LDAPTYPE_FAX: Fax, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.23
+    :cvar LDAPTYPE_GENERALIZED_TIME: Generalized Time, corresponding to
+        OID 1.3.6.1.4.1.1466.115.121.1.24
+    :cvar LDAPTYPE_GUIDE: Guide, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.25
+    :cvar LDAPTYPE_IA5_STRING: IA5 String, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.26
+    :cvar LDAPTYPE_INTEGER: INTEGER, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.27
+    :cvar LDAPTYPE_JPEG: JPEG, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.28
+    :cvar LDAPTYPE_LDAP_SYNTAX_DESCRIPTION: LDAP Syntax Description,
+        corresponding to OID 1.3.6.1.4.1.1466.115.121.1.54
+    :cvar LDAPTYPE_LDAP_SCHEMA_DEFINITION: LDAP Schema Definition,
+        corresponding to OID 1.3.6.1.4.1.1466.115.121.1.56
+    :cvar LDAPTYPE_LDAP_SCHEMA_DESCRIPTION: LDAP Schema Description,
+        corresponding to OID 1.3.6.1.4.1.1466.115.121.1.57
+    :cvar LDAPTYPE_MASTER_AND_SHADOW_ACCESS_POINTS: Master And Shadow
+        Access Points, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.29
+    :cvar LDAPTYPE_MATCHING_RULE_DESCRIPTION: Matching Rule Description,
+        corresponding to OID 1.3.6.1.4.1.1466.115.121.1.30
+    :cvar LDAPTYPE_MATCHING_RULE_USE_DESCRIPTION: Matching Rule Use
+        Description, corresponding to OID 1.3.6.1.4.1.1466.115.121.1.31
+    :cvar LDAPTYPE_MAIL_PREFERENCE: Mail Preference, corresponding to
+        OID 1.3.6.1.4.1.1466.115.121.1.32
+    :cvar LDAPTYPE_MHS_OR_ADDRESS: MHS OR Address, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.33
+    :cvar LDAPTYPE_MODIFY_RIGHTS: Modify Rights, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.55
+    :cvar LDAPTYPE_NAME_AND_OPTIONAL_UID: Name And Optional UID,
+        corresponding to OID 1.3.6.1.4.1.1466.115.121.1.34
+    :cvar LDAPTYPE_NAME_FORM_DESCRIPTION: Name Form Description,
+        corresponding to OID 1.3.6.1.4.1.1466.115.121.1.35
+    :cvar LDAPTYPE_NUMERIC_STRING: Numeric String, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.36
+    :cvar LDAPTYPE_OBJECT_CLASS_DESCRIP_STRING: Object Class
+        Description, corresponding to OID 1.3.6.1.4.1.1466.115.121.1.37
+    :cvar LDAPTYPE_OCTET_STRING: Octet String, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.40
+    :cvar LDAPTYPE_OID: OID, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.38
+    :cvar LDAPTYPE_MAILBOX: Other Mailbox, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.39
+    :cvar LDAPTYPE_POSTAL_ADDRESS: Postal Address, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.41
+    :cvar LDAPTYPE_PROTOCOL_INFORMATION: Protocol Information,
+        corresponding to OID 1.3.6.1.4.1.1466.115.121.1.42
+    :cvar LDAPTYPE_PRESENTATION_ADDRESS: Presentation Address,
+        corresponding to OID 1.3.6.1.4.1.1466.115.121.1.43
+    :cvar LDAPTYPE_PRINTABLE_STRING: Printable String, corresponding to
+        OID 1.3.6.1.4.1.1466.115.121.1.44
+    :cvar LDAPTYPE_SUBSTRING_ASSERTION: Substring Assertion,
+        corresponding to OID 1.3.6.1.4.1.1466.115.121.1.58
+    :cvar LDAPTYPE_SUBTREE_SPECIFICATION: Subtree Specification,
+        corresponding to OID 1.3.6.1.4.1.1466.115.121.1.45
+    :cvar LDAPTYPE_SUPPLIER_INFORMATION: Supplier Information,
+        corresponding to OID 1.3.6.1.4.1.1466.115.121.1.46
+    :cvar LDAPTYPE_SUPPLIER_OR_CONSUMER: Supplier Or Consumer,
+        corresponding to OID 1.3.6.1.4.1.1466.115.121.1.47
+    :cvar LDAPTYPE_SUPPLIER_AND_CONSUMER: Supplier And Consumer,
+        corresponding to OID 1.3.6.1.4.1.1466.115.121.1.48
+    :cvar LDAPTYPE_SUPPORTED_ALGORITHM: Supported Algorithm,
+        corresponding to OID 1.3.6.1.4.1.1466.115.121.1.49
+    :cvar LDAPTYPE_TELEPHONE_NUMBER: Telephone Number, corresponding to
+        OID 1.3.6.1.4.1.1466.115.121.1.50
+    :cvar LDAPTYPE_TELEX_TERMINAL_ID: Teletex Terminal Identifier,
+        corresponding to OID 1.3.6.1.4.1.1466.115.121.1.51
+    :cvar LDAPTYPE_TELEX_NUMBER: Telex Number, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.52
+    :cvar LDAPTYPE_UTC_TIME: UTC Time, corresponding to OID
+        1.3.6.1.4.1.1466.115.121.1.53
+    :cvar LDAPTYPE_TIMESTAMP: The data is of a time stamp in seconds.
+    :cvar LDAPTYPE_EMAIL: The data is of an e-mail message.
+    :cvar VALUE: The empty string value is permitted here to allow for
+        detailed error reporting.
+    """
+
+    LDAPTYPE_ACI_ITEM = "LDAPTYPE_ACI_ITEM"
+    LDAPTYPE_ACCESS_POINT = "LDAPTYPE_ACCESS_POINT"
+    LDAPTYPE_ATTRIBUTE_TYPE_DESCRIP_STRING = (
+        "LDAPTYPE_ATTRIBUTE_TYPE_DESCRIP_STRING"
+    )
+    LDAPTYPE_AUDIO = "LDAPTYPE_AUDIO"
+    LDAPTYPE_BINARY = "LDAPTYPE_BINARY"
+    LDAPTYPE_BIT_STRING = "LDAPTYPE_BIT_STRING"
+    LDAPTYPE_BOOLEAN = "LDAPTYPE_BOOLEAN"
+    LDAPTYPE_CERTIFICATE = "LDAPTYPE_CERTIFICATE"
+    LDAPTYPE_CERTIFICATE_LIST = "LDAPTYPE_CERTIFICATE_LIST"
+    LDAPTYPE_CERTIFICATE_PAIR = "LDAPTYPE_CERTIFICATE_PAIR"
+    LDAPTYPE_COUNTRY_STRING = "LDAPTYPE_COUNTRY_STRING"
+    LDAPTYPE_DN_STRING = "LDAPTYPE_DN_STRING"
+    LDAPTYPE_DATA_QUALITY_SYNTAX = "LDAPTYPE_DATA_QUALITY_SYNTAX"
+    LDAPTYPE_DELIVERY_METHOD = "LDAPTYPE_DELIVERY_METHOD"
+    LDAPTYPE_DIRECTORY_STRING = "LDAPTYPE_DIRECTORY_STRING"
+    LDAPTYPE_DIR_CONTENT_RULE_DESCRIPTION = (
+        "LDAPTYPE_DIR_CONTENT_RULE_DESCRIPTION"
+    )
+    LDAPTYPE_DIT_STRUCTURE_RULE_DESCRIPTION = (
+        "LDAPTYPE_DIT_STRUCTURE_RULE_DESCRIPTION"
+    )
+    LDAPTYPE_DL_SUBMIT_PERMISSION = "LDAPTYPE_DL_SUBMIT_PERMISSION"
+    LDAPTYPE_DSA_QUALITY_SYNTAX = "LDAPTYPE_DSA_QUALITY_SYNTAX"
+    LDAPTYPE_DSE_TYPE = "LDAPTYPE_DSE_TYPE"
+    LDAPTYPE_ENHANCED_GUIDE = "LDAPTYPE_ENHANCED_GUIDE"
+    LDAPTYPE_FAX_TEL_NUMBER = "LDAPTYPE_FAX_TEL_NUMBER"
+    LDAPTYPE_FAX = "LDAPTYPE_FAX"
+    LDAPTYPE_GENERALIZED_TIME = "LDAPTYPE_GENERALIZED_TIME"
+    LDAPTYPE_GUIDE = "LDAPTYPE_GUIDE"
+    LDAPTYPE_IA5_STRING = "LDAPTYPE_IA5_STRING"
+    LDAPTYPE_INTEGER = "LDAPTYPE_INTEGER"
+    LDAPTYPE_JPEG = "LDAPTYPE_JPEG"
+    LDAPTYPE_LDAP_SYNTAX_DESCRIPTION = "LDAPTYPE_LDAP_SYNTAX_DESCRIPTION"
+    LDAPTYPE_LDAP_SCHEMA_DEFINITION = "LDAPTYPE_LDAP_SCHEMA_DEFINITION"
+    LDAPTYPE_LDAP_SCHEMA_DESCRIPTION = "LDAPTYPE_LDAP_SCHEMA_DESCRIPTION"
+    LDAPTYPE_MASTER_AND_SHADOW_ACCESS_POINTS = (
+        "LDAPTYPE_MASTER_AND_SHADOW_ACCESS_POINTS"
+    )
+    LDAPTYPE_MATCHING_RULE_DESCRIPTION = "LDAPTYPE_MATCHING_RULE_DESCRIPTION"
+    LDAPTYPE_MATCHING_RULE_USE_DESCRIPTION = (
+        "LDAPTYPE_MATCHING_RULE_USE_DESCRIPTION"
+    )
+    LDAPTYPE_MAIL_PREFERENCE = "LDAPTYPE_MAIL_PREFERENCE"
+    LDAPTYPE_MHS_OR_ADDRESS = "LDAPTYPE_MHS_OR_ADDRESS"
+    LDAPTYPE_MODIFY_RIGHTS = "LDAPTYPE_MODIFY_RIGHTS"
+    LDAPTYPE_NAME_AND_OPTIONAL_UID = "LDAPTYPE_NAME_AND_OPTIONAL_UID"
+    LDAPTYPE_NAME_FORM_DESCRIPTION = "LDAPTYPE_NAME_FORM_DESCRIPTION"
+    LDAPTYPE_NUMERIC_STRING = "LDAPTYPE_NUMERIC_STRING"
+    LDAPTYPE_OBJECT_CLASS_DESCRIP_STRING = (
+        "LDAPTYPE_OBJECT_CLASS_DESCRIP_STRING"
+    )
+    LDAPTYPE_OCTET_STRING = "LDAPTYPE_OCTET_STRING"
+    LDAPTYPE_OID = "LDAPTYPE_OID"
+    LDAPTYPE_MAILBOX = "LDAPTYPE_MAILBOX"
+    LDAPTYPE_POSTAL_ADDRESS = "LDAPTYPE_POSTAL_ADDRESS"
+    LDAPTYPE_PROTOCOL_INFORMATION = "LDAPTYPE_PROTOCOL_INFORMATION"
+    LDAPTYPE_PRESENTATION_ADDRESS = "LDAPTYPE_PRESENTATION_ADDRESS"
+    LDAPTYPE_PRINTABLE_STRING = "LDAPTYPE_PRINTABLE_STRING"
+    LDAPTYPE_SUBSTRING_ASSERTION = "LDAPTYPE_SUBSTRING_ASSERTION"
+    LDAPTYPE_SUBTREE_SPECIFICATION = "LDAPTYPE_SUBTREE_SPECIFICATION"
+    LDAPTYPE_SUPPLIER_INFORMATION = "LDAPTYPE_SUPPLIER_INFORMATION"
+    LDAPTYPE_SUPPLIER_OR_CONSUMER = "LDAPTYPE_SUPPLIER_OR_CONSUMER"
+    LDAPTYPE_SUPPLIER_AND_CONSUMER = "LDAPTYPE_SUPPLIER_AND_CONSUMER"
+    LDAPTYPE_SUPPORTED_ALGORITHM = "LDAPTYPE_SUPPORTED_ALGORITHM"
+    LDAPTYPE_TELEPHONE_NUMBER = "LDAPTYPE_TELEPHONE_NUMBER"
+    LDAPTYPE_TELEX_TERMINAL_ID = "LDAPTYPE_TELEX_TERMINAL_ID"
+    LDAPTYPE_TELEX_NUMBER = "LDAPTYPE_TELEX_NUMBER"
+    LDAPTYPE_UTC_TIME = "LDAPTYPE_UTC_TIME"
+    LDAPTYPE_TIMESTAMP = "LDAPTYPE_TIMESTAMP"
+    LDAPTYPE_EMAIL = "LDAPTYPE_EMAIL"
+    VALUE = ""
