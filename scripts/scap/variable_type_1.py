@@ -50,6 +50,7 @@ class VariableType1:
         print(f"Variable implementation test! {self}")
         # This is probably not where we should be putting the generation code
         # Since this is the generic type
+        # Depends on how the data is stored here
 
     def pretty_name(self):
         return self.id.replace("oval:ssg-variable_","").replace("oval:ssg-var_","").replace(":var:1","obj").replace(":","").replace("-","_").upper()
