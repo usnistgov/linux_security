@@ -1,0 +1,49 @@
+id: os_apt_conf_disallow_unauthenticated
+title: Disable unauthenticated repositories in APT configuration
+discussion: |
+  Repositories hosts all packages that will be intsalled on the system during update.
+      If a repository is not authenticated, the associated packages can't be trusted,
+      and then should not be installed localy.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-003992
+  800-53r4:
+    - N/A
+  srg:
+    - SRG-OS-000366-GPOS-00153
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - N/A
+severity: unknown
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010438
+      check:
+        - N/A
+      fix:
+        - N/A
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-214010
+      check:
+        - N/A
+      fix:
+        - N/A

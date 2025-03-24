@@ -1,0 +1,165 @@
+id: audit_auditd_data_retention_space_left_percentage
+title: Configure auditd space_left on Low Disk Space
+discussion: |
+  Notifying administrators of an impending disk space problem may allow them to
+  take corrective action prior to any disruption.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-001855
+  800-53r4:
+    - AU-5(1)
+    - AU-5(2)
+    - AU-5(4)
+    - AU-5(b)
+    - CM-6(a)
+  srg:
+    - SRG-OS-000343-GPOS-00134
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-88619-2
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q audit && rpm --quiet -q kernel; then
+
+        var_auditd_space_left_percentage=''
+
+
+        grep -q "^space_left[[:space:]]*=.*$" /etc/audit/auditd.conf && \
+          sed -i "s/^space_left[[:space:]]*=.*$/space_left = $var_auditd_space_left_percentage%/g" /etc/audit/auditd.conf || \
+          echo "space_left = $var_auditd_space_left_percentage%" >> /etc/audit/auditd.conf
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-86055-1
+        disa_stig:
+          - RHEL-08-030730
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q audit && rpm --quiet -q kernel; then
+
+        var_auditd_space_left_percentage=''
+
+
+        grep -q "^space_left[[:space:]]*=.*$" /etc/audit/auditd.conf && \
+          sed -i "s/^space_left[[:space:]]*=.*$/space_left = $var_auditd_space_left_percentage%/g" /etc/audit/auditd.conf || \
+          echo "space_left = $var_auditd_space_left_percentage%" >> /etc/audit/auditd.conf
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-87746-4
+        disa_stig:
+          - RHEL-09-653035
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q audit && rpm --quiet -q kernel; then
+
+        var_auditd_space_left_percentage=''
+
+
+        grep -q "^space_left[[:space:]]*=.*$" /etc/audit/auditd.conf && \
+          sed -i "s/^space_left[[:space:]]*=.*$/space_left = $var_auditd_space_left_percentage%/g" /etc/audit/auditd.conf || \
+          echo "space_left = $var_auditd_space_left_percentage%" >> /etc/audit/auditd.conf
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010217
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q '^installed'; then
+
+        var_auditd_space_left_percentage=''
+
+
+        grep -q "^space_left[[:space:]]*=.*$" /etc/audit/auditd.conf && \
+          sed -i "s/^space_left[[:space:]]*=.*$/space_left = $var_auditd_space_left_percentage%/g" /etc/audit/auditd.conf || \
+          echo "space_left = $var_auditd_space_left_percentage%" >> /etc/audit/auditd.conf
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-653040
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q '^installed'; then
+
+        var_auditd_space_left_percentage=''
+
+
+        grep -q "^space_left[[:space:]]*=.*$" /etc/audit/auditd.conf && \
+          sed -i "s/^space_left[[:space:]]*=.*$/space_left = $var_auditd_space_left_percentage%/g" /etc/audit/auditd.conf || \
+          echo "space_left = $var_auditd_space_left_percentage%" >> /etc/audit/auditd.conf
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

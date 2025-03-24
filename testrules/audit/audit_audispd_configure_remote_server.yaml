@@ -1,0 +1,237 @@
+id: audit_audispd_configure_remote_server
+title: Configure audispd Plugin To Send Logs To Remote Server
+discussion: |
+  Information stored in one location is vulnerable to accidental or incidental
+  deletion or alteration.Off-loading is a common process in information systems
+  with limited audit storage capacity.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-001851
+  800-53r4:
+    - N/A
+  srg:
+    - SRG-OS-000342-GPOS-00133
+    - SRG-OS-000479-GPOS-00224
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - N/A
+severity: medium
+os_specifics:
+  rhel:
+    '8':
+      references:
+        cce:
+          - CCE-80925-1
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q audit && rpm --quiet -q kernel; then
+
+        var_audispd_remote_server=''
+
+
+        AUDITCONFIG=/etc/audit/audisp-remote.conf
+
+
+
+        if [ -e "$AUDITCONFIG" ] ; then
+
+            LC_ALL=C sed -i "/^\s*remote_server\s*=\s*/Id" "$AUDITCONFIG"
+        else
+            printf '%s\n' "Path '$AUDITCONFIG' wasn't found on this system. Refusing to continue." >&2
+            return 1
+        fi
+        # make sure file has newline at the end
+        sed -i -e '$a\' "$AUDITCONFIG"
+
+        cp "$AUDITCONFIG" "$AUDITCONFIG.bak"
+        # Insert at the end of the file
+        printf '%s\n' "remote_server = $var_audispd_remote_server" >> "$AUDITCONFIG"
+        # Clean up after ourselves.
+        rm "$AUDITCONFIG.bak"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-89900-5
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q audit && rpm --quiet -q kernel; then
+
+        var_audispd_remote_server=''
+
+
+        AUDITCONFIG=/etc/audit/audisp-remote.conf
+
+
+
+        if [ -e "$AUDITCONFIG" ] ; then
+
+            LC_ALL=C sed -i "/^\s*remote_server\s*=\s*/Id" "$AUDITCONFIG"
+        else
+            printf '%s\n' "Path '$AUDITCONFIG' wasn't found on this system. Refusing to continue." >&2
+            return 1
+        fi
+        # make sure file has newline at the end
+        sed -i -e '$a\' "$AUDITCONFIG"
+
+        cp "$AUDITCONFIG" "$AUDITCONFIG.bak"
+        # Insert at the end of the file
+        printf '%s\n' "remote_server = $var_audispd_remote_server" >> "$AUDITCONFIG"
+        # Clean up after ourselves.
+        rm "$AUDITCONFIG.bak"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010216
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q '^installed'; then
+
+        var_audispd_remote_server=''
+
+
+        AUDITCONFIG=/etc/audisp/audisp-remote.conf
+
+
+        AUREMOTECONFIG=/etc/audisp/plugins.d/au-remote.conf
+
+        if [ -e "$AUREMOTECONFIG" ] ; then
+
+            LC_ALL=C sed -i "/^\s*active\s*=\s*/Id" "$AUREMOTECONFIG"
+        else
+            printf '%s\n' "Path '$AUREMOTECONFIG' wasn't found on this system. Refusing to continue." >&2
+            return 1
+        fi
+        # make sure file has newline at the end
+        sed -i -e '$a\' "$AUREMOTECONFIG"
+
+        cp "$AUREMOTECONFIG" "$AUREMOTECONFIG.bak"
+        # Insert at the end of the file
+        printf '%s\n' "active = yes" >> "$AUREMOTECONFIG"
+        # Clean up after ourselves.
+        rm "$AUREMOTECONFIG.bak"
+
+
+        if [ -e "$AUDITCONFIG" ] ; then
+
+            LC_ALL=C sed -i "/^\s*remote_server\s*=\s*/Id" "$AUDITCONFIG"
+        else
+            printf '%s\n' "Path '$AUDITCONFIG' wasn't found on this system. Refusing to continue." >&2
+            return 1
+        fi
+        # make sure file has newline at the end
+        sed -i -e '$a\' "$AUDITCONFIG"
+
+        cp "$AUDITCONFIG" "$AUDITCONFIG.bak"
+        # Insert at the end of the file
+        printf '%s\n' "remote_server = $var_audispd_remote_server" >> "$AUDITCONFIG"
+        # Clean up after ourselves.
+        rm "$AUDITCONFIG.bak"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-653020
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q '^installed'; then
+
+        var_audispd_remote_server=''
+
+
+        AUDITCONFIG=/etc/audit/audisp-remote.conf
+
+
+        AUREMOTECONFIG=/etc/audit/plugins.d/au-remote.conf
+
+        if [ -e "$AUREMOTECONFIG" ] ; then
+
+            LC_ALL=C sed -i "/^\s*active\s*=\s*/Id" "$AUREMOTECONFIG"
+        else
+            printf '%s\n' "Path '$AUREMOTECONFIG' wasn't found on this system. Refusing to continue." >&2
+            return 1
+        fi
+        # make sure file has newline at the end
+        sed -i -e '$a\' "$AUREMOTECONFIG"
+
+        cp "$AUREMOTECONFIG" "$AUREMOTECONFIG.bak"
+        # Insert at the end of the file
+        printf '%s\n' "active = yes" >> "$AUREMOTECONFIG"
+        # Clean up after ourselves.
+        rm "$AUREMOTECONFIG.bak"
+
+
+        if [ -e "$AUDITCONFIG" ] ; then
+
+            LC_ALL=C sed -i "/^\s*remote_server\s*=\s*/Id" "$AUDITCONFIG"
+        else
+            printf '%s\n' "Path '$AUDITCONFIG' wasn't found on this system. Refusing to continue." >&2
+            return 1
+        fi
+        # make sure file has newline at the end
+        sed -i -e '$a\' "$AUDITCONFIG"
+
+        cp "$AUDITCONFIG" "$AUDITCONFIG.bak"
+        # Insert at the end of the file
+        printf '%s\n' "remote_server = $var_audispd_remote_server" >> "$AUDITCONFIG"
+        # Clean up after ourselves.
+        rm "$AUDITCONFIG.bak"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

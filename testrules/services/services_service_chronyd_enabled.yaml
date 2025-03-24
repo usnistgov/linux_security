@@ -1,0 +1,195 @@
+id: services_service_chronyd_enabled
+title: The Chronyd service is enabled
+discussion: |
+  If chrony is in use on the system proper configuration is vital to ensuring time
+  synchronization is working properly.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-004923
+  800-53r4:
+    - N/A
+  srg:
+    - SRG-OS-000355-GPOS-00143
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-90511-7
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel && { rpm --quiet -q chrony; }; then
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+        "$SYSTEMCTL_EXEC" unmask 'chronyd.service'
+        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+          "$SYSTEMCTL_EXEC" start 'chronyd.service'
+        fi
+        "$SYSTEMCTL_EXEC" enable 'chronyd.service'
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-82875-6
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel && { rpm --quiet -q chrony; }; then
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+        "$SYSTEMCTL_EXEC" unmask 'chronyd.service'
+        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+          "$SYSTEMCTL_EXEC" start 'chronyd.service'
+        fi
+        "$SYSTEMCTL_EXEC" enable 'chronyd.service'
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-84217-9
+        disa_stig:
+          - RHEL-09-252015
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel && { rpm --quiet -q chrony; }; then
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+        "$SYSTEMCTL_EXEC" unmask 'chronyd.service'
+        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+          "$SYSTEMCTL_EXEC" start 'chronyd.service'
+        fi
+        "$SYSTEMCTL_EXEC" enable 'chronyd.service'
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && { dpkg-query --show --showformat='${db:Status-Status}\n' 'chrony' 2>/dev/null | grep -q '^installed'; }; then
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+        "$SYSTEMCTL_EXEC" unmask 'chrony.service'
+        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+          "$SYSTEMCTL_EXEC" start 'chrony.service'
+        fi
+        "$SYSTEMCTL_EXEC" enable 'chrony.service'
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && { dpkg-query --show --showformat='${db:Status-Status}\n' 'chrony' 2>/dev/null | grep -q '^installed'; }; then
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+        "$SYSTEMCTL_EXEC" unmask 'chrony.service'
+        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+          "$SYSTEMCTL_EXEC" start 'chrony.service'
+        fi
+        "$SYSTEMCTL_EXEC" enable 'chrony.service'
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && { dpkg-query --show --showformat='${db:Status-Status}\n' 'chrony' 2>/dev/null | grep -q '^installed'; }; then
+
+        var_timesync_service=''
+
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+
+        if [ $var_timesync_service == chronyd ]; then
+          "$SYSTEMCTL_EXEC" unmask 'chrony.service'
+          "$SYSTEMCTL_EXEC" start 'chrony.service'
+          "$SYSTEMCTL_EXEC" enable 'chrony.service'
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

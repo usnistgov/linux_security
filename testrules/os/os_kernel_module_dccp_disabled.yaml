@@ -1,0 +1,192 @@
+id: os_kernel_module_dccp_disabled
+title: Disable DCCP Support
+discussion: |
+  Disabling DCCP protects
+  the system against exploitation of any flaws in its implementation.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-001958
+  800-53r4:
+    - CM-6(a)
+    - CM-7(a)
+    - CM-7(b)
+  srg:
+    - SRG-OS-000096-GPOS-00050
+    - SRG-OS-000378-GPOS-00163
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '8':
+      references:
+        cce:
+          - CCE-80833-7
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        if LC_ALL=C grep -q -m 1 "^install dccp" /etc/modprobe.d/dccp.conf ; then
+
+           sed -i 's#^install dccp.*#install dccp /bin/false#g' /etc/modprobe.d/dccp.conf
+        else
+           echo -e "\n# Disable per security requirements" >> /etc/modprobe.d/dccp.conf
+           echo "install dccp /bin/false" >> /etc/modprobe.d/dccp.conf
+        fi
+
+        if ! LC_ALL=C grep -q -m 1 "^blacklist dccp$" /etc/modprobe.d/dccp.conf ; then
+           echo "blacklist dccp" >> /etc/modprobe.d/dccp.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-84136-1
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        if LC_ALL=C grep -q -m 1 "^install dccp" /etc/modprobe.d/dccp.conf ; then
+
+           sed -i 's#^install dccp.*#install dccp /bin/false#g' /etc/modprobe.d/dccp.conf
+        else
+           echo -e "\n# Disable per security requirements" >> /etc/modprobe.d/dccp.conf
+           echo "install dccp /bin/false" >> /etc/modprobe.d/dccp.conf
+        fi
+
+        if ! LC_ALL=C grep -q -m 1 "^blacklist dccp$" /etc/modprobe.d/dccp.conf ; then
+           echo "blacklist dccp" >> /etc/modprobe.d/dccp.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        if LC_ALL=C grep -q -m 1 "^install dccp" /etc/modprobe.d/dccp.conf ; then
+
+           sed -i 's#^install dccp.*#install dccp /bin/false#g' /etc/modprobe.d/dccp.conf
+        else
+           echo -e "\n# Disable per security requirements" >> /etc/modprobe.d/dccp.conf
+           echo "install dccp /bin/false" >> /etc/modprobe.d/dccp.conf
+        fi
+
+        if ! LC_ALL=C grep -q -m 1 "^blacklist dccp$" /etc/modprobe.d/dccp.conf ; then
+           echo "blacklist dccp" >> /etc/modprobe.d/dccp.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        if LC_ALL=C grep -q -m 1 "^install dccp" /etc/modprobe.d/dccp.conf ; then
+
+           sed -i 's#^install dccp.*#install dccp /bin/false#g' /etc/modprobe.d/dccp.conf
+        else
+           echo -e "\n# Disable per security requirements" >> /etc/modprobe.d/dccp.conf
+           echo "install dccp /bin/false" >> /etc/modprobe.d/dccp.conf
+        fi
+
+        if ! LC_ALL=C grep -q -m 1 "^blacklist dccp$" /etc/modprobe.d/dccp.conf ; then
+           echo "blacklist dccp" >> /etc/modprobe.d/dccp.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        if LC_ALL=C grep -q -m 1 "^install dccp" /etc/modprobe.d/dccp.conf ; then
+
+           sed -i 's#^install dccp.*#install dccp /bin/false#g' /etc/modprobe.d/dccp.conf
+        else
+           echo -e "\n# Disable per security requirements" >> /etc/modprobe.d/dccp.conf
+           echo "install dccp /bin/false" >> /etc/modprobe.d/dccp.conf
+        fi
+
+        if ! LC_ALL=C grep -q -m 1 "^blacklist dccp$" /etc/modprobe.d/dccp.conf ; then
+           echo "blacklist dccp" >> /etc/modprobe.d/dccp.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

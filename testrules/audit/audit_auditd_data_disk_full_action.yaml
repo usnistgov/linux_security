@@ -1,0 +1,309 @@
+id: audit_auditd_data_disk_full_action
+title: Configure auditd Disk Full Action when Disk Space Is Full
+discussion: |
+  Taking appropriate action in case of a filled audit storage volume will minimize
+  the possibility of losing audit records.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000140
+  800-53r4:
+    - AU-5(1)
+    - AU-5(2)
+    - AU-5(4)
+    - AU-5(b)
+    - CM-6(a)
+  srg:
+    - SRG-OS-000047-GPOS-00023
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-88198-7
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q audit && rpm --quiet -q kernel; then
+
+        var_auditd_disk_full_action=''
+
+
+        var_auditd_disk_full_action="$(echo $var_auditd_disk_full_action | cut -d \| -f 1)"
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^disk_full_action")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "$var_auditd_disk_full_action"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^disk_full_action\\>" "/etc/audit/auditd.conf"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^disk_full_action\\>.*/$escaped_formatted_output/gi" "/etc/audit/auditd.conf"
+        else
+            if [[ -s "/etc/audit/auditd.conf" ]] && [[ -n "$(tail -c 1 -- "/etc/audit/auditd.conf" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/audit/auditd.conf"
+            fi
+            cce="CCE-88198-7"
+            printf '# Per %s: Set %s in %s\n' "${cce}" "${formatted_output}" "/etc/audit/auditd.conf" >> "/etc/audit/auditd.conf"
+            printf '%s\n' "$formatted_output" >> "/etc/audit/auditd.conf"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-84045-4
+        disa_stig:
+          - RHEL-08-030060
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q audit && rpm --quiet -q kernel; then
+
+        var_auditd_disk_full_action=''
+
+
+        var_auditd_disk_full_action="$(echo $var_auditd_disk_full_action | cut -d \| -f 1)"
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^disk_full_action")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "$var_auditd_disk_full_action"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^disk_full_action\\>" "/etc/audit/auditd.conf"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^disk_full_action\\>.*/$escaped_formatted_output/gi" "/etc/audit/auditd.conf"
+        else
+            if [[ -s "/etc/audit/auditd.conf" ]] && [[ -n "$(tail -c 1 -- "/etc/audit/auditd.conf" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/audit/auditd.conf"
+            fi
+            cce="CCE-84045-4"
+            printf '# Per %s: Set %s in %s\n' "${cce}" "${formatted_output}" "/etc/audit/auditd.conf" >> "/etc/audit/auditd.conf"
+            printf '%s\n' "$formatted_output" >> "/etc/audit/auditd.conf"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-83684-1
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q audit && rpm --quiet -q kernel; then
+
+        var_auditd_disk_full_action=''
+
+
+        var_auditd_disk_full_action="$(echo $var_auditd_disk_full_action | cut -d \| -f 1)"
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^disk_full_action")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "$var_auditd_disk_full_action"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^disk_full_action\\>" "/etc/audit/auditd.conf"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^disk_full_action\\>.*/$escaped_formatted_output/gi" "/etc/audit/auditd.conf"
+        else
+            if [[ -s "/etc/audit/auditd.conf" ]] && [[ -n "$(tail -c 1 -- "/etc/audit/auditd.conf" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/audit/auditd.conf"
+            fi
+            cce="CCE-83684-1"
+            printf '# Per %s: Set %s in %s\n' "${cce}" "${formatted_output}" "/etc/audit/auditd.conf" >> "/etc/audit/auditd.conf"
+            printf '%s\n' "$formatted_output" >> "/etc/audit/auditd.conf"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010118
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q '^installed'; then
+
+        var_auditd_disk_full_action=''
+
+
+        var_auditd_disk_full_action="$(echo $var_auditd_disk_full_action | cut -d \| -f 1)"
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^disk_full_action")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "$var_auditd_disk_full_action"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^disk_full_action\\>" "/etc/audit/auditd.conf"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^disk_full_action\\>.*/$escaped_formatted_output/gi" "/etc/audit/auditd.conf"
+        else
+            if [[ -s "/etc/audit/auditd.conf" ]] && [[ -n "$(tail -c 1 -- "/etc/audit/auditd.conf" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/audit/auditd.conf"
+            fi
+            printf '%s\n' "$formatted_output" >> "/etc/audit/auditd.conf"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-653030
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q '^installed'; then
+
+        var_auditd_disk_full_action=''
+
+
+        var_auditd_disk_full_action="$(echo $var_auditd_disk_full_action | cut -d \| -f 1)"
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^disk_full_action")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "$var_auditd_disk_full_action"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^disk_full_action\\>" "/etc/audit/auditd.conf"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^disk_full_action\\>.*/$escaped_formatted_output/gi" "/etc/audit/auditd.conf"
+        else
+            if [[ -s "/etc/audit/auditd.conf" ]] && [[ -n "$(tail -c 1 -- "/etc/audit/auditd.conf" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/audit/auditd.conf"
+            fi
+            printf '%s\n' "$formatted_output" >> "/etc/audit/auditd.conf"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q '^installed'; then
+
+        var_auditd_disk_full_action=''
+
+
+        var_auditd_disk_full_action="$(echo $var_auditd_disk_full_action | cut -d \| -f 1)"
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^disk_full_action")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "$var_auditd_disk_full_action"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^disk_full_action\\>" "/etc/audit/auditd.conf"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^disk_full_action\\>.*/$escaped_formatted_output/gi" "/etc/audit/auditd.conf"
+        else
+            if [[ -s "/etc/audit/auditd.conf" ]] && [[ -n "$(tail -c 1 -- "/etc/audit/auditd.conf" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/audit/auditd.conf"
+            fi
+            printf '%s\n' "$formatted_output" >> "/etc/audit/auditd.conf"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

@@ -1,0 +1,145 @@
+id: services_service_ntp_enabled
+title: Enable the NTP Daemon
+discussion: |
+  Enabling the ntp service ensures that the ntp
+  service will be running and that the system will synchronize its time to
+  any servers specified. This is important whether the system is configured to be
+  a client (and synchronize only its own clock) or it is also acting as an NTP
+  server to other systems.  Synchronizing time is essential for authentication
+  services such as Kerberos, but it is also important for maintaining accurate
+  logs and auditing possible security breaches.
+
+
+  The NTP daemon offers all of the functionality of ntpdate, which is now
+  deprecated.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000160
+  800-53r4:
+    - AU-8(1)(a)
+    - CM-6(a)
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - N/A
+severity: high
+os_specifics:
+  rhel:
+    '8':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel && { rpm --quiet -q ntp; }; then
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+        "$SYSTEMCTL_EXEC" unmask 'ntp.service'
+        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+          "$SYSTEMCTL_EXEC" start 'ntp.service'
+        fi
+        "$SYSTEMCTL_EXEC" enable 'ntp.service'
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel && { rpm --quiet -q ntp; }; then
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+        "$SYSTEMCTL_EXEC" unmask 'ntp.service'
+        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+          "$SYSTEMCTL_EXEC" start 'ntp.service'
+        fi
+        "$SYSTEMCTL_EXEC" enable 'ntp.service'
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && { dpkg-query --show --showformat='${db:Status-Status}\n' 'ntp' 2>/dev/null | grep -q '^installed'; }; then
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+        "$SYSTEMCTL_EXEC" unmask 'ntp.service'
+        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+          "$SYSTEMCTL_EXEC" start 'ntp.service'
+        fi
+        "$SYSTEMCTL_EXEC" enable 'ntp.service'
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && { dpkg-query --show --showformat='${db:Status-Status}\n' 'ntp' 2>/dev/null | grep -q '^installed'; }; then
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+        "$SYSTEMCTL_EXEC" unmask 'ntp.service'
+        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+          "$SYSTEMCTL_EXEC" start 'ntp.service'
+        fi
+        "$SYSTEMCTL_EXEC" enable 'ntp.service'
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

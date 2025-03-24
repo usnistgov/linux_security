@@ -1,0 +1,54 @@
+id: networking_ufw_rate_limit
+title: ufw Must rate-limit network interfaces
+discussion: |
+  This requirement addresses the configuration of the operating system to
+  mitigate the impact of DoS attacks that have occurred or are ongoing on
+  system availability. For each system, known and potential DoS attacks
+  must be identified and solutions for each type implemented. A variety
+  of technologies exist to limit or, in some cases, eliminate the effects
+  of DoS attacks (e.g., limiting processes or establishing memory
+  partitions). Employing increased capacity and bandwidth, combined with
+  service redundancy, may reduce the susceptibility to some DoS attacks.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-002385
+  800-53r4:
+    - N/A
+  srg:
+    - SRG-OS-000420-GPOS-00186
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - N/A
+severity: medium
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010446
+      check:
+        - N/A
+      fix:
+        - N/A
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-251025
+      check:
+        - N/A
+      fix:
+        - N/A

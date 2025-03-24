@@ -1,0 +1,101 @@
+id: services_chronyd_sync_clock
+title: Synchronize internal information system clocks
+discussion: |
+  Inaccurate time stamps make it more difficult to correlate events and
+  can lead to an inaccurate analysis. Determining the correct time a
+  particular event occurred on a system is critical when conducting
+  forensic analysis and investigating system events.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-002046
+    - CCI-004926
+  800-53r4:
+    - N/A
+  srg:
+    - SRG-OS-000356-GPOS-00144
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - N/A
+severity: medium
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010436
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && { dpkg-query --show --showformat='${db:Status-Status}\n' 'chrony' 2>/dev/null | grep -q '^installed'; }; then
+
+        if [ -e "/etc/chrony/chrony.conf" ] ; then
+
+            LC_ALL=C sed -i "/^\s*makestep /Id" "/etc/chrony/chrony.conf"
+        else
+            touch "/etc/chrony/chrony.conf"
+        fi
+        # make sure file has newline at the end
+        sed -i -e '$a\' "/etc/chrony/chrony.conf"
+
+        cp "/etc/chrony/chrony.conf" "/etc/chrony/chrony.conf.bak"
+        # Insert at the end of the file
+        printf '%s\n' "makestep 1 -1" >> "/etc/chrony/chrony.conf"
+        # Clean up after ourselves.
+        rm "/etc/chrony/chrony.conf.bak"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-252015
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && { dpkg-query --show --showformat='${db:Status-Status}\n' 'chrony' 2>/dev/null | grep -q '^installed'; }; then
+
+        if [ -e "/etc/chrony/chrony.conf" ] ; then
+
+            LC_ALL=C sed -i "/^\s*makestep /Id" "/etc/chrony/chrony.conf"
+        else
+            touch "/etc/chrony/chrony.conf"
+        fi
+        # make sure file has newline at the end
+        sed -i -e '$a\' "/etc/chrony/chrony.conf"
+
+        cp "/etc/chrony/chrony.conf" "/etc/chrony/chrony.conf.bak"
+        # Insert at the end of the file
+        printf '%s\n' "makestep 1 1" >> "/etc/chrony/chrony.conf"
+        # Clean up after ourselves.
+        rm "/etc/chrony/chrony.conf.bak"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

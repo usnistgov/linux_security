@@ -1,0 +1,165 @@
+id: services_package_net_snmp_removed
+title: Uninstall net-snmp Package
+discussion: |
+  If there is no need to run SNMP server software,
+  removing the package provides a safeguard against its
+  activation.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r4:
+    - N/A
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: unknown
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-89193-7
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove net-snmp
+        #      from the system, and may remove any packages
+        #      that depend on net-snmp. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "net-snmp" ; then
+        dnf remove -y --noautoremove "net-snmp"
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-85980-1
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove net-snmp
+        #      from the system, and may remove any packages
+        #      that depend on net-snmp. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "net-snmp" ; then
+        yum remove -y "net-snmp"
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-85981-9
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove net-snmp
+        #      from the system, and may remove any packages
+        #      that depend on net-snmp. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "net-snmp" ; then
+        dnf remove -y --noautoremove "net-snmp"
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove snmp
+        #      from the system, and may remove any packages
+        #      that depend on snmp. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "snmp"
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove snmp
+        #      from the system, and may remove any packages
+        #      that depend on snmp. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "snmp"
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove snmpd
+        #      from the system, and may remove any packages
+        #      that depend on snmpd. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "snmpd"
+
+        ---

@@ -1,0 +1,92 @@
+id: os_accounts_pw_last_change_in_past
+title: Ensure all users last password change date is in the past
+discussion: |
+  If a user recorded password change date is in the future then they could
+  bypass any set password expiration.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r4:
+    - N/A
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-90359-1
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A
+    '8':
+      references:
+        cce:
+          - CCE-86525-3
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A
+    '9':
+      references:
+        cce:
+          - CCE-86526-1
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A

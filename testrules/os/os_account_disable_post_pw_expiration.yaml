@@ -1,0 +1,296 @@
+id: os_account_disable_post_pw_expiration
+title: Set Account Expiration Following Inactivity
+discussion: |
+  Inactive identifiers pose a risk to systems and applications because attackers may exploit an inactive identifier and potentially obtain undetected access to the system.
+  Disabling inactive accounts ensures that accounts which may not have been responsibly removed are not available to attackers who may have compromised their credentials.
+  Owners of inactive accounts will not notice if unauthorized access to their user account has been obtained.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-003627
+    - CCI-003628
+  800-53r4:
+    - AC-2(3)
+    - CM-6(a)
+    - IA-4(e)
+  srg:
+    - SRG-OS-000118-GPOS-00060
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-88966-7
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q shadow-utils; then
+
+        var_account_disable_post_pw_expiration=''
+
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^INACTIVE")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s=%s" "$stripped_key" "$var_account_disable_post_pw_expiration"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^INACTIVE\\>" "/etc/default/useradd"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^INACTIVE\\>.*/$escaped_formatted_output/gi" "/etc/default/useradd"
+        else
+            if [[ -s "/etc/default/useradd" ]] && [[ -n "$(tail -c 1 -- "/etc/default/useradd" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/default/useradd"
+            fi
+            cce="CCE-88966-7"
+            printf '# Per %s: Set %s in %s\n' "${cce}" "${formatted_output}" "/etc/default/useradd" >> "/etc/default/useradd"
+            printf '%s\n' "$formatted_output" >> "/etc/default/useradd"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-80954-1
+        disa_stig:
+          - RHEL-08-020260
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q shadow-utils; then
+
+        var_account_disable_post_pw_expiration=''
+
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^INACTIVE")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s=%s" "$stripped_key" "$var_account_disable_post_pw_expiration"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^INACTIVE\\>" "/etc/default/useradd"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^INACTIVE\\>.*/$escaped_formatted_output/gi" "/etc/default/useradd"
+        else
+            if [[ -s "/etc/default/useradd" ]] && [[ -n "$(tail -c 1 -- "/etc/default/useradd" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/default/useradd"
+            fi
+            cce="CCE-80954-1"
+            printf '# Per %s: Set %s in %s\n' "${cce}" "${formatted_output}" "/etc/default/useradd" >> "/etc/default/useradd"
+            printf '%s\n' "$formatted_output" >> "/etc/default/useradd"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-83627-0
+        disa_stig:
+          - RHEL-09-411050
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q shadow-utils; then
+
+        var_account_disable_post_pw_expiration=''
+
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^INACTIVE")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s=%s" "$stripped_key" "$var_account_disable_post_pw_expiration"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^INACTIVE\\>" "/etc/default/useradd"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^INACTIVE\\>.*/$escaped_formatted_output/gi" "/etc/default/useradd"
+        else
+            if [[ -s "/etc/default/useradd" ]] && [[ -n "$(tail -c 1 -- "/etc/default/useradd" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/default/useradd"
+            fi
+            cce="CCE-83627-0"
+            printf '# Per %s: Set %s in %s\n' "${cce}" "${formatted_output}" "/etc/default/useradd" >> "/etc/default/useradd"
+            printf '%s\n' "$formatted_output" >> "/etc/default/useradd"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010409
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'login' 2>/dev/null | grep -q '^installed'; then
+
+        var_account_disable_post_pw_expiration=''
+
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^INACTIVE")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s=%s" "$stripped_key" "$var_account_disable_post_pw_expiration"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^INACTIVE\\>" "/etc/default/useradd"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^INACTIVE\\>.*/$escaped_formatted_output/gi" "/etc/default/useradd"
+        else
+            if [[ -s "/etc/default/useradd" ]] && [[ -n "$(tail -c 1 -- "/etc/default/useradd" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/default/useradd"
+            fi
+            printf '%s\n' "$formatted_output" >> "/etc/default/useradd"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-411035
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'login' 2>/dev/null | grep -q '^installed'; then
+
+        var_account_disable_post_pw_expiration=''
+
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^INACTIVE")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s=%s" "$stripped_key" "$var_account_disable_post_pw_expiration"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^INACTIVE\\>" "/etc/default/useradd"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^INACTIVE\\>.*/$escaped_formatted_output/gi" "/etc/default/useradd"
+        else
+            if [[ -s "/etc/default/useradd" ]] && [[ -n "$(tail -c 1 -- "/etc/default/useradd" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/default/useradd"
+            fi
+            printf '%s\n' "$formatted_output" >> "/etc/default/useradd"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'login' 2>/dev/null | grep -q '^installed'; then
+
+        var_account_disable_post_pw_expiration=''
+
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^INACTIVE")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s=%s" "$stripped_key" "$var_account_disable_post_pw_expiration"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^INACTIVE\\>" "/etc/default/useradd"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^INACTIVE\\>.*/$escaped_formatted_output/gi" "/etc/default/useradd"
+        else
+            if [[ -s "/etc/default/useradd" ]] && [[ -n "$(tail -c 1 -- "/etc/default/useradd" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/default/useradd"
+            fi
+            printf '%s\n' "$formatted_output" >> "/etc/default/useradd"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

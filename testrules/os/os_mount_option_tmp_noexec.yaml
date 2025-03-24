@@ -1,0 +1,419 @@
+id: os_mount_option_tmp_noexec
+title: Add noexec Option to /tmp
+discussion: |
+  Allowing users to execute binaries from world-writable directories
+  such as /tmp should never be necessary in normal operation and
+  can expose the system to potential compromise.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-001764
+  800-53r4:
+    - AC-6
+    - AC-6(1)
+    - CM-6(a)
+    - CM-7(a)
+    - CM-7(b)
+    - MP-7
+  srg:
+    - SRG-OS-000368-GPOS-00154
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+  - 800-53r5_low
+  - 800-53r5_moderate
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-87095-6
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if ( ! ( { rpm --quiet -q kernel ;} && { rpm --quiet -q rpm-ostree ;} && { rpm --quiet -q bootc ;} && { ! rpm --quiet -q openshift-kubelet ;} ) && ! ( [ -f /.dockerenv ] || [ -f /run/.containerenv ] ) ) && { findmnt --kernel "/tmp" > /dev/null || findmnt --fstab "/tmp" > /dev/null; }; then
+
+        function perform_remediation {
+
+                # the mount point /tmp has to be defined in /etc/fstab
+                # before this remediation can be executed. In case it is not defined, the
+                # remediation aborts and no changes regarding the mount point are done.
+                mount_point_match_regexp="$(printf "^[[:space:]]*[^#].*[[:space:]]%s[[:space:]]" "/tmp")"
+
+            grep "$mount_point_match_regexp" -q /etc/fstab \
+                || { echo "The mount point '/tmp' is not even in /etc/fstab, so we can't set up mount options" >&2;
+                        echo "Not remediating, because there is no record of /tmp in /etc/fstab" >&2; return 1; }
+
+
+
+            mount_point_match_regexp="$(printf "^[[:space:]]*[^#].*[[:space:]]%s[[:space:]]" /tmp)"
+
+            # If the mount point is not in /etc/fstab, get previous mount options from /etc/mtab
+            if ! grep -q "$mount_point_match_regexp" /etc/fstab; then
+                # runtime opts without some automatic kernel/userspace-added defaults
+                previous_mount_opts=$(grep "$mount_point_match_regexp" /etc/mtab | head -1 |  awk '{print $4}' \
+                            | sed -E "s/(rw|defaults|seclabel|noexec)(,|$)//g;s/,$//")
+                [ "$previous_mount_opts" ] && previous_mount_opts+=","
+                # In iso9660 filesystems mtab could describe a "blocksize" value, this should be reflected in
+                # fstab as "block".  The next variable is to satisfy shellcheck SC2050.
+                fs_type=""
+                if [  "$fs_type" == "iso9660" ] ; then
+                    previous_mount_opts=$(sed 's/blocksize=/block=/' <<< "$previous_mount_opts")
+                fi
+                echo " /tmp  defaults,${previous_mount_opts}noexec 0 0" >> /etc/fstab
+            # If the mount_opt option is not already in the mount point's /etc/fstab entry, add it
+            elif ! grep "$mount_point_match_regexp" /etc/fstab | grep -q "noexec"; then
+                previous_mount_opts=$(grep "$mount_point_match_regexp" /etc/fstab | awk '{print $4}')
+                sed -i "s|\(${mount_point_match_regexp}.*${previous_mount_opts}\)|\1,noexec|" /etc/fstab
+            fi
+
+
+            if mkdir -p "/tmp"; then
+                if mountpoint -q "/tmp"; then
+                    mount -o remount --target "/tmp"
+                fi
+            fi
+        }
+
+        perform_remediation
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-82139-7
+        disa_stig:
+          - RHEL-08-040125
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if ( ! ( { rpm --quiet -q kernel ;} && { rpm --quiet -q rpm-ostree ;} && { rpm --quiet -q bootc ;} && { ! rpm --quiet -q openshift-kubelet ;} ) && ! ( [ -f /.dockerenv ] || [ -f /run/.containerenv ] ) ) && { findmnt --kernel "/tmp" > /dev/null || findmnt --fstab "/tmp" > /dev/null; }; then
+
+        function perform_remediation {
+
+                # the mount point /tmp has to be defined in /etc/fstab
+                # before this remediation can be executed. In case it is not defined, the
+                # remediation aborts and no changes regarding the mount point are done.
+                mount_point_match_regexp="$(printf "^[[:space:]]*[^#].*[[:space:]]%s[[:space:]]" "/tmp")"
+
+            grep "$mount_point_match_regexp" -q /etc/fstab \
+                || { echo "The mount point '/tmp' is not even in /etc/fstab, so we can't set up mount options" >&2;
+                        echo "Not remediating, because there is no record of /tmp in /etc/fstab" >&2; return 1; }
+
+
+
+            mount_point_match_regexp="$(printf "^[[:space:]]*[^#].*[[:space:]]%s[[:space:]]" /tmp)"
+
+            # If the mount point is not in /etc/fstab, get previous mount options from /etc/mtab
+            if ! grep -q "$mount_point_match_regexp" /etc/fstab; then
+                # runtime opts without some automatic kernel/userspace-added defaults
+                previous_mount_opts=$(grep "$mount_point_match_regexp" /etc/mtab | head -1 |  awk '{print $4}' \
+                            | sed -E "s/(rw|defaults|seclabel|noexec)(,|$)//g;s/,$//")
+                [ "$previous_mount_opts" ] && previous_mount_opts+=","
+                # In iso9660 filesystems mtab could describe a "blocksize" value, this should be reflected in
+                # fstab as "block".  The next variable is to satisfy shellcheck SC2050.
+                fs_type=""
+                if [  "$fs_type" == "iso9660" ] ; then
+                    previous_mount_opts=$(sed 's/blocksize=/block=/' <<< "$previous_mount_opts")
+                fi
+                echo " /tmp  defaults,${previous_mount_opts}noexec 0 0" >> /etc/fstab
+            # If the mount_opt option is not already in the mount point's /etc/fstab entry, add it
+            elif ! grep "$mount_point_match_regexp" /etc/fstab | grep -q "noexec"; then
+                previous_mount_opts=$(grep "$mount_point_match_regexp" /etc/fstab | awk '{print $4}')
+                sed -i "s|\(${mount_point_match_regexp}.*${previous_mount_opts}\)|\1,noexec|" /etc/fstab
+            fi
+
+
+            if mkdir -p "/tmp"; then
+                if mountpoint -q "/tmp"; then
+                    mount -o remount --target "/tmp"
+                fi
+            fi
+        }
+
+        perform_remediation
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-83885-4
+        disa_stig:
+          - RHEL-09-231130
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if ( ! ( { rpm --quiet -q kernel ;} && { rpm --quiet -q rpm-ostree ;} && { rpm --quiet -q bootc ;} && { ! rpm --quiet -q openshift-kubelet ;} ) && ! ( [ -f /.dockerenv ] || [ -f /run/.containerenv ] ) ) && { findmnt --kernel "/tmp" > /dev/null || findmnt --fstab "/tmp" > /dev/null; }; then
+
+        function perform_remediation {
+
+                # the mount point /tmp has to be defined in /etc/fstab
+                # before this remediation can be executed. In case it is not defined, the
+                # remediation aborts and no changes regarding the mount point are done.
+                mount_point_match_regexp="$(printf "^[[:space:]]*[^#].*[[:space:]]%s[[:space:]]" "/tmp")"
+
+            grep "$mount_point_match_regexp" -q /etc/fstab \
+                || { echo "The mount point '/tmp' is not even in /etc/fstab, so we can't set up mount options" >&2;
+                        echo "Not remediating, because there is no record of /tmp in /etc/fstab" >&2; return 1; }
+
+
+
+            mount_point_match_regexp="$(printf "^[[:space:]]*[^#].*[[:space:]]%s[[:space:]]" /tmp)"
+
+            # If the mount point is not in /etc/fstab, get previous mount options from /etc/mtab
+            if ! grep -q "$mount_point_match_regexp" /etc/fstab; then
+                # runtime opts without some automatic kernel/userspace-added defaults
+                previous_mount_opts=$(grep "$mount_point_match_regexp" /etc/mtab | head -1 |  awk '{print $4}' \
+                            | sed -E "s/(rw|defaults|seclabel|noexec)(,|$)//g;s/,$//")
+                [ "$previous_mount_opts" ] && previous_mount_opts+=","
+                # In iso9660 filesystems mtab could describe a "blocksize" value, this should be reflected in
+                # fstab as "block".  The next variable is to satisfy shellcheck SC2050.
+                fs_type=""
+                if [  "$fs_type" == "iso9660" ] ; then
+                    previous_mount_opts=$(sed 's/blocksize=/block=/' <<< "$previous_mount_opts")
+                fi
+                echo " /tmp  defaults,${previous_mount_opts}noexec 0 0" >> /etc/fstab
+            # If the mount_opt option is not already in the mount point's /etc/fstab entry, add it
+            elif ! grep "$mount_point_match_regexp" /etc/fstab | grep -q "noexec"; then
+                previous_mount_opts=$(grep "$mount_point_match_regexp" /etc/fstab | awk '{print $4}')
+                sed -i "s|\(${mount_point_match_regexp}.*${previous_mount_opts}\)|\1,noexec|" /etc/fstab
+            fi
+
+
+            if mkdir -p "/tmp"; then
+                if mountpoint -q "/tmp"; then
+                    mount -o remount --target "/tmp"
+                fi
+            fi
+        }
+
+        perform_remediation
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if ! ( [ -f /.dockerenv ] || [ -f /run/.containerenv ] ) && { findmnt --kernel "/tmp" > /dev/null || findmnt --fstab "/tmp" > /dev/null; }; then
+
+        function perform_remediation {
+
+                # the mount point /tmp has to be defined in /etc/fstab
+                # before this remediation can be executed. In case it is not defined, the
+                # remediation aborts and no changes regarding the mount point are done.
+                mount_point_match_regexp="$(printf "^[[:space:]]*[^#].*[[:space:]]%s[[:space:]]" "/tmp")"
+
+            grep "$mount_point_match_regexp" -q /etc/fstab \
+                || { echo "The mount point '/tmp' is not even in /etc/fstab, so we can't set up mount options" >&2;
+                        echo "Not remediating, because there is no record of /tmp in /etc/fstab" >&2; return 1; }
+
+
+
+            mount_point_match_regexp="$(printf "^[[:space:]]*[^#].*[[:space:]]%s[[:space:]]" /tmp)"
+
+            # If the mount point is not in /etc/fstab, get previous mount options from /etc/mtab
+            if ! grep -q "$mount_point_match_regexp" /etc/fstab; then
+                # runtime opts without some automatic kernel/userspace-added defaults
+                previous_mount_opts=$(grep "$mount_point_match_regexp" /etc/mtab | head -1 |  awk '{print $4}' \
+                            | sed -E "s/(rw|defaults|seclabel|noexec)(,|$)//g;s/,$//")
+                [ "$previous_mount_opts" ] && previous_mount_opts+=","
+                # In iso9660 filesystems mtab could describe a "blocksize" value, this should be reflected in
+                # fstab as "block".  The next variable is to satisfy shellcheck SC2050.
+                fs_type=""
+                if [  "$fs_type" == "iso9660" ] ; then
+                    previous_mount_opts=$(sed 's/blocksize=/block=/' <<< "$previous_mount_opts")
+                fi
+                echo " /tmp  defaults,${previous_mount_opts}noexec 0 0" >> /etc/fstab
+            # If the mount_opt option is not already in the mount point's /etc/fstab entry, add it
+            elif ! grep "$mount_point_match_regexp" /etc/fstab | grep -q "noexec"; then
+                previous_mount_opts=$(grep "$mount_point_match_regexp" /etc/fstab | awk '{print $4}')
+                sed -i "s|\(${mount_point_match_regexp}.*${previous_mount_opts}\)|\1,noexec|" /etc/fstab
+            fi
+
+
+            if mkdir -p "/tmp"; then
+                if mountpoint -q "/tmp"; then
+                    mount -o remount --target "/tmp"
+                fi
+            fi
+        }
+
+        perform_remediation
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if ! ( [ -f /.dockerenv ] || [ -f /run/.containerenv ] ) && { findmnt --kernel "/tmp" > /dev/null || findmnt --fstab "/tmp" > /dev/null; }; then
+
+        function perform_remediation {
+
+                # the mount point /tmp has to be defined in /etc/fstab
+                # before this remediation can be executed. In case it is not defined, the
+                # remediation aborts and no changes regarding the mount point are done.
+                mount_point_match_regexp="$(printf "^[[:space:]]*[^#].*[[:space:]]%s[[:space:]]" "/tmp")"
+
+            grep "$mount_point_match_regexp" -q /etc/fstab \
+                || { echo "The mount point '/tmp' is not even in /etc/fstab, so we can't set up mount options" >&2;
+                        echo "Not remediating, because there is no record of /tmp in /etc/fstab" >&2; return 1; }
+
+
+
+            mount_point_match_regexp="$(printf "^[[:space:]]*[^#].*[[:space:]]%s[[:space:]]" /tmp)"
+
+            # If the mount point is not in /etc/fstab, get previous mount options from /etc/mtab
+            if ! grep -q "$mount_point_match_regexp" /etc/fstab; then
+                # runtime opts without some automatic kernel/userspace-added defaults
+                previous_mount_opts=$(grep "$mount_point_match_regexp" /etc/mtab | head -1 |  awk '{print $4}' \
+                            | sed -E "s/(rw|defaults|seclabel|noexec)(,|$)//g;s/,$//")
+                [ "$previous_mount_opts" ] && previous_mount_opts+=","
+                # In iso9660 filesystems mtab could describe a "blocksize" value, this should be reflected in
+                # fstab as "block".  The next variable is to satisfy shellcheck SC2050.
+                fs_type=""
+                if [  "$fs_type" == "iso9660" ] ; then
+                    previous_mount_opts=$(sed 's/blocksize=/block=/' <<< "$previous_mount_opts")
+                fi
+                echo " /tmp  defaults,${previous_mount_opts}noexec 0 0" >> /etc/fstab
+            # If the mount_opt option is not already in the mount point's /etc/fstab entry, add it
+            elif ! grep "$mount_point_match_regexp" /etc/fstab | grep -q "noexec"; then
+                previous_mount_opts=$(grep "$mount_point_match_regexp" /etc/fstab | awk '{print $4}')
+                sed -i "s|\(${mount_point_match_regexp}.*${previous_mount_opts}\)|\1,noexec|" /etc/fstab
+            fi
+
+
+            if mkdir -p "/tmp"; then
+                if mountpoint -q "/tmp"; then
+                    mount -o remount --target "/tmp"
+                fi
+            fi
+        }
+
+        perform_remediation
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if ! ( [ -f /.dockerenv ] || [ -f /run/.containerenv ] ) && { findmnt --kernel "/tmp" > /dev/null || findmnt --fstab "/tmp" > /dev/null; }; then
+
+        function perform_remediation {
+
+                # the mount point /tmp has to be defined in /etc/fstab
+                # before this remediation can be executed. In case it is not defined, the
+                # remediation aborts and no changes regarding the mount point are done.
+                mount_point_match_regexp="$(printf "^[[:space:]]*[^#].*[[:space:]]%s[[:space:]]" "/tmp")"
+
+            grep "$mount_point_match_regexp" -q /etc/fstab \
+                || { echo "The mount point '/tmp' is not even in /etc/fstab, so we can't set up mount options" >&2;
+                        echo "Not remediating, because there is no record of /tmp in /etc/fstab" >&2; return 1; }
+
+
+
+            mount_point_match_regexp="$(printf "^[[:space:]]*[^#].*[[:space:]]%s[[:space:]]" /tmp)"
+
+            # If the mount point is not in /etc/fstab, get previous mount options from /etc/mtab
+            if ! grep -q "$mount_point_match_regexp" /etc/fstab; then
+                # runtime opts without some automatic kernel/userspace-added defaults
+                previous_mount_opts=$(grep "$mount_point_match_regexp" /etc/mtab | head -1 |  awk '{print $4}' \
+                            | sed -E "s/(rw|defaults|seclabel|noexec)(,|$)//g;s/,$//")
+                [ "$previous_mount_opts" ] && previous_mount_opts+=","
+                # In iso9660 filesystems mtab could describe a "blocksize" value, this should be reflected in
+                # fstab as "block".  The next variable is to satisfy shellcheck SC2050.
+                fs_type=""
+                if [  "$fs_type" == "iso9660" ] ; then
+                    previous_mount_opts=$(sed 's/blocksize=/block=/' <<< "$previous_mount_opts")
+                fi
+                echo " /tmp  defaults,${previous_mount_opts}noexec 0 0" >> /etc/fstab
+            # If the mount_opt option is not already in the mount point's /etc/fstab entry, add it
+            elif ! grep "$mount_point_match_regexp" /etc/fstab | grep -q "noexec"; then
+                previous_mount_opts=$(grep "$mount_point_match_regexp" /etc/fstab | awk '{print $4}')
+                sed -i "s|\(${mount_point_match_regexp}.*${previous_mount_opts}\)|\1,noexec|" /etc/fstab
+            fi
+
+
+            if mkdir -p "/tmp"; then
+                if mountpoint -q "/tmp"; then
+                    mount -o remount --target "/tmp"
+                fi
+            fi
+        }
+
+        perform_remediation
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

@@ -1,0 +1,255 @@
+id: services_rsyslog_filecreatemode
+title: Ensure rsyslog Default File Permissions Configured
+discussion: |
+  It is important to ensure that log files have the correct permissions
+  to ensure that sensitive data is archived and protected.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r4:
+    - N/A
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '8':
+      references:
+        cce:
+          - CCE-88321-5
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        readarray -t targets < <(grep -H '^\s*$FileCreateMode' /etc/rsyslog.conf /etc/rsyslog.d/*)
+
+        # if $FileCreateMode set in multiple places
+        if [ ${#targets[@]} -gt 1 ]; then
+            # delete all and create new entry with expected value
+            sed -i '/^\s*$FileCreateMode/d' /etc/rsyslog.conf /etc/rsyslog.d/*
+            echo '$FileCreateMode 0640' > /etc/rsyslog.d/99-rsyslog_filecreatemode.conf
+        # if $FileCreateMode set in only one place
+        elif [ "${#targets[@]}" -eq 1 ]; then
+            filename=$(echo "${targets[0]}" | cut -d':' -f1)
+            value=$(echo "${targets[0]}" | cut -d' ' -f2)
+            #convert to decimal and bitwise or operation
+            result=$((8#$value | 416))
+            # if more permissive than expected, then set it to 0640
+            if [ $result -ne 416 ]; then
+                # if value is wrong remove it
+                sed -i '/^\s*$FileCreateMode/d' $filename
+                echo '$FileCreateMode 0640' > $filename
+            fi
+        else
+            echo '$FileCreateMode 0640' > /etc/rsyslog.d/99-rsyslog_filecreatemode.conf
+        fi
+
+        systemctl restart rsyslog.service
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-88322-3
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        readarray -t targets < <(grep -H '^\s*$FileCreateMode' /etc/rsyslog.conf /etc/rsyslog.d/*)
+
+        # if $FileCreateMode set in multiple places
+        if [ ${#targets[@]} -gt 1 ]; then
+            # delete all and create new entry with expected value
+            sed -i '/^\s*$FileCreateMode/d' /etc/rsyslog.conf /etc/rsyslog.d/*
+            echo '$FileCreateMode 0640' > /etc/rsyslog.d/99-rsyslog_filecreatemode.conf
+        # if $FileCreateMode set in only one place
+        elif [ "${#targets[@]}" -eq 1 ]; then
+            filename=$(echo "${targets[0]}" | cut -d':' -f1)
+            value=$(echo "${targets[0]}" | cut -d' ' -f2)
+            #convert to decimal and bitwise or operation
+            result=$((8#$value | 416))
+            # if more permissive than expected, then set it to 0640
+            if [ $result -ne 416 ]; then
+                # if value is wrong remove it
+                sed -i '/^\s*$FileCreateMode/d' $filename
+                echo '$FileCreateMode 0640' > $filename
+            fi
+        else
+            echo '$FileCreateMode 0640' > /etc/rsyslog.d/99-rsyslog_filecreatemode.conf
+        fi
+
+        systemctl restart rsyslog.service
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        readarray -t targets < <(grep -H '^\s*$FileCreateMode' /etc/rsyslog.conf /etc/rsyslog.d/*)
+
+        # if $FileCreateMode set in multiple places
+        if [ ${#targets[@]} -gt 1 ]; then
+            # delete all and create new entry with expected value
+            sed -i '/^\s*$FileCreateMode/d' /etc/rsyslog.conf /etc/rsyslog.d/*
+            echo '$FileCreateMode 0640' > /etc/rsyslog.d/99-rsyslog_filecreatemode.conf
+        # if $FileCreateMode set in only one place
+        elif [ "${#targets[@]}" -eq 1 ]; then
+            filename=$(echo "${targets[0]}" | cut -d':' -f1)
+            value=$(echo "${targets[0]}" | cut -d' ' -f2)
+            #convert to decimal and bitwise or operation
+            result=$((8#$value | 416))
+            # if more permissive than expected, then set it to 0640
+            if [ $result -ne 416 ]; then
+                # if value is wrong remove it
+                sed -i '/^\s*$FileCreateMode/d' $filename
+                echo '$FileCreateMode 0640' > $filename
+            fi
+        else
+            echo '$FileCreateMode 0640' > /etc/rsyslog.d/99-rsyslog_filecreatemode.conf
+        fi
+
+        systemctl restart rsyslog.service
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        readarray -t targets < <(grep -H '^\s*$FileCreateMode' /etc/rsyslog.conf /etc/rsyslog.d/*)
+
+        # if $FileCreateMode set in multiple places
+        if [ ${#targets[@]} -gt 1 ]; then
+            # delete all and create new entry with expected value
+            sed -i '/^\s*$FileCreateMode/d' /etc/rsyslog.conf /etc/rsyslog.d/*
+            echo '$FileCreateMode 0640' > /etc/rsyslog.d/99-rsyslog_filecreatemode.conf
+        # if $FileCreateMode set in only one place
+        elif [ "${#targets[@]}" -eq 1 ]; then
+            filename=$(echo "${targets[0]}" | cut -d':' -f1)
+            value=$(echo "${targets[0]}" | cut -d' ' -f2)
+            #convert to decimal and bitwise or operation
+            result=$((8#$value | 416))
+            # if more permissive than expected, then set it to 0640
+            if [ $result -ne 416 ]; then
+                # if value is wrong remove it
+                sed -i '/^\s*$FileCreateMode/d' $filename
+                echo '$FileCreateMode 0640' > $filename
+            fi
+        else
+            echo '$FileCreateMode 0640' > /etc/rsyslog.d/99-rsyslog_filecreatemode.conf
+        fi
+
+        systemctl restart rsyslog.service
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        readarray -t targets < <(grep -H '^\s*$FileCreateMode' /etc/rsyslog.conf /etc/rsyslog.d/*)
+
+        # if $FileCreateMode set in multiple places
+        if [ ${#targets[@]} -gt 1 ]; then
+            # delete all and create new entry with expected value
+            sed -i '/^\s*$FileCreateMode/d' /etc/rsyslog.conf /etc/rsyslog.d/*
+            echo '$FileCreateMode 0640' > /etc/rsyslog.d/99-rsyslog_filecreatemode.conf
+        # if $FileCreateMode set in only one place
+        elif [ "${#targets[@]}" -eq 1 ]; then
+            filename=$(echo "${targets[0]}" | cut -d':' -f1)
+            value=$(echo "${targets[0]}" | cut -d' ' -f2)
+            #convert to decimal and bitwise or operation
+            result=$((8#$value | 416))
+            # if more permissive than expected, then set it to 0640
+            if [ $result -ne 416 ]; then
+                # if value is wrong remove it
+                sed -i '/^\s*$FileCreateMode/d' $filename
+                echo '$FileCreateMode 0640' > $filename
+            fi
+        else
+            echo '$FileCreateMode 0640' > /etc/rsyslog.d/99-rsyslog_filecreatemode.conf
+        fi
+
+        systemctl restart rsyslog.service
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

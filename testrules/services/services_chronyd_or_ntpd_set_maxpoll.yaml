@@ -1,0 +1,278 @@
+id: services_chronyd_or_ntpd_set_maxpoll
+title: Configure Time Service Maxpoll Interval
+discussion: |
+  Inaccurate time stamps make it more difficult to correlate events and can lead to an inaccurate analysis. Determining the correct time a particular event occurred on a system is critical when conducting forensic analysis and investigating system events. Sources outside the configured acceptable allowance (drift) may be inaccurate.
+  Synchronizing internal information system clocks provides uniformity of time stamps for information systems with multiple system clocks and systems connected over a network.
+  Organizations should consider endpoints that may not have regular access to the authoritative time server (e.g., mobile, teleworking, and tactical endpoints).
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-001890
+    - CCI-004923
+    - CCI-004926
+  800-53r4:
+    - AU-8(1)(b)
+    - AU-12(1)
+    - CM-6(a)
+  srg:
+    - SRG-OS-000355-GPOS-00143
+    - SRG-OS-000356-GPOS-00144
+    - SRG-OS-000359-GPOS-00146
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-88549-1
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel && { ( rpm --quiet -q chrony || rpm --quiet -q ntp ); }; then
+
+        var_time_service_set_maxpoll=''
+
+
+
+
+        pof="/usr/sbin/pidof"
+
+
+        CONFIG_FILES="/etc/ntp.conf"
+        $pof ntpd || {
+            CHRONY_D_PATH=/etc/chrony.d/
+            mapfile -t CONFIG_FILES < <(find ${CHRONY_D_PATH}.* -type f -name '*.conf')
+            CONFIG_FILES+=(/etc/chrony.conf)
+        }
+
+        # get list of ntp files
+
+        for config_file in "${CONFIG_FILES[@]}" ; do
+            # Set maxpoll values to var_time_service_set_maxpoll
+            sed -i "s/^\(\(server\|pool\|peer\).*maxpoll\) [0-9,-][0-9]*\(.*\)$/\1 $var_time_service_set_maxpoll \3/" "$config_file"
+        done
+
+        for config_file in "${CONFIG_FILES[@]}" ; do
+            # Add maxpoll to server, pool or peer entries without maxpoll
+            grep "^\(server\|pool\|peer\)" "$config_file" | grep -v maxpoll | while read -r line ; do
+                sed -i "s/$line/& maxpoll $var_time_service_set_maxpoll/" "$config_file"
+            done
+        done
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-84059-5
+        disa_stig:
+          - RHEL-08-030740
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel && { ( rpm --quiet -q chrony || rpm --quiet -q ntp ); }; then
+
+        var_time_service_set_maxpoll=''
+
+
+
+
+        pof="/usr/sbin/pidof"
+
+
+        CONFIG_FILES="/etc/ntp.conf"
+        $pof ntpd || {
+            CHRONY_D_PATH=/etc/chrony.d/
+            mapfile -t CONFIG_FILES < <(find ${CHRONY_D_PATH}.* -type f -name '*.conf')
+            CONFIG_FILES+=(/etc/chrony.conf)
+        }
+
+        # get list of ntp files
+
+        for config_file in "${CONFIG_FILES[@]}" ; do
+            # Set maxpoll values to var_time_service_set_maxpoll
+            sed -i "s/^\(\(server\|pool\|peer\).*maxpoll\) [0-9,-][0-9]*\(.*\)$/\1 $var_time_service_set_maxpoll \3/" "$config_file"
+        done
+
+        for config_file in "${CONFIG_FILES[@]}" ; do
+            # Add maxpoll to server, pool or peer entries without maxpoll
+            grep "^\(server\|pool\|peer\)" "$config_file" | grep -v maxpoll | while read -r line ; do
+                sed -i "s/$line/& maxpoll $var_time_service_set_maxpoll/" "$config_file"
+            done
+        done
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-88648-1
+        disa_stig:
+          - RHEL-09-252020
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel && { ( rpm --quiet -q chrony || rpm --quiet -q ntp ); }; then
+
+        var_time_service_set_maxpoll=''
+
+
+
+
+        pof="/usr/sbin/pidof"
+
+
+        CONFIG_FILES="/etc/ntp.conf"
+        $pof ntpd || {
+            CHRONY_D_PATH=/etc/chrony.d/
+            mapfile -t CONFIG_FILES < <(find ${CHRONY_D_PATH}.* -type f -name '*.conf')
+            CONFIG_FILES+=(/etc/chrony.conf)
+        }
+
+        # get list of ntp files
+
+        for config_file in "${CONFIG_FILES[@]}" ; do
+            # Set maxpoll values to var_time_service_set_maxpoll
+            sed -i "s/^\(\(server\|pool\|peer\).*maxpoll\) [0-9,-][0-9]*\(.*\)$/\1 $var_time_service_set_maxpoll \3/" "$config_file"
+        done
+
+        for config_file in "${CONFIG_FILES[@]}" ; do
+            # Add maxpoll to server, pool or peer entries without maxpoll
+            grep "^\(server\|pool\|peer\)" "$config_file" | grep -v maxpoll | while read -r line ; do
+                sed -i "s/$line/& maxpoll $var_time_service_set_maxpoll/" "$config_file"
+            done
+        done
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010435
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && { ( dpkg-query --show --showformat='${db:Status-Status}\n' 'chrony' 2>/dev/null | grep -q '^installed' || dpkg-query --show --showformat='${db:Status-Status}\n' 'ntp' 2>/dev/null | grep -q '^installed' ); }; then
+
+        var_time_service_set_maxpoll=''
+
+
+
+
+        pof="/bin/pidof"
+
+
+        CONFIG_FILES="/etc/ntp.conf"
+        $pof ntpd || {
+            CHRONY_D_PATH=/etc/chrony/conf.d/
+            mapfile -t CONFIG_FILES < <(find ${CHRONY_D_PATH}.* -type f -name '*.conf')
+            CONFIG_FILES+=(/etc/chrony/chrony.conf)
+        }
+
+        # get list of ntp files
+
+        for config_file in "${CONFIG_FILES[@]}" ; do
+            # Set maxpoll values to var_time_service_set_maxpoll
+            sed -i "s/^\(\(server\|pool\|peer\).*maxpoll\) [0-9,-][0-9]*\(.*\)$/\1 $var_time_service_set_maxpoll \3/" "$config_file"
+        done
+
+        for config_file in "${CONFIG_FILES[@]}" ; do
+            # Add maxpoll to server, pool or peer entries without maxpoll
+            grep "^\(server\|pool\|peer\)" "$config_file" | grep -v maxpoll | while read -r line ; do
+                sed -i "s/$line/& maxpoll $var_time_service_set_maxpoll/" "$config_file"
+            done
+        done
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-252010
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && { ( dpkg-query --show --showformat='${db:Status-Status}\n' 'chrony' 2>/dev/null | grep -q '^installed' || dpkg-query --show --showformat='${db:Status-Status}\n' 'ntp' 2>/dev/null | grep -q '^installed' ); }; then
+
+        var_time_service_set_maxpoll=''
+
+
+
+
+        pof="/bin/pidof"
+
+
+        CONFIG_FILES="/etc/ntp.conf"
+        $pof ntpd || {
+            CHRONY_D_PATH=/etc/chrony/conf.d/
+            mapfile -t CONFIG_FILES < <(find ${CHRONY_D_PATH}.* -type f -name '*.conf')
+            CONFIG_FILES+=(/etc/chrony/chrony.conf)
+        }
+
+        # get list of ntp files
+
+        for config_file in "${CONFIG_FILES[@]}" ; do
+            # Set maxpoll values to var_time_service_set_maxpoll
+            sed -i "s/^\(\(server\|pool\|peer\).*maxpoll\) [0-9,-][0-9]*\(.*\)$/\1 $var_time_service_set_maxpoll \3/" "$config_file"
+        done
+
+        for config_file in "${CONFIG_FILES[@]}" ; do
+            # Add maxpoll to server, pool or peer entries without maxpoll
+            grep "^\(server\|pool\|peer\)" "$config_file" | grep -v maxpoll | while read -r line ; do
+                sed -i "s/$line/& maxpoll $var_time_service_set_maxpoll/" "$config_file"
+            done
+        done
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

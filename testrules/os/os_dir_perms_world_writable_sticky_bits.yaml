@@ -1,0 +1,122 @@
+id: os_dir_perms_world_writable_sticky_bits
+title: Verify that All World-Writable Directories Have Sticky Bits Set
+discussion: |
+  Failing to set the sticky bit on public directories allows unauthorized users to delete files
+  in the directory structure.
+
+
+  The only authorized public directories are those temporary directories supplied with the
+  system, or those designed to be temporary file repositories. The setting is normally reserved
+  for directories used by the system, by users for temporary file storage (such as /tmp),
+  and for directories requiring global read/write access.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-001090
+  800-53r4:
+    - AC-6(1)
+    - CM-6(a)
+  srg:
+    - SRG-OS-000138-GPOS-00069
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-88397-5
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        df --local -P | awk '{if (NR!=1) print $6}' \
+        | xargs -I '$6' find '$6' -xdev -type d \
+        \( -perm -0002 -a ! -perm -1000 \) 2>/dev/null \
+        -exec chmod a+t {} +
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-80783-4
+        disa_stig:
+          - RHEL-08-010190
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        df --local -P | awk '{if (NR!=1) print $6}' \
+        | xargs -I '$6' find '$6' -xdev -type d \
+        \( -perm -0002 -a ! -perm -1000 \) 2>/dev/null \
+        -exec chmod a+t {} +
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-83895-3
+        disa_stig:
+          - RHEL-09-232245
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        df --local -P | awk '{if (NR!=1) print $6}' \
+        | xargs -I '$6' find '$6' -xdev -type d \
+        \( -perm -0002 -a ! -perm -1000 \) 2>/dev/null \
+        -exec chmod a+t {} +
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010411
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        df --local -P | awk '{if (NR!=1) print $6}' \
+        | xargs -I '$6' find '$6' -xdev -type d \
+        \( -perm -0002 -a ! -perm -1000 \) 2>/dev/null \
+        -exec chmod a+t {} +
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-232145
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        df --local -P | awk '{if (NR!=1) print $6}' \
+        | xargs -I '$6' find '$6' -xdev -type d \
+        \( -perm -0002 -a ! -perm -1000 \) 2>/dev/null \
+        -exec chmod a+t {} +
+
+        ---

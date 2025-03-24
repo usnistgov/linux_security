@@ -1,0 +1,222 @@
+id: os_kernel_module_udf_disabled
+title: Disable Mounting of udf
+discussion: |
+  Removing support for unneeded filesystem types reduces the local
+  attack surface of the system.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r4:
+    - CM-6(a)
+    - CM-7(a)
+    - CM-7(b)
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl2
+  - client
+  - server
+severity: low
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-87504-7
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        if LC_ALL=C grep -q -m 1 "^install udf" /etc/modprobe.d/udf.conf ; then
+
+           sed -i 's#^install udf.*#install udf /bin/false#g' /etc/modprobe.d/udf.conf
+        else
+           echo -e "\n# Disable per security requirements" >> /etc/modprobe.d/udf.conf
+           echo "install udf /bin/false" >> /etc/modprobe.d/udf.conf
+        fi
+
+        if ! LC_ALL=C grep -q -m 1 "^blacklist udf$" /etc/modprobe.d/udf.conf ; then
+           echo "blacklist udf" >> /etc/modprobe.d/udf.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-82729-5
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        if LC_ALL=C grep -q -m 1 "^install udf" /etc/modprobe.d/udf.conf ; then
+
+           sed -i 's#^install udf.*#install udf /bin/false#g' /etc/modprobe.d/udf.conf
+        else
+           echo -e "\n# Disable per security requirements" >> /etc/modprobe.d/udf.conf
+           echo "install udf /bin/false" >> /etc/modprobe.d/udf.conf
+        fi
+
+        if ! LC_ALL=C grep -q -m 1 "^blacklist udf$" /etc/modprobe.d/udf.conf ; then
+           echo "blacklist udf" >> /etc/modprobe.d/udf.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-83852-4
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        if LC_ALL=C grep -q -m 1 "^install udf" /etc/modprobe.d/udf.conf ; then
+
+           sed -i 's#^install udf.*#install udf /bin/false#g' /etc/modprobe.d/udf.conf
+        else
+           echo -e "\n# Disable per security requirements" >> /etc/modprobe.d/udf.conf
+           echo "install udf /bin/false" >> /etc/modprobe.d/udf.conf
+        fi
+
+        if ! LC_ALL=C grep -q -m 1 "^blacklist udf$" /etc/modprobe.d/udf.conf ; then
+           echo "blacklist udf" >> /etc/modprobe.d/udf.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        if LC_ALL=C grep -q -m 1 "^install udf" /etc/modprobe.d/udf.conf ; then
+
+           sed -i 's#^install udf.*#install udf /bin/false#g' /etc/modprobe.d/udf.conf
+        else
+           echo -e "\n# Disable per security requirements" >> /etc/modprobe.d/udf.conf
+           echo "install udf /bin/false" >> /etc/modprobe.d/udf.conf
+        fi
+
+        if ! LC_ALL=C grep -q -m 1 "^blacklist udf$" /etc/modprobe.d/udf.conf ; then
+           echo "blacklist udf" >> /etc/modprobe.d/udf.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        if LC_ALL=C grep -q -m 1 "^install udf" /etc/modprobe.d/udf.conf ; then
+
+           sed -i 's#^install udf.*#install udf /bin/false#g' /etc/modprobe.d/udf.conf
+        else
+           echo -e "\n# Disable per security requirements" >> /etc/modprobe.d/udf.conf
+           echo "install udf /bin/false" >> /etc/modprobe.d/udf.conf
+        fi
+
+        if ! LC_ALL=C grep -q -m 1 "^blacklist udf$" /etc/modprobe.d/udf.conf ; then
+           echo "blacklist udf" >> /etc/modprobe.d/udf.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        if LC_ALL=C grep -q -m 1 "^install udf" /etc/modprobe.d/udf.conf ; then
+
+           sed -i 's#^install udf.*#install udf /bin/false#g' /etc/modprobe.d/udf.conf
+        else
+           echo -e "\n# Disable per security requirements" >> /etc/modprobe.d/udf.conf
+           echo "install udf /bin/false" >> /etc/modprobe.d/udf.conf
+        fi
+
+        if ! LC_ALL=C grep -q -m 1 "^blacklist udf$" /etc/modprobe.d/udf.conf ; then
+           echo "blacklist udf" >> /etc/modprobe.d/udf.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

@@ -1,0 +1,246 @@
+id: os_file_permissions_var_log_audit
+title: System Audit Logs Must Have Mode 0640 or Less Permissive
+discussion: If users can write to audit logs, audit trails can be modified or destroyed.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000162
+    - CCI-000163
+    - CCI-000164
+    - CCI-001314
+  800-53r4:
+    - AC-6(1)
+    - AU-9(4)
+    - CM-6(a)
+  srg:
+    - SRG-OS-000057-GPOS-00027
+    - SRG-OS-000058-GPOS-00028
+    - SRG-OS-000059-GPOS-00029
+    - SRG-OS-000206-GPOS-00084
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-90129-8
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q audit && rpm --quiet -q kernel; then
+
+        if LC_ALL=C grep -iw ^log_file /etc/audit/auditd.conf; then
+            FILE=$(awk -F "=" '/^log_file/ {print $2}' /etc/audit/auditd.conf | tr -d ' ')
+        else
+            FILE="/var/log/audit/audit.log"
+        fi
+
+
+        chmod 0600 $FILE
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-80819-6
+        disa_stig:
+          - RHEL-08-030070
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q audit && rpm --quiet -q kernel; then
+
+        if LC_ALL=C grep -iw ^log_file /etc/audit/auditd.conf; then
+            FILE=$(awk -F "=" '/^log_file/ {print $2}' /etc/audit/auditd.conf | tr -d ' ')
+        else
+            FILE="/var/log/audit/audit.log"
+        fi
+
+
+        chmod 0600 $FILE
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-83720-3
+        disa_stig:
+          - RHEL-09-653090
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q audit && rpm --quiet -q kernel; then
+
+        if LC_ALL=C grep -iw ^log_file /etc/audit/auditd.conf; then
+            FILE=$(awk -F "=" '/^log_file/ {print $2}' /etc/audit/auditd.conf | tr -d ' ')
+        else
+            FILE="/var/log/audit/audit.log"
+        fi
+
+
+        chmod 0600 $FILE
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010122
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q '^installed'; then
+
+        if LC_ALL=C grep -iw ^log_file /etc/audit/auditd.conf; then
+            FILE=$(awk -F "=" '/^log_file/ {print $2}' /etc/audit/auditd.conf | tr -d ' ')
+        else
+            FILE="/var/log/audit/audit.log"
+        fi
+
+
+        if LC_ALL=C grep -m 1 -q ^log_group /etc/audit/auditd.conf; then
+          GROUP=$(awk -F "=" '/log_group/ {print $2}' /etc/audit/auditd.conf | tr -d ' ')
+          if ! [ "${GROUP}" == 'root' ] ; then
+            chmod 0640 $FILE
+            chmod 0440 $FILE.*
+          else
+            chmod 0600 $FILE
+            chmod 0400 $FILE.*
+          fi
+        else
+          chmod 0600 $FILE
+          chmod 0400 $FILE.*
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q '^installed'; then
+
+        if LC_ALL=C grep -iw ^log_file /etc/audit/auditd.conf; then
+            FILE=$(awk -F "=" '/^log_file/ {print $2}' /etc/audit/auditd.conf | tr -d ' ')
+        else
+            FILE="/var/log/audit/audit.log"
+        fi
+
+
+        if LC_ALL=C grep -m 1 -q ^log_group /etc/audit/auditd.conf; then
+          GROUP=$(awk -F "=" '/log_group/ {print $2}' /etc/audit/auditd.conf | tr -d ' ')
+          if ! [ "${GROUP}" == 'root' ] ; then
+            chmod 0640 $FILE
+            chmod 0440 $FILE.*
+          else
+            chmod 0600 $FILE
+            chmod 0400 $FILE.*
+          fi
+        else
+          chmod 0600 $FILE
+          chmod 0400 $FILE.*
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q '^installed'; then
+
+        if LC_ALL=C grep -iw ^log_file /etc/audit/auditd.conf; then
+            FILE=$(awk -F "=" '/^log_file/ {print $2}' /etc/audit/auditd.conf | tr -d ' ')
+        else
+            FILE="/var/log/audit/audit.log"
+        fi
+
+
+        if LC_ALL=C grep -m 1 -q ^log_group /etc/audit/auditd.conf; then
+          GROUP=$(awk -F "=" '/log_group/ {print $2}' /etc/audit/auditd.conf | tr -d ' ')
+          if ! [ "${GROUP}" == 'root' ] ; then
+            chmod 0640 $FILE
+            chmod 0440 $FILE.*
+          else
+            chmod 0600 $FILE
+            chmod 0400 $FILE.*
+          fi
+        else
+          chmod 0600 $FILE
+          chmod 0400 $FILE.*
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

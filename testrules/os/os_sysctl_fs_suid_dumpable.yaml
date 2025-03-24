@@ -1,0 +1,501 @@
+id: os_sysctl_fs_suid_dumpable
+title: Disable Core Dumps for SUID programs
+discussion: |
+  The core dump of a setuid program is more likely to contain
+  sensitive data, as the program itself runs with greater privileges than the
+  user who initiated execution of the program.  Disabling the ability for any
+  setuid program to write a core file decreases the risk of unauthorized access
+  of such data.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r4:
+    - SI-11(a)
+    - SI-11(b)
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-88399-1
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        # Comment out any occurrences of fs.suid_dumpable from /etc/sysctl.d/*.conf files
+
+        for f in /etc/sysctl.d/*.conf /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf; do
+
+
+          # skip systemd-sysctl symlink (/etc/sysctl.d/99-sysctl.conf -> /etc/sysctl.conf)
+          if [[ "$(readlink -f "$f")" == "/etc/sysctl.conf" ]]; then continue; fi
+
+          matching_list=$(grep -P '^(?!#).*[\s]*fs.suid_dumpable.*$' $f | uniq )
+          if ! test -z "$matching_list"; then
+            while IFS= read -r entry; do
+              escaped_entry=$(sed -e 's|/|\\/|g' <<< "$entry")
+              # comment out "fs.suid_dumpable" matches to preserve user data
+              sed -i --follow-symlinks "s/^${escaped_entry}$/# &/g" $f
+            done <<< "$matching_list"
+          fi
+        done
+
+        #
+        # Set sysctl config file which to save the desired value
+        #
+
+        SYSCONFIG_FILE="/etc/sysctl.conf"
+
+
+        #
+        # Set runtime for fs.suid_dumpable
+        #
+        if [[ "$OSCAP_BOOTC_BUILD" != "YES" ]] ; then
+            /sbin/sysctl -q -n -w fs.suid_dumpable="0"
+        fi
+
+        #
+        # If fs.suid_dumpable present in /etc/sysctl.conf, change value to "0"
+        #   else, add "fs.suid_dumpable = 0" to /etc/sysctl.conf
+        #
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^fs.suid_dumpable")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "0"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^fs.suid_dumpable\\>" "${SYSCONFIG_FILE}"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^fs.suid_dumpable\\>.*/$escaped_formatted_output/gi" "${SYSCONFIG_FILE}"
+        else
+            if [[ -s "${SYSCONFIG_FILE}" ]] && [[ -n "$(tail -c 1 -- "${SYSCONFIG_FILE}" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "${SYSCONFIG_FILE}"
+            fi
+            cce="CCE-88399-1"
+            printf '# Per %s: Set %s in %s\n' "${cce}" "${formatted_output}" "${SYSCONFIG_FILE}" >> "${SYSCONFIG_FILE}"
+            printf '%s\n' "$formatted_output" >> "${SYSCONFIG_FILE}"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-80912-9
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        # Comment out any occurrences of fs.suid_dumpable from /etc/sysctl.d/*.conf files
+
+        for f in /etc/sysctl.d/*.conf /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf; do
+
+
+          # skip systemd-sysctl symlink (/etc/sysctl.d/99-sysctl.conf -> /etc/sysctl.conf)
+          if [[ "$(readlink -f "$f")" == "/etc/sysctl.conf" ]]; then continue; fi
+
+          matching_list=$(grep -P '^(?!#).*[\s]*fs.suid_dumpable.*$' $f | uniq )
+          if ! test -z "$matching_list"; then
+            while IFS= read -r entry; do
+              escaped_entry=$(sed -e 's|/|\\/|g' <<< "$entry")
+              # comment out "fs.suid_dumpable" matches to preserve user data
+              sed -i --follow-symlinks "s/^${escaped_entry}$/# &/g" $f
+            done <<< "$matching_list"
+          fi
+        done
+
+        #
+        # Set sysctl config file which to save the desired value
+        #
+
+        SYSCONFIG_FILE="/etc/sysctl.conf"
+
+
+        #
+        # Set runtime for fs.suid_dumpable
+        #
+        if [[ "$OSCAP_BOOTC_BUILD" != "YES" ]] ; then
+            /sbin/sysctl -q -n -w fs.suid_dumpable="0"
+        fi
+
+        #
+        # If fs.suid_dumpable present in /etc/sysctl.conf, change value to "0"
+        #   else, add "fs.suid_dumpable = 0" to /etc/sysctl.conf
+        #
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^fs.suid_dumpable")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "0"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^fs.suid_dumpable\\>" "${SYSCONFIG_FILE}"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^fs.suid_dumpable\\>.*/$escaped_formatted_output/gi" "${SYSCONFIG_FILE}"
+        else
+            if [[ -s "${SYSCONFIG_FILE}" ]] && [[ -n "$(tail -c 1 -- "${SYSCONFIG_FILE}" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "${SYSCONFIG_FILE}"
+            fi
+            cce="CCE-80912-9"
+            printf '# Per %s: Set %s in %s\n' "${cce}" "${formatted_output}" "${SYSCONFIG_FILE}" >> "${SYSCONFIG_FILE}"
+            printf '%s\n' "$formatted_output" >> "${SYSCONFIG_FILE}"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-83981-1
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        # Comment out any occurrences of fs.suid_dumpable from /etc/sysctl.d/*.conf files
+
+        for f in /etc/sysctl.d/*.conf /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf; do
+
+
+          # skip systemd-sysctl symlink (/etc/sysctl.d/99-sysctl.conf -> /etc/sysctl.conf)
+          if [[ "$(readlink -f "$f")" == "/etc/sysctl.conf" ]]; then continue; fi
+
+          matching_list=$(grep -P '^(?!#).*[\s]*fs.suid_dumpable.*$' $f | uniq )
+          if ! test -z "$matching_list"; then
+            while IFS= read -r entry; do
+              escaped_entry=$(sed -e 's|/|\\/|g' <<< "$entry")
+              # comment out "fs.suid_dumpable" matches to preserve user data
+              sed -i --follow-symlinks "s/^${escaped_entry}$/# &/g" $f
+            done <<< "$matching_list"
+          fi
+        done
+
+        #
+        # Set sysctl config file which to save the desired value
+        #
+
+        SYSCONFIG_FILE="/etc/sysctl.conf"
+
+
+        #
+        # Set runtime for fs.suid_dumpable
+        #
+        if [[ "$OSCAP_BOOTC_BUILD" != "YES" ]] ; then
+            /sbin/sysctl -q -n -w fs.suid_dumpable="0"
+        fi
+
+        #
+        # If fs.suid_dumpable present in /etc/sysctl.conf, change value to "0"
+        #   else, add "fs.suid_dumpable = 0" to /etc/sysctl.conf
+        #
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^fs.suid_dumpable")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "0"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^fs.suid_dumpable\\>" "${SYSCONFIG_FILE}"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^fs.suid_dumpable\\>.*/$escaped_formatted_output/gi" "${SYSCONFIG_FILE}"
+        else
+            if [[ -s "${SYSCONFIG_FILE}" ]] && [[ -n "$(tail -c 1 -- "${SYSCONFIG_FILE}" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "${SYSCONFIG_FILE}"
+            fi
+            cce="CCE-83981-1"
+            printf '# Per %s: Set %s in %s\n' "${cce}" "${formatted_output}" "${SYSCONFIG_FILE}" >> "${SYSCONFIG_FILE}"
+            printf '%s\n' "$formatted_output" >> "${SYSCONFIG_FILE}"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        # Comment out any occurrences of fs.suid_dumpable from /etc/sysctl.d/*.conf files
+
+        for f in /etc/sysctl.d/*.conf /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf; do
+
+
+          # skip systemd-sysctl symlink (/etc/sysctl.d/99-sysctl.conf -> /etc/sysctl.conf)
+          if [[ "$(readlink -f "$f")" == "/etc/sysctl.conf" ]]; then continue; fi
+
+          matching_list=$(grep -P '^(?!#).*[\s]*fs.suid_dumpable.*$' $f | uniq )
+          if ! test -z "$matching_list"; then
+            while IFS= read -r entry; do
+              escaped_entry=$(sed -e 's|/|\\/|g' <<< "$entry")
+              # comment out "fs.suid_dumpable" matches to preserve user data
+              sed -i --follow-symlinks "s/^${escaped_entry}$/# &/g" $f
+            done <<< "$matching_list"
+          fi
+        done
+
+        #
+        # Set sysctl config file which to save the desired value
+        #
+
+        SYSCONFIG_FILE="/etc/sysctl.conf"
+
+
+        #
+        # Set runtime for fs.suid_dumpable
+        #
+        if [[ "$OSCAP_BOOTC_BUILD" != "YES" ]] ; then
+            /sbin/sysctl -q -n -w fs.suid_dumpable="0"
+        fi
+
+        #
+        # If fs.suid_dumpable present in /etc/sysctl.conf, change value to "0"
+        #   else, add "fs.suid_dumpable = 0" to /etc/sysctl.conf
+        #
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^fs.suid_dumpable")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "0"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^fs.suid_dumpable\\>" "${SYSCONFIG_FILE}"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^fs.suid_dumpable\\>.*/$escaped_formatted_output/gi" "${SYSCONFIG_FILE}"
+        else
+            if [[ -s "${SYSCONFIG_FILE}" ]] && [[ -n "$(tail -c 1 -- "${SYSCONFIG_FILE}" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "${SYSCONFIG_FILE}"
+            fi
+            printf '%s\n' "$formatted_output" >> "${SYSCONFIG_FILE}"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        # Comment out any occurrences of fs.suid_dumpable from /etc/sysctl.d/*.conf files
+
+        for f in /etc/sysctl.d/*.conf /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf; do
+
+
+          # skip systemd-sysctl symlink (/etc/sysctl.d/99-sysctl.conf -> /etc/sysctl.conf)
+          if [[ "$(readlink -f "$f")" == "/etc/sysctl.conf" ]]; then continue; fi
+
+          matching_list=$(grep -P '^(?!#).*[\s]*fs.suid_dumpable.*$' $f | uniq )
+          if ! test -z "$matching_list"; then
+            while IFS= read -r entry; do
+              escaped_entry=$(sed -e 's|/|\\/|g' <<< "$entry")
+              # comment out "fs.suid_dumpable" matches to preserve user data
+              sed -i --follow-symlinks "s/^${escaped_entry}$/# &/g" $f
+            done <<< "$matching_list"
+          fi
+        done
+
+        #
+        # Set sysctl config file which to save the desired value
+        #
+
+        SYSCONFIG_FILE="/etc/sysctl.conf"
+
+
+        #
+        # Set runtime for fs.suid_dumpable
+        #
+        if [[ "$OSCAP_BOOTC_BUILD" != "YES" ]] ; then
+            /sbin/sysctl -q -n -w fs.suid_dumpable="0"
+        fi
+
+        #
+        # If fs.suid_dumpable present in /etc/sysctl.conf, change value to "0"
+        #   else, add "fs.suid_dumpable = 0" to /etc/sysctl.conf
+        #
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^fs.suid_dumpable")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "0"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^fs.suid_dumpable\\>" "${SYSCONFIG_FILE}"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^fs.suid_dumpable\\>.*/$escaped_formatted_output/gi" "${SYSCONFIG_FILE}"
+        else
+            if [[ -s "${SYSCONFIG_FILE}" ]] && [[ -n "$(tail -c 1 -- "${SYSCONFIG_FILE}" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "${SYSCONFIG_FILE}"
+            fi
+            printf '%s\n' "$formatted_output" >> "${SYSCONFIG_FILE}"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        # Comment out any occurrences of fs.suid_dumpable from /etc/sysctl.d/*.conf files
+
+        for f in /etc/sysctl.d/*.conf /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf; do
+
+
+          # skip systemd-sysctl symlink (/etc/sysctl.d/99-sysctl.conf -> /etc/sysctl.conf)
+          if [[ "$(readlink -f "$f")" == "/etc/sysctl.conf" ]]; then continue; fi
+
+          matching_list=$(grep -P '^(?!#).*[\s]*fs.suid_dumpable.*$' $f | uniq )
+          if ! test -z "$matching_list"; then
+            while IFS= read -r entry; do
+              escaped_entry=$(sed -e 's|/|\\/|g' <<< "$entry")
+              # comment out "fs.suid_dumpable" matches to preserve user data
+              sed -i --follow-symlinks "s/^${escaped_entry}$/# &/g" $f
+            done <<< "$matching_list"
+          fi
+        done
+
+        #
+        # Set sysctl config file which to save the desired value
+        #
+
+        SYSCONFIG_FILE="/etc/sysctl.conf"
+
+
+        #
+        # Set runtime for fs.suid_dumpable
+        #
+        if [[ "$OSCAP_BOOTC_BUILD" != "YES" ]] ; then
+            /sbin/sysctl -q -n -w fs.suid_dumpable="0"
+        fi
+
+        #
+        # If fs.suid_dumpable present in /etc/sysctl.conf, change value to "0"
+        #   else, add "fs.suid_dumpable = 0" to /etc/sysctl.conf
+        #
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^fs.suid_dumpable")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "0"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^fs.suid_dumpable\\>" "${SYSCONFIG_FILE}"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^fs.suid_dumpable\\>.*/$escaped_formatted_output/gi" "${SYSCONFIG_FILE}"
+        else
+            if [[ -s "${SYSCONFIG_FILE}" ]] && [[ -n "$(tail -c 1 -- "${SYSCONFIG_FILE}" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "${SYSCONFIG_FILE}"
+            fi
+            printf '%s\n' "$formatted_output" >> "${SYSCONFIG_FILE}"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

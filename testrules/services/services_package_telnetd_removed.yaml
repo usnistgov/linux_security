@@ -1,0 +1,120 @@
+id: services_package_telnetd_removed
+title: Uninstall the telnet server
+discussion: |
+  telnet allows clear text communications, and does not protect
+  any data transmission between client and server. Any confidential data
+  can be listened and no integrity checking is made.'
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r4:
+    - CM-6(a)
+    - CM-7(a)
+    - CM-7(b)
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - N/A
+severity: high
+os_specifics:
+  rhel:
+    '8':
+      references:
+        cce:
+          - CCE-83302-0
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove telnetd
+        #      from the system, and may remove any packages
+        #      that depend on telnetd. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "telnetd" ; then
+        yum remove -y "telnetd"
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove telnetd
+        #      from the system, and may remove any packages
+        #      that depend on telnetd. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "telnetd" ; then
+        dnf remove -y --noautoremove "telnetd"
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010405
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove telnetd
+        #      from the system, and may remove any packages
+        #      that depend on telnetd. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "telnetd"
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-215035
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove telnetd
+        #      from the system, and may remove any packages
+        #      that depend on telnetd. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "telnetd"
+
+        ---

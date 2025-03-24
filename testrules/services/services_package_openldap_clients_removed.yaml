@@ -1,0 +1,163 @@
+id: services_package_openldap_clients_removed
+title: Ensure LDAP client is not installed
+discussion: If the system does not need to act as an LDAP client, it is recommended
+  that the software is removed to reduce the potential attack surface.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r4:
+    - N/A
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: low
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-90641-2
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove openldap-clients
+        #      from the system, and may remove any packages
+        #      that depend on openldap-clients. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "openldap-clients" ; then
+        dnf remove -y --noautoremove "openldap-clients"
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-82885-5
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove openldap-clients
+        #      from the system, and may remove any packages
+        #      that depend on openldap-clients. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "openldap-clients" ; then
+        yum remove -y "openldap-clients"
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-90831-9
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove openldap-clients
+        #      from the system, and may remove any packages
+        #      that depend on openldap-clients. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "openldap-clients" ; then
+        dnf remove -y --noautoremove "openldap-clients"
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove ldap-utils
+        #      from the system, and may remove any packages
+        #      that depend on ldap-utils. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "ldap-utils"
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove ldap-utils
+        #      from the system, and may remove any packages
+        #      that depend on ldap-utils. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "ldap-utils"
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove ldap-utils
+        #      from the system, and may remove any packages
+        #      that depend on ldap-utils. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "ldap-utils"
+
+        ---

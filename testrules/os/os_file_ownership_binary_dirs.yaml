@@ -1,0 +1,117 @@
+id: os_file_ownership_binary_dirs
+title: Verify that System Executables Have Root Ownership
+discussion: |
+  System binaries are executed by privileged users as well as system services,
+  and restrictive permissions are necessary to ensure that their
+  execution of these programs cannot be co-opted.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-001499
+  800-53r4:
+    - AC-6(1)
+    - CM-5(6)
+    - CM-5(6).1
+    - CM-6(a)
+  srg:
+    - SRG-OS-000259-GPOS-00100
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-89620-9
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        find /bin/ \
+        /usr/bin/ \
+        /usr/local/bin/ \
+        /sbin/ \
+        /usr/sbin/ \
+        /usr/local/sbin/ \
+        /usr/libexec \
+        \! -user root -execdir chown root {} \;
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-80806-3
+        disa_stig:
+          - RHEL-08-010310
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        find /bin/ \
+        /usr/bin/ \
+        /usr/local/bin/ \
+        /sbin/ \
+        /usr/sbin/ \
+        /usr/local/sbin/ \
+        /usr/libexec \
+        \! -user root -execdir chown root {} \;
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-83908-4
+        disa_stig:
+          - RHEL-09-232190
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        find /bin/ \
+        /usr/bin/ \
+        /usr/local/bin/ \
+        /sbin/ \
+        /usr/sbin/ \
+        /usr/local/sbin/ \
+        /usr/libexec \
+        \! -user root -execdir chown root {} \;
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010457
+      check:
+        - N/A
+      fix:
+        - N/A
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-232050
+      check:
+        - N/A
+      fix:
+        - N/A

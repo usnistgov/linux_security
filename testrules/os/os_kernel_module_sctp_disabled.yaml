@@ -1,0 +1,223 @@
+id: os_kernel_module_sctp_disabled
+title: Disable SCTP Support
+discussion: |
+  Disabling SCTP protects
+  the system against exploitation of any flaws in its implementation.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000381
+  800-53r4:
+    - CM-6(a)
+    - CM-7(a)
+    - CM-7(b)
+  srg:
+    - SRG-OS-000095-GPOS-00049
+    - SRG-OS-000480-GPOS-00227
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-90489-6
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        if LC_ALL=C grep -q -m 1 "^install sctp" /etc/modprobe.d/sctp.conf ; then
+
+           sed -i 's#^install sctp.*#install sctp /bin/false#g' /etc/modprobe.d/sctp.conf
+        else
+           echo -e "\n# Disable per security requirements" >> /etc/modprobe.d/sctp.conf
+           echo "install sctp /bin/false" >> /etc/modprobe.d/sctp.conf
+        fi
+
+        if ! LC_ALL=C grep -q -m 1 "^blacklist sctp$" /etc/modprobe.d/sctp.conf ; then
+           echo "blacklist sctp" >> /etc/modprobe.d/sctp.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-80834-5
+        disa_stig:
+          - RHEL-08-040023
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        if LC_ALL=C grep -q -m 1 "^install sctp" /etc/modprobe.d/sctp.conf ; then
+
+           sed -i 's#^install sctp.*#install sctp /bin/false#g' /etc/modprobe.d/sctp.conf
+        else
+           echo -e "\n# Disable per security requirements" >> /etc/modprobe.d/sctp.conf
+           echo "install sctp /bin/false" >> /etc/modprobe.d/sctp.conf
+        fi
+
+        if ! LC_ALL=C grep -q -m 1 "^blacklist sctp$" /etc/modprobe.d/sctp.conf ; then
+           echo "blacklist sctp" >> /etc/modprobe.d/sctp.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-84139-5
+        disa_stig:
+          - RHEL-09-213060
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        if LC_ALL=C grep -q -m 1 "^install sctp" /etc/modprobe.d/sctp.conf ; then
+
+           sed -i 's#^install sctp.*#install sctp /bin/false#g' /etc/modprobe.d/sctp.conf
+        else
+           echo -e "\n# Disable per security requirements" >> /etc/modprobe.d/sctp.conf
+           echo "install sctp /bin/false" >> /etc/modprobe.d/sctp.conf
+        fi
+
+        if ! LC_ALL=C grep -q -m 1 "^blacklist sctp$" /etc/modprobe.d/sctp.conf ; then
+           echo "blacklist sctp" >> /etc/modprobe.d/sctp.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        if LC_ALL=C grep -q -m 1 "^install sctp" /etc/modprobe.d/sctp.conf ; then
+
+           sed -i 's#^install sctp.*#install sctp /bin/false#g' /etc/modprobe.d/sctp.conf
+        else
+           echo -e "\n# Disable per security requirements" >> /etc/modprobe.d/sctp.conf
+           echo "install sctp /bin/false" >> /etc/modprobe.d/sctp.conf
+        fi
+
+        if ! LC_ALL=C grep -q -m 1 "^blacklist sctp$" /etc/modprobe.d/sctp.conf ; then
+           echo "blacklist sctp" >> /etc/modprobe.d/sctp.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        if LC_ALL=C grep -q -m 1 "^install sctp" /etc/modprobe.d/sctp.conf ; then
+
+           sed -i 's#^install sctp.*#install sctp /bin/false#g' /etc/modprobe.d/sctp.conf
+        else
+           echo -e "\n# Disable per security requirements" >> /etc/modprobe.d/sctp.conf
+           echo "install sctp /bin/false" >> /etc/modprobe.d/sctp.conf
+        fi
+
+        if ! LC_ALL=C grep -q -m 1 "^blacklist sctp$" /etc/modprobe.d/sctp.conf ; then
+           echo "blacklist sctp" >> /etc/modprobe.d/sctp.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        if LC_ALL=C grep -q -m 1 "^install sctp" /etc/modprobe.d/sctp.conf ; then
+
+           sed -i 's#^install sctp.*#install sctp /bin/false#g' /etc/modprobe.d/sctp.conf
+        else
+           echo -e "\n# Disable per security requirements" >> /etc/modprobe.d/sctp.conf
+           echo "install sctp /bin/false" >> /etc/modprobe.d/sctp.conf
+        fi
+
+        if ! LC_ALL=C grep -q -m 1 "^blacklist sctp$" /etc/modprobe.d/sctp.conf ; then
+           echo "blacklist sctp" >> /etc/modprobe.d/sctp.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

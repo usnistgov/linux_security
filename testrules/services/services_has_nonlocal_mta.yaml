@@ -1,0 +1,95 @@
+id: services_has_nonlocal_mta
+title: Ensure Mail Transfer Agent is not Listening on any non-loopback Address
+discussion: |
+  The software for all Mail Transfer Agents is complex and most have a
+  long history of security issues. While it is important to ensure that
+  the system can process local mail messages, it is not necessary to have
+  the MTA's daemon listening on a port unless the server is intended to
+  be a mail server that receives and processes mail from other systems.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r4:
+    - N/A
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-88412-2
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A
+    '8':
+      references:
+        cce:
+          - CCE-88498-1
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A
+    '9':
+      references:
+        cce:
+          - CCE-88499-9
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A

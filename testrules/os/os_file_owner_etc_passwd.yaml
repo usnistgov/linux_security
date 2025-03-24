@@ -1,0 +1,119 @@
+id: os_file_owner_etc_passwd
+title: Verify User Who Owns passwd File
+discussion: |
+  The /etc/passwd file contains information about the users that are configured on
+  the system. Protection of this file is critical for system security.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000366
+  800-53r4:
+    - AC-6(1)
+    - CM-6(a)
+  srg:
+    - SRG-OS-000480-GPOS-00227
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-87827-2
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chown 0 /etc/passwd
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-80803-0
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chown 0 /etc/passwd
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-83943-1
+        disa_stig:
+          - RHEL-09-232130
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chown 0 /etc/passwd
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chown 0 /etc/passwd
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chown 0 /etc/passwd
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chown 0 /etc/passwd
+
+        ---

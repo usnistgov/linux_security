@@ -1,0 +1,80 @@
+id: os_ensure_single_user_mode_locked
+title: Ensure Authentication Required for Single User Mode
+discussion: |
+  Requiring authentication in single user mode prevents an unauthorized
+  user from rebooting the system into single user to gain root privileges
+  without credentials.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r4:
+    - N/A
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - N/A
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-89334-7
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A
+    '8':
+      references:
+        cce:
+          - CCE-86517-0
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A
+    '9':
+      references:
+        cce:
+          - CCE-87101-2
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A

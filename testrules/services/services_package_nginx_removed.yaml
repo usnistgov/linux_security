@@ -1,0 +1,166 @@
+id: services_package_nginx_removed
+title: Uninstall nginx Package
+discussion: |
+  If there is no need to make the web server software available,
+  removing it provides a safeguard against its activation.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r4:
+    - CM-6(a)
+    - CM-7(a)
+    - CM-7(b)
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: unknown
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-89648-0
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove nginx
+        #      from the system, and may remove any packages
+        #      that depend on nginx. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "nginx" ; then
+        dnf remove -y --noautoremove "nginx"
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-88034-4
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove nginx
+        #      from the system, and may remove any packages
+        #      that depend on nginx. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "nginx" ; then
+        yum remove -y "nginx"
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-88035-1
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove nginx
+        #      from the system, and may remove any packages
+        #      that depend on nginx. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "nginx" ; then
+        dnf remove -y --noautoremove "nginx"
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove nginx
+        #      from the system, and may remove any packages
+        #      that depend on nginx. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "nginx"
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove nginx
+        #      from the system, and may remove any packages
+        #      that depend on nginx. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "nginx"
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove nginx
+        #      from the system, and may remove any packages
+        #      that depend on nginx. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "nginx"
+
+        ---

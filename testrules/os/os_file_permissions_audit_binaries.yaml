@@ -1,0 +1,211 @@
+id: os_file_permissions_audit_binaries
+title: Verify that audit tools Have Mode 0755 or less
+discussion: |
+  Protecting audit information also includes identifying and protecting the
+  tools used to view and manipulate log data. Therefore, protecting audit
+  tools is necessary to prevent unauthorized operation on audit information.
+
+  Operating systems providing tools to interface with audit information
+  will leverage user permissions and roles identifying the user accessing the
+  tools and the corresponding rights the user enjoys to make access decisions
+  regarding the access to audit tools.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-001493
+    - CCI-001494
+  800-53r4:
+    - N/A
+  srg:
+    - SRG-OS-000256-GPOS-00097
+    - SRG-OS-000257-GPOS-00098
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-86166-6
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+
+
+
+        chmod u-s,g-ws,o-wt /sbin/auditctl
+
+        chmod u-s,g-ws,o-wt /sbin/aureport
+
+        chmod u-s,g-ws,o-wt /sbin/ausearch
+
+        chmod u-s,g-ws,o-wt /sbin/auditd
+
+        chmod u-s,g-ws,o-wt /sbin/augenrules
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-86447-0
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+
+
+
+        chmod u-s,g-ws,o-wt /sbin/auditctl
+
+        chmod u-s,g-ws,o-wt /sbin/aureport
+
+        chmod u-s,g-ws,o-wt /sbin/ausearch
+
+        chmod u-s,g-ws,o-wt /sbin/autrace
+
+        chmod u-s,g-ws,o-wt /sbin/auditd
+
+        chmod u-s,g-ws,o-wt /sbin/augenrules
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-86448-8
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+
+
+
+        chmod u-s,g-ws,o-wt /sbin/auditctl
+
+        chmod u-s,g-ws,o-wt /sbin/aureport
+
+        chmod u-s,g-ws,o-wt /sbin/ausearch
+
+        chmod u-s,g-ws,o-wt /sbin/autrace
+
+        chmod u-s,g-ws,o-wt /sbin/auditd
+
+        chmod u-s,g-ws,o-wt /sbin/augenrules
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010199
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+
+
+
+        chmod u-s,g-ws,o-wt /sbin/auditctl
+
+        chmod u-s,g-ws,o-wt /sbin/aureport
+
+        chmod u-s,g-ws,o-wt /sbin/ausearch
+
+        chmod u-s,g-ws,o-wt /sbin/autrace
+
+        chmod u-s,g-ws,o-wt /sbin/auditd
+
+        chmod u-s,g-ws,o-wt /sbin/audispd
+
+        chmod u-s,g-ws,o-wt /sbin/augenrules
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-232035
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+
+
+
+        chmod u-s,g-ws,o-wt /sbin/auditctl
+
+        chmod u-s,g-ws,o-wt /sbin/aureport
+
+        chmod u-s,g-ws,o-wt /sbin/ausearch
+
+        chmod u-s,g-ws,o-wt /sbin/autrace
+
+        chmod u-s,g-ws,o-wt /sbin/auditd
+
+        chmod u-s,g-ws,o-wt /sbin/audispd
+
+        chmod u-s,g-ws,o-wt /sbin/augenrules
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+
+
+
+        chmod u-s,g-ws,o-wt /sbin/auditctl
+
+        chmod u-s,g-ws,o-wt /sbin/aureport
+
+        chmod u-s,g-ws,o-wt /sbin/ausearch
+
+        chmod u-s,g-ws,o-wt /sbin/autrace
+
+        chmod u-s,g-ws,o-wt /sbin/auditd
+
+        chmod u-s,g-ws,o-wt /sbin/audispd
+
+        chmod u-s,g-ws,o-wt /sbin/augenrules
+
+        ---

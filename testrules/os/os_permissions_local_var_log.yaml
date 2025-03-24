@@ -1,0 +1,67 @@
+id: os_permissions_local_var_log
+title: Verify permissions of log files
+discussion: |
+  The Ubuntu 20.04 must generate error messages that provide information
+  necessary for corrective actions without revealing information that could
+  be exploited by adversaries.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-001312
+  800-53r4:
+    - SI-11(a)
+    - SI-11(b)
+    - SI-11.1(iii)
+  srg:
+    - SRG-OS-000205-GPOS-00083
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - N/A
+severity: medium
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010416
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+
+
+
+        find  /var/log/  -perm /u+xs,g+xws,o+xwrt ! -name 'history.log' ! -name 'eipp.log.xz' ! -name '*[bw]tmp' ! -name '*lastlog' -type f -regextype posix-extended -regex '.*' -exec chmod u-xs,g-xws,o-xwrt {} \;
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-232026
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+
+
+
+        find  /var/log/  -perm /u+xs,g+xws,o+xwrt ! -name 'history.log' ! -name 'eipp.log.xz' ! -name '*[bw]tmp' ! -name '*lastlog' -type f -regextype posix-extended -regex '.*' -exec chmod u-xs,g-xws,o-xwrt {} \;
+
+        ---

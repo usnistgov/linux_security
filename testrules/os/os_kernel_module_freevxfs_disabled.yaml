@@ -1,0 +1,160 @@
+id: os_kernel_module_freevxfs_disabled
+title: Disable Mounting of freevxfs
+discussion: |
+  Linux kernel modules which implement filesystems that are not needed by the
+  local system should be disabled.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r4:
+    - CM-6(a)
+    - CM-7(a)
+    - CM-7(b)
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: low
+os_specifics:
+  rhel:
+    '8':
+      references:
+        cce:
+          - CCE-86615-2
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        if LC_ALL=C grep -q -m 1 "^install freevxfs" /etc/modprobe.d/freevxfs.conf ; then
+
+           sed -i 's#^install freevxfs.*#install freevxfs /bin/false#g' /etc/modprobe.d/freevxfs.conf
+        else
+           echo -e "\n# Disable per security requirements" >> /etc/modprobe.d/freevxfs.conf
+           echo "install freevxfs /bin/false" >> /etc/modprobe.d/freevxfs.conf
+        fi
+
+        if ! LC_ALL=C grep -q -m 1 "^blacklist freevxfs$" /etc/modprobe.d/freevxfs.conf ; then
+           echo "blacklist freevxfs" >> /etc/modprobe.d/freevxfs.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-86763-0
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        if LC_ALL=C grep -q -m 1 "^install freevxfs" /etc/modprobe.d/freevxfs.conf ; then
+
+           sed -i 's#^install freevxfs.*#install freevxfs /bin/false#g' /etc/modprobe.d/freevxfs.conf
+        else
+           echo -e "\n# Disable per security requirements" >> /etc/modprobe.d/freevxfs.conf
+           echo "install freevxfs /bin/false" >> /etc/modprobe.d/freevxfs.conf
+        fi
+
+        if ! LC_ALL=C grep -q -m 1 "^blacklist freevxfs$" /etc/modprobe.d/freevxfs.conf ; then
+           echo "blacklist freevxfs" >> /etc/modprobe.d/freevxfs.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        if LC_ALL=C grep -q -m 1 "^install freevxfs" /etc/modprobe.d/freevxfs.conf ; then
+
+           sed -i 's#^install freevxfs.*#install freevxfs /bin/false#g' /etc/modprobe.d/freevxfs.conf
+        else
+           echo -e "\n# Disable per security requirements" >> /etc/modprobe.d/freevxfs.conf
+           echo "install freevxfs /bin/false" >> /etc/modprobe.d/freevxfs.conf
+        fi
+
+        if ! LC_ALL=C grep -q -m 1 "^blacklist freevxfs$" /etc/modprobe.d/freevxfs.conf ; then
+           echo "blacklist freevxfs" >> /etc/modprobe.d/freevxfs.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        if LC_ALL=C grep -q -m 1 "^install freevxfs" /etc/modprobe.d/freevxfs.conf ; then
+
+           sed -i 's#^install freevxfs.*#install freevxfs /bin/false#g' /etc/modprobe.d/freevxfs.conf
+        else
+           echo -e "\n# Disable per security requirements" >> /etc/modprobe.d/freevxfs.conf
+           echo "install freevxfs /bin/false" >> /etc/modprobe.d/freevxfs.conf
+        fi
+
+        if ! LC_ALL=C grep -q -m 1 "^blacklist freevxfs$" /etc/modprobe.d/freevxfs.conf ; then
+           echo "blacklist freevxfs" >> /etc/modprobe.d/freevxfs.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

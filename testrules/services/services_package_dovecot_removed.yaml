@@ -1,0 +1,164 @@
+id: services_package_dovecot_removed
+title: Uninstall dovecot Package
+discussion: |
+  If there is no need to make the Dovecot software available,
+  removing it provides a safeguard against its activation.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r4:
+    - N/A
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: unknown
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-86197-1
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove dovecot
+        #      from the system, and may remove any packages
+        #      that depend on dovecot. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "dovecot" ; then
+        dnf remove -y --noautoremove "dovecot"
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-85976-9
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove dovecot
+        #      from the system, and may remove any packages
+        #      that depend on dovecot. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "dovecot" ; then
+        yum remove -y "dovecot"
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-85977-7
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove dovecot
+        #      from the system, and may remove any packages
+        #      that depend on dovecot. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "dovecot" ; then
+        dnf remove -y --noautoremove "dovecot"
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove dovecot-core
+        #      from the system, and may remove any packages
+        #      that depend on dovecot-core. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "dovecot-core"
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove dovecot-core
+        #      from the system, and may remove any packages
+        #      that depend on dovecot-core. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "dovecot-core"
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove dovecot-core
+        #      from the system, and may remove any packages
+        #      that depend on dovecot-core. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "dovecot-core"
+
+        ---

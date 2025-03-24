@@ -1,0 +1,74 @@
+id: os_dir_groupownership_binary_dirs
+title: Verify that system commands directories are group owned by root
+discussion: |
+  If the operating system allows any user to make changes to software
+  libraries, then those changes might be implemented without undergoing the
+  appropriate testing and approvals that are part of a robust change management
+  process.
+  This requirement applies to operating systems with software libraries
+  that are accessible and configurable, as in the case of interpreted languages.
+  Software libraries also include privileged programs which execute with
+  escalated privileges. Only qualified and authorized individuals must be
+  allowed to obtain access to information system components for purposes
+  of initiating changes, including upgrades and modifications.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-001495
+  800-53r4:
+    - N/A
+  srg:
+    - SRG-OS-000258-GPOS-00099
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - N/A
+severity: medium
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010425
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        find -H /bin/  -type d -exec chgrp -L 0 {} \;
+        find -H /sbin/  -type d -exec chgrp -L 0 {} \;
+        find -H /usr/bin/  -type d -exec chgrp -L 0 {} \;
+        find -H /usr/sbin/  -type d -exec chgrp -L 0 {} \;
+        find -H /usr/local/bin/  -type d -exec chgrp -L 0 {} \;
+        find -H /usr/local/sbin/  -type d -exec chgrp -L 0 {} \;
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-232045
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        find -H /bin/  -type d -exec chgrp -L 0 {} \;
+        find -H /sbin/  -type d -exec chgrp -L 0 {} \;
+        find -H /usr/bin/  -type d -exec chgrp -L 0 {} \;
+        find -H /usr/sbin/  -type d -exec chgrp -L 0 {} \;
+        find -H /usr/local/bin/  -type d -exec chgrp -L 0 {} \;
+        find -H /usr/local/sbin/  -type d -exec chgrp -L 0 {} \;
+
+        ---

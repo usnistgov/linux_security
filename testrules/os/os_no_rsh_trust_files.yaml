@@ -1,0 +1,150 @@
+id: os_no_rsh_trust_files
+title: Remove Rsh Trust Files
+discussion: |
+  This action is only meaningful if .rhosts support is permitted
+  through PAM. Trust files are convenient, but when used in conjunction with
+  the R-services, they can allow unauthenticated access to a system.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-001436
+  800-53r4:
+    - CM-6(a)
+    - CM-7(a)
+    - CM-7(b)
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: high
+os_specifics:
+  rhel:
+    '8':
+      references:
+        cce:
+          - CCE-80842-8
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q rsh-server; then
+
+        find /root -xdev -type f -name ".rhosts" -exec rm -f {} \;
+        find /home -maxdepth 2 -xdev -type f -name ".rhosts" -exec rm -f {} \;
+        rm -f /etc/hosts.equiv
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-84145-2
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q rsh-server; then
+
+        find /root -xdev -type f -name ".rhosts" -exec rm -f {} \;
+        find /home -maxdepth 2 -xdev -type f -name ".rhosts" -exec rm -f {} \;
+        rm -f /etc/hosts.equiv
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'rsh-server' 2>/dev/null | grep -q '^installed'; then
+
+        find /root -xdev -type f -name ".rhosts" -exec rm -f {} \;
+        find /home -maxdepth 2 -xdev -type f -name ".rhosts" -exec rm -f {} \;
+        rm -f /etc/hosts.equiv
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'rsh-server' 2>/dev/null | grep -q '^installed'; then
+
+        find /root -xdev -type f -name ".rhosts" -exec rm -f {} \;
+        find /home -maxdepth 2 -xdev -type f -name ".rhosts" -exec rm -f {} \;
+        rm -f /etc/hosts.equiv
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'rsh-server' 2>/dev/null | grep -q '^installed'; then
+
+        find /root -xdev -type f -name ".rhosts" -exec rm -f {} \;
+        find /home -maxdepth 2 -xdev -type f -name ".rhosts" -exec rm -f {} \;
+        rm -f /etc/hosts.equiv
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

@@ -1,0 +1,195 @@
+id: os_aide_periodic_cron_checking
+title: Configure Periodic Execution of AIDE
+discussion: |
+  By default, AIDE does not install itself for periodic execution. Periodically
+  running AIDE is necessary to reveal unexpected changes in installed files.
+
+
+  Unauthorized changes to the baseline configuration could make the system vulnerable
+  to various attacks or allow unauthorized access to the operating system. Changes to
+  operating system configurations can have unintended side effects, some of which may
+  be relevant to security.
+
+
+  Detecting such changes and providing an automated response can help avoid unintended,
+  negative consequences that could ultimately affect the security state of the operating
+  system. The operating system's Information Management Officer (IMO)/Information System
+  Security Officer (ISSO) and System Administrators (SAs) must be notified via email and/or
+  monitoring system trap when there is an unauthorized modification of a configuration item.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-001744
+    - CCI-002699
+    - CCI-002702
+  800-53r4:
+    - CM-6(a)
+    - SI-7
+    - SI-7(1)
+  srg:
+    - SRG-OS-000363-GPOS-00150
+    - SRG-OS-000446-GPOS-00200
+    - SRG-OS-000447-GPOS-00201
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-86738-2
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        if ! rpm -q --quiet "aide" ; then
+            dnf install -y "aide"
+        fi
+
+        if ! grep -q "/usr/sbin/aide --check" /etc/crontab ; then
+            echo "05 4 * * * root /usr/sbin/aide --check" >> /etc/crontab
+        else
+            sed -i '\!^.* --check.*$!d' /etc/crontab
+            echo "05 4 * * * root /usr/sbin/aide --check" >> /etc/crontab
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-80676-0
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        if ! rpm -q --quiet "aide" ; then
+            yum install -y "aide"
+        fi
+
+        if ! grep -q "/usr/sbin/aide --check" /etc/crontab ; then
+            echo "05 4 * * * root /usr/sbin/aide --check" >> /etc/crontab
+        else
+            sed -i '\!^.* --check.*$!d' /etc/crontab
+            echo "05 4 * * * root /usr/sbin/aide --check" >> /etc/crontab
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-83437-4
+        disa_stig:
+          - RHEL-09-651015
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        if ! rpm -q --quiet "aide" ; then
+            dnf install -y "aide"
+        fi
+
+        if ! grep -q "/usr/sbin/aide --check" /etc/crontab ; then
+            echo "05 4 * * * root /usr/sbin/aide --check" >> /etc/crontab
+        else
+            sed -i '\!^.* --check.*$!d' /etc/crontab
+            echo "05 4 * * * root /usr/sbin/aide --check" >> /etc/crontab
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010074
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        DEBIAN_FRONTEND=noninteractive apt-get install -y "aide"
+
+        # AiDE usually adds its own cron jobs to /etc/cron.daily. If script is there, this rule is
+        # compliant. Otherwise, we copy the script to the /etc/cron.weekly
+        if ! grep -Eq '^(\/usr\/bin\/)?aide(\.wrapper)?\s+' /etc/cron.*/*; then
+            cp -f /usr/share/aide/config/cron.daily/aide /etc/cron.weekly/
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-651025
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        DEBIAN_FRONTEND=noninteractive apt-get install -y "aide"
+
+        # AiDE usually adds its own cron jobs to /etc/cron.daily. If script is there, this rule is
+        # compliant. Otherwise, we copy the script to the /etc/cron.weekly
+        if ! grep -Eq '^(\/usr\/bin\/)?aide(\.wrapper)?\s+' /etc/cron.*/*; then
+            cp -f /usr/share/aide/config/cron.daily/aide /etc/cron.weekly/
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

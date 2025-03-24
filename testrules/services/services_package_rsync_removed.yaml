@@ -1,0 +1,164 @@
+id: services_package_rsync_removed
+title: Uninstall rsync Package
+discussion: |
+  The rsyncd service presents a security risk as it uses unencrypted protocols for
+  communication.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r4:
+    - N/A
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-88025-2
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove rsync-daemon
+        #      from the system, and may remove any packages
+        #      that depend on rsync-daemon. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "rsync-daemon" ; then
+        dnf remove -y --noautoremove "rsync-daemon"
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-86335-7
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove rsync-daemon
+        #      from the system, and may remove any packages
+        #      that depend on rsync-daemon. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "rsync-daemon" ; then
+        yum remove -y "rsync-daemon"
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-86336-5
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove rsync-daemon
+        #      from the system, and may remove any packages
+        #      that depend on rsync-daemon. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "rsync-daemon" ; then
+        dnf remove -y --noautoremove "rsync-daemon"
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove rsync
+        #      from the system, and may remove any packages
+        #      that depend on rsync. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "rsync"
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove rsync
+        #      from the system, and may remove any packages
+        #      that depend on rsync. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "rsync"
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove rsync
+        #      from the system, and may remove any packages
+        #      that depend on rsync. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "rsync"
+
+        ---

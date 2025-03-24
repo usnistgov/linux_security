@@ -1,0 +1,171 @@
+id: networking_service_ufw_enabled
+title: Verify ufw Enabled
+discussion: The ufw service must be enabled and running in order for ufw to protect
+  the system
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-002314
+  800-53r4:
+    - N/A
+  srg:
+    - SRG-OS-000297-GPOS-00115
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '8':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel && { ( rpm --quiet -q ufw && rpm --quiet -q kernel ); }; then
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+        "$SYSTEMCTL_EXEC" unmask 'ufw.service'
+        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+          "$SYSTEMCTL_EXEC" start 'ufw.service'
+        fi
+        "$SYSTEMCTL_EXEC" enable 'ufw.service'
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel && { ( rpm --quiet -q ufw && rpm --quiet -q kernel ); }; then
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+        "$SYSTEMCTL_EXEC" unmask 'ufw.service'
+        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+          "$SYSTEMCTL_EXEC" start 'ufw.service'
+        fi
+        "$SYSTEMCTL_EXEC" enable 'ufw.service'
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010434
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && { ( dpkg-query --show --showformat='${db:Status-Status}\n' 'ufw' 2>/dev/null | grep -q '^installed' && dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed ); }; then
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+        "$SYSTEMCTL_EXEC" unmask 'ufw.service'
+        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+          "$SYSTEMCTL_EXEC" start 'ufw.service'
+        fi
+        "$SYSTEMCTL_EXEC" enable 'ufw.service'
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-251020
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && { ( dpkg-query --show --showformat='${db:Status-Status}\n' 'ufw' 2>/dev/null | grep -q '^installed' && dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed ); }; then
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+        "$SYSTEMCTL_EXEC" unmask 'ufw.service'
+        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+          "$SYSTEMCTL_EXEC" start 'ufw.service'
+        fi
+        "$SYSTEMCTL_EXEC" enable 'ufw.service'
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && { ( dpkg-query --show --showformat='${db:Status-Status}\n' 'ufw' 2>/dev/null | grep -q '^installed' && dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed ); }; then
+
+        var_network_filtering_service=''
+
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+
+        if [ $var_network_filtering_service == ufw ]; then
+          "$SYSTEMCTL_EXEC" unmask 'ufw.service'
+          "$SYSTEMCTL_EXEC" start 'ufw.service'
+          "$SYSTEMCTL_EXEC" enable 'ufw.service'
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

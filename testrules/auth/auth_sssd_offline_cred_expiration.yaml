@@ -1,0 +1,325 @@
+id: auth_sssd_offline_cred_expiration
+title: Configure SSSD to Expire Offline Credentials
+discussion: |
+  If cached authentication information is out-of-date, the validity of the
+  authentication information may be questionable.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-002007
+  800-53r4:
+    - CM-6(a)
+    - IA-5(13)
+  srg:
+    - SRG-OS-000383-GPOS-00166
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - N/A
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-90741-0
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q sssd-common; then
+
+        # sssd configuration files must be created with 600 permissions if they don't exist
+        # otherwise the sssd module fails to start
+        OLD_UMASK=$(umask)
+        umask u=rw,go=
+
+        found=false
+
+        # set value in all files if they contain section or key
+        for f in $(echo -n "/etc/sssd/sssd.conf /etc/sssd/conf.d/*.conf"); do
+            if [ ! -e "$f" ]; then
+                continue
+            fi
+
+            # find key in section and change value
+            if grep -qzosP "[[:space:]]*\[pam\]([^\n\[]*\n+)+?[[:space:]]*offline_credentials_expiration" "$f"; then
+
+                    sed -i "s/offline_credentials_expiration[^(\n)]*/offline_credentials_expiration=1/" "$f"
+
+                    found=true
+
+            # find section and add key = value to it
+            elif grep -qs "[[:space:]]*\[pam\]" "$f"; then
+
+                    sed -i "/[[:space:]]*\[pam\]/a offline_credentials_expiration=1" "$f"
+
+                    found=true
+            fi
+        done
+
+        # if section not in any file, append section with key = value to FIRST file in files parameter
+        if ! $found ; then
+            file=$(echo "/etc/sssd/sssd.conf /etc/sssd/conf.d/*.conf" | cut -f1 -d ' ')
+            mkdir -p "$(dirname "$file")"
+
+            echo -e "[pam]\noffline_credentials_expiration=1" >> "$file"
+
+        fi
+
+        umask $OLD_UMASK
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-82460-7
+        disa_stig:
+          - RHEL-08-020290
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q sssd-common; then
+
+        # sssd configuration files must be created with 600 permissions if they don't exist
+        # otherwise the sssd module fails to start
+        OLD_UMASK=$(umask)
+        umask u=rw,go=
+
+        found=false
+
+        # set value in all files if they contain section or key
+        for f in $(echo -n "/etc/sssd/sssd.conf /etc/sssd/conf.d/*.conf"); do
+            if [ ! -e "$f" ]; then
+                continue
+            fi
+
+            # find key in section and change value
+            if grep -qzosP "[[:space:]]*\[pam\]([^\n\[]*\n+)+?[[:space:]]*offline_credentials_expiration" "$f"; then
+
+                    sed -i "s/offline_credentials_expiration[^(\n)]*/offline_credentials_expiration=1/" "$f"
+
+                    found=true
+
+            # find section and add key = value to it
+            elif grep -qs "[[:space:]]*\[pam\]" "$f"; then
+
+                    sed -i "/[[:space:]]*\[pam\]/a offline_credentials_expiration=1" "$f"
+
+                    found=true
+            fi
+        done
+
+        # if section not in any file, append section with key = value to FIRST file in files parameter
+        if ! $found ; then
+            file=$(echo "/etc/sssd/sssd.conf /etc/sssd/conf.d/*.conf" | cut -f1 -d ' ')
+            mkdir -p "$(dirname "$file")"
+
+            echo -e "[pam]\noffline_credentials_expiration=1" >> "$file"
+
+        fi
+
+        umask $OLD_UMASK
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-87996-5
+        disa_stig:
+          - RHEL-09-631020
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q sssd-common; then
+
+        # sssd configuration files must be created with 600 permissions if they don't exist
+        # otherwise the sssd module fails to start
+        OLD_UMASK=$(umask)
+        umask u=rw,go=
+
+        found=false
+
+        # set value in all files if they contain section or key
+        for f in $(echo -n "/etc/sssd/sssd.conf /etc/sssd/conf.d/*.conf"); do
+            if [ ! -e "$f" ]; then
+                continue
+            fi
+
+            # find key in section and change value
+            if grep -qzosP "[[:space:]]*\[pam\]([^\n\[]*\n+)+?[[:space:]]*offline_credentials_expiration" "$f"; then
+
+                    sed -i "s/offline_credentials_expiration[^(\n)]*/offline_credentials_expiration=1/" "$f"
+
+                    found=true
+
+            # find section and add key = value to it
+            elif grep -qs "[[:space:]]*\[pam\]" "$f"; then
+
+                    sed -i "/[[:space:]]*\[pam\]/a offline_credentials_expiration=1" "$f"
+
+                    found=true
+            fi
+        done
+
+        # if section not in any file, append section with key = value to FIRST file in files parameter
+        if ! $found ; then
+            file=$(echo "/etc/sssd/sssd.conf /etc/sssd/conf.d/*.conf" | cut -f1 -d ' ')
+            mkdir -p "$(dirname "$file")"
+
+            echo -e "[pam]\noffline_credentials_expiration=1" >> "$file"
+
+        fi
+
+        umask $OLD_UMASK
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010441
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'sssd-common' 2>/dev/null | grep -q '^installed'; then
+
+        # sssd configuration files must be created with 600 permissions if they don't exist
+        # otherwise the sssd module fails to start
+        OLD_UMASK=$(umask)
+        umask u=rw,go=
+
+        found=false
+
+        # set value in all files if they contain section or key
+        for f in $(echo -n "/etc/sssd/sssd.conf /etc/sssd/conf.d/*.conf"); do
+            if [ ! -e "$f" ]; then
+                continue
+            fi
+
+            # find key in section and change value
+            if grep -qzosP "[[:space:]]*\[pam\]([^\n\[]*\n+)+?[[:space:]]*offline_credentials_expiration" "$f"; then
+
+                    sed -i "s/offline_credentials_expiration[^(\n)]*/offline_credentials_expiration=1/" "$f"
+
+                    found=true
+
+            # find section and add key = value to it
+            elif grep -qs "[[:space:]]*\[pam\]" "$f"; then
+
+                    sed -i "/[[:space:]]*\[pam\]/a offline_credentials_expiration=1" "$f"
+
+                    found=true
+            fi
+        done
+
+        # if section not in any file, append section with key = value to FIRST file in files parameter
+        if ! $found ; then
+            file=$(echo "/etc/sssd/sssd.conf /etc/sssd/conf.d/*.conf" | cut -f1 -d ' ')
+            mkdir -p "$(dirname "$file")"
+
+            echo -e "[pam]\noffline_credentials_expiration=1" >> "$file"
+
+        fi
+
+        umask $OLD_UMASK
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-631015
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'sssd-common' 2>/dev/null | grep -q '^installed'; then
+
+        # sssd configuration files must be created with 600 permissions if they don't exist
+        # otherwise the sssd module fails to start
+        OLD_UMASK=$(umask)
+        umask u=rw,go=
+
+        found=false
+
+        # set value in all files if they contain section or key
+        for f in $(echo -n "/etc/sssd/sssd.conf /etc/sssd/conf.d/*.conf"); do
+            if [ ! -e "$f" ]; then
+                continue
+            fi
+
+            # find key in section and change value
+            if grep -qzosP "[[:space:]]*\[pam\]([^\n\[]*\n+)+?[[:space:]]*offline_credentials_expiration" "$f"; then
+
+                    sed -i "s/offline_credentials_expiration[^(\n)]*/offline_credentials_expiration=1/" "$f"
+
+                    found=true
+
+            # find section and add key = value to it
+            elif grep -qs "[[:space:]]*\[pam\]" "$f"; then
+
+                    sed -i "/[[:space:]]*\[pam\]/a offline_credentials_expiration=1" "$f"
+
+                    found=true
+            fi
+        done
+
+        # if section not in any file, append section with key = value to FIRST file in files parameter
+        if ! $found ; then
+            file=$(echo "/etc/sssd/sssd.conf /etc/sssd/conf.d/*.conf" | cut -f1 -d ' ')
+            mkdir -p "$(dirname "$file")"
+
+            echo -e "[pam]\noffline_credentials_expiration=1" >> "$file"
+
+        fi
+
+        umask $OLD_UMASK
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

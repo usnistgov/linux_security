@@ -1,0 +1,85 @@
+id: os_file_owner_var_log_syslog
+title: Verify User Who Owns /var/log/syslog File
+discussion: |
+  The /var/log/syslog file contains logs of error messages in
+  the system and should only be accessed by authorized personnel.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-001314
+  800-53r4:
+    - N/A
+  srg:
+    - SRG-OS-000206-GPOS-00084
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - N/A
+severity: medium
+os_specifics:
+  rhel:
+    '8':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chown 104 /var/log/syslog
+
+        ---
+    '9':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chown 104 /var/log/syslog
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010421
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chown 104 /var/log/syslog
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-232130
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chown 104 /var/log/syslog
+
+        ---

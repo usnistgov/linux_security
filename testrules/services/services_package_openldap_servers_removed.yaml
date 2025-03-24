@@ -1,0 +1,144 @@
+id: services_package_openldap_servers_removed
+title: Uninstall openldap-servers Package
+discussion: |
+  Unnecessary packages should not be installed to decrease the attack
+  surface of the system.  While this software is clearly essential on an LDAP
+  server, it is not necessary on typical desktop or workstation systems.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000366
+  800-53r4:
+    - CM-6(a)
+    - CM-7(a)
+    - CM-7(b)
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: low
+os_specifics:
+  rhel:
+    '8':
+      references:
+        cce:
+          - CCE-82415-1
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove openldap-servers
+        #      from the system, and may remove any packages
+        #      that depend on openldap-servers. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "openldap-servers" ; then
+        yum remove -y "openldap-servers"
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove openldap-servers
+        #      from the system, and may remove any packages
+        #      that depend on openldap-servers. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "openldap-servers" ; then
+        dnf remove -y --noautoremove "openldap-servers"
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove slapd
+        #      from the system, and may remove any packages
+        #      that depend on slapd. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "slapd"
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove slapd
+        #      from the system, and may remove any packages
+        #      that depend on slapd. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "slapd"
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove slapd
+        #      from the system, and may remove any packages
+        #      that depend on slapd. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "slapd"
+
+        ---

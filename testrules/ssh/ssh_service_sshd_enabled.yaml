@@ -1,0 +1,181 @@
+id: ssh_service_sshd_enabled
+title: Enable the OpenSSH Service
+discussion: |
+  Without protection of the transmitted information, confidentiality, and
+  integrity may be compromised because unprotected communications can be
+  intercepted and either read or altered.
+
+
+  This checklist item applies to both internal and external networks and all types
+  of information system components from which information can be transmitted (e.g., servers,
+  mobile devices, notebook computers, printers, copiers, scanners, etc). Communication paths
+  outside the physical protection of a controlled boundary are exposed to the possibility
+  of interception and modification.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-002418
+    - CCI-002420
+    - CCI-002421
+    - CCI-002422
+  800-53r4:
+    - CM-6(a)
+    - SC-8
+    - SC-8(1)
+    - SC-8(2)
+    - SC-8(3)
+    - SC-8(4)
+  srg:
+    - SRG-OS-000423-GPOS-00187
+    - SRG-OS-000424-GPOS-00188
+    - SRG-OS-000425-GPOS-00189
+    - SRG-OS-000426-GPOS-00190
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-88621-8
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+        "$SYSTEMCTL_EXEC" unmask 'sshd.service'
+        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+          "$SYSTEMCTL_EXEC" start 'sshd.service'
+        fi
+        "$SYSTEMCTL_EXEC" enable 'sshd.service'
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-82426-8
+        disa_stig:
+          - RHEL-08-040160
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+        "$SYSTEMCTL_EXEC" unmask 'sshd.service'
+        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+          "$SYSTEMCTL_EXEC" start 'sshd.service'
+        fi
+        "$SYSTEMCTL_EXEC" enable 'sshd.service'
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-90822-8
+        disa_stig:
+          - RHEL-09-255015
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+        "$SYSTEMCTL_EXEC" unmask 'sshd.service'
+        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+          "$SYSTEMCTL_EXEC" start 'sshd.service'
+        fi
+        "$SYSTEMCTL_EXEC" enable 'sshd.service'
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010042
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+        "$SYSTEMCTL_EXEC" unmask 'ssh.service'
+        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+          "$SYSTEMCTL_EXEC" start 'ssh.service'
+        fi
+        "$SYSTEMCTL_EXEC" enable 'ssh.service'
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-255015
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+        "$SYSTEMCTL_EXEC" unmask 'ssh.service'
+        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+          "$SYSTEMCTL_EXEC" start 'ssh.service'
+        fi
+        "$SYSTEMCTL_EXEC" enable 'ssh.service'
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

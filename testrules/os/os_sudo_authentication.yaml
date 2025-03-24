@@ -1,0 +1,295 @@
+id: os_sudo_authentication
+title: Ensure Users Re-Authenticate for Privilege Escalation - sudo
+discussion: |
+  Without re-authentication, users may access resources or perform tasks for which they
+  do not have authorization.
+
+
+  When operating systems provide the capability to escalate a functional capability, it
+  is critical that the user re-authenticate.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-002038
+    - CCI-004895
+  800-53r4:
+    - CM-6(a)
+    - IA-11
+  srg:
+    - SRG-OS-000373-GPOS-00156
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-87457-8
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        for f in /etc/sudoers /etc/sudoers.d/* ; do
+          if [ ! -e "$f" ] ; then
+            continue
+          fi
+          matching_list=$(grep -P '^(?!#).*[\s]+NOPASSWD[\s]*\:.*$' $f | uniq )
+          if ! test -z "$matching_list"; then
+            while IFS= read -r entry; do
+              # comment out "NOPASSWD" matches to preserve user data
+              sed -i "s/^${entry}$/# &/g" $f
+            done <<< "$matching_list"
+
+            /usr/sbin/visudo -cf $f &> /dev/null || echo "Fail to validate $f with visudo"
+          fi
+        done
+
+        for f in /etc/sudoers /etc/sudoers.d/* ; do
+          if [ ! -e "$f" ] ; then
+            continue
+          fi
+          matching_list=$(grep -P '^(?!#).*[\s]+\!authenticate.*$' $f | uniq )
+          if ! test -z "$matching_list"; then
+            while IFS= read -r entry; do
+              # comment out "!authenticate" matches to preserve user data
+              sed -i "s/^${entry}$/# &/g" $f
+            done <<< "$matching_list"
+
+            /usr/sbin/visudo -cf $f &> /dev/null || echo "Fail to validate $f with visudo"
+          fi
+        done
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-82279-1
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        for f in /etc/sudoers /etc/sudoers.d/* ; do
+          if [ ! -e "$f" ] ; then
+            continue
+          fi
+          matching_list=$(grep -P '^(?!#).*[\s]+NOPASSWD[\s]*\:.*$' $f | uniq )
+          if ! test -z "$matching_list"; then
+            while IFS= read -r entry; do
+              # comment out "NOPASSWD" matches to preserve user data
+              sed -i "s/^${entry}$/# &/g" $f
+            done <<< "$matching_list"
+
+            /usr/sbin/visudo -cf $f &> /dev/null || echo "Fail to validate $f with visudo"
+          fi
+        done
+
+        for f in /etc/sudoers /etc/sudoers.d/* ; do
+          if [ ! -e "$f" ] ; then
+            continue
+          fi
+          matching_list=$(grep -P '^(?!#).*[\s]+\!authenticate.*$' $f | uniq )
+          if ! test -z "$matching_list"; then
+            while IFS= read -r entry; do
+              # comment out "!authenticate" matches to preserve user data
+              sed -i "s/^${entry}$/# &/g" $f
+            done <<< "$matching_list"
+
+            /usr/sbin/visudo -cf $f &> /dev/null || echo "Fail to validate $f with visudo"
+          fi
+        done
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-83543-9
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        for f in /etc/sudoers /etc/sudoers.d/* ; do
+          if [ ! -e "$f" ] ; then
+            continue
+          fi
+          matching_list=$(grep -P '^(?!#).*[\s]+NOPASSWD[\s]*\:.*$' $f | uniq )
+          if ! test -z "$matching_list"; then
+            while IFS= read -r entry; do
+              # comment out "NOPASSWD" matches to preserve user data
+              sed -i "s/^${entry}$/# &/g" $f
+            done <<< "$matching_list"
+
+            /usr/sbin/visudo -cf $f &> /dev/null || echo "Fail to validate $f with visudo"
+          fi
+        done
+
+        for f in /etc/sudoers /etc/sudoers.d/* ; do
+          if [ ! -e "$f" ] ; then
+            continue
+          fi
+          matching_list=$(grep -P '^(?!#).*[\s]+\!authenticate.*$' $f | uniq )
+          if ! test -z "$matching_list"; then
+            while IFS= read -r entry; do
+              # comment out "!authenticate" matches to preserve user data
+              sed -i "s/^${entry}$/# &/g" $f
+            done <<< "$matching_list"
+
+            /usr/sbin/visudo -cf $f &> /dev/null || echo "Fail to validate $f with visudo"
+          fi
+        done
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010014
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        for f in /etc/sudoers /etc/sudoers.d/* ; do
+          if [ ! -e "$f" ] ; then
+            continue
+          fi
+          matching_list=$(grep -P '^(?!#).*[\s]+NOPASSWD[\s]*\:.*$' $f | uniq )
+          if ! test -z "$matching_list"; then
+            while IFS= read -r entry; do
+              # comment out "NOPASSWD" matches to preserve user data
+              sed -i "s/^${entry}$/# &/g" $f
+            done <<< "$matching_list"
+
+            /usr/sbin/visudo -cf $f &> /dev/null || echo "Fail to validate $f with visudo"
+          fi
+        done
+
+        for f in /etc/sudoers /etc/sudoers.d/* ; do
+          if [ ! -e "$f" ] ; then
+            continue
+          fi
+          matching_list=$(grep -P '^(?!#).*[\s]+\!authenticate.*$' $f | uniq )
+          if ! test -z "$matching_list"; then
+            while IFS= read -r entry; do
+              # comment out "!authenticate" matches to preserve user data
+              sed -i "s/^${entry}$/# &/g" $f
+            done <<< "$matching_list"
+
+            /usr/sbin/visudo -cf $f &> /dev/null || echo "Fail to validate $f with visudo"
+          fi
+        done
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-432010
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        for f in /etc/sudoers /etc/sudoers.d/* ; do
+          if [ ! -e "$f" ] ; then
+            continue
+          fi
+          matching_list=$(grep -P '^(?!#).*[\s]+NOPASSWD[\s]*\:.*$' $f | uniq )
+          if ! test -z "$matching_list"; then
+            while IFS= read -r entry; do
+              # comment out "NOPASSWD" matches to preserve user data
+              sed -i "s/^${entry}$/# &/g" $f
+            done <<< "$matching_list"
+
+            /usr/sbin/visudo -cf $f &> /dev/null || echo "Fail to validate $f with visudo"
+          fi
+        done
+
+        for f in /etc/sudoers /etc/sudoers.d/* ; do
+          if [ ! -e "$f" ] ; then
+            continue
+          fi
+          matching_list=$(grep -P '^(?!#).*[\s]+\!authenticate.*$' $f | uniq )
+          if ! test -z "$matching_list"; then
+            while IFS= read -r entry; do
+              # comment out "!authenticate" matches to preserve user data
+              sed -i "s/^${entry}$/# &/g" $f
+            done <<< "$matching_list"
+
+            /usr/sbin/visudo -cf $f &> /dev/null || echo "Fail to validate $f with visudo"
+          fi
+        done
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        for f in /etc/sudoers /etc/sudoers.d/* ; do
+          if [ ! -e "$f" ] ; then
+            continue
+          fi
+          matching_list=$(grep -P '^(?!#).*[\s]+NOPASSWD[\s]*\:.*$' $f | uniq )
+          if ! test -z "$matching_list"; then
+            while IFS= read -r entry; do
+              # comment out "NOPASSWD" matches to preserve user data
+              sed -i "s/^${entry}$/# &/g" $f
+            done <<< "$matching_list"
+
+            /usr/sbin/visudo -cf $f &> /dev/null || echo "Fail to validate $f with visudo"
+          fi
+        done
+
+        for f in /etc/sudoers /etc/sudoers.d/* ; do
+          if [ ! -e "$f" ] ; then
+            continue
+          fi
+          matching_list=$(grep -P '^(?!#).*[\s]+\!authenticate.*$' $f | uniq )
+          if ! test -z "$matching_list"; then
+            while IFS= read -r entry; do
+              # comment out "!authenticate" matches to preserve user data
+              sed -i "s/^${entry}$/# &/g" $f
+            done <<< "$matching_list"
+
+            /usr/sbin/visudo -cf $f &> /dev/null || echo "Fail to validate $f with visudo"
+          fi
+        done
+
+        ---

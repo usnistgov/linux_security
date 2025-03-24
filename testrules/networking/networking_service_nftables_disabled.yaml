@@ -1,0 +1,259 @@
+id: networking_service_nftables_disabled
+title: Verify nftables Service is Disabled
+discussion: |
+  Running both firewalld and nftables may lead to conflict. nftables
+  is actually one of the backends for firewalld management tools.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r4:
+    - N/A
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-88523-6
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if ( rpm --quiet -q firewalld && rpm --quiet -q nftables && rpm --quiet -q kernel ); then
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+          "$SYSTEMCTL_EXEC" stop 'nftables.service'
+        fi
+        "$SYSTEMCTL_EXEC" disable 'nftables.service'
+        "$SYSTEMCTL_EXEC" mask 'nftables.service'
+        # Disable socket activation if we have a unit file for it
+        if "$SYSTEMCTL_EXEC" -q list-unit-files nftables.socket; then
+            if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+              "$SYSTEMCTL_EXEC" stop 'nftables.socket'
+            fi
+            "$SYSTEMCTL_EXEC" mask 'nftables.socket'
+        fi
+        # The service may not be running because it has been started and failed,
+        # so let's reset the state so OVAL checks pass.
+        # Service should be 'inactive', not 'failed' after reboot though.
+        "$SYSTEMCTL_EXEC" reset-failed 'nftables.service' || true
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-88428-8
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if ( rpm --quiet -q firewalld && rpm --quiet -q nftables && rpm --quiet -q kernel ); then
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+          "$SYSTEMCTL_EXEC" stop 'nftables.service'
+        fi
+        "$SYSTEMCTL_EXEC" disable 'nftables.service'
+        "$SYSTEMCTL_EXEC" mask 'nftables.service'
+        # Disable socket activation if we have a unit file for it
+        if "$SYSTEMCTL_EXEC" -q list-unit-files nftables.socket; then
+            if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+              "$SYSTEMCTL_EXEC" stop 'nftables.socket'
+            fi
+            "$SYSTEMCTL_EXEC" mask 'nftables.socket'
+        fi
+        # The service may not be running because it has been started and failed,
+        # so let's reset the state so OVAL checks pass.
+        # Service should be 'inactive', not 'failed' after reboot though.
+        "$SYSTEMCTL_EXEC" reset-failed 'nftables.service' || true
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-88429-6
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if ( rpm --quiet -q firewalld && rpm --quiet -q nftables && rpm --quiet -q kernel ); then
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+          "$SYSTEMCTL_EXEC" stop 'nftables.service'
+        fi
+        "$SYSTEMCTL_EXEC" disable 'nftables.service'
+        "$SYSTEMCTL_EXEC" mask 'nftables.service'
+        # Disable socket activation if we have a unit file for it
+        if "$SYSTEMCTL_EXEC" -q list-unit-files nftables.socket; then
+            if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+              "$SYSTEMCTL_EXEC" stop 'nftables.socket'
+            fi
+            "$SYSTEMCTL_EXEC" mask 'nftables.socket'
+        fi
+        # The service may not be running because it has been started and failed,
+        # so let's reset the state so OVAL checks pass.
+        # Service should be 'inactive', not 'failed' after reboot though.
+        "$SYSTEMCTL_EXEC" reset-failed 'nftables.service' || true
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if ( dpkg-query --show --showformat='${db:Status-Status}\n' 'firewalld' 2>/dev/null | grep -q '^installed' && dpkg-query --show --showformat='${db:Status-Status}\n' 'nftables' 2>/dev/null | grep -q '^installed' && dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed ); then
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+          "$SYSTEMCTL_EXEC" stop 'nftables.service'
+        fi
+        "$SYSTEMCTL_EXEC" disable 'nftables.service'
+        "$SYSTEMCTL_EXEC" mask 'nftables.service'
+        # Disable socket activation if we have a unit file for it
+        if "$SYSTEMCTL_EXEC" -q list-unit-files nftables.socket; then
+            if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+              "$SYSTEMCTL_EXEC" stop 'nftables.socket'
+            fi
+            "$SYSTEMCTL_EXEC" mask 'nftables.socket'
+        fi
+        # The service may not be running because it has been started and failed,
+        # so let's reset the state so OVAL checks pass.
+        # Service should be 'inactive', not 'failed' after reboot though.
+        "$SYSTEMCTL_EXEC" reset-failed 'nftables.service' || true
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if ( dpkg-query --show --showformat='${db:Status-Status}\n' 'firewalld' 2>/dev/null | grep -q '^installed' && dpkg-query --show --showformat='${db:Status-Status}\n' 'nftables' 2>/dev/null | grep -q '^installed' && dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed ); then
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+          "$SYSTEMCTL_EXEC" stop 'nftables.service'
+        fi
+        "$SYSTEMCTL_EXEC" disable 'nftables.service'
+        "$SYSTEMCTL_EXEC" mask 'nftables.service'
+        # Disable socket activation if we have a unit file for it
+        if "$SYSTEMCTL_EXEC" -q list-unit-files nftables.socket; then
+            if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+              "$SYSTEMCTL_EXEC" stop 'nftables.socket'
+            fi
+            "$SYSTEMCTL_EXEC" mask 'nftables.socket'
+        fi
+        # The service may not be running because it has been started and failed,
+        # so let's reset the state so OVAL checks pass.
+        # Service should be 'inactive', not 'failed' after reboot though.
+        "$SYSTEMCTL_EXEC" reset-failed 'nftables.service' || true
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if ( dpkg-query --show --showformat='${db:Status-Status}\n' 'firewalld' 2>/dev/null | grep -q '^installed' && dpkg-query --show --showformat='${db:Status-Status}\n' 'nftables' 2>/dev/null | grep -q '^installed' && dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed ); then
+
+        var_network_filtering_service=''
+
+
+
+        if [ $var_network_filtering_service != nftables ]; then
+          SYSTEMCTL_EXEC='/usr/bin/systemctl'
+          "$SYSTEMCTL_EXEC" stop 'nftables.service'
+          "$SYSTEMCTL_EXEC" disable 'nftables.service'
+          "$SYSTEMCTL_EXEC" mask 'nftables.service'
+          # Disable socket activation if we have a unit file for it
+          if "$SYSTEMCTL_EXEC" -q list-unit-files nftables.socket; then
+              "$SYSTEMCTL_EXEC" stop 'nftables.socket'
+              "$SYSTEMCTL_EXEC" mask 'nftables.socket'
+          fi
+          # The service may not be running because it has been started and failed,
+          # so let's reset the state so OVAL checks pass.
+          # Service should be 'inactive', not 'failed' after reboot though.
+          "$SYSTEMCTL_EXEC" reset-failed 'nftables.service' || true
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

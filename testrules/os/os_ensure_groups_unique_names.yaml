@@ -1,0 +1,81 @@
+id: os_ensure_groups_unique_names
+title: Ensure All Groups on the System Have Unique Group Names
+discussion: To assure accountability and prevent unauthenticated access, groups must
+  be identified uniquely to prevent potential misuse and compromise of the system.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r4:
+    - N/A
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-88449-4
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A
+    '8':
+      references:
+        cce:
+          - CCE-86328-2
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A

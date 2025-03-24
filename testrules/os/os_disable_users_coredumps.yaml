@@ -1,0 +1,223 @@
+id: os_disable_users_coredumps
+title: Disable Core Dumps for All Users
+discussion: |
+  A core dump includes a memory image taken at the time the operating system
+  terminates an application. The memory image could contain sensitive data and is generally useful
+  only for developers trying to debug problems.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000366
+  800-53r4:
+    - CM-6
+    - SC-7(10)
+  srg:
+    - SRG-OS-000480-GPOS-00227
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+  - 800-53r5_low
+  - 800-53r5_moderate
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-88330-6
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q pam; then
+
+        SECURITY_LIMITS_FILE="/etc/security/limits.conf"
+
+        if grep -qE '^\s*\*\s+hard\s+core' $SECURITY_LIMITS_FILE; then
+                sed -ri 's/(hard\s+core\s+)[[:digit:]]+/\1 0/' $SECURITY_LIMITS_FILE
+        else
+                echo "*     hard   core    0" >> $SECURITY_LIMITS_FILE
+        fi
+
+        if ls /etc/security/limits.d/*.conf > /dev/null; then
+                sed -ri '/^\s*\*\s+hard\s+core/d' /etc/security/limits.d/*.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-81038-2
+        disa_stig:
+          - RHEL-08-010673
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q pam; then
+
+        SECURITY_LIMITS_FILE="/etc/security/limits.conf"
+
+        if grep -qE '^\s*\*\s+hard\s+core' $SECURITY_LIMITS_FILE; then
+                sed -ri 's/(hard\s+core\s+)[[:digit:]]+/\1 0/' $SECURITY_LIMITS_FILE
+        else
+                echo "*     hard   core    0" >> $SECURITY_LIMITS_FILE
+        fi
+
+        if ls /etc/security/limits.d/*.conf > /dev/null; then
+                sed -ri '/^\s*\*\s+hard\s+core/d' /etc/security/limits.d/*.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-83980-3
+        disa_stig:
+          - RHEL-09-213095
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q pam; then
+
+        SECURITY_LIMITS_FILE="/etc/security/limits.conf"
+
+        if grep -qE '^\s*\*\s+hard\s+core' $SECURITY_LIMITS_FILE; then
+                sed -ri 's/(hard\s+core\s+)[[:digit:]]+/\1 0/' $SECURITY_LIMITS_FILE
+        else
+                echo "*     hard   core    0" >> $SECURITY_LIMITS_FILE
+        fi
+
+        if ls /etc/security/limits.d/*.conf > /dev/null; then
+                sed -ri '/^\s*\*\s+hard\s+core/d' /etc/security/limits.d/*.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'libpam-runtime' 2>/dev/null | grep -q '^installed'; then
+
+        SECURITY_LIMITS_FILE="/etc/security/limits.conf"
+
+        if grep -qE '^\s*\*\s+hard\s+core' $SECURITY_LIMITS_FILE; then
+                sed -ri 's/(hard\s+core\s+)[[:digit:]]+/\1 0/' $SECURITY_LIMITS_FILE
+        else
+                echo "*     hard   core    0" >> $SECURITY_LIMITS_FILE
+        fi
+
+        if ls /etc/security/limits.d/*.conf > /dev/null; then
+                sed -ri '/^\s*\*\s+hard\s+core/d' /etc/security/limits.d/*.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'libpam-runtime' 2>/dev/null | grep -q '^installed'; then
+
+        SECURITY_LIMITS_FILE="/etc/security/limits.conf"
+
+        if grep -qE '^\s*\*\s+hard\s+core' $SECURITY_LIMITS_FILE; then
+                sed -ri 's/(hard\s+core\s+)[[:digit:]]+/\1 0/' $SECURITY_LIMITS_FILE
+        else
+                echo "*     hard   core    0" >> $SECURITY_LIMITS_FILE
+        fi
+
+        if ls /etc/security/limits.d/*.conf > /dev/null; then
+                sed -ri '/^\s*\*\s+hard\s+core/d' /etc/security/limits.d/*.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'libpam-runtime' 2>/dev/null | grep -q '^installed'; then
+
+        SECURITY_LIMITS_FILE="/etc/security/limits.conf"
+
+        if grep -qE '^\s*\*\s+hard\s+core' $SECURITY_LIMITS_FILE; then
+                sed -ri 's/(hard\s+core\s+)[[:digit:]]+/\1 0/' $SECURITY_LIMITS_FILE
+        else
+                echo "*     hard   core    0" >> $SECURITY_LIMITS_FILE
+        fi
+
+        if ls /etc/security/limits.d/*.conf > /dev/null; then
+                sed -ri '/^\s*\*\s+hard\s+core/d' /etc/security/limits.d/*.conf
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

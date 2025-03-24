@@ -1,0 +1,117 @@
+id: os_accounts_etc_umask_interactiveusers
+title: Ensure the Default Umask is Set Correctly For Interactive Users
+discussion: |
+  The umask controls the default access mode assigned to newly created files. A
+  umask of 077 limits new files to mode 700 or less permissive. Although umask can
+  be represented as a four-digit number, the first digit representing special
+  access modes is typically ignored or required to be 0. This requirement
+  applies to the globally configured system defaults and the local interactive
+  user defaults for each account on the system.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000366
+  800-53r4:
+    - N/A
+  srg:
+    - SRG-OS-000480-GPOS-00227
+    - SRG-OS-000480-GPOS-00228
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - N/A
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-87122-8
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        while IFS= read -r dir; do
+            while IFS= read -r -d '' file; do
+                if [ "$(basename $file)" != ".bash_history" ]; then
+                    sed -i 's/^\(\s*umask\s*\)/#\1/g' "$file"
+                fi
+            done <   <(find $dir -maxdepth 1 -type f -name ".*" -print0)
+        done <   <(awk -F':' '{ if ($3 >= 1000 && $3 != 65534) print $6}' /etc/passwd)
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-84044-7
+        disa_stig:
+          - RHEL-08-020352
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        while IFS= read -r dir; do
+            while IFS= read -r -d '' file; do
+                if [ "$(basename $file)" != ".bash_history" ]; then
+                    sed -i 's/^\(\s*umask\s*\)/#\1/g' "$file"
+                fi
+            done <   <(find $dir -maxdepth 1 -type f -name ".*" -print0)
+        done <   <(awk -F':' '{ if ($3 >= 1000 && $3 != 65534) print $6}' /etc/passwd)
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-90365-8
+        disa_stig:
+          - RHEL-09-411025
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        while IFS= read -r dir; do
+            while IFS= read -r -d '' file; do
+                if [ "$(basename $file)" != ".bash_history" ]; then
+                    sed -i 's/^\(\s*umask\s*\)/#\1/g' "$file"
+                fi
+            done <   <(find $dir -maxdepth 1 -type f -name ".*" -print0)
+        done <   <(awk -F':' '{ if ($3 >= 1000 && $3 != 65534) print $6}' /etc/passwd)
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A

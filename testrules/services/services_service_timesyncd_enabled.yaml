@@ -1,0 +1,126 @@
+id: services_service_timesyncd_enabled
+title: Enable systemd_timesyncd Service
+discussion: |
+  Enabling the systemd_timesyncd service ensures that this host
+  uses the ntp protocol to fetch time data from a ntp server.
+  Synchronizing time is essential for authentication
+  services such as Kerberos, but it is also important for maintaining accurate
+  logs and auditing possible security breaches.
+
+
+  Additional information on Ubuntu network time protocol is
+  available at
+
+      https://help.ubuntu.com/lts/serverguide/NTP.html.en.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000160
+  800-53r4:
+    - AU-8(1)(a)
+    - CM-6(a)
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: high
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && { ( ! ( dpkg-query --show --showformat='${db:Status-Status}\n' 'chrony' 2>/dev/null | grep -q '^installed' ) && ! ( dpkg-query --show --showformat='${db:Status-Status}\n' 'ntp' 2>/dev/null | grep -q '^installed' ) ); }; then
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+        "$SYSTEMCTL_EXEC" unmask 'systemd-timesyncd.service'
+        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+          "$SYSTEMCTL_EXEC" start 'systemd-timesyncd.service'
+        fi
+        "$SYSTEMCTL_EXEC" enable 'systemd-timesyncd.service'
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && { ( ! ( dpkg-query --show --showformat='${db:Status-Status}\n' 'chrony' 2>/dev/null | grep -q '^installed' ) && ! ( dpkg-query --show --showformat='${db:Status-Status}\n' 'ntp' 2>/dev/null | grep -q '^installed' ) ); }; then
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+        "$SYSTEMCTL_EXEC" unmask 'systemd-timesyncd.service'
+        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
+          "$SYSTEMCTL_EXEC" start 'systemd-timesyncd.service'
+        fi
+        "$SYSTEMCTL_EXEC" enable 'systemd-timesyncd.service'
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && { ( ! ( dpkg-query --show --showformat='${db:Status-Status}\n' 'chrony' 2>/dev/null | grep -q '^installed' ) && ! ( dpkg-query --show --showformat='${db:Status-Status}\n' 'ntp' 2>/dev/null | grep -q '^installed' ) ); }; then
+
+        var_timesync_service=''
+
+
+        SYSTEMCTL_EXEC='/usr/bin/systemctl'
+
+        if [ $var_timesync_service == systemd-timesyncd ]; then
+          "$SYSTEMCTL_EXEC" unmask 'systemd-timesyncd.service'
+          "$SYSTEMCTL_EXEC" start 'systemd-timesyncd.service'
+          "$SYSTEMCTL_EXEC" enable 'systemd-timesyncd.service'
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

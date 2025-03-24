@@ -1,0 +1,96 @@
+id: networking_nftables_rules_permanent
+title: Ensure nftables Rules are Permanent
+discussion: |
+  Changes made to nftables ruleset only affect the live system, you will also need to configure
+  the nftables ruleset to apply on boot
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r4:
+    - N/A
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - N/A
+severity: medium
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if ( dpkg-query --show --showformat='${db:Status-Status}\n' 'nftables' 2>/dev/null | grep -q '^installed' ); then
+
+        var_nftables_master_config_file=''
+
+
+        var_nftables_family=''
+
+
+        if [ ! -f "${var_nftables_master_config_file}" ]; then
+            touch "${var_nftables_master_config_file}"
+        fi
+
+        nft list ruleset > "/etc/${var_nftables_family}-filter.rules"
+
+        grep -qxF 'include "/etc/'"${var_nftables_family}"'-filter.rules"' "${var_nftables_master_config_file}" \
+            || echo 'include "/etc/'"${var_nftables_family}"'-filter.rules"' >> "${var_nftables_master_config_file}"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if ( dpkg-query --show --showformat='${db:Status-Status}\n' 'nftables' 2>/dev/null | grep -q '^installed' ); then
+
+        var_nftables_master_config_file=''
+
+
+        var_nftables_family=''
+
+
+        if [ ! -f "${var_nftables_master_config_file}" ]; then
+            touch "${var_nftables_master_config_file}"
+        fi
+
+        nft list ruleset > "/etc/${var_nftables_family}-filter.rules"
+
+        grep -qxF 'include "/etc/'"${var_nftables_family}"'-filter.rules"' "${var_nftables_master_config_file}" \
+            || echo 'include "/etc/'"${var_nftables_family}"'-filter.rules"' >> "${var_nftables_master_config_file}"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

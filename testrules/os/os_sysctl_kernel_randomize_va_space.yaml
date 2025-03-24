@@ -1,0 +1,505 @@
+id: os_sysctl_kernel_randomize_va_space
+title: Enable Randomized Layout of Virtual Address Space
+discussion: |
+  Address space layout randomization (ASLR) makes it more difficult for an
+  attacker to predict the location of attack code they have introduced into a
+  process's address space during an attempt at exploitation. Additionally,
+  ASLR makes it more difficult for an attacker to know the location of
+  existing code in order to re-purpose it using return oriented programming
+  (ROP) techniques.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000366
+    - CCI-002824
+  800-53r4:
+    - CM-6(a)
+    - SC-30
+    - SC-30(2)
+  srg:
+    - SRG-OS-000433-GPOS-00193
+    - SRG-OS-000480-GPOS-00227
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-87876-9
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        # Comment out any occurrences of kernel.randomize_va_space from /etc/sysctl.d/*.conf files
+
+        for f in /etc/sysctl.d/*.conf /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf; do
+
+
+          # skip systemd-sysctl symlink (/etc/sysctl.d/99-sysctl.conf -> /etc/sysctl.conf)
+          if [[ "$(readlink -f "$f")" == "/etc/sysctl.conf" ]]; then continue; fi
+
+          matching_list=$(grep -P '^(?!#).*[\s]*kernel.randomize_va_space.*$' $f | uniq )
+          if ! test -z "$matching_list"; then
+            while IFS= read -r entry; do
+              escaped_entry=$(sed -e 's|/|\\/|g' <<< "$entry")
+              # comment out "kernel.randomize_va_space" matches to preserve user data
+              sed -i --follow-symlinks "s/^${escaped_entry}$/# &/g" $f
+            done <<< "$matching_list"
+          fi
+        done
+
+        #
+        # Set sysctl config file which to save the desired value
+        #
+
+        SYSCONFIG_FILE="/etc/sysctl.conf"
+
+
+        #
+        # Set runtime for kernel.randomize_va_space
+        #
+        if [[ "$OSCAP_BOOTC_BUILD" != "YES" ]] ; then
+            /sbin/sysctl -q -n -w kernel.randomize_va_space="2"
+        fi
+
+        #
+        # If kernel.randomize_va_space present in /etc/sysctl.conf, change value to "2"
+        #   else, add "kernel.randomize_va_space = 2" to /etc/sysctl.conf
+        #
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^kernel.randomize_va_space")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "2"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^kernel.randomize_va_space\\>" "${SYSCONFIG_FILE}"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^kernel.randomize_va_space\\>.*/$escaped_formatted_output/gi" "${SYSCONFIG_FILE}"
+        else
+            if [[ -s "${SYSCONFIG_FILE}" ]] && [[ -n "$(tail -c 1 -- "${SYSCONFIG_FILE}" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "${SYSCONFIG_FILE}"
+            fi
+            cce="CCE-87876-9"
+            printf '# Per %s: Set %s in %s\n' "${cce}" "${formatted_output}" "${SYSCONFIG_FILE}" >> "${SYSCONFIG_FILE}"
+            printf '%s\n' "$formatted_output" >> "${SYSCONFIG_FILE}"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-80916-0
+        disa_stig:
+          - RHEL-08-010430
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        # Comment out any occurrences of kernel.randomize_va_space from /etc/sysctl.d/*.conf files
+
+        for f in /etc/sysctl.d/*.conf /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf; do
+
+
+          # skip systemd-sysctl symlink (/etc/sysctl.d/99-sysctl.conf -> /etc/sysctl.conf)
+          if [[ "$(readlink -f "$f")" == "/etc/sysctl.conf" ]]; then continue; fi
+
+          matching_list=$(grep -P '^(?!#).*[\s]*kernel.randomize_va_space.*$' $f | uniq )
+          if ! test -z "$matching_list"; then
+            while IFS= read -r entry; do
+              escaped_entry=$(sed -e 's|/|\\/|g' <<< "$entry")
+              # comment out "kernel.randomize_va_space" matches to preserve user data
+              sed -i --follow-symlinks "s/^${escaped_entry}$/# &/g" $f
+            done <<< "$matching_list"
+          fi
+        done
+
+        #
+        # Set sysctl config file which to save the desired value
+        #
+
+        SYSCONFIG_FILE="/etc/sysctl.conf"
+
+
+        #
+        # Set runtime for kernel.randomize_va_space
+        #
+        if [[ "$OSCAP_BOOTC_BUILD" != "YES" ]] ; then
+            /sbin/sysctl -q -n -w kernel.randomize_va_space="2"
+        fi
+
+        #
+        # If kernel.randomize_va_space present in /etc/sysctl.conf, change value to "2"
+        #   else, add "kernel.randomize_va_space = 2" to /etc/sysctl.conf
+        #
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^kernel.randomize_va_space")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "2"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^kernel.randomize_va_space\\>" "${SYSCONFIG_FILE}"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^kernel.randomize_va_space\\>.*/$escaped_formatted_output/gi" "${SYSCONFIG_FILE}"
+        else
+            if [[ -s "${SYSCONFIG_FILE}" ]] && [[ -n "$(tail -c 1 -- "${SYSCONFIG_FILE}" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "${SYSCONFIG_FILE}"
+            fi
+            cce="CCE-80916-0"
+            printf '# Per %s: Set %s in %s\n' "${cce}" "${formatted_output}" "${SYSCONFIG_FILE}" >> "${SYSCONFIG_FILE}"
+            printf '%s\n' "$formatted_output" >> "${SYSCONFIG_FILE}"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-83971-2
+        disa_stig:
+          - RHEL-09-213070
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        # Comment out any occurrences of kernel.randomize_va_space from /etc/sysctl.d/*.conf files
+
+        for f in /etc/sysctl.d/*.conf /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf; do
+
+
+          # skip systemd-sysctl symlink (/etc/sysctl.d/99-sysctl.conf -> /etc/sysctl.conf)
+          if [[ "$(readlink -f "$f")" == "/etc/sysctl.conf" ]]; then continue; fi
+
+          matching_list=$(grep -P '^(?!#).*[\s]*kernel.randomize_va_space.*$' $f | uniq )
+          if ! test -z "$matching_list"; then
+            while IFS= read -r entry; do
+              escaped_entry=$(sed -e 's|/|\\/|g' <<< "$entry")
+              # comment out "kernel.randomize_va_space" matches to preserve user data
+              sed -i --follow-symlinks "s/^${escaped_entry}$/# &/g" $f
+            done <<< "$matching_list"
+          fi
+        done
+
+        #
+        # Set sysctl config file which to save the desired value
+        #
+
+        SYSCONFIG_FILE="/etc/sysctl.conf"
+
+
+        #
+        # Set runtime for kernel.randomize_va_space
+        #
+        if [[ "$OSCAP_BOOTC_BUILD" != "YES" ]] ; then
+            /sbin/sysctl -q -n -w kernel.randomize_va_space="2"
+        fi
+
+        #
+        # If kernel.randomize_va_space present in /etc/sysctl.conf, change value to "2"
+        #   else, add "kernel.randomize_va_space = 2" to /etc/sysctl.conf
+        #
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^kernel.randomize_va_space")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "2"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^kernel.randomize_va_space\\>" "${SYSCONFIG_FILE}"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^kernel.randomize_va_space\\>.*/$escaped_formatted_output/gi" "${SYSCONFIG_FILE}"
+        else
+            if [[ -s "${SYSCONFIG_FILE}" ]] && [[ -n "$(tail -c 1 -- "${SYSCONFIG_FILE}" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "${SYSCONFIG_FILE}"
+            fi
+            cce="CCE-83971-2"
+            printf '# Per %s: Set %s in %s\n' "${cce}" "${formatted_output}" "${SYSCONFIG_FILE}" >> "${SYSCONFIG_FILE}"
+            printf '%s\n' "$formatted_output" >> "${SYSCONFIG_FILE}"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010448
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        # Comment out any occurrences of kernel.randomize_va_space from /etc/sysctl.d/*.conf files
+
+        for f in /etc/sysctl.d/*.conf /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf; do
+
+
+          # skip systemd-sysctl symlink (/etc/sysctl.d/99-sysctl.conf -> /etc/sysctl.conf)
+          if [[ "$(readlink -f "$f")" == "/etc/sysctl.conf" ]]; then continue; fi
+
+          matching_list=$(grep -P '^(?!#).*[\s]*kernel.randomize_va_space.*$' $f | uniq )
+          if ! test -z "$matching_list"; then
+            while IFS= read -r entry; do
+              escaped_entry=$(sed -e 's|/|\\/|g' <<< "$entry")
+              # comment out "kernel.randomize_va_space" matches to preserve user data
+              sed -i --follow-symlinks "s/^${escaped_entry}$/# &/g" $f
+            done <<< "$matching_list"
+          fi
+        done
+
+        #
+        # Set sysctl config file which to save the desired value
+        #
+
+        SYSCONFIG_FILE="/etc/sysctl.conf"
+
+
+        #
+        # Set runtime for kernel.randomize_va_space
+        #
+        if [[ "$OSCAP_BOOTC_BUILD" != "YES" ]] ; then
+            /sbin/sysctl -q -n -w kernel.randomize_va_space="2"
+        fi
+
+        #
+        # If kernel.randomize_va_space present in /etc/sysctl.conf, change value to "2"
+        #   else, add "kernel.randomize_va_space = 2" to /etc/sysctl.conf
+        #
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^kernel.randomize_va_space")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "2"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^kernel.randomize_va_space\\>" "${SYSCONFIG_FILE}"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^kernel.randomize_va_space\\>.*/$escaped_formatted_output/gi" "${SYSCONFIG_FILE}"
+        else
+            if [[ -s "${SYSCONFIG_FILE}" ]] && [[ -n "$(tail -c 1 -- "${SYSCONFIG_FILE}" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "${SYSCONFIG_FILE}"
+            fi
+            printf '%s\n' "$formatted_output" >> "${SYSCONFIG_FILE}"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-213020
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        # Comment out any occurrences of kernel.randomize_va_space from /etc/sysctl.d/*.conf files
+
+        for f in /etc/sysctl.d/*.conf /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf; do
+
+
+          # skip systemd-sysctl symlink (/etc/sysctl.d/99-sysctl.conf -> /etc/sysctl.conf)
+          if [[ "$(readlink -f "$f")" == "/etc/sysctl.conf" ]]; then continue; fi
+
+          matching_list=$(grep -P '^(?!#).*[\s]*kernel.randomize_va_space.*$' $f | uniq )
+          if ! test -z "$matching_list"; then
+            while IFS= read -r entry; do
+              escaped_entry=$(sed -e 's|/|\\/|g' <<< "$entry")
+              # comment out "kernel.randomize_va_space" matches to preserve user data
+              sed -i --follow-symlinks "s/^${escaped_entry}$/# &/g" $f
+            done <<< "$matching_list"
+          fi
+        done
+
+        #
+        # Set sysctl config file which to save the desired value
+        #
+
+        SYSCONFIG_FILE="/etc/sysctl.conf"
+
+
+        #
+        # Set runtime for kernel.randomize_va_space
+        #
+        if [[ "$OSCAP_BOOTC_BUILD" != "YES" ]] ; then
+            /sbin/sysctl -q -n -w kernel.randomize_va_space="2"
+        fi
+
+        #
+        # If kernel.randomize_va_space present in /etc/sysctl.conf, change value to "2"
+        #   else, add "kernel.randomize_va_space = 2" to /etc/sysctl.conf
+        #
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^kernel.randomize_va_space")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "2"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^kernel.randomize_va_space\\>" "${SYSCONFIG_FILE}"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^kernel.randomize_va_space\\>.*/$escaped_formatted_output/gi" "${SYSCONFIG_FILE}"
+        else
+            if [[ -s "${SYSCONFIG_FILE}" ]] && [[ -n "$(tail -c 1 -- "${SYSCONFIG_FILE}" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "${SYSCONFIG_FILE}"
+            fi
+            printf '%s\n' "$formatted_output" >> "${SYSCONFIG_FILE}"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        # Comment out any occurrences of kernel.randomize_va_space from /etc/sysctl.d/*.conf files
+
+        for f in /etc/sysctl.d/*.conf /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf; do
+
+
+          # skip systemd-sysctl symlink (/etc/sysctl.d/99-sysctl.conf -> /etc/sysctl.conf)
+          if [[ "$(readlink -f "$f")" == "/etc/sysctl.conf" ]]; then continue; fi
+
+          matching_list=$(grep -P '^(?!#).*[\s]*kernel.randomize_va_space.*$' $f | uniq )
+          if ! test -z "$matching_list"; then
+            while IFS= read -r entry; do
+              escaped_entry=$(sed -e 's|/|\\/|g' <<< "$entry")
+              # comment out "kernel.randomize_va_space" matches to preserve user data
+              sed -i --follow-symlinks "s/^${escaped_entry}$/# &/g" $f
+            done <<< "$matching_list"
+          fi
+        done
+
+        #
+        # Set sysctl config file which to save the desired value
+        #
+
+        SYSCONFIG_FILE="/etc/sysctl.conf"
+
+
+        #
+        # Set runtime for kernel.randomize_va_space
+        #
+        if [[ "$OSCAP_BOOTC_BUILD" != "YES" ]] ; then
+            /sbin/sysctl -q -n -w kernel.randomize_va_space="2"
+        fi
+
+        #
+        # If kernel.randomize_va_space present in /etc/sysctl.conf, change value to "2"
+        #   else, add "kernel.randomize_va_space = 2" to /etc/sysctl.conf
+        #
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^kernel.randomize_va_space")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "2"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^kernel.randomize_va_space\\>" "${SYSCONFIG_FILE}"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^kernel.randomize_va_space\\>.*/$escaped_formatted_output/gi" "${SYSCONFIG_FILE}"
+        else
+            if [[ -s "${SYSCONFIG_FILE}" ]] && [[ -n "$(tail -c 1 -- "${SYSCONFIG_FILE}" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "${SYSCONFIG_FILE}"
+            fi
+            printf '%s\n' "$formatted_output" >> "${SYSCONFIG_FILE}"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

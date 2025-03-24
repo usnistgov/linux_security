@@ -1,0 +1,119 @@
+id: os_file_groupowner_etc_shadow
+title: Verify Group Who Owns shadow File
+discussion: |
+  The /etc/shadow file stores password hashes. Protection of this file is
+  critical for system security.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000366
+  800-53r4:
+    - AC-6(1)
+    - CM-6(a)
+  srg:
+    - SRG-OS-000480-GPOS-00227
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-87579-9
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chgrp 0 /etc/shadow
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-80799-0
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chgrp 0 /etc/shadow
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-83930-8
+        disa_stig:
+          - RHEL-09-232155
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chgrp 0 /etc/shadow
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chgrp 42 /etc/shadow
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chgrp 42 /etc/shadow
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chgrp 42 /etc/shadow
+
+        ---

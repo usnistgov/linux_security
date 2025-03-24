@@ -1,0 +1,64 @@
+id: networking_ufw_only_required_services
+title: Only Allow Authorized Network Services in ufw
+discussion: |
+  To prevent unauthorized connection of devices, unauthorized transfer of
+  information, or unauthorized tunneling (i.e., embedding of data types
+  within data types), organizations must disable or restrict unused or
+  unnecessary physical and logical ports/protocols on information systems.
+
+  Operating systems are capable of providing a wide variety of functions
+  and services. Some of the functions and services provided by default
+  may not be necessary to support essential organizational operations.
+  Additionally, it is sometimes convenient to provide multiple services
+  from a single component (e.g., VPN and IPS); however, doing so
+  increases risk over limiting the services provided by any one component.
+
+  To support the requirements and principles of least functionality, the
+  operating system must support the organizational requirements, providing
+  only essential capabilities and limiting the use of ports, protocols,
+  and/or services to only those required, authorized, and approved to
+  conduct official business or to address authorized quality of life
+  issues.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000382
+  800-53r4:
+    - N/A
+  srg:
+    - SRG-OS-000096-GPOS-00050
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - N/A
+severity: medium
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010407
+      check:
+        - N/A
+      fix:
+        - N/A
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-251030
+      check:
+        - N/A
+      fix:
+        - N/A

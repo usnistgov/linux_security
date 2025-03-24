@@ -1,0 +1,98 @@
+id: os_no_files_unowned_by_user
+title: Ensure All Files Are Owned by a User
+discussion: |
+  Unowned files do not directly imply a security problem, but they are generally a sign that
+  something is amiss. They may be caused by an intruder, by incorrect software installation or
+  draft software removal, or by failure to remove all files belonging to a deleted account, or
+  other similar cases. The files should be repaired so they will not cause problems when
+  accounts are created in the future, and the cause should be discovered and addressed.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000366
+  800-53r4:
+    - AC-6(1)
+    - CM-6(a)
+  srg:
+    - SRG-OS-000480-GPOS-00227
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-89680-3
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A
+    '8':
+      references:
+        cce:
+          - CCE-83499-4
+        disa_stig:
+          - RHEL-08-010780
+      check:
+        - N/A
+      fix:
+        - N/A
+    '9':
+      references:
+        cce:
+          - CCE-83896-1
+        disa_stig:
+          - RHEL-09-232255
+      check:
+        - N/A
+      fix:
+        - N/A
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A

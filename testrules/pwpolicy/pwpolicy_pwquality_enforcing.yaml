@@ -1,0 +1,166 @@
+id: pwpolicy_pwquality_enforcing
+title: Ensure PAM Enforces Password Requirements - Enforcing
+discussion: |
+  Use of a complex password helps to increase the time and resources
+  required to compromise the password. Password complexity, or strength,
+  is a measure of the effectiveness of a password in resisting attempts at
+  guessing and brute-force attacks. Using enforcing=1 ensures "pwquality"
+  enforces complex password construction configuration and has the ability
+  to limit brute-force attacks on the system.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000366
+  800-53r4:
+    - N/A
+  srg:
+    - SRG-OS-000480-GPOS-00225
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010057
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'libpam-runtime' 2>/dev/null | grep -q '^installed'; then
+
+        if [ -e "/etc/security/pwquality.conf" ] ; then
+
+            LC_ALL=C sed -i "/^\s*enforcing = 1/Id" "/etc/security/pwquality.conf"
+        else
+            touch "/etc/security/pwquality.conf"
+        fi
+        # make sure file has newline at the end
+        sed -i -e '$a\' "/etc/security/pwquality.conf"
+
+        cp "/etc/security/pwquality.conf" "/etc/security/pwquality.conf.bak"
+        # Insert at the end of the file
+        printf '%s\n' "enforcing = 1" >> "/etc/security/pwquality.conf"
+        # Clean up after ourselves.
+        rm "/etc/security/pwquality.conf.bak"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-611045
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'libpam-runtime' 2>/dev/null | grep -q '^installed'; then
+
+        if [ -e "/etc/security/pwquality.conf" ] ; then
+
+            LC_ALL=C sed -i "/^\s*enforcing = 1/Id" "/etc/security/pwquality.conf"
+        else
+            touch "/etc/security/pwquality.conf"
+        fi
+        # make sure file has newline at the end
+        sed -i -e '$a\' "/etc/security/pwquality.conf"
+
+        cp "/etc/security/pwquality.conf" "/etc/security/pwquality.conf.bak"
+        # Insert at the end of the file
+        printf '%s\n' "enforcing = 1" >> "/etc/security/pwquality.conf"
+        # Clean up after ourselves.
+        rm "/etc/security/pwquality.conf.bak"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'libpam-runtime' 2>/dev/null | grep -q '^installed'; then
+
+        var_password_pam_enforcing=''
+
+
+
+
+
+
+
+        conf_name=cac_pwquality
+        if [ ! -f /usr/share/pam-configs/"$conf_name" ]; then
+            cat << EOF > /usr/share/pam-configs/"$conf_name"
+        Name: Pwquality password strength checking
+        Default: yes
+        Priority: 1025
+        Conflicts: cracklib, pwquality
+        Password-Type: Primary
+        Password:
+            requisite                   pam_pwquality.so
+        EOF
+        fi
+
+        DEBIAN_FRONTEND=noninteractive pam-auth-update
+
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^enforcing")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "$var_password_pam_enforcing"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^enforcing\\>" "/etc/security/pwquality.conf"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^enforcing\\>.*/$escaped_formatted_output/gi" "/etc/security/pwquality.conf"
+        else
+            if [[ -s "/etc/security/pwquality.conf" ]] && [[ -n "$(tail -c 1 -- "/etc/security/pwquality.conf" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/security/pwquality.conf"
+            fi
+            printf '%s\n' "$formatted_output" >> "/etc/security/pwquality.conf"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

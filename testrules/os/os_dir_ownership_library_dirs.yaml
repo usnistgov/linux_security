@@ -1,0 +1,117 @@
+id: os_dir_ownership_library_dirs
+title: Verify that Shared Library Directories Have Root Ownership
+discussion: |
+  Files from shared library directories are loaded into the address
+  space of processes (including privileged ones) or of the kernel itself at
+  runtime. Proper ownership of library directories is necessary to protect
+  the integrity of the system.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-001499
+  800-53r4:
+    - CM-5(6)
+    - CM-5(6).1
+  srg:
+    - SRG-OS-000259-GPOS-00100
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - N/A
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-89745-4
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        find -H /lib/  -type d -exec chown -L 0 {} \;
+        find -H /lib64/  -type d -exec chown -L 0 {} \;
+        find -H /usr/lib/  -type d -exec chown -L 0 {} \;
+        find -H /usr/lib64/  -type d -exec chown -L 0 {} \;
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-89021-0
+        disa_stig:
+          - RHEL-08-010341
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        find -H /lib/  -type d -exec chown -L 0 {} \;
+        find -H /lib64/  -type d -exec chown -L 0 {} \;
+        find -H /usr/lib/  -type d -exec chown -L 0 {} \;
+        find -H /usr/lib64/  -type d -exec chown -L 0 {} \;
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-89022-8
+        disa_stig:
+          - RHEL-09-232210
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        find -H /lib/  -type d -exec chown -L 0 {} \;
+        find -H /lib64/  -type d -exec chown -L 0 {} \;
+        find -H /usr/lib/  -type d -exec chown -L 0 {} \;
+        find -H /usr/lib64/  -type d -exec chown -L 0 {} \;
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010429
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        find -H /lib/  -type d -exec chown -L 0 {} \;
+        find -H /lib64/  -type d -exec chown -L 0 {} \;
+        find -H /usr/lib/  -type d -exec chown -L 0 {} \;
+        find -H /usr/lib64/  -type d -exec chown -L 0 {} \;
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-232060
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        find -H /lib/  -type d -exec chown -L 0 {} \;
+        find -H /lib64/  -type d -exec chown -L 0 {} \;
+        find -H /usr/lib/  -type d -exec chown -L 0 {} \;
+        find -H /usr/lib64/  -type d -exec chown -L 0 {} \;
+
+        ---

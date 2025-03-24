@@ -1,0 +1,198 @@
+id: os_systemd_ctrl_alt_del_burst
+title: Disable Ctrl-Alt-Del Burst Action
+discussion: |
+  A locally logged-in user who presses Ctrl-Alt-Del, when at the console,
+  can reboot the system. If accidentally pressed, as could happen in
+  the case of mixed OS environment, this can create the risk of short-term
+  loss of availability of systems due to unintentional reboot.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000366
+    - CCI-002235
+  800-53r4:
+    - AC-6(1)
+    - CM-6(a)
+  srg:
+    - SRG-OS-000324-GPOS-00125
+    - SRG-OS-000480-GPOS-00227
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate
+severity: high
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-87627-6
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel && { rpm --quiet -q systemd; }; then
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^CtrlAltDelBurstAction=")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s=%s" "$stripped_key" "none"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^CtrlAltDelBurstAction=\\>" "/etc/systemd/system.conf"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^CtrlAltDelBurstAction=\\>.*/$escaped_formatted_output/gi" "/etc/systemd/system.conf"
+        else
+            if [[ -s "/etc/systemd/system.conf" ]] && [[ -n "$(tail -c 1 -- "/etc/systemd/system.conf" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/systemd/system.conf"
+            fi
+            cce="CCE-87627-6"
+            printf '# Per %s: Set %s in %s\n' "${cce}" "${formatted_output}" "/etc/systemd/system.conf" >> "/etc/systemd/system.conf"
+            printf '%s\n' "$formatted_output" >> "/etc/systemd/system.conf"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-80784-2
+        disa_stig:
+          - RHEL-08-040172
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel && { rpm --quiet -q systemd; }; then
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^CtrlAltDelBurstAction=")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s=%s" "$stripped_key" "none"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^CtrlAltDelBurstAction=\\>" "/etc/systemd/system.conf"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^CtrlAltDelBurstAction=\\>.*/$escaped_formatted_output/gi" "/etc/systemd/system.conf"
+        else
+            if [[ -s "/etc/systemd/system.conf" ]] && [[ -n "$(tail -c 1 -- "/etc/systemd/system.conf" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/systemd/system.conf"
+            fi
+            cce="CCE-80784-2"
+            printf '# Per %s: Set %s in %s\n' "${cce}" "${formatted_output}" "/etc/systemd/system.conf" >> "/etc/systemd/system.conf"
+            printf '%s\n' "$formatted_output" >> "/etc/systemd/system.conf"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-90308-8
+        disa_stig:
+          - RHEL-09-211045
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel && { rpm --quiet -q systemd; }; then
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^CtrlAltDelBurstAction=")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s=%s" "$stripped_key" "none"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^CtrlAltDelBurstAction=\\>" "/etc/systemd/system.conf"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^CtrlAltDelBurstAction=\\>.*/$escaped_formatted_output/gi" "/etc/systemd/system.conf"
+        else
+            if [[ -s "/etc/systemd/system.conf" ]] && [[ -n "$(tail -c 1 -- "/etc/systemd/system.conf" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/systemd/system.conf"
+            fi
+            cce="CCE-90308-8"
+            printf '# Per %s: Set %s in %s\n' "${cce}" "${formatted_output}" "/etc/systemd/system.conf" >> "/etc/systemd/system.conf"
+            printf '%s\n' "$formatted_output" >> "/etc/systemd/system.conf"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-211015
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && { dpkg-query --show --showformat='${db:Status-Status}\n' 'systemd' 2>/dev/null | grep -q '^installed'; }; then
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^CtrlAltDelBurstAction=")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s=%s" "$stripped_key" "none"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^CtrlAltDelBurstAction=\\>" "/etc/systemd/system.conf"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^CtrlAltDelBurstAction=\\>.*/$escaped_formatted_output/gi" "/etc/systemd/system.conf"
+        else
+            if [[ -s "/etc/systemd/system.conf" ]] && [[ -n "$(tail -c 1 -- "/etc/systemd/system.conf" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/systemd/system.conf"
+            fi
+            printf '%s\n' "$formatted_output" >> "/etc/systemd/system.conf"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

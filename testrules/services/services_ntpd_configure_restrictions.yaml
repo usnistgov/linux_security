@@ -1,0 +1,126 @@
+id: services_ntpd_configure_restrictions
+title: Configure server restrictions for ntpd
+discussion: |
+  If ntp is in use on the system proper configuration is vital to ensuring time synchronization
+  is working properly.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r4:
+    - N/A
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - N/A
+severity: medium
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && { dpkg-query --show --showformat='${db:Status-Status}\n' 'ntp' 2>/dev/null | grep -q '^installed'; }; then
+
+        if [ -e "/etc/ntp.conf" ] ; then
+
+            LC_ALL=C sed -i "/^\s*restrict \-4\s\+/Id" "/etc/ntp.conf"
+        else
+            touch "/etc/ntp.conf"
+        fi
+        # make sure file has newline at the end
+        sed -i -e '$a\' "/etc/ntp.conf"
+
+        cp "/etc/ntp.conf" "/etc/ntp.conf.bak"
+        # Insert at the end of the file
+        printf '%s\n' "restrict -4 default kod nomodify notrap nopeer noquery" >> "/etc/ntp.conf"
+        # Clean up after ourselves.
+        rm "/etc/ntp.conf.bak"
+        if [ -e "/etc/ntp.conf" ] ; then
+
+            LC_ALL=C sed -i "/^\s*restrict \-6\s\+/Id" "/etc/ntp.conf"
+        else
+            touch "/etc/ntp.conf"
+        fi
+        # make sure file has newline at the end
+        sed -i -e '$a\' "/etc/ntp.conf"
+
+        cp "/etc/ntp.conf" "/etc/ntp.conf.bak"
+        # Insert at the end of the file
+        printf '%s\n' "restrict -6 default kod nomodify notrap nopeer noquery" >> "/etc/ntp.conf"
+        # Clean up after ourselves.
+        rm "/etc/ntp.conf.bak"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && { dpkg-query --show --showformat='${db:Status-Status}\n' 'ntp' 2>/dev/null | grep -q '^installed'; }; then
+
+        if [ -e "/etc/ntp.conf" ] ; then
+
+            LC_ALL=C sed -i "/^\s*restrict \-4\s\+/Id" "/etc/ntp.conf"
+        else
+            touch "/etc/ntp.conf"
+        fi
+        # make sure file has newline at the end
+        sed -i -e '$a\' "/etc/ntp.conf"
+
+        cp "/etc/ntp.conf" "/etc/ntp.conf.bak"
+        # Insert at the end of the file
+        printf '%s\n' "restrict -4 default kod nomodify notrap nopeer noquery" >> "/etc/ntp.conf"
+        # Clean up after ourselves.
+        rm "/etc/ntp.conf.bak"
+        if [ -e "/etc/ntp.conf" ] ; then
+
+            LC_ALL=C sed -i "/^\s*restrict \-6\s\+/Id" "/etc/ntp.conf"
+        else
+            touch "/etc/ntp.conf"
+        fi
+        # make sure file has newline at the end
+        sed -i -e '$a\' "/etc/ntp.conf"
+
+        cp "/etc/ntp.conf" "/etc/ntp.conf.bak"
+        # Insert at the end of the file
+        printf '%s\n' "restrict -6 default kod nomodify notrap nopeer noquery" >> "/etc/ntp.conf"
+        # Clean up after ourselves.
+        rm "/etc/ntp.conf.bak"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

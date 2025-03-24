@@ -1,0 +1,71 @@
+id: os_mfetp_installed
+title: Install McAfee Endpoint Security for Linux (ENSL)
+discussion: |
+  Virus scanning software can be used to detect if a system has been compromised by
+  computer viruses, as well as to limit their spread to other systems.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000366
+    - CCI-001263
+  800-53r4:
+    - SI-2(2)
+  srg:
+    - SRG-OS-000191-GPOS-00080
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate
+severity: medium
+os_specifics:
+  rhel:
+    '8':
+      references:
+        cce:
+          - CCE-86260-7
+        disa_stig:
+          - RHEL-08-010001
+      check:
+        - N/A
+      fix:
+        - N/A
+    '9':
+      references:
+        cce:
+          - CCE-86236-7
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010415
+      check:
+        - N/A
+      fix:
+        - N/A
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A

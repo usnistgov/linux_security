@@ -1,0 +1,1527 @@
+id: os_login_attempts_display
+title: Ensure PAM Displays Last Logon/Access Notification
+discussion: |
+  Users need to be aware of activity that occurs regarding their account. Providing users with
+  information regarding the number of unsuccessful attempts that were made to login to their
+  account allows the user to determine if any unauthorized activity has occurred and gives them
+  an opportunity to notify administrators.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000366
+  800-53r4:
+    - AC-9
+    - AC-9(1)
+  srg:
+    - SRG-OS-000480-GPOS-00227
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - N/A
+severity: low
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-88650-7
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q pam; then
+
+        if [ -f /usr/bin/authselect ]; then
+            if authselect list-features sssd | grep -q with-silent-lastlog; then
+                if ! authselect check; then
+                echo "
+                authselect integrity check failed. Remediation aborted!
+                This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                It is not recommended to manually edit the PAM files when authselect tool is available.
+                In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                exit 1
+                fi
+                authselect disable-feature with-silent-lastlog
+
+                authselect apply-changes -b
+            else
+
+                if ! authselect check; then
+                echo "
+                authselect integrity check failed. Remediation aborted!
+                This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                It is not recommended to manually edit the PAM files when authselect tool is available.
+                In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                exit 1
+                fi
+
+                CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                # If not already in use, a custom profile is created preserving the enabled features.
+                if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                    ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                    # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                    # If currently used, it is replaced by "sssd", which is the best option in this case.
+                    if [[ $CURRENT_PROFILE == local ]]; then
+                        CURRENT_PROFILE="sssd"
+                    fi
+                    authselect create-profile hardening -b $CURRENT_PROFILE
+                    CURRENT_PROFILE="custom/hardening"
+
+                    authselect apply-changes -b --backup=before-hardening-custom-profile
+                    authselect select $CURRENT_PROFILE
+                    for feature in $ENABLED_FEATURES; do
+                        authselect enable-feature $feature;
+                    done
+
+                    authselect apply-changes -b --backup=after-hardening-custom-profile
+                fi
+                PAM_FILE_NAME=$(basename "/etc/pam.d/postlogin")
+                PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                authselect apply-changes -b
+                if [ -e "$PAM_FILE_PATH" ] ; then
+                    PAM_FILE_PATH="$PAM_FILE_PATH"
+                    if [ -f /usr/bin/authselect ]; then
+
+                        if ! authselect check; then
+                        echo "
+                        authselect integrity check failed. Remediation aborted!
+                        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                        It is not recommended to manually edit the PAM files when authselect tool is available.
+                        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                        exit 1
+                        fi
+
+                        CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                        # If not already in use, a custom profile is created preserving the enabled features.
+                        if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                            ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                            # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                            # If currently used, it is replaced by "sssd", which is the best option in this case.
+                            if [[ $CURRENT_PROFILE == local ]]; then
+                                CURRENT_PROFILE="sssd"
+                            fi
+                            authselect create-profile hardening -b $CURRENT_PROFILE
+                            CURRENT_PROFILE="custom/hardening"
+
+                            authselect apply-changes -b --backup=before-hardening-custom-profile
+                            authselect select $CURRENT_PROFILE
+                            for feature in $ENABLED_FEATURES; do
+                                authselect enable-feature $feature;
+                            done
+
+                            authselect apply-changes -b --backup=after-hardening-custom-profile
+                        fi
+                        PAM_FILE_NAME=$(basename "$PAM_FILE_PATH")
+                        PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                        authselect apply-changes -b
+                    fi
+
+
+                        if ! grep -qP "^\s*session\s+\[default=1\]\s+pam_lastlog.so\s*.*" "$PAM_FILE_PATH"; then
+                            # Line matching group + control + module was not found. Check group + module.
+                            if [ "$(grep -cP '^\s*session\s+.*\s+pam_lastlog.so\s*' "$PAM_FILE_PATH")" -eq 1 ]; then
+                                # The control is updated only if one single line matches.
+                                sed -i -E --follow-symlinks "s/^(\s*session\s+).*(\bpam_lastlog.so.*)/\1[default=1] \2/" "$PAM_FILE_PATH"
+                            else
+                                LAST_MATCH_LINE=$(grep -nP "^\s*session\s+.*pam_succeed_if\.so.*" "$PAM_FILE_PATH" | tail -n 1 | cut -d: -f 1)
+                                if [ ! -z $LAST_MATCH_LINE ]; then
+                                    sed -i --follow-symlinks $LAST_MATCH_LINE" a session     [default=1]    pam_lastlog.so" "$PAM_FILE_PATH"
+                                else
+                                    echo "session    [default=1]    pam_lastlog.so" >> "$PAM_FILE_PATH"
+                                fi
+                            fi
+                        fi
+                        # Check the option
+                        if ! grep -qP "^\s*session\s+\[default=1\]\s+pam_lastlog.so\s*.*\sshowfailed\b" "$PAM_FILE_PATH"; then
+                            sed -i -E --follow-symlinks "/\s*session\s+\[default=1\]\s+pam_lastlog.so.*/ s/$/ showfailed/" "$PAM_FILE_PATH"
+                        fi
+                    if [ -f /usr/bin/authselect ]; then
+
+                        authselect apply-changes -b
+                    fi
+                else
+                    echo "$PAM_FILE_PATH was not found" >&2
+                fi
+                if [ -e "$PAM_FILE_PATH" ] ; then
+                    PAM_FILE_PATH="$PAM_FILE_PATH"
+                    if [ -f /usr/bin/authselect ]; then
+
+                        if ! authselect check; then
+                        echo "
+                        authselect integrity check failed. Remediation aborted!
+                        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                        It is not recommended to manually edit the PAM files when authselect tool is available.
+                        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                        exit 1
+                        fi
+
+                        CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                        # If not already in use, a custom profile is created preserving the enabled features.
+                        if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                            ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                            # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                            # If currently used, it is replaced by "sssd", which is the best option in this case.
+                            if [[ $CURRENT_PROFILE == local ]]; then
+                                CURRENT_PROFILE="sssd"
+                            fi
+                            authselect create-profile hardening -b $CURRENT_PROFILE
+                            CURRENT_PROFILE="custom/hardening"
+
+                            authselect apply-changes -b --backup=before-hardening-custom-profile
+                            authselect select $CURRENT_PROFILE
+                            for feature in $ENABLED_FEATURES; do
+                                authselect enable-feature $feature;
+                            done
+
+                            authselect apply-changes -b --backup=after-hardening-custom-profile
+                        fi
+                        PAM_FILE_NAME=$(basename "$PAM_FILE_PATH")
+                        PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                        authselect apply-changes -b
+                    fi
+
+                if grep -qP "^\s*session\s+[default=1]\s+pam_lastlog.so\s.*\bsilent\b" "$PAM_FILE_PATH"; then
+                    sed -i -E --follow-symlinks "s/(.*session.*[default=1].*pam_lastlog.so.*)\ssilent=?[[:alnum:]]*(.*)/\1\2/g" "$PAM_FILE_PATH"
+                fi
+                    if [ -f /usr/bin/authselect ]; then
+
+                        authselect apply-changes -b
+                    fi
+                else
+                    echo "$PAM_FILE_PATH was not found" >&2
+                fi
+            fi
+        else
+            if [ -e "/etc/pam.d/postlogin" ] ; then
+                    PAM_FILE_PATH="/etc/pam.d/postlogin"
+                    if [ -f /usr/bin/authselect ]; then
+
+                        if ! authselect check; then
+                        echo "
+                        authselect integrity check failed. Remediation aborted!
+                        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                        It is not recommended to manually edit the PAM files when authselect tool is available.
+                        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                        exit 1
+                        fi
+
+                        CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                        # If not already in use, a custom profile is created preserving the enabled features.
+                        if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                            ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                            # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                            # If currently used, it is replaced by "sssd", which is the best option in this case.
+                            if [[ $CURRENT_PROFILE == local ]]; then
+                                CURRENT_PROFILE="sssd"
+                            fi
+                            authselect create-profile hardening -b $CURRENT_PROFILE
+                            CURRENT_PROFILE="custom/hardening"
+
+                            authselect apply-changes -b --backup=before-hardening-custom-profile
+                            authselect select $CURRENT_PROFILE
+                            for feature in $ENABLED_FEATURES; do
+                                authselect enable-feature $feature;
+                            done
+
+                            authselect apply-changes -b --backup=after-hardening-custom-profile
+                        fi
+                        PAM_FILE_NAME=$(basename "/etc/pam.d/postlogin")
+                        PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                        authselect apply-changes -b
+                    fi
+
+
+                        if ! grep -qP "^\s*session\s+\[default=1\]\s+pam_lastlog.so\s*.*" "$PAM_FILE_PATH"; then
+                            # Line matching group + control + module was not found. Check group + module.
+                            if [ "$(grep -cP '^\s*session\s+.*\s+pam_lastlog.so\s*' "$PAM_FILE_PATH")" -eq 1 ]; then
+                                # The control is updated only if one single line matches.
+                                sed -i -E --follow-symlinks "s/^(\s*session\s+).*(\bpam_lastlog.so.*)/\1[default=1] \2/" "$PAM_FILE_PATH"
+                            else
+                                LAST_MATCH_LINE=$(grep -nP "^\s*session\s+.*pam_succeed_if\.so.*" "$PAM_FILE_PATH" | tail -n 1 | cut -d: -f 1)
+                                if [ ! -z $LAST_MATCH_LINE ]; then
+                                    sed -i --follow-symlinks $LAST_MATCH_LINE" a session     [default=1]    pam_lastlog.so" "$PAM_FILE_PATH"
+                                else
+                                    echo "session    [default=1]    pam_lastlog.so" >> "$PAM_FILE_PATH"
+                                fi
+                            fi
+                        fi
+                        # Check the option
+                        if ! grep -qP "^\s*session\s+\[default=1\]\s+pam_lastlog.so\s*.*\sshowfailed\b" "$PAM_FILE_PATH"; then
+                            sed -i -E --follow-symlinks "/\s*session\s+\[default=1\]\s+pam_lastlog.so.*/ s/$/ showfailed/" "$PAM_FILE_PATH"
+                        fi
+                    if [ -f /usr/bin/authselect ]; then
+
+                        authselect apply-changes -b
+                    fi
+                else
+                    echo "/etc/pam.d/postlogin was not found" >&2
+                fi
+            if [ -e "/etc/pam.d/postlogin" ] ; then
+                    PAM_FILE_PATH="/etc/pam.d/postlogin"
+                    if [ -f /usr/bin/authselect ]; then
+
+                        if ! authselect check; then
+                        echo "
+                        authselect integrity check failed. Remediation aborted!
+                        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                        It is not recommended to manually edit the PAM files when authselect tool is available.
+                        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                        exit 1
+                        fi
+
+                        CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                        # If not already in use, a custom profile is created preserving the enabled features.
+                        if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                            ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                            # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                            # If currently used, it is replaced by "sssd", which is the best option in this case.
+                            if [[ $CURRENT_PROFILE == local ]]; then
+                                CURRENT_PROFILE="sssd"
+                            fi
+                            authselect create-profile hardening -b $CURRENT_PROFILE
+                            CURRENT_PROFILE="custom/hardening"
+
+                            authselect apply-changes -b --backup=before-hardening-custom-profile
+                            authselect select $CURRENT_PROFILE
+                            for feature in $ENABLED_FEATURES; do
+                                authselect enable-feature $feature;
+                            done
+
+                            authselect apply-changes -b --backup=after-hardening-custom-profile
+                        fi
+                        PAM_FILE_NAME=$(basename "/etc/pam.d/postlogin")
+                        PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                        authselect apply-changes -b
+                    fi
+
+                if grep -qP "^\s*session\s+[default=1]\s+pam_lastlog.so\s.*\bsilent\b" "$PAM_FILE_PATH"; then
+                    sed -i -E --follow-symlinks "s/(.*session.*[default=1].*pam_lastlog.so.*)\ssilent=?[[:alnum:]]*(.*)/\1\2/g" "$PAM_FILE_PATH"
+                fi
+                    if [ -f /usr/bin/authselect ]; then
+
+                        authselect apply-changes -b
+                    fi
+                else
+                    echo "/etc/pam.d/postlogin was not found" >&2
+                fi
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-80788-3
+        disa_stig:
+          - RHEL-08-020340
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q pam; then
+
+        if [ -f /usr/bin/authselect ]; then
+            if authselect list-features sssd | grep -q with-silent-lastlog; then
+                if ! authselect check; then
+                echo "
+                authselect integrity check failed. Remediation aborted!
+                This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                It is not recommended to manually edit the PAM files when authselect tool is available.
+                In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                exit 1
+                fi
+                authselect disable-feature with-silent-lastlog
+
+                authselect apply-changes -b
+            else
+
+                if ! authselect check; then
+                echo "
+                authselect integrity check failed. Remediation aborted!
+                This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                It is not recommended to manually edit the PAM files when authselect tool is available.
+                In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                exit 1
+                fi
+
+                CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                # If not already in use, a custom profile is created preserving the enabled features.
+                if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                    ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                    # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                    # If currently used, it is replaced by "sssd", which is the best option in this case.
+                    if [[ $CURRENT_PROFILE == local ]]; then
+                        CURRENT_PROFILE="sssd"
+                    fi
+                    authselect create-profile hardening -b $CURRENT_PROFILE
+                    CURRENT_PROFILE="custom/hardening"
+
+                    authselect apply-changes -b --backup=before-hardening-custom-profile
+                    authselect select $CURRENT_PROFILE
+                    for feature in $ENABLED_FEATURES; do
+                        authselect enable-feature $feature;
+                    done
+
+                    authselect apply-changes -b --backup=after-hardening-custom-profile
+                fi
+                PAM_FILE_NAME=$(basename "/etc/pam.d/postlogin")
+                PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                authselect apply-changes -b
+                if [ -e "$PAM_FILE_PATH" ] ; then
+                    PAM_FILE_PATH="$PAM_FILE_PATH"
+                    if [ -f /usr/bin/authselect ]; then
+
+                        if ! authselect check; then
+                        echo "
+                        authselect integrity check failed. Remediation aborted!
+                        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                        It is not recommended to manually edit the PAM files when authselect tool is available.
+                        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                        exit 1
+                        fi
+
+                        CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                        # If not already in use, a custom profile is created preserving the enabled features.
+                        if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                            ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                            # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                            # If currently used, it is replaced by "sssd", which is the best option in this case.
+                            if [[ $CURRENT_PROFILE == local ]]; then
+                                CURRENT_PROFILE="sssd"
+                            fi
+                            authselect create-profile hardening -b $CURRENT_PROFILE
+                            CURRENT_PROFILE="custom/hardening"
+
+                            authselect apply-changes -b --backup=before-hardening-custom-profile
+                            authselect select $CURRENT_PROFILE
+                            for feature in $ENABLED_FEATURES; do
+                                authselect enable-feature $feature;
+                            done
+
+                            authselect apply-changes -b --backup=after-hardening-custom-profile
+                        fi
+                        PAM_FILE_NAME=$(basename "$PAM_FILE_PATH")
+                        PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                        authselect apply-changes -b
+                    fi
+
+
+                        if ! grep -qP "^\s*session\s+\[default=1\]\s+pam_lastlog.so\s*.*" "$PAM_FILE_PATH"; then
+                            # Line matching group + control + module was not found. Check group + module.
+                            if [ "$(grep -cP '^\s*session\s+.*\s+pam_lastlog.so\s*' "$PAM_FILE_PATH")" -eq 1 ]; then
+                                # The control is updated only if one single line matches.
+                                sed -i -E --follow-symlinks "s/^(\s*session\s+).*(\bpam_lastlog.so.*)/\1[default=1] \2/" "$PAM_FILE_PATH"
+                            else
+                                LAST_MATCH_LINE=$(grep -nP "^\s*session\s+.*pam_succeed_if\.so.*" "$PAM_FILE_PATH" | tail -n 1 | cut -d: -f 1)
+                                if [ ! -z $LAST_MATCH_LINE ]; then
+                                    sed -i --follow-symlinks $LAST_MATCH_LINE" a session     [default=1]    pam_lastlog.so" "$PAM_FILE_PATH"
+                                else
+                                    echo "session    [default=1]    pam_lastlog.so" >> "$PAM_FILE_PATH"
+                                fi
+                            fi
+                        fi
+                        # Check the option
+                        if ! grep -qP "^\s*session\s+\[default=1\]\s+pam_lastlog.so\s*.*\sshowfailed\b" "$PAM_FILE_PATH"; then
+                            sed -i -E --follow-symlinks "/\s*session\s+\[default=1\]\s+pam_lastlog.so.*/ s/$/ showfailed/" "$PAM_FILE_PATH"
+                        fi
+                    if [ -f /usr/bin/authselect ]; then
+
+                        authselect apply-changes -b
+                    fi
+                else
+                    echo "$PAM_FILE_PATH was not found" >&2
+                fi
+                if [ -e "$PAM_FILE_PATH" ] ; then
+                    PAM_FILE_PATH="$PAM_FILE_PATH"
+                    if [ -f /usr/bin/authselect ]; then
+
+                        if ! authselect check; then
+                        echo "
+                        authselect integrity check failed. Remediation aborted!
+                        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                        It is not recommended to manually edit the PAM files when authselect tool is available.
+                        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                        exit 1
+                        fi
+
+                        CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                        # If not already in use, a custom profile is created preserving the enabled features.
+                        if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                            ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                            # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                            # If currently used, it is replaced by "sssd", which is the best option in this case.
+                            if [[ $CURRENT_PROFILE == local ]]; then
+                                CURRENT_PROFILE="sssd"
+                            fi
+                            authselect create-profile hardening -b $CURRENT_PROFILE
+                            CURRENT_PROFILE="custom/hardening"
+
+                            authselect apply-changes -b --backup=before-hardening-custom-profile
+                            authselect select $CURRENT_PROFILE
+                            for feature in $ENABLED_FEATURES; do
+                                authselect enable-feature $feature;
+                            done
+
+                            authselect apply-changes -b --backup=after-hardening-custom-profile
+                        fi
+                        PAM_FILE_NAME=$(basename "$PAM_FILE_PATH")
+                        PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                        authselect apply-changes -b
+                    fi
+
+                if grep -qP "^\s*session\s+[default=1]\s+pam_lastlog.so\s.*\bsilent\b" "$PAM_FILE_PATH"; then
+                    sed -i -E --follow-symlinks "s/(.*session.*[default=1].*pam_lastlog.so.*)\ssilent=?[[:alnum:]]*(.*)/\1\2/g" "$PAM_FILE_PATH"
+                fi
+                    if [ -f /usr/bin/authselect ]; then
+
+                        authselect apply-changes -b
+                    fi
+                else
+                    echo "$PAM_FILE_PATH was not found" >&2
+                fi
+            fi
+        else
+            if [ -e "/etc/pam.d/postlogin" ] ; then
+                    PAM_FILE_PATH="/etc/pam.d/postlogin"
+                    if [ -f /usr/bin/authselect ]; then
+
+                        if ! authselect check; then
+                        echo "
+                        authselect integrity check failed. Remediation aborted!
+                        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                        It is not recommended to manually edit the PAM files when authselect tool is available.
+                        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                        exit 1
+                        fi
+
+                        CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                        # If not already in use, a custom profile is created preserving the enabled features.
+                        if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                            ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                            # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                            # If currently used, it is replaced by "sssd", which is the best option in this case.
+                            if [[ $CURRENT_PROFILE == local ]]; then
+                                CURRENT_PROFILE="sssd"
+                            fi
+                            authselect create-profile hardening -b $CURRENT_PROFILE
+                            CURRENT_PROFILE="custom/hardening"
+
+                            authselect apply-changes -b --backup=before-hardening-custom-profile
+                            authselect select $CURRENT_PROFILE
+                            for feature in $ENABLED_FEATURES; do
+                                authselect enable-feature $feature;
+                            done
+
+                            authselect apply-changes -b --backup=after-hardening-custom-profile
+                        fi
+                        PAM_FILE_NAME=$(basename "/etc/pam.d/postlogin")
+                        PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                        authselect apply-changes -b
+                    fi
+
+
+                        if ! grep -qP "^\s*session\s+\[default=1\]\s+pam_lastlog.so\s*.*" "$PAM_FILE_PATH"; then
+                            # Line matching group + control + module was not found. Check group + module.
+                            if [ "$(grep -cP '^\s*session\s+.*\s+pam_lastlog.so\s*' "$PAM_FILE_PATH")" -eq 1 ]; then
+                                # The control is updated only if one single line matches.
+                                sed -i -E --follow-symlinks "s/^(\s*session\s+).*(\bpam_lastlog.so.*)/\1[default=1] \2/" "$PAM_FILE_PATH"
+                            else
+                                LAST_MATCH_LINE=$(grep -nP "^\s*session\s+.*pam_succeed_if\.so.*" "$PAM_FILE_PATH" | tail -n 1 | cut -d: -f 1)
+                                if [ ! -z $LAST_MATCH_LINE ]; then
+                                    sed -i --follow-symlinks $LAST_MATCH_LINE" a session     [default=1]    pam_lastlog.so" "$PAM_FILE_PATH"
+                                else
+                                    echo "session    [default=1]    pam_lastlog.so" >> "$PAM_FILE_PATH"
+                                fi
+                            fi
+                        fi
+                        # Check the option
+                        if ! grep -qP "^\s*session\s+\[default=1\]\s+pam_lastlog.so\s*.*\sshowfailed\b" "$PAM_FILE_PATH"; then
+                            sed -i -E --follow-symlinks "/\s*session\s+\[default=1\]\s+pam_lastlog.so.*/ s/$/ showfailed/" "$PAM_FILE_PATH"
+                        fi
+                    if [ -f /usr/bin/authselect ]; then
+
+                        authselect apply-changes -b
+                    fi
+                else
+                    echo "/etc/pam.d/postlogin was not found" >&2
+                fi
+            if [ -e "/etc/pam.d/postlogin" ] ; then
+                    PAM_FILE_PATH="/etc/pam.d/postlogin"
+                    if [ -f /usr/bin/authselect ]; then
+
+                        if ! authselect check; then
+                        echo "
+                        authselect integrity check failed. Remediation aborted!
+                        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                        It is not recommended to manually edit the PAM files when authselect tool is available.
+                        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                        exit 1
+                        fi
+
+                        CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                        # If not already in use, a custom profile is created preserving the enabled features.
+                        if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                            ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                            # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                            # If currently used, it is replaced by "sssd", which is the best option in this case.
+                            if [[ $CURRENT_PROFILE == local ]]; then
+                                CURRENT_PROFILE="sssd"
+                            fi
+                            authselect create-profile hardening -b $CURRENT_PROFILE
+                            CURRENT_PROFILE="custom/hardening"
+
+                            authselect apply-changes -b --backup=before-hardening-custom-profile
+                            authselect select $CURRENT_PROFILE
+                            for feature in $ENABLED_FEATURES; do
+                                authselect enable-feature $feature;
+                            done
+
+                            authselect apply-changes -b --backup=after-hardening-custom-profile
+                        fi
+                        PAM_FILE_NAME=$(basename "/etc/pam.d/postlogin")
+                        PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                        authselect apply-changes -b
+                    fi
+
+                if grep -qP "^\s*session\s+[default=1]\s+pam_lastlog.so\s.*\bsilent\b" "$PAM_FILE_PATH"; then
+                    sed -i -E --follow-symlinks "s/(.*session.*[default=1].*pam_lastlog.so.*)\ssilent=?[[:alnum:]]*(.*)/\1\2/g" "$PAM_FILE_PATH"
+                fi
+                    if [ -f /usr/bin/authselect ]; then
+
+                        authselect apply-changes -b
+                    fi
+                else
+                    echo "/etc/pam.d/postlogin was not found" >&2
+                fi
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-83560-3
+        disa_stig:
+          - RHEL-09-412075
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q pam; then
+
+        if [ -f /usr/bin/authselect ]; then
+            if authselect list-features sssd | grep -q with-silent-lastlog; then
+                if ! authselect check; then
+                echo "
+                authselect integrity check failed. Remediation aborted!
+                This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                It is not recommended to manually edit the PAM files when authselect tool is available.
+                In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                exit 1
+                fi
+                authselect disable-feature with-silent-lastlog
+
+                authselect apply-changes -b
+            else
+
+                if ! authselect check; then
+                echo "
+                authselect integrity check failed. Remediation aborted!
+                This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                It is not recommended to manually edit the PAM files when authselect tool is available.
+                In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                exit 1
+                fi
+
+                CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                # If not already in use, a custom profile is created preserving the enabled features.
+                if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                    ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                    # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                    # If currently used, it is replaced by "sssd", which is the best option in this case.
+                    if [[ $CURRENT_PROFILE == local ]]; then
+                        CURRENT_PROFILE="sssd"
+                    fi
+                    authselect create-profile hardening -b $CURRENT_PROFILE
+                    CURRENT_PROFILE="custom/hardening"
+
+                    authselect apply-changes -b --backup=before-hardening-custom-profile
+                    authselect select $CURRENT_PROFILE
+                    for feature in $ENABLED_FEATURES; do
+                        authselect enable-feature $feature;
+                    done
+
+                    authselect apply-changes -b --backup=after-hardening-custom-profile
+                fi
+                PAM_FILE_NAME=$(basename "/etc/pam.d/postlogin")
+                PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                authselect apply-changes -b
+                if [ -e "$PAM_FILE_PATH" ] ; then
+                    PAM_FILE_PATH="$PAM_FILE_PATH"
+                    if [ -f /usr/bin/authselect ]; then
+
+                        if ! authselect check; then
+                        echo "
+                        authselect integrity check failed. Remediation aborted!
+                        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                        It is not recommended to manually edit the PAM files when authselect tool is available.
+                        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                        exit 1
+                        fi
+
+                        CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                        # If not already in use, a custom profile is created preserving the enabled features.
+                        if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                            ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                            # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                            # If currently used, it is replaced by "sssd", which is the best option in this case.
+                            if [[ $CURRENT_PROFILE == local ]]; then
+                                CURRENT_PROFILE="sssd"
+                            fi
+                            authselect create-profile hardening -b $CURRENT_PROFILE
+                            CURRENT_PROFILE="custom/hardening"
+
+                            authselect apply-changes -b --backup=before-hardening-custom-profile
+                            authselect select $CURRENT_PROFILE
+                            for feature in $ENABLED_FEATURES; do
+                                authselect enable-feature $feature;
+                            done
+
+                            authselect apply-changes -b --backup=after-hardening-custom-profile
+                        fi
+                        PAM_FILE_NAME=$(basename "$PAM_FILE_PATH")
+                        PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                        authselect apply-changes -b
+                    fi
+
+
+                        if ! grep -qP "^\s*session\s+\[default=1\]\s+pam_lastlog.so\s*.*" "$PAM_FILE_PATH"; then
+                            # Line matching group + control + module was not found. Check group + module.
+                            if [ "$(grep -cP '^\s*session\s+.*\s+pam_lastlog.so\s*' "$PAM_FILE_PATH")" -eq 1 ]; then
+                                # The control is updated only if one single line matches.
+                                sed -i -E --follow-symlinks "s/^(\s*session\s+).*(\bpam_lastlog.so.*)/\1[default=1] \2/" "$PAM_FILE_PATH"
+                            else
+                                LAST_MATCH_LINE=$(grep -nP "^\s*session\s+.*pam_succeed_if\.so.*" "$PAM_FILE_PATH" | tail -n 1 | cut -d: -f 1)
+                                if [ ! -z $LAST_MATCH_LINE ]; then
+                                    sed -i --follow-symlinks $LAST_MATCH_LINE" a session     [default=1]    pam_lastlog.so" "$PAM_FILE_PATH"
+                                else
+                                    echo "session    [default=1]    pam_lastlog.so" >> "$PAM_FILE_PATH"
+                                fi
+                            fi
+                        fi
+                        # Check the option
+                        if ! grep -qP "^\s*session\s+\[default=1\]\s+pam_lastlog.so\s*.*\sshowfailed\b" "$PAM_FILE_PATH"; then
+                            sed -i -E --follow-symlinks "/\s*session\s+\[default=1\]\s+pam_lastlog.so.*/ s/$/ showfailed/" "$PAM_FILE_PATH"
+                        fi
+                    if [ -f /usr/bin/authselect ]; then
+
+                        authselect apply-changes -b
+                    fi
+                else
+                    echo "$PAM_FILE_PATH was not found" >&2
+                fi
+                if [ -e "$PAM_FILE_PATH" ] ; then
+                    PAM_FILE_PATH="$PAM_FILE_PATH"
+                    if [ -f /usr/bin/authselect ]; then
+
+                        if ! authselect check; then
+                        echo "
+                        authselect integrity check failed. Remediation aborted!
+                        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                        It is not recommended to manually edit the PAM files when authselect tool is available.
+                        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                        exit 1
+                        fi
+
+                        CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                        # If not already in use, a custom profile is created preserving the enabled features.
+                        if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                            ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                            # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                            # If currently used, it is replaced by "sssd", which is the best option in this case.
+                            if [[ $CURRENT_PROFILE == local ]]; then
+                                CURRENT_PROFILE="sssd"
+                            fi
+                            authselect create-profile hardening -b $CURRENT_PROFILE
+                            CURRENT_PROFILE="custom/hardening"
+
+                            authselect apply-changes -b --backup=before-hardening-custom-profile
+                            authselect select $CURRENT_PROFILE
+                            for feature in $ENABLED_FEATURES; do
+                                authselect enable-feature $feature;
+                            done
+
+                            authselect apply-changes -b --backup=after-hardening-custom-profile
+                        fi
+                        PAM_FILE_NAME=$(basename "$PAM_FILE_PATH")
+                        PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                        authselect apply-changes -b
+                    fi
+
+                if grep -qP "^\s*session\s+[default=1]\s+pam_lastlog.so\s.*\bsilent\b" "$PAM_FILE_PATH"; then
+                    sed -i -E --follow-symlinks "s/(.*session.*[default=1].*pam_lastlog.so.*)\ssilent=?[[:alnum:]]*(.*)/\1\2/g" "$PAM_FILE_PATH"
+                fi
+                    if [ -f /usr/bin/authselect ]; then
+
+                        authselect apply-changes -b
+                    fi
+                else
+                    echo "$PAM_FILE_PATH was not found" >&2
+                fi
+            fi
+        else
+            if [ -e "/etc/pam.d/postlogin" ] ; then
+                    PAM_FILE_PATH="/etc/pam.d/postlogin"
+                    if [ -f /usr/bin/authselect ]; then
+
+                        if ! authselect check; then
+                        echo "
+                        authselect integrity check failed. Remediation aborted!
+                        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                        It is not recommended to manually edit the PAM files when authselect tool is available.
+                        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                        exit 1
+                        fi
+
+                        CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                        # If not already in use, a custom profile is created preserving the enabled features.
+                        if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                            ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                            # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                            # If currently used, it is replaced by "sssd", which is the best option in this case.
+                            if [[ $CURRENT_PROFILE == local ]]; then
+                                CURRENT_PROFILE="sssd"
+                            fi
+                            authselect create-profile hardening -b $CURRENT_PROFILE
+                            CURRENT_PROFILE="custom/hardening"
+
+                            authselect apply-changes -b --backup=before-hardening-custom-profile
+                            authselect select $CURRENT_PROFILE
+                            for feature in $ENABLED_FEATURES; do
+                                authselect enable-feature $feature;
+                            done
+
+                            authselect apply-changes -b --backup=after-hardening-custom-profile
+                        fi
+                        PAM_FILE_NAME=$(basename "/etc/pam.d/postlogin")
+                        PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                        authselect apply-changes -b
+                    fi
+
+
+                        if ! grep -qP "^\s*session\s+\[default=1\]\s+pam_lastlog.so\s*.*" "$PAM_FILE_PATH"; then
+                            # Line matching group + control + module was not found. Check group + module.
+                            if [ "$(grep -cP '^\s*session\s+.*\s+pam_lastlog.so\s*' "$PAM_FILE_PATH")" -eq 1 ]; then
+                                # The control is updated only if one single line matches.
+                                sed -i -E --follow-symlinks "s/^(\s*session\s+).*(\bpam_lastlog.so.*)/\1[default=1] \2/" "$PAM_FILE_PATH"
+                            else
+                                LAST_MATCH_LINE=$(grep -nP "^\s*session\s+.*pam_succeed_if\.so.*" "$PAM_FILE_PATH" | tail -n 1 | cut -d: -f 1)
+                                if [ ! -z $LAST_MATCH_LINE ]; then
+                                    sed -i --follow-symlinks $LAST_MATCH_LINE" a session     [default=1]    pam_lastlog.so" "$PAM_FILE_PATH"
+                                else
+                                    echo "session    [default=1]    pam_lastlog.so" >> "$PAM_FILE_PATH"
+                                fi
+                            fi
+                        fi
+                        # Check the option
+                        if ! grep -qP "^\s*session\s+\[default=1\]\s+pam_lastlog.so\s*.*\sshowfailed\b" "$PAM_FILE_PATH"; then
+                            sed -i -E --follow-symlinks "/\s*session\s+\[default=1\]\s+pam_lastlog.so.*/ s/$/ showfailed/" "$PAM_FILE_PATH"
+                        fi
+                    if [ -f /usr/bin/authselect ]; then
+
+                        authselect apply-changes -b
+                    fi
+                else
+                    echo "/etc/pam.d/postlogin was not found" >&2
+                fi
+            if [ -e "/etc/pam.d/postlogin" ] ; then
+                    PAM_FILE_PATH="/etc/pam.d/postlogin"
+                    if [ -f /usr/bin/authselect ]; then
+
+                        if ! authselect check; then
+                        echo "
+                        authselect integrity check failed. Remediation aborted!
+                        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                        It is not recommended to manually edit the PAM files when authselect tool is available.
+                        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                        exit 1
+                        fi
+
+                        CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                        # If not already in use, a custom profile is created preserving the enabled features.
+                        if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                            ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                            # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                            # If currently used, it is replaced by "sssd", which is the best option in this case.
+                            if [[ $CURRENT_PROFILE == local ]]; then
+                                CURRENT_PROFILE="sssd"
+                            fi
+                            authselect create-profile hardening -b $CURRENT_PROFILE
+                            CURRENT_PROFILE="custom/hardening"
+
+                            authselect apply-changes -b --backup=before-hardening-custom-profile
+                            authselect select $CURRENT_PROFILE
+                            for feature in $ENABLED_FEATURES; do
+                                authselect enable-feature $feature;
+                            done
+
+                            authselect apply-changes -b --backup=after-hardening-custom-profile
+                        fi
+                        PAM_FILE_NAME=$(basename "/etc/pam.d/postlogin")
+                        PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                        authselect apply-changes -b
+                    fi
+
+                if grep -qP "^\s*session\s+[default=1]\s+pam_lastlog.so\s.*\bsilent\b" "$PAM_FILE_PATH"; then
+                    sed -i -E --follow-symlinks "s/(.*session.*[default=1].*pam_lastlog.so.*)\ssilent=?[[:alnum:]]*(.*)/\1\2/g" "$PAM_FILE_PATH"
+                fi
+                    if [ -f /usr/bin/authselect ]; then
+
+                        authselect apply-changes -b
+                    fi
+                else
+                    echo "/etc/pam.d/postlogin was not found" >&2
+                fi
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010453
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'libpam-runtime' 2>/dev/null | grep -q '^installed'; then
+
+        if [ -f /usr/bin/authselect ]; then
+            if authselect list-features sssd | grep -q with-silent-lastlog; then
+                if ! authselect check; then
+                echo "
+                authselect integrity check failed. Remediation aborted!
+                This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                It is not recommended to manually edit the PAM files when authselect tool is available.
+                In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                exit 1
+                fi
+                authselect disable-feature with-silent-lastlog
+
+                authselect apply-changes -b
+            else
+
+                if ! authselect check; then
+                echo "
+                authselect integrity check failed. Remediation aborted!
+                This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                It is not recommended to manually edit the PAM files when authselect tool is available.
+                In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                exit 1
+                fi
+
+                CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                # If not already in use, a custom profile is created preserving the enabled features.
+                if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                    ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                    # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                    # If currently used, it is replaced by "sssd", which is the best option in this case.
+                    if [[ $CURRENT_PROFILE == local ]]; then
+                        CURRENT_PROFILE="sssd"
+                    fi
+                    authselect create-profile hardening -b $CURRENT_PROFILE
+                    CURRENT_PROFILE="custom/hardening"
+
+                    authselect apply-changes -b --backup=before-hardening-custom-profile
+                    authselect select $CURRENT_PROFILE
+                    for feature in $ENABLED_FEATURES; do
+                        authselect enable-feature $feature;
+                    done
+
+                    authselect apply-changes -b --backup=after-hardening-custom-profile
+                fi
+                PAM_FILE_NAME=$(basename "/etc/pam.d/login")
+                PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                authselect apply-changes -b
+                if [ -e "$PAM_FILE_PATH" ] ; then
+                    PAM_FILE_PATH="$PAM_FILE_PATH"
+                    if [ -f /usr/bin/authselect ]; then
+
+                        if ! authselect check; then
+                        echo "
+                        authselect integrity check failed. Remediation aborted!
+                        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                        It is not recommended to manually edit the PAM files when authselect tool is available.
+                        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                        exit 1
+                        fi
+
+                        CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                        # If not already in use, a custom profile is created preserving the enabled features.
+                        if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                            ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                            # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                            # If currently used, it is replaced by "sssd", which is the best option in this case.
+                            if [[ $CURRENT_PROFILE == local ]]; then
+                                CURRENT_PROFILE="sssd"
+                            fi
+                            authselect create-profile hardening -b $CURRENT_PROFILE
+                            CURRENT_PROFILE="custom/hardening"
+
+                            authselect apply-changes -b --backup=before-hardening-custom-profile
+                            authselect select $CURRENT_PROFILE
+                            for feature in $ENABLED_FEATURES; do
+                                authselect enable-feature $feature;
+                            done
+
+                            authselect apply-changes -b --backup=after-hardening-custom-profile
+                        fi
+                        PAM_FILE_NAME=$(basename "$PAM_FILE_PATH")
+                        PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                        authselect apply-changes -b
+                    fi
+
+
+                        if ! grep -qP "^\s*session\s+required\s+pam_lastlog.so\s*.*" "$PAM_FILE_PATH"; then
+                            # Line matching group + control + module was not found. Check group + module.
+                            if [ "$(grep -cP '^\s*session\s+.*\s+pam_lastlog.so\s*' "$PAM_FILE_PATH")" -eq 1 ]; then
+                                # The control is updated only if one single line matches.
+                                sed -i -E --follow-symlinks "s/^(\s*session\s+).*(\bpam_lastlog.so.*)/\1required \2/" "$PAM_FILE_PATH"
+                            else
+                                LAST_MATCH_LINE=$(grep -nP "^\s*session.*include\s+common-session$" "$PAM_FILE_PATH" | tail -n 1 | cut -d: -f 1)
+                                if [ ! -z $LAST_MATCH_LINE ]; then
+                                    sed -i --follow-symlinks $LAST_MATCH_LINE" a session     required    pam_lastlog.so" "$PAM_FILE_PATH"
+                                else
+                                    echo "session    required    pam_lastlog.so" >> "$PAM_FILE_PATH"
+                                fi
+                            fi
+                        fi
+                        # Check the option
+                        if ! grep -qP "^\s*session\s+required\s+pam_lastlog.so\s*.*\sshowfailed\b" "$PAM_FILE_PATH"; then
+                            sed -i -E --follow-symlinks "/\s*session\s+required\s+pam_lastlog.so.*/ s/$/ showfailed/" "$PAM_FILE_PATH"
+                        fi
+                    if [ -f /usr/bin/authselect ]; then
+
+                        authselect apply-changes -b
+                    fi
+                else
+                    echo "$PAM_FILE_PATH was not found" >&2
+                fi
+                if [ -e "$PAM_FILE_PATH" ] ; then
+                    PAM_FILE_PATH="$PAM_FILE_PATH"
+                    if [ -f /usr/bin/authselect ]; then
+
+                        if ! authselect check; then
+                        echo "
+                        authselect integrity check failed. Remediation aborted!
+                        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                        It is not recommended to manually edit the PAM files when authselect tool is available.
+                        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                        exit 1
+                        fi
+
+                        CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                        # If not already in use, a custom profile is created preserving the enabled features.
+                        if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                            ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                            # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                            # If currently used, it is replaced by "sssd", which is the best option in this case.
+                            if [[ $CURRENT_PROFILE == local ]]; then
+                                CURRENT_PROFILE="sssd"
+                            fi
+                            authselect create-profile hardening -b $CURRENT_PROFILE
+                            CURRENT_PROFILE="custom/hardening"
+
+                            authselect apply-changes -b --backup=before-hardening-custom-profile
+                            authselect select $CURRENT_PROFILE
+                            for feature in $ENABLED_FEATURES; do
+                                authselect enable-feature $feature;
+                            done
+
+                            authselect apply-changes -b --backup=after-hardening-custom-profile
+                        fi
+                        PAM_FILE_NAME=$(basename "$PAM_FILE_PATH")
+                        PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                        authselect apply-changes -b
+                    fi
+
+                if grep -qP "^\s*session\s+required\s+pam_lastlog.so\s.*\bsilent\b" "$PAM_FILE_PATH"; then
+                    sed -i -E --follow-symlinks "s/(.*session.*required.*pam_lastlog.so.*)\ssilent=?[[:alnum:]]*(.*)/\1\2/g" "$PAM_FILE_PATH"
+                fi
+                    if [ -f /usr/bin/authselect ]; then
+
+                        authselect apply-changes -b
+                    fi
+                else
+                    echo "$PAM_FILE_PATH was not found" >&2
+                fi
+            fi
+        else
+            if [ -e "/etc/pam.d/login" ] ; then
+                    PAM_FILE_PATH="/etc/pam.d/login"
+                    if [ -f /usr/bin/authselect ]; then
+
+                        if ! authselect check; then
+                        echo "
+                        authselect integrity check failed. Remediation aborted!
+                        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                        It is not recommended to manually edit the PAM files when authselect tool is available.
+                        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                        exit 1
+                        fi
+
+                        CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                        # If not already in use, a custom profile is created preserving the enabled features.
+                        if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                            ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                            # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                            # If currently used, it is replaced by "sssd", which is the best option in this case.
+                            if [[ $CURRENT_PROFILE == local ]]; then
+                                CURRENT_PROFILE="sssd"
+                            fi
+                            authselect create-profile hardening -b $CURRENT_PROFILE
+                            CURRENT_PROFILE="custom/hardening"
+
+                            authselect apply-changes -b --backup=before-hardening-custom-profile
+                            authselect select $CURRENT_PROFILE
+                            for feature in $ENABLED_FEATURES; do
+                                authselect enable-feature $feature;
+                            done
+
+                            authselect apply-changes -b --backup=after-hardening-custom-profile
+                        fi
+                        PAM_FILE_NAME=$(basename "/etc/pam.d/login")
+                        PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                        authselect apply-changes -b
+                    fi
+
+
+                        if ! grep -qP "^\s*session\s+required\s+pam_lastlog.so\s*.*" "$PAM_FILE_PATH"; then
+                            # Line matching group + control + module was not found. Check group + module.
+                            if [ "$(grep -cP '^\s*session\s+.*\s+pam_lastlog.so\s*' "$PAM_FILE_PATH")" -eq 1 ]; then
+                                # The control is updated only if one single line matches.
+                                sed -i -E --follow-symlinks "s/^(\s*session\s+).*(\bpam_lastlog.so.*)/\1required \2/" "$PAM_FILE_PATH"
+                            else
+                                LAST_MATCH_LINE=$(grep -nP "^\s*session.*include\s+common-session$" "$PAM_FILE_PATH" | tail -n 1 | cut -d: -f 1)
+                                if [ ! -z $LAST_MATCH_LINE ]; then
+                                    sed -i --follow-symlinks $LAST_MATCH_LINE" a session     required    pam_lastlog.so" "$PAM_FILE_PATH"
+                                else
+                                    echo "session    required    pam_lastlog.so" >> "$PAM_FILE_PATH"
+                                fi
+                            fi
+                        fi
+                        # Check the option
+                        if ! grep -qP "^\s*session\s+required\s+pam_lastlog.so\s*.*\sshowfailed\b" "$PAM_FILE_PATH"; then
+                            sed -i -E --follow-symlinks "/\s*session\s+required\s+pam_lastlog.so.*/ s/$/ showfailed/" "$PAM_FILE_PATH"
+                        fi
+                    if [ -f /usr/bin/authselect ]; then
+
+                        authselect apply-changes -b
+                    fi
+                else
+                    echo "/etc/pam.d/login was not found" >&2
+                fi
+            if [ -e "/etc/pam.d/login" ] ; then
+                    PAM_FILE_PATH="/etc/pam.d/login"
+                    if [ -f /usr/bin/authselect ]; then
+
+                        if ! authselect check; then
+                        echo "
+                        authselect integrity check failed. Remediation aborted!
+                        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                        It is not recommended to manually edit the PAM files when authselect tool is available.
+                        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                        exit 1
+                        fi
+
+                        CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                        # If not already in use, a custom profile is created preserving the enabled features.
+                        if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                            ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                            # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                            # If currently used, it is replaced by "sssd", which is the best option in this case.
+                            if [[ $CURRENT_PROFILE == local ]]; then
+                                CURRENT_PROFILE="sssd"
+                            fi
+                            authselect create-profile hardening -b $CURRENT_PROFILE
+                            CURRENT_PROFILE="custom/hardening"
+
+                            authselect apply-changes -b --backup=before-hardening-custom-profile
+                            authselect select $CURRENT_PROFILE
+                            for feature in $ENABLED_FEATURES; do
+                                authselect enable-feature $feature;
+                            done
+
+                            authselect apply-changes -b --backup=after-hardening-custom-profile
+                        fi
+                        PAM_FILE_NAME=$(basename "/etc/pam.d/login")
+                        PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                        authselect apply-changes -b
+                    fi
+
+                if grep -qP "^\s*session\s+required\s+pam_lastlog.so\s.*\bsilent\b" "$PAM_FILE_PATH"; then
+                    sed -i -E --follow-symlinks "s/(.*session.*required.*pam_lastlog.so.*)\ssilent=?[[:alnum:]]*(.*)/\1\2/g" "$PAM_FILE_PATH"
+                fi
+                    if [ -f /usr/bin/authselect ]; then
+
+                        authselect apply-changes -b
+                    fi
+                else
+                    echo "/etc/pam.d/login was not found" >&2
+                fi
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-412015
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'libpam-runtime' 2>/dev/null | grep -q '^installed'; then
+
+        if [ -f /usr/bin/authselect ]; then
+            if authselect list-features sssd | grep -q with-silent-lastlog; then
+                if ! authselect check; then
+                echo "
+                authselect integrity check failed. Remediation aborted!
+                This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                It is not recommended to manually edit the PAM files when authselect tool is available.
+                In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                exit 1
+                fi
+                authselect disable-feature with-silent-lastlog
+
+                authselect apply-changes -b
+            else
+
+                if ! authselect check; then
+                echo "
+                authselect integrity check failed. Remediation aborted!
+                This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                It is not recommended to manually edit the PAM files when authselect tool is available.
+                In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                exit 1
+                fi
+
+                CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                # If not already in use, a custom profile is created preserving the enabled features.
+                if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                    ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                    # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                    # If currently used, it is replaced by "sssd", which is the best option in this case.
+                    if [[ $CURRENT_PROFILE == local ]]; then
+                        CURRENT_PROFILE="sssd"
+                    fi
+                    authselect create-profile hardening -b $CURRENT_PROFILE
+                    CURRENT_PROFILE="custom/hardening"
+
+                    authselect apply-changes -b --backup=before-hardening-custom-profile
+                    authselect select $CURRENT_PROFILE
+                    for feature in $ENABLED_FEATURES; do
+                        authselect enable-feature $feature;
+                    done
+
+                    authselect apply-changes -b --backup=after-hardening-custom-profile
+                fi
+                PAM_FILE_NAME=$(basename "/etc/pam.d/login")
+                PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                authselect apply-changes -b
+                if [ -e "$PAM_FILE_PATH" ] ; then
+                    PAM_FILE_PATH="$PAM_FILE_PATH"
+                    if [ -f /usr/bin/authselect ]; then
+
+                        if ! authselect check; then
+                        echo "
+                        authselect integrity check failed. Remediation aborted!
+                        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                        It is not recommended to manually edit the PAM files when authselect tool is available.
+                        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                        exit 1
+                        fi
+
+                        CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                        # If not already in use, a custom profile is created preserving the enabled features.
+                        if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                            ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                            # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                            # If currently used, it is replaced by "sssd", which is the best option in this case.
+                            if [[ $CURRENT_PROFILE == local ]]; then
+                                CURRENT_PROFILE="sssd"
+                            fi
+                            authselect create-profile hardening -b $CURRENT_PROFILE
+                            CURRENT_PROFILE="custom/hardening"
+
+                            authselect apply-changes -b --backup=before-hardening-custom-profile
+                            authselect select $CURRENT_PROFILE
+                            for feature in $ENABLED_FEATURES; do
+                                authselect enable-feature $feature;
+                            done
+
+                            authselect apply-changes -b --backup=after-hardening-custom-profile
+                        fi
+                        PAM_FILE_NAME=$(basename "$PAM_FILE_PATH")
+                        PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                        authselect apply-changes -b
+                    fi
+
+
+                        if ! grep -qP "^\s*session\s+required\s+pam_lastlog.so\s*.*" "$PAM_FILE_PATH"; then
+                            # Line matching group + control + module was not found. Check group + module.
+                            if [ "$(grep -cP '^\s*session\s+.*\s+pam_lastlog.so\s*' "$PAM_FILE_PATH")" -eq 1 ]; then
+                                # The control is updated only if one single line matches.
+                                sed -i -E --follow-symlinks "s/^(\s*session\s+).*(\bpam_lastlog.so.*)/\1required \2/" "$PAM_FILE_PATH"
+                            else
+                                LAST_MATCH_LINE=$(grep -nP "^\s*session.*include\s+common-session$" "$PAM_FILE_PATH" | tail -n 1 | cut -d: -f 1)
+                                if [ ! -z $LAST_MATCH_LINE ]; then
+                                    sed -i --follow-symlinks $LAST_MATCH_LINE" a session     required    pam_lastlog.so" "$PAM_FILE_PATH"
+                                else
+                                    echo "session    required    pam_lastlog.so" >> "$PAM_FILE_PATH"
+                                fi
+                            fi
+                        fi
+                        # Check the option
+                        if ! grep -qP "^\s*session\s+required\s+pam_lastlog.so\s*.*\sshowfailed\b" "$PAM_FILE_PATH"; then
+                            sed -i -E --follow-symlinks "/\s*session\s+required\s+pam_lastlog.so.*/ s/$/ showfailed/" "$PAM_FILE_PATH"
+                        fi
+                    if [ -f /usr/bin/authselect ]; then
+
+                        authselect apply-changes -b
+                    fi
+                else
+                    echo "$PAM_FILE_PATH was not found" >&2
+                fi
+                if [ -e "$PAM_FILE_PATH" ] ; then
+                    PAM_FILE_PATH="$PAM_FILE_PATH"
+                    if [ -f /usr/bin/authselect ]; then
+
+                        if ! authselect check; then
+                        echo "
+                        authselect integrity check failed. Remediation aborted!
+                        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                        It is not recommended to manually edit the PAM files when authselect tool is available.
+                        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                        exit 1
+                        fi
+
+                        CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                        # If not already in use, a custom profile is created preserving the enabled features.
+                        if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                            ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                            # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                            # If currently used, it is replaced by "sssd", which is the best option in this case.
+                            if [[ $CURRENT_PROFILE == local ]]; then
+                                CURRENT_PROFILE="sssd"
+                            fi
+                            authselect create-profile hardening -b $CURRENT_PROFILE
+                            CURRENT_PROFILE="custom/hardening"
+
+                            authselect apply-changes -b --backup=before-hardening-custom-profile
+                            authselect select $CURRENT_PROFILE
+                            for feature in $ENABLED_FEATURES; do
+                                authselect enable-feature $feature;
+                            done
+
+                            authselect apply-changes -b --backup=after-hardening-custom-profile
+                        fi
+                        PAM_FILE_NAME=$(basename "$PAM_FILE_PATH")
+                        PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                        authselect apply-changes -b
+                    fi
+
+                if grep -qP "^\s*session\s+required\s+pam_lastlog.so\s.*\bsilent\b" "$PAM_FILE_PATH"; then
+                    sed -i -E --follow-symlinks "s/(.*session.*required.*pam_lastlog.so.*)\ssilent=?[[:alnum:]]*(.*)/\1\2/g" "$PAM_FILE_PATH"
+                fi
+                    if [ -f /usr/bin/authselect ]; then
+
+                        authselect apply-changes -b
+                    fi
+                else
+                    echo "$PAM_FILE_PATH was not found" >&2
+                fi
+            fi
+        else
+            if [ -e "/etc/pam.d/login" ] ; then
+                    PAM_FILE_PATH="/etc/pam.d/login"
+                    if [ -f /usr/bin/authselect ]; then
+
+                        if ! authselect check; then
+                        echo "
+                        authselect integrity check failed. Remediation aborted!
+                        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                        It is not recommended to manually edit the PAM files when authselect tool is available.
+                        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                        exit 1
+                        fi
+
+                        CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                        # If not already in use, a custom profile is created preserving the enabled features.
+                        if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                            ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                            # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                            # If currently used, it is replaced by "sssd", which is the best option in this case.
+                            if [[ $CURRENT_PROFILE == local ]]; then
+                                CURRENT_PROFILE="sssd"
+                            fi
+                            authselect create-profile hardening -b $CURRENT_PROFILE
+                            CURRENT_PROFILE="custom/hardening"
+
+                            authselect apply-changes -b --backup=before-hardening-custom-profile
+                            authselect select $CURRENT_PROFILE
+                            for feature in $ENABLED_FEATURES; do
+                                authselect enable-feature $feature;
+                            done
+
+                            authselect apply-changes -b --backup=after-hardening-custom-profile
+                        fi
+                        PAM_FILE_NAME=$(basename "/etc/pam.d/login")
+                        PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                        authselect apply-changes -b
+                    fi
+
+
+                        if ! grep -qP "^\s*session\s+required\s+pam_lastlog.so\s*.*" "$PAM_FILE_PATH"; then
+                            # Line matching group + control + module was not found. Check group + module.
+                            if [ "$(grep -cP '^\s*session\s+.*\s+pam_lastlog.so\s*' "$PAM_FILE_PATH")" -eq 1 ]; then
+                                # The control is updated only if one single line matches.
+                                sed -i -E --follow-symlinks "s/^(\s*session\s+).*(\bpam_lastlog.so.*)/\1required \2/" "$PAM_FILE_PATH"
+                            else
+                                LAST_MATCH_LINE=$(grep -nP "^\s*session.*include\s+common-session$" "$PAM_FILE_PATH" | tail -n 1 | cut -d: -f 1)
+                                if [ ! -z $LAST_MATCH_LINE ]; then
+                                    sed -i --follow-symlinks $LAST_MATCH_LINE" a session     required    pam_lastlog.so" "$PAM_FILE_PATH"
+                                else
+                                    echo "session    required    pam_lastlog.so" >> "$PAM_FILE_PATH"
+                                fi
+                            fi
+                        fi
+                        # Check the option
+                        if ! grep -qP "^\s*session\s+required\s+pam_lastlog.so\s*.*\sshowfailed\b" "$PAM_FILE_PATH"; then
+                            sed -i -E --follow-symlinks "/\s*session\s+required\s+pam_lastlog.so.*/ s/$/ showfailed/" "$PAM_FILE_PATH"
+                        fi
+                    if [ -f /usr/bin/authselect ]; then
+
+                        authselect apply-changes -b
+                    fi
+                else
+                    echo "/etc/pam.d/login was not found" >&2
+                fi
+            if [ -e "/etc/pam.d/login" ] ; then
+                    PAM_FILE_PATH="/etc/pam.d/login"
+                    if [ -f /usr/bin/authselect ]; then
+
+                        if ! authselect check; then
+                        echo "
+                        authselect integrity check failed. Remediation aborted!
+                        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                        It is not recommended to manually edit the PAM files when authselect tool is available.
+                        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                        exit 1
+                        fi
+
+                        CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                        # If not already in use, a custom profile is created preserving the enabled features.
+                        if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                            ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                            # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                            # If currently used, it is replaced by "sssd", which is the best option in this case.
+                            if [[ $CURRENT_PROFILE == local ]]; then
+                                CURRENT_PROFILE="sssd"
+                            fi
+                            authselect create-profile hardening -b $CURRENT_PROFILE
+                            CURRENT_PROFILE="custom/hardening"
+
+                            authselect apply-changes -b --backup=before-hardening-custom-profile
+                            authselect select $CURRENT_PROFILE
+                            for feature in $ENABLED_FEATURES; do
+                                authselect enable-feature $feature;
+                            done
+
+                            authselect apply-changes -b --backup=after-hardening-custom-profile
+                        fi
+                        PAM_FILE_NAME=$(basename "/etc/pam.d/login")
+                        PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                        authselect apply-changes -b
+                    fi
+
+                if grep -qP "^\s*session\s+required\s+pam_lastlog.so\s.*\bsilent\b" "$PAM_FILE_PATH"; then
+                    sed -i -E --follow-symlinks "s/(.*session.*required.*pam_lastlog.so.*)\ssilent=?[[:alnum:]]*(.*)/\1\2/g" "$PAM_FILE_PATH"
+                fi
+                    if [ -f /usr/bin/authselect ]; then
+
+                        authselect apply-changes -b
+                    fi
+                else
+                    echo "/etc/pam.d/login was not found" >&2
+                fi
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

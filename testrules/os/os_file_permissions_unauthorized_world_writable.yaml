@@ -1,0 +1,204 @@
+id: os_file_permissions_unauthorized_world_writable
+title: Ensure No World-Writable Files Exist
+discussion: |
+  Data in world-writable files can be modified by any user on the system. In almost all
+  circumstances, files can be configured using a combination of user and group permissions to
+  support whatever legitimate access is needed without the risk caused by world-writable files.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r4:
+    - AC-6(1)
+    - CM-6(a)
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-87656-5
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        FILTER_NODEV=$(awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,)
+
+        # Do not consider /sysroot partition because it contains only the physical
+        # read-only root on bootable containers.
+        PARTITIONS=$(findmnt -n -l -k -it $FILTER_NODEV | awk '{ print $1 }' | grep -v "/sysroot")
+
+        for PARTITION in $PARTITIONS; do
+          find "${PARTITION}" -xdev -type f -perm -002 -exec chmod o-w {} \; 2>/dev/null
+        done
+
+        # Ensure /tmp is also fixed when tmpfs is used.
+        if grep "^tmpfs /tmp" /proc/mounts; then
+          find /tmp -xdev -type f -perm -002 -exec chmod o-w {} \; 2>/dev/null
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-80818-8
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        FILTER_NODEV=$(awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,)
+
+        # Do not consider /sysroot partition because it contains only the physical
+        # read-only root on bootable containers.
+        PARTITIONS=$(findmnt -n -l -k -it $FILTER_NODEV | awk '{ print $1 }' | grep -v "/sysroot")
+
+        for PARTITION in $PARTITIONS; do
+          find "${PARTITION}" -xdev -type f -perm -002 -exec chmod o-w {} \; 2>/dev/null
+        done
+
+        # Ensure /tmp is also fixed when tmpfs is used.
+        if grep "^tmpfs /tmp" /proc/mounts; then
+          find /tmp -xdev -type f -perm -002 -exec chmod o-w {} \; 2>/dev/null
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-83902-7
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        FILTER_NODEV=$(awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,)
+
+        # Do not consider /sysroot partition because it contains only the physical
+        # read-only root on bootable containers.
+        PARTITIONS=$(findmnt -n -l -k -it $FILTER_NODEV | awk '{ print $1 }' | grep -v "/sysroot")
+
+        for PARTITION in $PARTITIONS; do
+          find "${PARTITION}" -xdev -type f -perm -002 -exec chmod o-w {} \; 2>/dev/null
+        done
+
+        # Ensure /tmp is also fixed when tmpfs is used.
+        if grep "^tmpfs /tmp" /proc/mounts; then
+          find /tmp -xdev -type f -perm -002 -exec chmod o-w {} \; 2>/dev/null
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        FILTER_NODEV=$(awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,)
+
+        # Do not consider /sysroot partition because it contains only the physical
+        # read-only root on bootable containers.
+        PARTITIONS=$(findmnt -n -l -k -it $FILTER_NODEV | awk '{ print $1 }' | grep -v "/sysroot")
+
+        for PARTITION in $PARTITIONS; do
+          find "${PARTITION}" -xdev -type f -perm -002 -exec chmod o-w {} \; 2>/dev/null
+        done
+
+        # Ensure /tmp is also fixed when tmpfs is used.
+        if grep "^tmpfs /tmp" /proc/mounts; then
+          find /tmp -xdev -type f -perm -002 -exec chmod o-w {} \; 2>/dev/null
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        FILTER_NODEV=$(awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,)
+
+        # Do not consider /sysroot partition because it contains only the physical
+        # read-only root on bootable containers.
+        PARTITIONS=$(findmnt -n -l -k -it $FILTER_NODEV | awk '{ print $1 }' | grep -v "/sysroot")
+
+        for PARTITION in $PARTITIONS; do
+          find "${PARTITION}" -xdev -type f -perm -002 -exec chmod o-w {} \; 2>/dev/null
+        done
+
+        # Ensure /tmp is also fixed when tmpfs is used.
+        if grep "^tmpfs /tmp" /proc/mounts; then
+          find /tmp -xdev -type f -perm -002 -exec chmod o-w {} \; 2>/dev/null
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        FILTER_NODEV=$(awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,)
+
+        # Do not consider /sysroot partition because it contains only the physical
+        # read-only root on bootable containers.
+        PARTITIONS=$(findmnt -n -l -k -it $FILTER_NODEV | awk '{ print $1 }' | grep -v "/sysroot")
+
+        for PARTITION in $PARTITIONS; do
+          find "${PARTITION}" -xdev -type f -perm -002 -exec chmod o-w {} \; 2>/dev/null
+        done
+
+        # Ensure /tmp is also fixed when tmpfs is used.
+        if grep "^tmpfs /tmp" /proc/mounts; then
+          find /tmp -xdev -type f -perm -002 -exec chmod o-w {} \; 2>/dev/null
+        fi
+
+        ---

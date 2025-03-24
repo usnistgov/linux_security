@@ -1,0 +1,100 @@
+id: os_file_owner_var_log
+title: Verify User Who Owns /var/log Directory
+discussion: |
+  The /var/log directory contains files with logs of error
+  messages in the system and should only be accessed by authorized
+  personnel.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-001314
+  800-53r4:
+    - N/A
+  srg:
+    - SRG-OS-000206-GPOS-00084
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - N/A
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-86705-1
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        find -H /var/log/ -maxdepth 1 -type d -exec chown -L 0 {} \;
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-83661-9
+        disa_stig:
+          - RHEL-08-010250
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        find -H /var/log/ -maxdepth 1 -type d -exec chown -L 0 {} \;
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-83914-2
+        disa_stig:
+          - RHEL-09-232170
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        find -H /var/log/ -maxdepth 1 -type d -exec chown -L 0 {} \;
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010418
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        find -H /var/log/ -maxdepth 1 -type d -exec chown -L 0 {} \;
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-232120
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        find -H /var/log/ -maxdepth 1 -type d -exec chown -L 0 {} \;
+
+        ---

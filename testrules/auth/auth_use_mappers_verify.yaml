@@ -1,0 +1,99 @@
+id: auth_use_mappers_verify
+title: Verify that 'use_mappers' is set to 'pwent' in PAM
+discussion: |
+  Without mapping the certificate used to authenticate to the user account,
+  the ability to determine the identity of the individual user or group will
+  not be available for forensic analysis.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000187
+  800-53r4:
+    - N/A
+  srg:
+    - SRG-OS-000068-GPOS-00036
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - N/A
+severity: low
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010006
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        if [ -e "/etc/pam_pkcs11/pam_pkcs11.conf" ] ; then
+
+            LC_ALL=C sed -i "/^\s*use_mappers = pwent/Id" "/etc/pam_pkcs11/pam_pkcs11.conf"
+        else
+            touch "/etc/pam_pkcs11/pam_pkcs11.conf"
+        fi
+        # make sure file has newline at the end
+        sed -i -e '$a\' "/etc/pam_pkcs11/pam_pkcs11.conf"
+
+        cp "/etc/pam_pkcs11/pam_pkcs11.conf" "/etc/pam_pkcs11/pam_pkcs11.conf.bak"
+        # Insert at the end of the file
+        printf '%s\n' "use_mappers = pwent" >> "/etc/pam_pkcs11/pam_pkcs11.conf"
+        # Clean up after ourselves.
+        rm "/etc/pam_pkcs11/pam_pkcs11.conf.bak"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-612040
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        if [ -e "/etc/pam_pkcs11/pam_pkcs11.conf" ] ; then
+
+            LC_ALL=C sed -i "/^\s*use_mappers = pwent/Id" "/etc/pam_pkcs11/pam_pkcs11.conf"
+        else
+            touch "/etc/pam_pkcs11/pam_pkcs11.conf"
+        fi
+        # make sure file has newline at the end
+        sed -i -e '$a\' "/etc/pam_pkcs11/pam_pkcs11.conf"
+
+        cp "/etc/pam_pkcs11/pam_pkcs11.conf" "/etc/pam_pkcs11/pam_pkcs11.conf.bak"
+        # Insert at the end of the file
+        printf '%s\n' "use_mappers = pwent" >> "/etc/pam_pkcs11/pam_pkcs11.conf"
+        # Clean up after ourselves.
+        rm "/etc/pam_pkcs11/pam_pkcs11.conf.bak"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

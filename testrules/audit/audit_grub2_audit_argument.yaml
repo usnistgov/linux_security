@@ -1,0 +1,303 @@
+id: audit_grub2_audit_argument
+title: Enable Auditing for Processes Which Start Prior to the Audit Daemon
+discussion: |
+  Each process on the system carries an "auditable" flag which indicates whether
+  its activities can be audited. Although auditd takes care of enabling
+  this for all processes which launch after it does, adding the kernel argument
+  ensures it is set for every process during boot.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000130
+    - CCI-000135
+    - CCI-000169
+    - CCI-000172
+    - CCI-001464
+    - CCI-002884
+  800-53r4:
+    - AC-17(1)
+    - AU-10
+    - AU-14(1)
+    - CM-6(a)
+    - IR-5(1)
+  srg:
+    - SRG-OS-000037-GPOS-00015
+    - SRG-OS-000042-GPOS-00020
+    - SRG-OS-000062-GPOS-00031
+    - SRG-OS-000254-GPOS-00095
+    - SRG-OS-000392-GPOS-00172
+    - SRG-OS-000462-GPOS-00206
+    - SRG-OS-000471-GPOS-00215
+    - SRG-OS-000473-GPOS-00218
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate
+  - cis_lvl2
+  - client
+  - server
+severity: low
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-88376-9
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel && { rpm --quiet -q grub2-common; }; then
+
+        expected_value="1"
+
+
+        if [[ "$OSCAP_BOOTC_BUILD" == "YES" ]] ; then
+            KARGS_DIR="/usr/lib/bootc/kargs.d/"
+            if grep -q -E "audit" "$KARGS_DIR/*.toml" ; then
+                sed -i -E "s/^(\s*kargs\s*=\s*\[.*)\"audit=[^\"]*\"(.*]\s*)/\1\"audit=$expected_value\"\2/" "$KARGS_DIR/*.toml"
+            else
+                echo "kargs = [\"audit=$expected_value\"]" >> "$KARGS_DIR/10-audit.toml"
+            fi
+        else
+
+            grubby --update-kernel=ALL --args=audit=1
+
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-80825-3
+        disa_stig:
+          - RHEL-08-030601
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel && { rpm --quiet -q grub2-common; }; then
+
+        expected_value="1"
+
+
+        if [[ "$OSCAP_BOOTC_BUILD" == "YES" ]] ; then
+            KARGS_DIR="/usr/lib/bootc/kargs.d/"
+            if grep -q -E "audit" "$KARGS_DIR/*.toml" ; then
+                sed -i -E "s/^(\s*kargs\s*=\s*\[.*)\"audit=[^\"]*\"(.*]\s*)/\1\"audit=$expected_value\"\2/" "$KARGS_DIR/*.toml"
+            else
+                echo "kargs = [\"audit=$expected_value\"]" >> "$KARGS_DIR/10-audit.toml"
+            fi
+        else
+
+            grubby --update-kernel=ALL --args=audit=1 --env=/boot/grub2/grubenv
+
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-83651-0
+        disa_stig:
+          - RHEL-09-212055
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel && { rpm --quiet -q grub2-common; }; then
+
+        expected_value="1"
+
+
+        if [[ "$OSCAP_BOOTC_BUILD" == "YES" ]] ; then
+            KARGS_DIR="/usr/lib/bootc/kargs.d/"
+            if grep -q -E "audit" "$KARGS_DIR/*.toml" ; then
+                sed -i -E "s/^(\s*kargs\s*=\s*\[.*)\"audit=[^\"]*\"(.*]\s*)/\1\"audit=$expected_value\"\2/" "$KARGS_DIR/*.toml"
+            else
+                echo "kargs = [\"audit=$expected_value\"]" >> "$KARGS_DIR/10-audit.toml"
+            fi
+        else
+
+            grubby --update-kernel=ALL --args=audit=1
+
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010198
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && { dpkg-query --show --showformat='${db:Status-Status}\n' 'grub2-common' 2>/dev/null | grep -q '^installed'; }; then
+
+        expected_value="1"
+
+
+        if [[ "$OSCAP_BOOTC_BUILD" == "YES" ]] ; then
+            KARGS_DIR="/usr/lib/bootc/kargs.d/"
+            if grep -q -E "audit" "$KARGS_DIR/*.toml" ; then
+                sed -i -E "s/^(\s*kargs\s*=\s*\[.*)\"audit=[^\"]*\"(.*]\s*)/\1\"audit=$expected_value\"\2/" "$KARGS_DIR/*.toml"
+            else
+                echo "kargs = [\"audit=$expected_value\"]" >> "$KARGS_DIR/10-audit.toml"
+            fi
+        else
+
+
+            # Correct the form of default kernel command line in GRUB
+            if grep -q '^\s*GRUB_CMDLINE_LINUX=.*audit=.*"'  '/etc/default/grub' ; then
+                   # modify the GRUB command-line if an audit= arg already exists
+                   sed -i "s/\(^\s*GRUB_CMDLINE_LINUX=\".*\)audit=[^[:space:]]\+\(.*\"\)/\1audit=1\2/"  '/etc/default/grub'
+            # Add to already existing GRUB_CMDLINE_LINUX parameters
+            elif grep -q '^\s*GRUB_CMDLINE_LINUX='  '/etc/default/grub' ; then
+                   # no audit=arg is present, append it
+                   sed -i "s/\(^\s*GRUB_CMDLINE_LINUX=\".*\)\"/\1 audit=1\"/"  '/etc/default/grub'
+            # Add GRUB_CMDLINE_LINUX parameters line
+            else
+                   echo "GRUB_CMDLINE_LINUX=\"audit=1\"" >> '/etc/default/grub'
+            fi
+            update-grub
+
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-212015
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && { dpkg-query --show --showformat='${db:Status-Status}\n' 'grub2-common' 2>/dev/null | grep -q '^installed'; }; then
+
+        expected_value="1"
+
+
+        if [[ "$OSCAP_BOOTC_BUILD" == "YES" ]] ; then
+            KARGS_DIR="/usr/lib/bootc/kargs.d/"
+            if grep -q -E "audit" "$KARGS_DIR/*.toml" ; then
+                sed -i -E "s/^(\s*kargs\s*=\s*\[.*)\"audit=[^\"]*\"(.*]\s*)/\1\"audit=$expected_value\"\2/" "$KARGS_DIR/*.toml"
+            else
+                echo "kargs = [\"audit=$expected_value\"]" >> "$KARGS_DIR/10-audit.toml"
+            fi
+        else
+
+
+            # Correct the form of default kernel command line in GRUB
+            if grep -q '^\s*GRUB_CMDLINE_LINUX=.*audit=.*"'  '/etc/default/grub' ; then
+                   # modify the GRUB command-line if an audit= arg already exists
+                   sed -i "s/\(^\s*GRUB_CMDLINE_LINUX=\".*\)audit=[^[:space:]]\+\(.*\"\)/\1audit=1\2/"  '/etc/default/grub'
+            # Add to already existing GRUB_CMDLINE_LINUX parameters
+            elif grep -q '^\s*GRUB_CMDLINE_LINUX='  '/etc/default/grub' ; then
+                   # no audit=arg is present, append it
+                   sed -i "s/\(^\s*GRUB_CMDLINE_LINUX=\".*\)\"/\1 audit=1\"/"  '/etc/default/grub'
+            # Add GRUB_CMDLINE_LINUX parameters line
+            else
+                   echo "GRUB_CMDLINE_LINUX=\"audit=1\"" >> '/etc/default/grub'
+            fi
+            update-grub
+
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && { dpkg-query --show --showformat='${db:Status-Status}\n' 'grub2-common' 2>/dev/null | grep -q '^installed'; }; then
+
+        expected_value="1"
+
+
+        if [[ "$OSCAP_BOOTC_BUILD" == "YES" ]] ; then
+            KARGS_DIR="/usr/lib/bootc/kargs.d/"
+            if grep -q -E "audit" "$KARGS_DIR/*.toml" ; then
+                sed -i -E "s/^(\s*kargs\s*=\s*\[.*)\"audit=[^\"]*\"(.*]\s*)/\1\"audit=$expected_value\"\2/" "$KARGS_DIR/*.toml"
+            else
+                echo "kargs = [\"audit=$expected_value\"]" >> "$KARGS_DIR/10-audit.toml"
+            fi
+        else
+
+
+            # Correct the form of default kernel command line in GRUB
+            if grep -q '^\s*GRUB_CMDLINE_LINUX=.*audit=.*"'  '/etc/default/grub' ; then
+                   # modify the GRUB command-line if an audit= arg already exists
+                   sed -i "s/\(^\s*GRUB_CMDLINE_LINUX=\".*\)audit=[^[:space:]]\+\(.*\"\)/\1audit=1\2/"  '/etc/default/grub'
+            # Add to already existing GRUB_CMDLINE_LINUX parameters
+            elif grep -q '^\s*GRUB_CMDLINE_LINUX='  '/etc/default/grub' ; then
+                   # no audit=arg is present, append it
+                   sed -i "s/\(^\s*GRUB_CMDLINE_LINUX=\".*\)\"/\1 audit=1\"/"  '/etc/default/grub'
+            # Add GRUB_CMDLINE_LINUX parameters line
+            else
+                   echo "GRUB_CMDLINE_LINUX=\"audit=1\"" >> '/etc/default/grub'
+            fi
+            update-grub
+
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

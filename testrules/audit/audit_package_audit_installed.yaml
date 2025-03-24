@@ -1,0 +1,221 @@
+id: audit_package_audit_installed
+title: Ensure the audit Subsystem is Installed
+discussion: The auditd service is an access monitoring and accounting daemon, watching
+  system calls to audit any access, in comparison with potential local access control
+  policy such as SELinux policy.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000130
+    - CCI-000131
+    - CCI-000132
+    - CCI-000133
+    - CCI-000134
+    - CCI-000135
+    - CCI-000154
+    - CCI-000158
+    - CCI-000159
+    - CCI-000169
+    - CCI-000172
+    - CCI-001464
+    - CCI-001487
+    - CCI-001875
+    - CCI-001876
+    - CCI-001877
+    - CCI-001878
+    - CCI-001879
+    - CCI-001880
+    - CCI-001881
+    - CCI-001882
+    - CCI-001889
+    - CCI-001914
+    - CCI-002884
+    - CCI-003938
+  800-53r4:
+    - AC-7(a)
+    - AU-2(a)
+    - AU-7(1)
+    - AU-7(2)
+    - AU-12(2)
+    - AU-14
+    - CM-6(a)
+  srg:
+    - SRG-OS-000037-GPOS-00015
+    - SRG-OS-000038-GPOS-00016
+    - SRG-OS-000039-GPOS-00017
+    - SRG-OS-000040-GPOS-00018
+    - SRG-OS-000041-GPOS-00019
+    - SRG-OS-000042-GPOS-00021
+    - SRG-OS-000051-GPOS-00024
+    - SRG-OS-000054-GPOS-00025
+    - SRG-OS-000062-GPOS-00031
+    - SRG-OS-000122-GPOS-00063
+    - SRG-OS-000254-GPOS-00095
+    - SRG-OS-000255-GPOS-00096
+    - SRG-OS-000337-GPOS-00129
+    - SRG-OS-000348-GPOS-00136
+    - SRG-OS-000349-GPOS-00137
+    - SRG-OS-000350-GPOS-00138
+    - SRG-OS-000351-GPOS-00139
+    - SRG-OS-000352-GPOS-00140
+    - SRG-OS-000353-GPOS-00141
+    - SRG-OS-000354-GPOS-00142
+    - SRG-OS-000358-GPOS-00145
+    - SRG-OS-000365-GPOS-00152
+    - SRG-OS-000392-GPOS-00172
+    - SRG-OS-000475-GPOS-00220
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-88240-7
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        if ! rpm -q --quiet "audit" ; then
+            dnf install -y "audit"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-81043-2
+        disa_stig:
+          - RHEL-08-030180
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        if ! rpm -q --quiet "audit" ; then
+            yum install -y "audit"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-83649-4
+        disa_stig:
+          - RHEL-09-653010
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        if ! rpm -q --quiet "audit" ; then
+            dnf install -y "audit"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010182
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        DEBIAN_FRONTEND=noninteractive apt-get install -y "auditd"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-653010
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        DEBIAN_FRONTEND=noninteractive apt-get install -y "auditd"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        DEBIAN_FRONTEND=noninteractive apt-get install -y "auditd"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

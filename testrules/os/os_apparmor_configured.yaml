@@ -1,0 +1,132 @@
+id: os_apparmor_configured
+title: Ensure AppArmor is Active and Configured
+discussion: |
+  Using a whitelist provides a configuration management method for allowing
+  the execution of only authorized software. Using only authorized software
+  decreases risk by limiting the number of potential vulnerabilities.
+
+
+  The organization must identify authorized software programs and permit
+  execution of authorized software by adding each authorized program to the
+  "pam_apparmor" exception policy. The process used to identify software
+  programs that are authorized to execute on organizational information
+  systems is commonly referred to as whitelisting.
+
+
+  Verification of whitelisted software occurs prior to execution or at system
+  startup.
+
+
+  Users' home directories/folders may contain information of a sensitive
+  nature. Nonprivileged users should coordinate any sharing of information
+  with a System Administrator (SA) through shared resources.
+
+
+  Apparmor can confine users to their home directory, not allowing them to
+  make any changes outside of their own home directories. Confining users to
+  their home directory will minimize the risk of sharing information.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-001764
+    - CCI-001774
+    - CCI-002165
+    - CCI-002233
+    - CCI-002235
+  800-53r4:
+    - AC-3(4)
+    - AC-6(8)
+    - AC-6(10)
+    - CM-6(a)
+    - CM-7(2)
+    - CM-7(5)(b)
+    - SC-7(21)
+  srg:
+    - SRG-OS-000312-GPOS-00122
+    - SRG-OS-000312-GPOS-00123
+    - SRG-OS-000312-GPOS-00124
+    - SRG-OS-000324-GPOS-00125
+    - SRG-OS-000326-GPOS-00126
+    - SRG-OS-000370-GPOS-00155
+    - SRG-OS-000480-GPOS-00227
+    - SRG-OS-000480-GPOS-00230
+    - SRG-OS-000480-GPOS-00231
+    - SRG-OS-000480-GPOS-00232
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate
+severity: medium
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010439
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; then
+
+        # Enable apparmor
+        /usr/bin/systemctl enable "apparmor"
+        if [[ $(/usr/bin/systemctl is-system-running) != "offline" ]]; then
+        /usr/bin/systemctl start "apparmor"
+        fi
+        # The service may not be running because it has been started and failed,
+        # so let's reset the state so OVAL checks pass.
+        # Service should be 'inactive', not 'failed' after reboot though.
+        if /usr/bin/systemctl --failed | grep -q "apparmor"; then
+            /usr/bin/systemctl reset-failed "apparmor"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-431015
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; then
+
+        # Enable apparmor
+        /usr/bin/systemctl enable "apparmor"
+        if [[ $(/usr/bin/systemctl is-system-running) != "offline" ]]; then
+        /usr/bin/systemctl start "apparmor"
+        fi
+        # The service may not be running because it has been started and failed,
+        # so let's reset the state so OVAL checks pass.
+        # Service should be 'inactive', not 'failed' after reboot though.
+        if /usr/bin/systemctl --failed | grep -q "apparmor"; then
+            /usr/bin/systemctl reset-failed "apparmor"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

@@ -1,0 +1,215 @@
+id: networking_wireless_disable_interfaces
+title: Deactivate Wireless Network Interfaces
+discussion: |
+  The use of wireless networking can introduce many different attack vectors into
+  the organization's network. Common attack vectors such as malicious association
+  and ad hoc networks will allow an attacker to spoof a wireless access point
+  (AP), allowing validated systems to connect to the malicious AP and enabling the
+  attacker to monitor and record network traffic. These malicious APs can also
+  serve to create a man-in-the-middle attack or be used to create a denial of
+  service to valid network resources.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-001443
+    - CCI-001444
+    - CCI-002418
+    - CCI-002421
+  800-53r4:
+    - AC-18(3)
+    - AC-18(a)
+    - CM-6(a)
+    - CM-7(a)
+    - CM-7(b)
+    - MP-7
+  srg:
+    - SRG-OS-000299-GPOS-00117
+    - SRG-OS-000300-GPOS-00118
+    - SRG-OS-000424-GPOS-00188
+    - SRG-OS-000481-GPOS-000481
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+  - 800-53r5_low
+  - 800-53r5_moderate
+  - cis_lvl1
+  - cis_lvl2
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-88576-4
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        if ! rpm -q --quiet "NetworkManager" ; then
+            dnf install -y "NetworkManager"
+        fi
+
+        if command -v nmcli >/dev/null 2>&1 && systemctl is-active NetworkManager >/dev/null 2>&1; then
+            nmcli radio all off
+        fi
+
+        if command -v wicked >/dev/null 2>&1 && systemctl is-active wickedd >/dev/null 2>&1; then
+          if [ -n "$(find /sys/class/net/*/ -type d -name wireless)" ]; then
+            interfaces=$(find /sys/class/net/*/wireless -type d -name wireless | xargs -0 dirname | xargs basename)
+            for iface in $interfaces; do
+              wicked ifdown $iface
+              sed -i 's/STARTMODE=.*/STARTMODE=off/' /etc/sysconfig/network/ifcfg-$iface
+            done
+          fi
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-83501-7
+        disa_stig:
+          - RHEL-08-040110
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        if ! rpm -q --quiet "NetworkManager" ; then
+            yum install -y "NetworkManager"
+        fi
+
+        if command -v nmcli >/dev/null 2>&1 && systemctl is-active NetworkManager >/dev/null 2>&1; then
+            nmcli radio all off
+        fi
+
+        if command -v wicked >/dev/null 2>&1 && systemctl is-active wickedd >/dev/null 2>&1; then
+          if [ -n "$(find /sys/class/net/*/ -type d -name wireless)" ]; then
+            interfaces=$(find /sys/class/net/*/wireless -type d -name wireless | xargs -0 dirname | xargs basename)
+            for iface in $interfaces; do
+              wicked ifdown $iface
+              sed -i 's/STARTMODE=.*/STARTMODE=off/' /etc/sysconfig/network/ifcfg-$iface
+            done
+          fi
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-84066-0
+        disa_stig:
+          - RHEL-09-291040
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        if ! rpm -q --quiet "NetworkManager" ; then
+            dnf install -y "NetworkManager"
+        fi
+
+        if command -v nmcli >/dev/null 2>&1 && systemctl is-active NetworkManager >/dev/null 2>&1; then
+            nmcli radio all off
+        fi
+
+        if command -v wicked >/dev/null 2>&1 && systemctl is-active wickedd >/dev/null 2>&1; then
+          if [ -n "$(find /sys/class/net/*/ -type d -name wireless)" ]; then
+            interfaces=$(find /sys/class/net/*/wireless -type d -name wireless | xargs -0 dirname | xargs basename)
+            for iface in $interfaces; do
+              wicked ifdown $iface
+              sed -i 's/STARTMODE=.*/STARTMODE=off/' /etc/sysconfig/network/ifcfg-$iface
+            done
+          fi
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010455
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        if [ -n "$(find /sys/class/net/*/ -type d -name wireless)" ]; then
+            interfaces=$(find /sys/class/net/*/wireless -type d -name wireless | xargs -0 dirname | xargs basename)
+
+            for i in $interfaces; do
+                ip link set dev "$i" down
+                drivers=$(basename "$(readlink -f /sys/class/net/"$i"/device/driver)")
+                echo "install $drivers /bin/false" >> /etc/modprobe.d/disable_wireless.conf
+                modprobe -r "$drivers"
+             done
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-291015
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        if [ -n "$(find /sys/class/net/*/ -type d -name wireless)" ]; then
+            interfaces=$(find /sys/class/net/*/wireless -type d -name wireless | xargs -0 dirname | xargs basename)
+
+            for i in $interfaces; do
+                ip link set dev "$i" down
+                drivers=$(basename "$(readlink -f /sys/class/net/"$i"/device/driver)")
+                echo "install $drivers /bin/false" >> /etc/modprobe.d/disable_wireless.conf
+                modprobe -r "$drivers"
+             done
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        if [ -n "$(find /sys/class/net/*/ -type d -name wireless)" ]; then
+            interfaces=$(find /sys/class/net/*/wireless -type d -name wireless | xargs -0 dirname | xargs basename)
+
+            for i in $interfaces; do
+                ip link set dev "$i" down
+                drivers=$(basename "$(readlink -f /sys/class/net/"$i"/device/driver)")
+                echo "install $drivers /bin/false" >> /etc/modprobe.d/disable_wireless.conf
+                modprobe -r "$drivers"
+             done
+        fi
+
+        ---

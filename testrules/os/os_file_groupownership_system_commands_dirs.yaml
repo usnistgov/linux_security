@@ -1,0 +1,128 @@
+id: os_file_groupownership_system_commands_dirs
+title: Verify that system commands files are group owned by root or a system account
+discussion: |
+  If the operating system allows any user to make changes to software
+  libraries, then those changes might be implemented without undergoing the
+  appropriate testing and approvals that are part of a robust change management
+  process.
+  This requirement applies to operating systems with software libraries
+  that are accessible and configurable, as in the case of interpreted languages.
+  Software libraries also include privileged programs which execute with
+  escalated privileges. Only qualified and authorized individuals must be
+  allowed to obtain access to information system components for purposes
+  of initiating changes, including upgrades and modifications.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-001499
+  800-53r4:
+    - CM-5(6)
+    - CM-5(6).1
+  srg:
+    - SRG-OS-000259-GPOS-00100
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - N/A
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-89800-7
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        for SYSCMDFILES in /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin
+        do
+           find -L $SYSCMDFILES \! -group root -type f -exec chgrp root '{}' \;
+        done
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-86519-6
+        disa_stig:
+          - RHEL-08-010320
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        for SYSCMDFILES in /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin
+        do
+           find -L $SYSCMDFILES \! -group root -type f -exec chgrp root '{}' \;
+        done
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-89442-8
+        disa_stig:
+          - RHEL-09-232195
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        for SYSCMDFILES in /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin
+        do
+           find -L $SYSCMDFILES \! -group root -type f -exec chgrp root '{}' \;
+        done
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010458
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        for SYSCMDFILES in /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin
+        do
+           find -L $SYSCMDFILES \! -group root -type f -exec chgrp root '{}' \;
+        done
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-232055
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        for SYSCMDFILES in /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin
+        do
+           find -L $SYSCMDFILES \! -group root -type f -exec chgrp root '{}' \;
+        done
+
+        ---

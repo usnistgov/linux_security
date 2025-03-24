@@ -1,0 +1,153 @@
+id: auth_opensc_installed
+title: Install the opensc Package For Multifactor Authentication
+discussion: |
+  Using an authentication device, such as a CAC or token that is separate from
+  the information system, ensures that even if the information system is
+  compromised, that compromise will not affect credentials stored on the
+  authentication device.
+
+
+  Multifactor solutions that require devices separate from
+  information systems gaining access include, for example, hardware tokens
+  providing time-based or challenge-response authenticators and smart cards such
+  as the U.S. Government Personal Identity Verification card and the DoD Common
+  Access Card.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-001953
+    - CCI-004046
+  800-53r4:
+    - CM-6(a)
+  srg:
+    - SRG-OS-000375-GPOS-00160
+    - SRG-OS-000376-GPOS-00161
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - N/A
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-86898-4
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        if ! rpm -q --quiet "opensc" ; then
+            dnf install -y "opensc"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-80846-9
+        disa_stig:
+          - RHEL-08-010410
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        if ! rpm -q --quiet "opensc" ; then
+            yum install -y "opensc"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-83595-9
+        disa_stig:
+          - RHEL-09-611185
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        if ! rpm -q --quiet "opensc" ; then
+            dnf install -y "opensc"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010064
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        DEBIAN_FRONTEND=noninteractive apt-get install -y "opensc-pkcs11"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-612015
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        DEBIAN_FRONTEND=noninteractive apt-get install -y "opensc-pkcs11"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

@@ -1,0 +1,102 @@
+id: os_package_apparmor_installed
+title: Ensure AppArmor is installed
+discussion: |
+  Without a Mandatory Access Control system installed only the default
+  Discretionary Access Control system will be available.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-001764
+    - CCI-001774
+    - CCI-002165
+    - CCI-002235
+  800-53r4:
+    - N/A
+  srg:
+    - SRG-OS-000312-GPOS-00122
+    - SRG-OS-000312-GPOS-00123
+    - SRG-OS-000312-GPOS-00124
+    - SRG-OS-000324-GPOS-00125
+    - SRG-OS-000368-GPOS-00154
+    - SRG-OS-000370-GPOS-00155
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010439
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; then
+
+        DEBIAN_FRONTEND=noninteractive apt-get install -y "apparmor"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-431010
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; then
+
+        DEBIAN_FRONTEND=noninteractive apt-get install -y "apparmor"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; then
+
+        DEBIAN_FRONTEND=noninteractive apt-get install -y "apparmor"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

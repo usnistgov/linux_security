@@ -1,0 +1,301 @@
+id: audit_rules_immutable
+title: Make the auditd Configuration Immutable
+discussion: |
+  Making the audit configuration immutable prevents accidental as
+  well as malicious modification of the audit rules, although it may be
+  problematic if legitimate changes are needed during system
+  operation.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000162
+    - CCI-000163
+    - CCI-000164
+  800-53r4:
+    - AC-6(9)
+    - CM-6(a)
+  srg:
+    - SRG-OS-000057-GPOS-00027
+    - SRG-OS-000058-GPOS-00028
+    - SRG-OS-000059-GPOS-00029
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-89816-3
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q audit && rpm --quiet -q kernel; then
+
+        # Traverse all of:
+        #
+        # /etc/audit/audit.rules,         (for auditctl case)
+        # /etc/audit/rules.d/*.rules         (for augenrules case)
+        #
+        # files to check if '-e .*' setting is present in that '*.rules' file already.
+        # If found, delete such occurrence since auditctl(8) manual page instructs the
+        # '-e 2' rule should be placed as the last rule in the configuration
+        find /etc/audit /etc/audit/rules.d -maxdepth 1 -type f -name '*.rules' -exec sed -i '/-e[[:space:]]\+.*/d' {} ';'
+
+        # Append '-e 2' requirement at the end of both:
+        # * /etc/audit/audit.rules file       (for auditctl case)
+        # * /etc/audit/rules.d/immutable.rules      (for augenrules case)
+
+        for AUDIT_FILE in "/etc/audit/audit.rules" "/etc/audit/rules.d/immutable.rules"
+        do
+           echo '' >> $AUDIT_FILE
+           echo '# Set the audit.rules configuration immutable per security requirements' >> $AUDIT_FILE
+           echo '# Reboot is required to change audit rules once this setting is applied' >> $AUDIT_FILE
+           echo '-e 2' >> $AUDIT_FILE
+           chmod o-rwx $AUDIT_FILE
+           chmod g-rwx $AUDIT_FILE
+        done
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-80708-1
+        disa_stig:
+          - RHEL-08-030121
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q audit && rpm --quiet -q kernel; then
+
+        # Traverse all of:
+        #
+        # /etc/audit/audit.rules,         (for auditctl case)
+        # /etc/audit/rules.d/*.rules         (for augenrules case)
+        #
+        # files to check if '-e .*' setting is present in that '*.rules' file already.
+        # If found, delete such occurrence since auditctl(8) manual page instructs the
+        # '-e 2' rule should be placed as the last rule in the configuration
+        find /etc/audit /etc/audit/rules.d -maxdepth 1 -type f -name '*.rules' -exec sed -i '/-e[[:space:]]\+.*/d' {} ';'
+
+        # Append '-e 2' requirement at the end of both:
+        # * /etc/audit/audit.rules file       (for auditctl case)
+        # * /etc/audit/rules.d/immutable.rules      (for augenrules case)
+
+        for AUDIT_FILE in "/etc/audit/audit.rules" "/etc/audit/rules.d/immutable.rules"
+        do
+           echo '' >> $AUDIT_FILE
+           echo '# Set the audit.rules configuration immutable per security requirements' >> $AUDIT_FILE
+           echo '# Reboot is required to change audit rules once this setting is applied' >> $AUDIT_FILE
+           echo '-e 2' >> $AUDIT_FILE
+           chmod o-rwx $AUDIT_FILE
+           chmod g-rwx $AUDIT_FILE
+        done
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-83716-1
+        disa_stig:
+          - RHEL-09-654275
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q audit && rpm --quiet -q kernel; then
+
+        # Traverse all of:
+        #
+        # /etc/audit/audit.rules,         (for auditctl case)
+        # /etc/audit/rules.d/*.rules         (for augenrules case)
+        #
+        # files to check if '-e .*' setting is present in that '*.rules' file already.
+        # If found, delete such occurrence since auditctl(8) manual page instructs the
+        # '-e 2' rule should be placed as the last rule in the configuration
+        find /etc/audit /etc/audit/rules.d -maxdepth 1 -type f -name '*.rules' -exec sed -i '/-e[[:space:]]\+.*/d' {} ';'
+
+        # Append '-e 2' requirement at the end of both:
+        # * /etc/audit/audit.rules file       (for auditctl case)
+        # * /etc/audit/rules.d/immutable.rules      (for augenrules case)
+
+        for AUDIT_FILE in "/etc/audit/audit.rules" "/etc/audit/rules.d/immutable.rules"
+        do
+           echo '' >> $AUDIT_FILE
+           echo '# Set the audit.rules configuration immutable per security requirements' >> $AUDIT_FILE
+           echo '# Reboot is required to change audit rules once this setting is applied' >> $AUDIT_FILE
+           echo '-e 2' >> $AUDIT_FILE
+           chmod o-rwx $AUDIT_FILE
+           chmod g-rwx $AUDIT_FILE
+        done
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q '^installed'; then
+
+        # Traverse all of:
+        #
+        # /etc/audit/audit.rules,         (for auditctl case)
+        # /etc/audit/rules.d/*.rules         (for augenrules case)
+        #
+        # files to check if '-e .*' setting is present in that '*.rules' file already.
+        # If found, delete such occurrence since auditctl(8) manual page instructs the
+        # '-e 2' rule should be placed as the last rule in the configuration
+        find /etc/audit /etc/audit/rules.d -maxdepth 1 -type f -name '*.rules' -exec sed -i '/-e[[:space:]]\+.*/d' {} ';'
+
+        # Append '-e 2' requirement at the end of both:
+        # * /etc/audit/audit.rules file       (for auditctl case)
+        # * /etc/audit/rules.d/immutable.rules      (for augenrules case)
+
+        for AUDIT_FILE in "/etc/audit/audit.rules" "/etc/audit/rules.d/immutable.rules"
+        do
+           echo '' >> $AUDIT_FILE
+           echo '# Set the audit.rules configuration immutable per security requirements' >> $AUDIT_FILE
+           echo '# Reboot is required to change audit rules once this setting is applied' >> $AUDIT_FILE
+           echo '-e 2' >> $AUDIT_FILE
+           chmod o-rwx $AUDIT_FILE
+           chmod g-rwx $AUDIT_FILE
+        done
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q '^installed'; then
+
+        # Traverse all of:
+        #
+        # /etc/audit/audit.rules,         (for auditctl case)
+        # /etc/audit/rules.d/*.rules         (for augenrules case)
+        #
+        # files to check if '-e .*' setting is present in that '*.rules' file already.
+        # If found, delete such occurrence since auditctl(8) manual page instructs the
+        # '-e 2' rule should be placed as the last rule in the configuration
+        find /etc/audit /etc/audit/rules.d -maxdepth 1 -type f -name '*.rules' -exec sed -i '/-e[[:space:]]\+.*/d' {} ';'
+
+        # Append '-e 2' requirement at the end of both:
+        # * /etc/audit/audit.rules file       (for auditctl case)
+        # * /etc/audit/rules.d/immutable.rules      (for augenrules case)
+
+        for AUDIT_FILE in "/etc/audit/audit.rules" "/etc/audit/rules.d/immutable.rules"
+        do
+           echo '' >> $AUDIT_FILE
+           echo '# Set the audit.rules configuration immutable per security requirements' >> $AUDIT_FILE
+           echo '# Reboot is required to change audit rules once this setting is applied' >> $AUDIT_FILE
+           echo '-e 2' >> $AUDIT_FILE
+           chmod o-rwx $AUDIT_FILE
+           chmod g-rwx $AUDIT_FILE
+        done
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q '^installed'; then
+
+        # Traverse all of:
+        #
+        # /etc/audit/audit.rules,         (for auditctl case)
+        # /etc/audit/rules.d/*.rules         (for augenrules case)
+        #
+        # files to check if '-e .*' setting is present in that '*.rules' file already.
+        # If found, delete such occurrence since auditctl(8) manual page instructs the
+        # '-e 2' rule should be placed as the last rule in the configuration
+        find /etc/audit /etc/audit/rules.d -maxdepth 1 -type f -name '*.rules' -exec sed -i '/-e[[:space:]]\+.*/d' {} ';'
+
+        # Append '-e 2' requirement at the end of both:
+        # * /etc/audit/audit.rules file       (for auditctl case)
+        # * /etc/audit/rules.d/immutable.rules      (for augenrules case)
+
+        for AUDIT_FILE in "/etc/audit/audit.rules" "/etc/audit/rules.d/immutable.rules"
+        do
+           echo '' >> $AUDIT_FILE
+           echo '# Set the audit.rules configuration immutable per security requirements' >> $AUDIT_FILE
+           echo '# Reboot is required to change audit rules once this setting is applied' >> $AUDIT_FILE
+           echo '-e 2' >> $AUDIT_FILE
+           chmod o-rwx $AUDIT_FILE
+           chmod g-rwx $AUDIT_FILE
+        done
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

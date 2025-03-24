@@ -1,0 +1,86 @@
+id: os_vlock_installed
+title: Check that vlock is installed to allow session locking
+discussion: |
+  A session lock is a temporary action taken when a user stops work and
+  moves away from the immediate physical vicinity of the information
+  system but does not want to log out because of the temporary nature of
+  the absence.
+
+  The session lock is implemented at the point where session activity can
+  be determined.
+
+  Regardless of where the session lock is determined and implemented,
+  once invoked, the session lock must remain in place until the user
+  reauthenticates. No other activity aside from reauthentication must
+  unlock the system.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000056
+    - CCI-000057
+    - CCI-000058
+    - CCI-000060
+  800-53r4:
+    - N/A
+  srg:
+    - SRG-OS-000028-GPOS-00009
+    - SRG-OS-000030-GPOS-00011
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - N/A
+severity: medium
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010005
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        DEBIAN_FRONTEND=noninteractive apt-get install -y "vlock"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-412025
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        DEBIAN_FRONTEND=noninteractive apt-get install -y "vlock"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

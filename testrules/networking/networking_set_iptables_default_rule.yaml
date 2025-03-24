@@ -1,0 +1,145 @@
+id: networking_set_iptables_default_rule
+title: Set Default iptables Policy for Incoming Packets
+discussion: |
+  In iptables the default policy is applied only after all
+  the applicable rules in the table are examined for a match. Setting the
+  default policy to DROP implements proper design for a firewall, i.e.
+  any packets which are not explicitly permitted should not be
+  accepted.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r4:
+    - CA-3(5)
+    - CM-6(a)
+    - CM-7(b)
+    - SC-7(23)
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '8':
+      references:
+        cce:
+          - CCE-85968-6
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q iptables && { ( ! ( rpm --quiet -q nftables ) && ! ( rpm --quiet -q ufw ) ); }; then
+
+        sed -i 's/^:INPUT ACCEPT.*/:INPUT DROP [0:0]/g' /etc/sysconfig/iptables
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-85969-4
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q iptables && { ( ! ( rpm --quiet -q nftables ) && ! ( rpm --quiet -q ufw ) ); }; then
+
+        sed -i 's/^:INPUT ACCEPT.*/:INPUT DROP [0:0]/g' /etc/sysconfig/iptables
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'iptables' 2>/dev/null | grep -q '^installed' && { ( ! ( dpkg-query --show --showformat='${db:Status-Status}\n' 'nftables' 2>/dev/null | grep -q '^installed' ) && ! ( dpkg-query --show --showformat='${db:Status-Status}\n' 'ufw' 2>/dev/null | grep -q '^installed' ) ); }; then
+
+        sed -i 's/^:INPUT ACCEPT.*/:INPUT DROP [0:0]/g' /etc/sysconfig/iptables
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'iptables' 2>/dev/null | grep -q '^installed' && { ( ! ( dpkg-query --show --showformat='${db:Status-Status}\n' 'nftables' 2>/dev/null | grep -q '^installed' ) && ! ( dpkg-query --show --showformat='${db:Status-Status}\n' 'ufw' 2>/dev/null | grep -q '^installed' ) ); }; then
+
+        sed -i 's/^:INPUT ACCEPT.*/:INPUT DROP [0:0]/g' /etc/sysconfig/iptables
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'iptables' 2>/dev/null | grep -q '^installed' && { ( ! ( dpkg-query --show --showformat='${db:Status-Status}\n' 'nftables' 2>/dev/null | grep -q '^installed' ) && ! ( dpkg-query --show --showformat='${db:Status-Status}\n' 'ufw' 2>/dev/null | grep -q '^installed' ) ); }; then
+
+        sed -i 's/^:INPUT ACCEPT.*/:INPUT DROP [0:0]/g' /etc/sysconfig/iptables
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

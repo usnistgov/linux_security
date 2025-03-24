@@ -1,0 +1,141 @@
+id: os_file_permissions_backup_etc_passwd
+title: Verify Permissions on Backup passwd File
+discussion: |
+  The /etc/passwd- file is a backup file of /etc/passwd, and as such,
+  it contains information about the users that are configured on the system.
+  Protection of this file is critical for system security.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000366
+  800-53r4:
+    - AC-6 (1)
+  srg:
+    - SRG-OS-000480-GPOS-00227
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-86854-7
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+
+
+
+        chmod u-xs,g-xws,o-xwt /etc/passwd-
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-83332-7
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+
+
+
+        chmod u-xs,g-xws,o-xwt /etc/passwd-
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-83940-7
+        disa_stig:
+          - RHEL-09-232080
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+
+
+
+        chmod u-xs,g-xws,o-xwt /etc/passwd-
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+
+
+
+        chmod u-xs,g-xws,o-xwt /etc/passwd-
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+
+
+
+        chmod u-xs,g-xws,o-xwt /etc/passwd-
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+
+
+
+        chmod u-xs,g-xws,o-xwt /etc/passwd-
+
+        ---

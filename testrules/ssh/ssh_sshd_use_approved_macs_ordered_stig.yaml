@@ -1,0 +1,124 @@
+id: ssh_sshd_use_approved_macs_ordered_stig
+title: Use Only FIPS 140-2 Validated MACs
+discussion: |
+  DoD Information Systems are required to use FIPS-approved cryptographic hash
+  functions. The only SSHv2 hash algorithms meeting this requirement is SHA2.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000068
+    - CCI-000803
+    - CCI-000877
+    - CCI-001453
+    - CCI-003123
+  800-53r4:
+    - N/A
+  srg:
+    - SRG-OS-000125-GPOS-00065
+    - SRG-OS-000250-GPOS-00093
+    - SRG-OS-000394-GPOS-00174
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - N/A
+severity: medium
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010043
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        sshd_approved_macs=''
+
+
+        mkdir -p /etc/ssh/sshd_config.d
+        touch /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
+        chmod 0600 /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
+
+        LC_ALL=C sed -i "/^\s*MACs\s\+/Id" "/etc/ssh/sshd_config"
+        LC_ALL=C sed -i "/^\s*MACs\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
+        if [ -e "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" ] ; then
+
+            LC_ALL=C sed -i "/^\s*MACs\s\+/Id" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
+        else
+            touch "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
+        fi
+        # make sure file has newline at the end
+        sed -i -e '$a\' "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
+
+        cp "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
+        # Insert at the beginning of the file
+        printf '%s\n' "MACs $sshd_approved_macs" > "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
+        cat "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak" >> "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
+        # Clean up after ourselves.
+        rm "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-255055
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        sshd_approved_macs=''
+
+
+        mkdir -p /etc/ssh/sshd_config.d
+        touch /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
+        chmod 0600 /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
+
+        LC_ALL=C sed -i "/^\s*MACs\s\+/Id" "/etc/ssh/sshd_config"
+        LC_ALL=C sed -i "/^\s*MACs\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
+        if [ -e "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" ] ; then
+
+            LC_ALL=C sed -i "/^\s*MACs\s\+/Id" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
+        else
+            touch "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
+        fi
+        # make sure file has newline at the end
+        sed -i -e '$a\' "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
+
+        cp "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
+        # Insert at the beginning of the file
+        printf '%s\n' "MACs $sshd_approved_macs" > "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
+        cat "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak" >> "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
+        # Clean up after ourselves.
+        rm "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

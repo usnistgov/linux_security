@@ -1,0 +1,155 @@
+id: os_file_groupownership_audit_binaries
+title: Verify that audit tools are owned by group root
+discussion: |
+  Protecting audit information also includes identifying and protecting the
+  tools used to view and manipulate log data. Therefore, protecting audit
+  tools is necessary to prevent unauthorized operation on audit information.
+
+  Operating systems providing tools to interface with audit information
+  will leverage user permissions and roles identifying the user accessing the
+  tools and the corresponding rights the user enjoys to make access decisions
+  regarding the access to audit tools.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-001493
+    - CCI-001494
+  800-53r4:
+    - N/A
+  srg:
+    - SRG-OS-000256-GPiOS-00097
+    - SRG-OS-000257-GPOS-00098
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-87965-0
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chgrp 0 /sbin/auditctl
+        chgrp 0 /sbin/aureport
+        chgrp 0 /sbin/ausearch
+        chgrp 0 /sbin/auditd
+        chgrp 0 /sbin/augenrules
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-86455-3
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chgrp 0 /sbin/auditctl
+        chgrp 0 /sbin/aureport
+        chgrp 0 /sbin/ausearch
+        chgrp 0 /sbin/autrace
+        chgrp 0 /sbin/auditd
+        chgrp 0 /sbin/augenrules
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-86457-9
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chgrp 0 /sbin/auditctl
+        chgrp 0 /sbin/aureport
+        chgrp 0 /sbin/ausearch
+        chgrp 0 /sbin/autrace
+        chgrp 0 /sbin/auditd
+        chgrp 0 /sbin/augenrules
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010201
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chgrp 0 /sbin/auditctl
+        chgrp 0 /sbin/aureport
+        chgrp 0 /sbin/ausearch
+        chgrp 0 /sbin/autrace
+        chgrp 0 /sbin/auditd
+        chgrp 0 /sbin/audispd
+        chgrp 0 /sbin/augenrules
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chgrp 0 /sbin/auditctl
+        chgrp 0 /sbin/aureport
+        chgrp 0 /sbin/ausearch
+        chgrp 0 /sbin/autrace
+        chgrp 0 /sbin/auditd
+        chgrp 0 /sbin/audispd
+        chgrp 0 /sbin/augenrules
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chgrp 0 /sbin/auditctl
+        chgrp 0 /sbin/aureport
+        chgrp 0 /sbin/ausearch
+        chgrp 0 /sbin/autrace
+        chgrp 0 /sbin/auditd
+        chgrp 0 /sbin/audispd
+        chgrp 0 /sbin/augenrules
+
+        ---

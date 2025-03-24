@@ -1,0 +1,49 @@
+id: os_root_login_prevent
+title: Direct root Logins Are Not Allowed
+discussion: |
+  Disabling direct root logins ensures proper accountability and
+  multifactor authentication to privileged accounts.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000770
+    - CCI-004045
+  800-53r4:
+    - N/A
+  srg:
+    - SRG-OS-000109-GPOS-00056
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - N/A
+severity: medium
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010408
+      check:
+        - N/A
+      fix:
+        - N/A
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-411010
+      check:
+        - N/A
+      fix:
+        - N/A

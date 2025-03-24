@@ -1,0 +1,124 @@
+id: services_package_rsh_server_removed
+title: Uninstall rsh-server Package
+discussion: |
+  The rsh-server service provides unencrypted remote access service which does not
+  provide for the confidentiality and integrity of user passwords or the remote session and has very weak
+  authentication. If a privileged user were to login using this service, the privileged user password
+  could be compromised. The rsh-server package provides several obsolete and insecure
+  network services. Removing it decreases the risk of those services' accidental (or intentional)
+  activation.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000381
+  800-53r4:
+    - CM-6(a)
+    - CM-7(a)
+    - CM-7(b)
+    - IA-5(1)(c)
+  srg:
+    - SRG-OS-000095-GPOS-00049
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - N/A
+severity: high
+os_specifics:
+  rhel:
+    '8':
+      references:
+        cce:
+          - CCE-82184-3
+        disa_stig:
+          - RHEL-08-040010
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove rsh-server
+        #      from the system, and may remove any packages
+        #      that depend on rsh-server. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "rsh-server" ; then
+        yum remove -y "rsh-server"
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-84143-7
+        disa_stig:
+          - RHEL-09-215035
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove rsh-server
+        #      from the system, and may remove any packages
+        #      that depend on rsh-server. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "rsh-server" ; then
+        dnf remove -y --noautoremove "rsh-server"
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010406
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove rsh-server
+        #      from the system, and may remove any packages
+        #      that depend on rsh-server. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "rsh-server"
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-215030
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove rsh-server
+        #      from the system, and may remove any packages
+        #      that depend on rsh-server. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "rsh-server"
+
+        ---

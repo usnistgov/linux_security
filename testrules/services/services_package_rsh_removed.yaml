@@ -1,0 +1,147 @@
+id: services_package_rsh_removed
+title: Uninstall rsh Package
+discussion: |
+  These legacy clients contain numerous security exposures and have
+  been replaced with the more secure SSH package. Even if the server is removed,
+  it is best to ensure the clients are also removed to prevent users from
+  inadvertently attempting to use these commands and therefore exposing
+
+  their credentials. Note that removing the rsh package removes
+
+  the clients for rsh,rcp, and rlogin.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r4:
+    - N/A
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: unknown
+os_specifics:
+  rhel:
+    '8':
+      references:
+        cce:
+          - CCE-82183-5
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove rsh
+        #      from the system, and may remove any packages
+        #      that depend on rsh. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "rsh" ; then
+        yum remove -y "rsh"
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-84142-9
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove rsh
+        #      from the system, and may remove any packages
+        #      that depend on rsh. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "rsh" ; then
+        dnf remove -y --noautoremove "rsh"
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove rsh-client
+        #      from the system, and may remove any packages
+        #      that depend on rsh-client. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "rsh-client"
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove rsh-client
+        #      from the system, and may remove any packages
+        #      that depend on rsh-client. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "rsh-client"
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove rsh-client
+        #      from the system, and may remove any packages
+        #      that depend on rsh-client. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "rsh-client"
+
+        ---

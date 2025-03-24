@@ -1,0 +1,309 @@
+id: audit_auditd_data_retention_max_log_file
+title: Configure auditd Max Log File Size
+discussion: |
+  The total storage for audit log files must be large enough to retain
+  log information over the period required. This is a function of the maximum
+  log file size and the number of logs retained.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r4:
+    - AU-11
+    - CM-6(a)
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+  - 800-53r5_low
+  - 800-53r5_moderate
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-89263-8
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q audit && rpm --quiet -q kernel; then
+
+        var_auditd_max_log_file=''
+
+
+        AUDITCONFIG=/etc/audit/auditd.conf
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^max_log_file")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "$var_auditd_max_log_file"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^max_log_file\\>" "$AUDITCONFIG"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^max_log_file\\>.*/$escaped_formatted_output/gi" "$AUDITCONFIG"
+        else
+            if [[ -s "$AUDITCONFIG" ]] && [[ -n "$(tail -c 1 -- "$AUDITCONFIG" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "$AUDITCONFIG"
+            fi
+            cce="CCE-89263-8"
+            printf '# Per %s: Set %s in %s\n' "${cce}" "${formatted_output}" "$AUDITCONFIG" >> "$AUDITCONFIG"
+            printf '%s\n' "$formatted_output" >> "$AUDITCONFIG"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-80681-0
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q audit && rpm --quiet -q kernel; then
+
+        var_auditd_max_log_file=''
+
+
+        AUDITCONFIG=/etc/audit/auditd.conf
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^max_log_file")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "$var_auditd_max_log_file"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^max_log_file\\>" "$AUDITCONFIG"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^max_log_file\\>.*/$escaped_formatted_output/gi" "$AUDITCONFIG"
+        else
+            if [[ -s "$AUDITCONFIG" ]] && [[ -n "$(tail -c 1 -- "$AUDITCONFIG" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "$AUDITCONFIG"
+            fi
+            cce="CCE-80681-0"
+            printf '# Per %s: Set %s in %s\n' "${cce}" "${formatted_output}" "$AUDITCONFIG" >> "$AUDITCONFIG"
+            printf '%s\n' "$formatted_output" >> "$AUDITCONFIG"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-83683-3
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q audit && rpm --quiet -q kernel; then
+
+        var_auditd_max_log_file=''
+
+
+        AUDITCONFIG=/etc/audit/auditd.conf
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^max_log_file")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "$var_auditd_max_log_file"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^max_log_file\\>" "$AUDITCONFIG"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^max_log_file\\>.*/$escaped_formatted_output/gi" "$AUDITCONFIG"
+        else
+            if [[ -s "$AUDITCONFIG" ]] && [[ -n "$(tail -c 1 -- "$AUDITCONFIG" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "$AUDITCONFIG"
+            fi
+            cce="CCE-83683-3"
+            printf '# Per %s: Set %s in %s\n' "${cce}" "${formatted_output}" "$AUDITCONFIG" >> "$AUDITCONFIG"
+            printf '%s\n' "$formatted_output" >> "$AUDITCONFIG"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q '^installed'; then
+
+        var_auditd_max_log_file=''
+
+
+        AUDITCONFIG=/etc/audit/auditd.conf
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^max_log_file")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "$var_auditd_max_log_file"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^max_log_file\\>" "$AUDITCONFIG"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^max_log_file\\>.*/$escaped_formatted_output/gi" "$AUDITCONFIG"
+        else
+            if [[ -s "$AUDITCONFIG" ]] && [[ -n "$(tail -c 1 -- "$AUDITCONFIG" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "$AUDITCONFIG"
+            fi
+            printf '%s\n' "$formatted_output" >> "$AUDITCONFIG"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q '^installed'; then
+
+        var_auditd_max_log_file=''
+
+
+        AUDITCONFIG=/etc/audit/auditd.conf
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^max_log_file")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "$var_auditd_max_log_file"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^max_log_file\\>" "$AUDITCONFIG"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^max_log_file\\>.*/$escaped_formatted_output/gi" "$AUDITCONFIG"
+        else
+            if [[ -s "$AUDITCONFIG" ]] && [[ -n "$(tail -c 1 -- "$AUDITCONFIG" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "$AUDITCONFIG"
+            fi
+            printf '%s\n' "$formatted_output" >> "$AUDITCONFIG"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q '^installed'; then
+
+        var_auditd_max_log_file=''
+
+
+        AUDITCONFIG=/etc/audit/auditd.conf
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^max_log_file")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "$var_auditd_max_log_file"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^max_log_file\\>" "$AUDITCONFIG"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^max_log_file\\>.*/$escaped_formatted_output/gi" "$AUDITCONFIG"
+        else
+            if [[ -s "$AUDITCONFIG" ]] && [[ -n "$(tail -c 1 -- "$AUDITCONFIG" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "$AUDITCONFIG"
+            fi
+            printf '%s\n' "$formatted_output" >> "$AUDITCONFIG"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

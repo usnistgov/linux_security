@@ -1,0 +1,143 @@
+id: services_package_dhcp_removed
+title: Uninstall DHCP Server Package
+discussion: |
+  Removing the DHCP server ensures that it cannot be easily or
+  accidentally reactivated and disrupt network operation.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000366
+  800-53r4:
+    - CM-6(a)
+    - CM-7(a)
+    - CM-7(b)
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '8':
+      references:
+        cce:
+          - CCE-83385-5
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove dhcp-server
+        #      from the system, and may remove any packages
+        #      that depend on dhcp-server. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "dhcp-server" ; then
+        yum remove -y "dhcp-server"
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-84240-1
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove dhcp-server
+        #      from the system, and may remove any packages
+        #      that depend on dhcp-server. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "dhcp-server" ; then
+        dnf remove -y --noautoremove "dhcp-server"
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove isc-dhcp-server
+        #      from the system, and may remove any packages
+        #      that depend on isc-dhcp-server. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "isc-dhcp-server"
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove isc-dhcp-server
+        #      from the system, and may remove any packages
+        #      that depend on isc-dhcp-server. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "isc-dhcp-server"
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove isc-dhcp-server
+        #      from the system, and may remove any packages
+        #      that depend on isc-dhcp-server. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "isc-dhcp-server"
+
+        ---

@@ -1,0 +1,141 @@
+id: services_package_xorg_x11_server_common_removed
+title: Remove the X Windows Package Group
+discussion: |
+  Unnecessary service packages must not be installed to decrease the attack surface of the system. X windows has a long history of security
+  vulnerabilities and should not be installed unless approved and documented.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000366
+  800-53r4:
+    - CM-6(a)
+    - CM-7(a)
+    - CM-7(b)
+  srg:
+    - SRG-OS-000480-GPOS-00227
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl2
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '8':
+      references:
+        cce:
+          - CCE-82757-6
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove xorg-x11-server-common
+        #      from the system, and may remove any packages
+        #      that depend on xorg-x11-server-common. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "xorg-x11-server-common" ; then
+        yum remove -y "xorg-x11-server-common"
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-84104-9
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove xorg-x11-server-common
+        #      from the system, and may remove any packages
+        #      that depend on xorg-x11-server-common. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        if rpm -q --quiet "xorg-x11-server-common" ; then
+        dnf remove -y --noautoremove "xorg-x11-server-common"
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove xserver-xorg
+        #      from the system, and may remove any packages
+        #      that depend on xserver-xorg. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "xserver-xorg"
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove xserver-xorg
+        #      from the system, and may remove any packages
+        #      that depend on xserver-xorg. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "xserver-xorg"
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove xserver-common
+        #      from the system, and may remove any packages
+        #      that depend on xserver-common. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "xserver-common"
+
+        ---

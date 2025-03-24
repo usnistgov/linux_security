@@ -1,0 +1,278 @@
+id: ssh_sshd_do_not_permit_user_env
+title: Do Not Allow SSH Environment Options
+discussion: |
+  SSH environment options potentially allow users to bypass
+  access restriction in some configurations.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000366
+  800-53r4:
+    - AC-17(a)
+    - CM-6(a)
+    - CM-7(a)
+    - CM-7(b)
+  srg:
+    - SRG-OS-000480-GPOS-00229
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-87395-0
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        mkdir -p /etc/ssh/sshd_config.d
+        touch /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
+        chmod 0600 /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
+
+        LC_ALL=C sed -i "/^\s*PermitUserEnvironment\s\+/Id" "/etc/ssh/sshd_config"
+        LC_ALL=C sed -i "/^\s*PermitUserEnvironment\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
+        if [ -e "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" ] ; then
+
+            LC_ALL=C sed -i "/^\s*PermitUserEnvironment\s\+/Id" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+        else
+            touch "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+        fi
+        # make sure file has newline at the end
+        sed -i -e '$a\' "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+
+        cp "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
+        # Insert at the beginning of the file
+        printf '%s\n' "PermitUserEnvironment no" > "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+        cat "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak" >> "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+        # Clean up after ourselves.
+        rm "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-80903-8
+        disa_stig:
+          - RHEL-08-010830
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        if [ -e "/etc/ssh/sshd_config" ] ; then
+
+            LC_ALL=C sed -i "/^\s*PermitUserEnvironment\s\+/Id" "/etc/ssh/sshd_config"
+        else
+            touch "/etc/ssh/sshd_config"
+        fi
+        # make sure file has newline at the end
+        sed -i -e '$a\' "/etc/ssh/sshd_config"
+
+        cp "/etc/ssh/sshd_config" "/etc/ssh/sshd_config.bak"
+        # Insert at the beginning of the file
+        printf '%s\n' "PermitUserEnvironment no" > "/etc/ssh/sshd_config"
+        cat "/etc/ssh/sshd_config.bak" >> "/etc/ssh/sshd_config"
+        # Clean up after ourselves.
+        rm "/etc/ssh/sshd_config.bak"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-90803-8
+        disa_stig:
+          - RHEL-09-255085
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        mkdir -p /etc/ssh/sshd_config.d
+        touch /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
+        chmod 0600 /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
+
+        LC_ALL=C sed -i "/^\s*PermitUserEnvironment\s\+/Id" "/etc/ssh/sshd_config"
+        LC_ALL=C sed -i "/^\s*PermitUserEnvironment\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
+        if [ -e "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" ] ; then
+
+            LC_ALL=C sed -i "/^\s*PermitUserEnvironment\s\+/Id" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+        else
+            touch "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+        fi
+        # make sure file has newline at the end
+        sed -i -e '$a\' "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+
+        cp "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
+        # Insert at the beginning of the file
+        printf '%s\n' "PermitUserEnvironment no" > "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+        cat "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak" >> "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+        # Clean up after ourselves.
+        rm "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010047
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        mkdir -p /etc/ssh/sshd_config.d
+        touch /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
+        chmod 0600 /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
+
+        LC_ALL=C sed -i "/^\s*PermitUserEnvironment\s\+/Id" "/etc/ssh/sshd_config"
+        LC_ALL=C sed -i "/^\s*PermitUserEnvironment\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
+        if [ -e "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" ] ; then
+
+            LC_ALL=C sed -i "/^\s*PermitUserEnvironment\s\+/Id" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+        else
+            touch "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+        fi
+        # make sure file has newline at the end
+        sed -i -e '$a\' "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+
+        cp "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
+        # Insert at the beginning of the file
+        printf '%s\n' "PermitUserEnvironment no" > "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+        cat "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak" >> "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+        # Clean up after ourselves.
+        rm "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-255025
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        mkdir -p /etc/ssh/sshd_config.d
+        touch /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
+        chmod 0600 /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
+
+        LC_ALL=C sed -i "/^\s*PermitUserEnvironment\s\+/Id" "/etc/ssh/sshd_config"
+        LC_ALL=C sed -i "/^\s*PermitUserEnvironment\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
+        if [ -e "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" ] ; then
+
+            LC_ALL=C sed -i "/^\s*PermitUserEnvironment\s\+/Id" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+        else
+            touch "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+        fi
+        # make sure file has newline at the end
+        sed -i -e '$a\' "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+
+        cp "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
+        # Insert at the beginning of the file
+        printf '%s\n' "PermitUserEnvironment no" > "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+        cat "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak" >> "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+        # Clean up after ourselves.
+        rm "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        mkdir -p /etc/ssh/sshd_config.d
+        touch /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
+        chmod 0600 /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
+
+        LC_ALL=C sed -i "/^\s*PermitUserEnvironment\s\+/Id" "/etc/ssh/sshd_config"
+        LC_ALL=C sed -i "/^\s*PermitUserEnvironment\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
+        if [ -e "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" ] ; then
+
+            LC_ALL=C sed -i "/^\s*PermitUserEnvironment\s\+/Id" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+        else
+            touch "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+        fi
+        # make sure file has newline at the end
+        sed -i -e '$a\' "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+
+        cp "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
+        # Insert at the beginning of the file
+        printf '%s\n' "PermitUserEnvironment no" > "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+        cat "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak" >> "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+        # Clean up after ourselves.
+        rm "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

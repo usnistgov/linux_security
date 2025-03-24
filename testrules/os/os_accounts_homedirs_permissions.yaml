@@ -1,0 +1,152 @@
+id: os_accounts_homedirs_permissions
+title: All Interactive User Home Directories Must Have mode 0750 Or Less Permissive
+discussion: |
+  Excessive permissions on local interactive user home directories may allow
+  unauthorized access to user files by other users.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000366
+  800-53r4:
+    - N/A
+  srg:
+    - SRG-OS-000480-GPOS-00227
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-86605-3
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        for home_dir in $(awk -F':' '{ if ($3 >= 1000 && $3 != 65534 && $6 != "/") print $6 }' /etc/passwd); do
+            # Only update the permissions when necessary. This will avoid changing the inode timestamp when
+            # the permission is already defined as expected, therefore not impacting in possible integrity
+            # check systems that also check inodes timestamps.
+            find "$home_dir" -maxdepth 0 -perm /7027 \! -type l -exec chmod u-s,g-w-s,o=- {} \;
+        done
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-84038-9
+        disa_stig:
+          - RHEL-08-010730
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        for home_dir in $(awk -F':' '{ if ($3 >= 1000 && $3 != 65534 && $6 != "/") print $6 }' /etc/passwd); do
+            # Only update the permissions when necessary. This will avoid changing the inode timestamp when
+            # the permission is already defined as expected, therefore not impacting in possible integrity
+            # check systems that also check inodes timestamps.
+            find "$home_dir" -maxdepth 0 -perm /7027 \! -type l -exec chmod u-s,g-w-s,o=- {} \;
+        done
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-83634-6
+        disa_stig:
+          - RHEL-09-232050
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        for home_dir in $(awk -F':' '{ if ($3 >= 1000 && $3 != 65534 && $6 != "/") print $6 }' /etc/passwd); do
+            # Only update the permissions when necessary. This will avoid changing the inode timestamp when
+            # the permission is already defined as expected, therefore not impacting in possible integrity
+            # check systems that also check inodes timestamps.
+            find "$home_dir" -maxdepth 0 -perm /7027 \! -type l -exec chmod u-s,g-w-s,o=- {} \;
+        done
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        for home_dir in $(awk -F':' '{ if ($3 >= 1000 && $3 != 65534 && $6 != "/") print $6 }' /etc/passwd); do
+            # Only update the permissions when necessary. This will avoid changing the inode timestamp when
+            # the permission is already defined as expected, therefore not impacting in possible integrity
+            # check systems that also check inodes timestamps.
+            find "$home_dir" -maxdepth 0 -perm /7027 \! -type l -exec chmod u-s,g-w-s,o=- {} \;
+        done
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        for home_dir in $(awk -F':' '{ if ($3 >= 1000 && $3 != 65534 && $6 != "/") print $6 }' /etc/passwd); do
+            # Only update the permissions when necessary. This will avoid changing the inode timestamp when
+            # the permission is already defined as expected, therefore not impacting in possible integrity
+            # check systems that also check inodes timestamps.
+            find "$home_dir" -maxdepth 0 -perm /7027 \! -type l -exec chmod u-s,g-w-s,o=- {} \;
+        done
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+
+        for home_dir in $(awk -F':' '{ if ($3 >= 1000 && $3 != 65534 && $6 != "/") print $6 }' /etc/passwd); do
+            # Only update the permissions when necessary. This will avoid changing the inode timestamp when
+            # the permission is already defined as expected, therefore not impacting in possible integrity
+            # check systems that also check inodes timestamps.
+            find "$home_dir" -maxdepth 0 -perm /7027 \! -type l -exec chmod u-s,g-w-s,o=- {} \;
+        done
+
+        ---

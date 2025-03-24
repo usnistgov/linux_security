@@ -1,0 +1,116 @@
+id: os_file_groupowner_backup_etc_gshadow
+title: Verify Group Who Owns Backup gshadow File
+discussion: |
+  The /etc/gshadow- file is a backup of /etc/gshadow, and as such,
+  it contains group password hashes. Protection of this file is critical for system security.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000366
+  800-53r4:
+    - AC-6 (1)
+  srg:
+    - SRG-OS-000480-GPOS-00227
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-88453-6
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chgrp 0 /etc/gshadow-
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-83535-5
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chgrp 0 /etc/gshadow-
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-83951-4
+        disa_stig:
+          - RHEL-09-232125
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chgrp 0 /etc/gshadow-
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chgrp 42 /etc/gshadow-
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chgrp 42 /etc/gshadow-
+
+        ---
+    '2404':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        chgrp 0 /etc/gshadow-
+
+        ---

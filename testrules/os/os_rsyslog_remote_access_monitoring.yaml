@@ -1,0 +1,236 @@
+id: os_rsyslog_remote_access_monitoring
+title: Ensure remote access methods are monitored in Rsyslog
+discussion: |
+  Logging remote access methods can be used to trace the decrease the risks
+  associated with remote user access management. It can also be used to spot
+  cyber attacks and ensure ongoing compliance with organizational policies
+  surrounding the use of remote access methods.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000067
+  800-53r4:
+    - AC-17(1)
+  srg:
+    - SRG-OS-000032-GPOS-00013
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate
+severity: medium
+os_specifics:
+  rhel:
+    '10':
+      references:
+        cce:
+          - CCE-87341-4
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel && rpm --quiet -q rsyslog; then
+
+        declare -A REMOTE_METHODS=( ['auth.*']='^[^#]*auth\.\*.*$' ['authpriv.*']='^[^#]*authpriv\.\*.*$' ['daemon.*']='^[^#]*daemon\.\*.*$' )
+        declare -A LOCATIONS=( ['auth.*']='/var/log/secure' ['authpriv.*']='/var/log/secure' ['daemon.*']='/var/log/messages' )
+
+        if [[ ! -f /etc/rsyslog.conf ]]; then
+           # Something is not right, create the file
+           touch /etc/rsyslog.conf
+        fi
+
+
+        # Loop through the remote methods associative array
+        for K in "${!REMOTE_METHODS[@]}"
+        do
+           # Check to see if selector/value exists
+           if ! grep -rq "${REMOTE_METHODS[$K]}" /etc/rsyslog.*; then
+                APPEND_LINE=$(sed -rn "/^\S+\s+\${LOCATIONS[$K]}$/p" /etc/rsyslog.conf)
+              # Make sure we have a line to insert after, otherwise append to end
+              if [[ ! -z ${APPEND_LINE} ]]; then
+                 # Add selector to file
+                 sed -r -i "0,/^(\S+\s+\/var\/log\/secure$)/s//\1\n${K} \/var\/log\/secure/" /etc/rsyslog.conf
+              else
+                 echo "${K} ${LOCATIONS[$K]}" >> /etc/rsyslog.conf
+              fi
+           fi
+        done
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      references:
+        cce:
+          - CCE-83426-7
+        disa_stig:
+          - RHEL-08-010070
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel && rpm --quiet -q rsyslog; then
+
+        declare -A REMOTE_METHODS=( ['auth.*']='^[^#]*auth\.\*.*$' ['authpriv.*']='^[^#]*authpriv\.\*.*$' ['daemon.*']='^[^#]*daemon\.\*.*$' )
+        declare -A LOCATIONS=( ['auth.*']='/var/log/secure' ['authpriv.*']='/var/log/secure' ['daemon.*']='/var/log/messages' )
+
+        if [[ ! -f /etc/rsyslog.conf ]]; then
+           # Something is not right, create the file
+           touch /etc/rsyslog.conf
+        fi
+
+
+        # Loop through the remote methods associative array
+        for K in "${!REMOTE_METHODS[@]}"
+        do
+           # Check to see if selector/value exists
+           if ! grep -rq "${REMOTE_METHODS[$K]}" /etc/rsyslog.*; then
+                APPEND_LINE=$(sed -rn "/^\S+\s+\${LOCATIONS[$K]}$/p" /etc/rsyslog.conf)
+              # Make sure we have a line to insert after, otherwise append to end
+              if [[ ! -z ${APPEND_LINE} ]]; then
+                 # Add selector to file
+                 sed -r -i "0,/^(\S+\s+\/var\/log\/secure$)/s//\1\n${K} \/var\/log\/secure/" /etc/rsyslog.conf
+              else
+                 echo "${K} ${LOCATIONS[$K]}" >> /etc/rsyslog.conf
+              fi
+           fi
+        done
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      references:
+        cce:
+          - CCE-87960-1
+        disa_stig:
+          - RHEL-09-652030
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel && rpm --quiet -q rsyslog; then
+
+        declare -A REMOTE_METHODS=( ['auth.*']='^[^#]*auth\.\*.*$' ['authpriv.*']='^[^#]*authpriv\.\*.*$' ['daemon.*']='^[^#]*daemon\.\*.*$' )
+        declare -A LOCATIONS=( ['auth.*']='/var/log/secure' ['authpriv.*']='/var/log/secure' ['daemon.*']='/var/log/messages' )
+
+        if [[ ! -f /etc/rsyslog.conf ]]; then
+           # Something is not right, create the file
+           touch /etc/rsyslog.conf
+        fi
+
+
+        # Loop through the remote methods associative array
+        for K in "${!REMOTE_METHODS[@]}"
+        do
+           # Check to see if selector/value exists
+           if ! grep -rq "${REMOTE_METHODS[$K]}" /etc/rsyslog.*; then
+                APPEND_LINE=$(sed -rn "/^\S+\s+\${LOCATIONS[$K]}$/p" /etc/rsyslog.conf)
+              # Make sure we have a line to insert after, otherwise append to end
+              if [[ ! -z ${APPEND_LINE} ]]; then
+                 # Add selector to file
+                 sed -r -i "0,/^(\S+\s+\/var\/log\/secure$)/s//\1\n${K} \/var\/log\/secure/" /etc/rsyslog.conf
+              else
+                 echo "${K} ${LOCATIONS[$K]}" >> /etc/rsyslog.conf
+              fi
+           fi
+        done
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010403
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && dpkg-query --show --showformat='${db:Status-Status}\n' 'rsyslog' 2>/dev/null | grep -q '^installed'; then
+
+        if [ ! -f /etc/rsyslog.d/50-default.conf ]; then
+            # Something is not right, create the file
+            touch /etc/rsyslog.d/50-default.conf
+        fi
+
+        # Check to see if auth exists
+        if ! grep -Erq "^auth\.\*,authpriv\.\*" /etc/rsyslog.*; then
+            echo "auth.*,authpriv.* /var/log/secure" >> /etc/rsyslog.d/50-default.conf
+        fi
+
+        if ! grep -Erq "^daemon\.\*" /etc/rsyslog.*; then
+            echo "daemon.* /var/log/messages" >> /etc/rsyslog.d/50-default.conf
+        fi
+
+        systemctl restart rsyslog.service
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-22-652015
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && dpkg-query --show --showformat='${db:Status-Status}\n' 'rsyslog' 2>/dev/null | grep -q '^installed'; then
+
+        if [ ! -f /etc/rsyslog.d/50-default.conf ]; then
+            # Something is not right, create the file
+            touch /etc/rsyslog.d/50-default.conf
+        fi
+
+        # Check to see if auth exists
+        if ! grep -Erq "^auth\.\*,authpriv\.\*" /etc/rsyslog.*; then
+            echo "auth.*,authpriv.* /var/log/secure" >> /etc/rsyslog.d/50-default.conf
+        fi
+
+        if ! grep -Erq "^daemon\.\*" /etc/rsyslog.*; then
+            echo "daemon.* /var/log/messages" >> /etc/rsyslog.d/50-default.conf
+        fi
+
+        systemctl restart rsyslog.service
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---

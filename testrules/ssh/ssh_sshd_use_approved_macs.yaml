@@ -1,0 +1,96 @@
+id: ssh_sshd_use_approved_macs
+title: Use Only FIPS 140-2 Validated MACs
+discussion: |
+  DoD Information Systems are required to use FIPS-approved cryptographic hash
+  functions. The only SSHv2 hash algorithms meeting this requirement is SHA2.
+check: $OS_VALUE
+result:
+  integer: 1
+fix: $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000068
+    - CCI-000803
+    - CCI-000877
+    - CCI-001453
+    - CCI-003123
+  800-53r4:
+    - AC-17(2)
+    - AC-17(a)
+    - CM-6(a)
+    - MA-4(6)
+    - SC-12(2)
+    - SC-12(3)
+    - SC-13
+  srg:
+    - SRG-OS-000125-GPOS-00065
+    - SRG-OS-000250-GPOS-00093
+    - SRG-OS-000394-GPOS-00174
+  disa_stig:
+    - $OS_VALUE
+  cis:
+    benchmark:
+      - $OS_VALUE
+tags:
+  - 800-53r5_high
+  - 800-53r5_low
+  - 800-53r5_moderate
+severity: medium
+os_specifics:
+  rhel:
+    '8':
+      references:
+        cce:
+          - CCE-82198-3
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix:
+        - N/A
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+      check:
+        - N/A
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        sshd_approved_macs=''
+
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^MACs")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s %s" "$stripped_key" "$sshd_approved_macs"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^MACs\\>" "/etc/ssh/sshd_config"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^MACs\\>.*/$escaped_formatted_output/gi" "/etc/ssh/sshd_config"
+        else
+            if [[ -s "/etc/ssh/sshd_config" ]] && [[ -n "$(tail -c 1 -- "/etc/ssh/sshd_config" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/ssh/sshd_config"
+            fi
+            printf '%s\n' "$formatted_output" >> "/etc/ssh/sshd_config"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
