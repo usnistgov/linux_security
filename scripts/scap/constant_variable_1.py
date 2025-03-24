@@ -3,6 +3,8 @@ from dataclasses import dataclass, field
 from scap.value_type_1 import ValueType1
 from scap.variable_type_1 import VariableType1
 
+import sys
+
 __NAMESPACE__ = "http://oval.mitre.org/XMLSchema/oval-definitions-5"
 
 
@@ -20,6 +22,14 @@ class ConstantVariable1(VariableType1):
     instances of the value element. Please refer to the description of
     the ValueType complex type for more information.
     """
+    
+    def evaluate_variable(self,data):
+        # TODO: Is there an alternative to this?
+        if self.value:
+            return f"{self.pretty_name()}VALUE={self.value}"
+        else:
+            print(f"ERROR EVALUATING CONSTANT VARIABLE: {self.id}")
+            sys.exit(-1)
 
     class Meta:
         name = "constant_variable"

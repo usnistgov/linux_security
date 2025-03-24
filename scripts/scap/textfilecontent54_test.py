@@ -27,13 +27,19 @@ class Textfilecontent54Test(TestType):
         # Evaluate the object and state refs, pass to them
         #print(self)
         # Evaluate object
-        object = data["objects"][self.object_value.object_ref].generate_check(data)
-        #print(f"TextFileTest Object: {object}")
+        object = data["objects"][self.object_value.object_ref].evaluate_object(data)
+        print(f"TextFileTest Object: {object}")
+        # Perform existence check of number of required objects, meeting check_existence value in tag
         # Evaluate state(s)
-        states = []
-        for state in self.state:
-            states.append(data["states"][state.state_ref].generate_check(data))
-        print(f"TextFileTest States: {states}")
+        if self.state:
+            states = []
+            for state in self.state:
+                states.append(data["states"][state.state_ref].generate_check(data))
+            # Compare state values, subexpressions, etc, and meet check value in tag
+            print(f"TextFileTest States: {states}")
+        else:
+            # No states, so we can base success off of check_existence only
+            print(object)
 
     class Meta:
         name = "textfilecontent54_test"

@@ -46,6 +46,14 @@ class VariableType1:
     :ivar deprecated:
     """
 
+    def evaluate_variable(self, data):
+        print(f"Variable implementation test! {self}")
+        # This is probably not where we should be putting the generation code
+        # Since this is the generic type
+
+    def pretty_name(self):
+        return self.id.replace("oval:ssg-variable_","").replace("oval:ssg-var_","").replace(":var:1","obj").replace(":","").replace("-","_").upper()
+
     class Meta:
         name = "VariableType"
 

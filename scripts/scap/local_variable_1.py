@@ -42,6 +42,17 @@ class LocalVariable1(VariableType1):
     of the ComponentGroup for more information.
     """
 
+    def evaluate_variable(self,data):
+        print(self)
+        # This may cause some issues because I'm expecting the variable checks to return a list, but
+        # The object component's generation will definitely not be returning a list 
+        if self.object_component:
+            return data["objects"][self.object_component.object_ref].evaluate_object(data)
+        if self.variable_component:
+            return data["variables"][self.variable_component.var_ref].evaluate_variable(data)
+        if self.literal_component:
+            return self.literal_component.value
+
     class Meta:
         name = "local_variable"
         namespace = "http://oval.mitre.org/XMLSchema/oval-definitions-5"

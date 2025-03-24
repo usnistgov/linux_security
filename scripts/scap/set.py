@@ -41,14 +41,14 @@ class Set:
     the SetOperatorEnumeration simple type.
     """
 
-    def generate_check(self,data):
+    def evaluate_set(self,data):
         print(f"Set: {self}")
         checks = []
         #operator = self.set_operator.value
         for set in self.set:
-            checks.append("[ $(" + set.generate_check(data) + ") ]")
+            checks.append("[ $(" + set.evaluate_set(data) + ") ]")
         for obj in self.object_reference:
-            checks.append("[ $(" + data["objects"][obj].generate_check(data) + ") ]")
+            checks.append("[ $(" + data["objects"][obj].evaluate_object(data) + ") ]")
         # Since all sets seem to not use the operators, we will default to UNION
         checks = " && ".join(checks)
         #if operator == SetOperatorEnumeration.UNION:

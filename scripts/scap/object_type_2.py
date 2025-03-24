@@ -31,8 +31,29 @@ class ObjectType2:
 
     class Meta:
         name = "ObjectType"
+
+
+    # This should generate a multiline string containing bash code, which at the end has a variable that generates the values
+    # In this attribute, and stores them into a bash variable
+    def evaluate_attribute(self, attribute, data):
+        print(f"Generic Attribute: {attribute}")
+        # In pretty much every case, we'll want to check if a var_ref exists, and grab it from the data if it exists
+        if attribute.var_ref and attribute.var_ref in data["variables"]:
+            # This should return some bash code, and we can grab the final string's variable as the attribute value
+            # Or we can name it here? Hmmm..
+            variable_code = data["variables"][attribute.var_ref].evaluate_variable(data)
+            # We also need to add the filtering to this too..
+        else:
+            # TODO: This naming is NOT unique enough!!
+            variable_code = f"{self.pretty_name()}ATTR={attribute.value}"
+        return variable_code        
+
+
+    def pretty_name(self):
+        return self.id.replace("oval:ssg-object_","").replace("oval:ssg-obj_","").replace(":obj:1","obj").replace(":","").replace("-","_").upper()
     
-    def generate_check(self, data):
+    def evaluate_object(self, data):
+        print(type(self))
         print(f"This Object is NOT supported! {self.id}")
 
     signature: Optional[Signature] = field(

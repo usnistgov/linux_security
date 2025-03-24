@@ -414,7 +414,7 @@ def generate_check(check, defs, tests, states, objects, vars):
     print(f"\n\n Criteria Root: {criteriaroot}")
     # Then we need to DFS down the criteria chain, and grab all criterion on each level. 
     # Recursion? 
-    criteriachain = definition.generate_check(data={"tests":tests,"definitions":defs,"states":states,"objects":objects,"vars":vars})
+    criteriachain = definition.generate_check(data={"tests":tests,"definitions":defs,"states":states,"objects":objects,"variables":vars})
     #print(f"Got ovaldef: {ovaldef}")
     #evaluate_definition(ovaldef, ssg_os_controls)
     # Criteria appears to be structured like so:

@@ -158,53 +158,165 @@ class Textfilecontent54Object(ObjectType2):
             "namespace": "http://oval.mitre.org/XMLSchema/oval-definitions-5",
         },
     )
-    
-    def generate_check(self, data):
-        print(f"TextFileContent54 Object! {self.id}")
+
+    # TODO: Use this for type-specific attributes (e.g attributes we ONLY see with TFC54)
+    # TODO: Anything that we can get away with processing generically (e.g it's a string or a var ref, do it)
+    def evaluate_specific_attribute(self, attribute, data):
+        print(f"TFC54 Specific: {attribute}")
+
+    # This is a lot nicer looking
+    # TODO: need to figure out a way to denote attribute typing so they resolve specifics better
+    def evaluate_object(self, data):
+        prettyname = self.pretty_name()
+        print(f"TFC54 Object, PrettyName: {prettyname}: {self}")
+        command = ""
+        if self.set:
+            print("TFC54: Evaluating Set...")
+            command = self.set.evaluate_set(data)
+        else:
+            if self.pattern:
+                command += self.evaluate_attribute(self.pattern,data)
+            if self.filepath:
+                command += self.evaluate_attribute(self.filepath,data)
+            if self.filename:
+                command += self.evaluate_attribute(self.filename,data)
+            if self.path:
+                command += self.evaluate_attribute(self.path,data)
+            if self.instance:
+                command += self.evaluate_attribute(self.instance,data)
+            if self.filter:
+                command += self.evaluate_attribute(self.path,data)
+            # TODO: Now that we have the requisites, we can assemble the object evaluation code
+            # TODO: This should be:
+            # READ (FILEPATH|FILENAME+PATH) -> FILTER CONTENTS (PATTERN) -> SUBSET (INSTANCE) 
+            # -> FILTER SET (FILTER) -> OUTPUT SET (COMMAND)
+        return command
+
+#    def evaluate_object_old(self, data):
+        print(f"TextFileContent54 Object! {self}")
+        # In theory, there shouldn't be any direct name collisions with this format, and it's easier to read than a hash
+        # All children of this object should be different since there's no reason for a variable to regenerate it's own obj... right? 
+        # TODO: Probably worth checking if collisions are a problem (maybe keep a set of all names generated, and fail if a collision happens)
+        # TODO: This really should be a regex...
+        # TODO: The majority of this that can be realistically migrated to the superclass should be moved there, for genericism's sake
+        prettyname = self.pretty_name()
+        print(f"PrettyName: {prettyname}")
+        print(self)
         # Now here is where we need to generate the actual code for the object check
         # Since we're searching files for text, we can use grep + find
         # We will have either a "filepath", which is a direct file
         # Or we will have a filename and a path, which means we need to match both multiple dirs and multiple files
         # Then we will need to search the file for the pattern field
         # And finally, we'll need to filter the output by the instance value, which is usually a range
-        #print(self)
+        #
+        # REMEMBER, HTML conversions such as &gt; vs > can and WILL break your regex!
+        #
         filter = ""
+        command = ""
         # This is NOT a complete implementation. 
-        # I am going to vent here. The OVAL spec SUCKS! Confusing, inconsistent, so many variants in the schema it makes your head spin... why?!
-        if self.instance:
-            print("TextFileContent54: Instance Detected")
-            filter = " | "
-            if self.instance.operation is OperationEnumeration.GREATER_THAN_OR_EQUAL:
-                if self.instance.value > 0:
-                    filter += f"tail -n +{self.instance.value}"
-                else:
-                    filter += f"tail -n {abs(self.instance.value)}"
-            elif self.instance.operation is OperationEnumeration.EQUALS:
-                if self.instance.value > 0:
-                    filter += f"sed -n {self.instance.value}p"
-                else:
-                    filter += f"tail {self.instance.value} | head -1"
-            else:
-                # Throw, since unimplemented
-                print(f"ERROR: Unimplemented Instance Operation {self.instance.operation}!")
-                sys.exit(-1)        
-        if self.filepath:
-            print("TextFileContent54: Filepath Detected")
-            if ((not self.filepath.operation) or self.filepath.operation in [OperationEnumeration.EQUALS]):
-                command = f"grep -h \"{self.pattern.value}\" {self.filepath.value}"
-            elif self.filepath.operation == OperationEnumeration.PATTERN_MATCH:
-                command = f"find / -regextype posix-egrep -regex \"{self.filepath.value}\" -exec grep -P \"{self.pattern.value}\"" + "{} \\;"
-            else:
-                print(f"ERROR: Unable to process filepath!")
-                sys.exit(-1)
-        elif self.filename and self.path:
-            print("TextFileContent54: Filename and Depth Detected")
-            command = f"find / -regextype posix-egrep -regex \"{self.path.value + "/" + self.filename.value}\" -exec grep -P \"{self.pattern.value}\"" + "{} \\;"
-        elif self.set:
-            print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTextFileContent54: Set Detected")
-            command = self.set.generate_check(data)
+        # I am going to vent here. The OVAL spec SUCKS! Confusing, inconsistent, so many variants in the schema it makes your head spin... why?!     
+        if self.set:
+            print("TextFileContent54: Set Detected")
+            command = self.set.evaluate_set(data)
         else:
-            print(f"ERROR: Unimplemented Object State! No Instance, No Set!")
-            sys.exit(-1)
-        print(command + filter)
-        return command + filter
+            # Since all of these are mutually exclusive, we're going to need to individually parse them into command segments, then combine
+            # Them depending on which ones are present and which ones aren't
+            file_selector = ""
+            file_pattern = ""
+            text_selector = ""
+            text_pattern = ""
+            if self.pattern:
+                # This is another field that can have external variables which we will need to resolve
+                if self.pattern.var_ref:
+                    text_pattern = data["variables"][self.pattern.var_ref].evaluate_variable(data)
+                else:
+                    text_pattern = self.pattern.value
+                # TODO: Test if this works with full matches and not just subgroups. So much oneline weirdness with perl..
+                # Right now, I know this format works to print out just the matching group and nothing else, which is what we want
+                # cat test.conf | perl -0777 -ple 'print if s/^[\s]*\[pam](?:[^\n\[]*\n+)+?[\s]*offline_credentials_expiration[\s]*=[\s]*(\d+)\s*(?:#.*)?$//'
+                # But I do not know if this would work for multiple matching groups (presumably not), or a single match
+                text_selector = f"perl -ple 'print $1 if /{text_pattern}/'"
+            else:
+                print("TextFileContent54 ERROR: No Pattern in Object!")
+                sys.exit(-1)
+            # TODO: The fact that most if not all of these attributes support external variable definitions is headache-inducing
+            # Currently, we are duplicating a lot of code to ensure that all of these are processed, which is both horrible to
+            # Look at and horrible to read/maintain/make changes to. Ideally, this should be genericized somehow, maybe with a 
+            # evaluate_variable() function in the superclass or something. Because this will need to happen for every single attribute
+
+            # We need to, for each object type:
+            # Determine which attributes need to be evaluated to produce the data, and which are decorators
+            # Evaluate these attributes, produce bash variables with hardcoded values for them, or produce bash code which will produce their values upon runtime
+            # Assemble these attributes (or bash code equivalencies) into more bash code which will generate and filter the dataset this object represents
+            # Return the code to do this to the test class
+
+            # Can we do something like: iterate over attributes, evaluate, produce code
+            # Then produce the final output code based off this?
+
+            if self.filepath:
+                if self.filepath.operation is OperationEnumeration.PATTERN_MATCH:
+                    # Now we need to check if the pattern is locally defined, or externally defined in a variable
+                    if self.filepath.var_ref:
+                        # Now we need to grab the variable's value(s) from the reference
+                        # Let's have generate check return a list of the variable results
+                        evaluated = data["variables"][self.filepath.var_ref].evaluate_variable(data)
+                        # Since this can have multiple values, we could use a (X|Y|Z) format?
+                        file_pattern = "|".join(value for value in evaluated)
+                        # TODO: we need to use the value in var_check (e.g all) to make sure that the filepath matches are contained
+                        # In the variable values set. So far, in TextFileContent Filepath matching with vars, it appears to only be "at least one"
+                    else:
+                        # If there's no var_ref, we can safely just assume it's in the value for this block
+                        file_pattern = self.filepath.value
+                    file_selector = f"find / -regextype posix-extended -regex ${prettyname}FILEPATTERN -exec ${prettyname}TEXTSELECTOR" + "{} \\; 2> /dev/null"
+                elif self.filepath.operation is None or self.filepath.operation is OperationEnumeration.EQUALS:
+                    # Was reading the "useless use of cat" recently :) 
+                    file_pattern = self.filepath.value
+                    file_selector = f"< ${prettyname}FILEPATTERN ${prettyname}TEXTSELECTOR"
+            elif self.filename and self.path:
+                filepath_value = ""
+                filename_value = ""
+                if self.path.var_ref:
+                    # TODO: Looks like var_check means that we may need to grab a subset of items for this! So for at least one, get all?
+                    # And then maybe for like one, get only one. Since these variables might be runtime evaluated, we probably need to 
+                    # Do the filtering of the variable set in the bash script, and not preprocessing it. Worth evaluating later
+                    #print("path var ref")
+                    filepath_value = data["variables"][self.path.var_ref].evaluate_variable(data)
+                elif self.path.value:
+                    filepath_value = self.path.value
+                else:
+                    print("TextFileContent54: ERROR, no path value but block defined")
+                if self.filename.var_ref:
+                    #print("filename var ref")
+                    filename_value = data["variables"][self.filename.var_ref].evaluate_variable(data)
+                elif self.filename.value:
+                    filename_value = self.filename.value
+                else:
+                    print("TextFileContent54: ERROR, no filename value but block defined")
+                print(filepath_value)
+                print(filename_value)
+                file_pattern = filepath_value + filename_value
+                file_selector = f"find / -regextype posix-extended -regex ${prettyname}FILEPATTERN -exec ${prettyname}TEXTSELECTOR" + "{} \\; 2> /dev/null"
+            if self.instance:
+                print("TextFileContent54: Instance Detected")
+                filter = " | "
+                if self.instance.operation is OperationEnumeration.GREATER_THAN_OR_EQUAL:
+                    if self.instance.value > 0:
+                        filter += f"tail -n +{self.instance.value}"
+                    else:
+                        filter += f"tail -n {abs(self.instance.value)}"
+                elif self.instance.operation is OperationEnumeration.EQUALS:
+                    if self.instance.value > 0:
+                        filter += f"sed -n {self.instance.value}p"
+                    else:
+                        filter += f"tail {self.instance.value} | head -1"
+                else:
+                    # Throw, since unimplemented
+                    print(f"ERROR: Unimplemented Instance Operation {self.instance.operation}!")
+                    sys.exit(-1)   
+            command += f"""
+            {prettyname}FILEPATTERN={file_pattern}
+            {prettyname}TEXTSELECTOR={text_selector}
+            {prettyname}FILESELECTOR=$({file_selector})
+            {prettyname}DATASET=$(${prettyname}FILESELECTOR{filter})
+            """
+        return command
