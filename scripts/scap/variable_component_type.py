@@ -14,6 +14,10 @@ class VariableComponentType:
     parent variable that uses this component to avoid a race condition.
     """
 
+    def evaluate_component(self,data):
+        "Variable Component Evaluation"
+        return data["variables"][self.var_ref].evaluate_variable(data)
+
     var_ref: Optional[str] = field(
         default=None,
         metadata={

@@ -9,9 +9,13 @@ from scap.variable_component_type import VariableComponentType
 
 __NAMESPACE__ = "http://oval.mitre.org/XMLSchema/oval-definitions-5"
 
+@dataclass
+class FunctionType:
+    def evaluate_function(self,data):
+        print("Base evaluation should not occur!")
 
 @dataclass
-class ArithmeticFunctionType:
+class ArithmeticFunctionType(FunctionType):
     """The arithmetic function takes two or more integer or float components and
     performs a basic mathematical function on them.
 

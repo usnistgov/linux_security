@@ -15,6 +15,10 @@ class LiteralComponentType:
     The default datatype is 'string'.
     """
 
+    def evaluate_component(self,data):
+        print("Literal Component Evaluation")
+        return f"LITERALTYPE={self.value}"
+
     value: Optional[object] = field(default=None)
     datatype: SimpleDatatypeEnumeration = field(
         default=SimpleDatatypeEnumeration.STRING,

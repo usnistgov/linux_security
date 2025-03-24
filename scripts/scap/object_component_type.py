@@ -37,6 +37,10 @@ class ObjectComponentType:
     ObjectComponentType.
     """
 
+    def evaluate_component(self, data):
+        print("Object Component Evaluation")
+        return data["objects"][self.object_ref].evaluate_object(data)
+
     object_ref: Optional[str] = field(
         default=None,
         metadata={
