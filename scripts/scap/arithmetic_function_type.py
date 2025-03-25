@@ -36,6 +36,9 @@ class ArithmeticFunctionType(FunctionType):
     def evaluate_function(self, data):
         print("Evaluating arithmetic...")
         # First, enumerate recursively..
+        if self.object_component:
+            # Toy example reference, needs iteration
+            data["objects"][self.object_component[0].object_ref].evaluate_object(data)
 
     object_component: list[ObjectComponentType] = field(
         default_factory=list,
