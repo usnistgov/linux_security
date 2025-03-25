@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
 from typing import Optional
 
 from scap.arithmetic_function_type import (
@@ -43,7 +43,8 @@ class LocalVariable1(VariableType1):
     """
 
     def evaluate_variable(self,data):
-        print(self)
+        # Evaluate, evaluate child, etc, how can we get the direct child?
+        print(f"Evaluating: {self}")
         # TODO: This should be applying functions to it!! Which is why we're redoing the function type hierarchy :)
         if self.object_component:
             return data["objects"][self.object_component.object_ref].evaluate_object(data)
@@ -55,6 +56,7 @@ class LocalVariable1(VariableType1):
                 return ",".join(component.value for component in self.literal_component)
             else:
                 return self.literal_component.value
+        # Do all the fun with functions
 
     class Meta:
         name = "local_variable"

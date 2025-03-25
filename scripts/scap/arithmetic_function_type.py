@@ -11,6 +11,7 @@ __NAMESPACE__ = "http://oval.mitre.org/XMLSchema/oval-definitions-5"
 
 @dataclass
 class FunctionType:
+
     def evaluate_function(self,data):
         print("Base evaluation should not occur!")
 
@@ -31,6 +32,10 @@ class ArithmeticFunctionType(FunctionType):
     six values: 1+3, 1+4, 1+5, 2+3, 2+4, and 2+5. Note that if both an
     integer and float components are used then the result is a float.
     """
+
+    def evaluate_function(self, data):
+        print("Evaluating arithmetic...")
+        # First, enumerate recursively..
 
     object_component: list[ObjectComponentType] = field(
         default_factory=list,
@@ -162,7 +167,7 @@ class ArithmeticFunctionType(FunctionType):
 
 
 @dataclass
-class BeginFunctionType:
+class BeginFunctionType(FunctionType):
     """The begin function takes a single string component and defines a character
     (or string) that the component string should start with.
 
@@ -289,7 +294,7 @@ class BeginFunctionType:
 
 
 @dataclass
-class ConcatFunctionType:
+class ConcatFunctionType(FunctionType):
     """The concat function takes two or more components and concatenates them
     together to form a single string.
 
@@ -429,7 +434,7 @@ class ConcatFunctionType:
 
 
 @dataclass
-class EndFunctionType:
+class EndFunctionType(FunctionType):
     """The end function takes a single string component and defines a character (or
     string) that the component string should end with.
 
@@ -557,7 +562,7 @@ class EndFunctionType:
 
 
 @dataclass
-class EscapeRegexFunctionType:
+class EscapeRegexFunctionType(FunctionType):
     """The escape_regex function takes a single string component and escapes all of
     the regular expression characters.
 
@@ -692,7 +697,7 @@ class EscapeRegexFunctionType:
 
 
 @dataclass
-class SplitFunctionType:
+class SplitFunctionType(FunctionType):
     """The split function takes a single string component and turns it into a
     collection of values based on a delimiter string.
 
@@ -830,7 +835,7 @@ class SplitFunctionType:
 
 
 @dataclass
-class SubstringFunctionType:
+class SubstringFunctionType(FunctionType):
     """The substring function takes a single string component and produces a single
     value that contains a portion of the original string.
 
@@ -974,7 +979,7 @@ class SubstringFunctionType:
 
 
 @dataclass
-class TimeDifferenceFunctionType:
+class TimeDifferenceFunctionType(FunctionType):
     """The time_difference function calculates the difference in seconds between
     date-time values.
 
@@ -1134,7 +1139,7 @@ class TimeDifferenceFunctionType:
 
 
 @dataclass
-class RegexCaptureFunctionType:
+class RegexCaptureFunctionType(FunctionType):
     """The regex_capture function captures a single substring from a single string
     component.
 
@@ -1283,7 +1288,7 @@ class RegexCaptureFunctionType:
 
 
 @dataclass
-class UniqueFunctionType:
+class UniqueFunctionType(FunctionType):
     """The unique function takes one or more components and removes any duplicate
     value from the set of components.
 
@@ -1426,7 +1431,7 @@ class UniqueFunctionType:
 
 
 @dataclass
-class CountFunctionType:
+class CountFunctionType(FunctionType):
     """The count function takes one or more components and returns the count of all
     of the values represented by the components.
 
