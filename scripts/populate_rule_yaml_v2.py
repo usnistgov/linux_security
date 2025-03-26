@@ -14,63 +14,7 @@
 # Create spaces for OS
 # Fill in OS-specific fixes if they exist for shell 
 
-#TODO: Automatically incorporate all checks we can via the datastream XML files provided by OpenSCAP
-# There is a huge database of check XML files provided via OVAL format which the DS XML files reference
-# Unfortunately for me, they all use their own custom XML format, and there is roughly 500MB of them for all of the OS's we care about
-# Some food for thought ideas:
-# There is a reasonable chance that a lot of these checks are structurally similar, e.g software checks, file regex checks
-# If we could figure out how to make templates for these, or regenerate the XML, it would make life a lot easier.
-# Ideally, we do not want to use all the XML, since it's so big
-# A reasonable solution may be to parse the oval_unlinked for each OS, as this is only 5MB for Ubuntu 20.04
-# Additionally, this has all the info we need and appears to be modularized. 
-# In theory, we can positively say that if an XCCDF is defined for that OS's CIS/STIG, it *should* have a check for it.
-# It looks like the ssg-ubuntu2004-xccdf checks both the ocil and the oval, so should we do the same? Maybe start with oval
-
-# Relative psuedocode steps
-# Given XCCDF ID, e.g xccdf_org.ssgproject.content_rule_account_disable_post_pw_expiration
-# Locate the Rule XML block in ssg-OStitleOSVersion-xccdf.xml (should be precached as a dictionary), with the tag:
-# <xccdf-1.2:Rule id="xccdf_org.ssgproject.content_rule_account_disable_post_pw_expiration">
-# Locate the child block for OVAL:
-# <xccdf-1.2:check system="http://oval.mitre.org/XMLSchema/oval-definitions-5"> 
-# Locate the sub-block for the specific check ref:
-# <xccdf-1.2:check-content-ref href="ssg-ubuntu2004-oval.xml" name="oval:ssg-account_disable_post_pw_expiration:def:1" />
-# Index a data structure (probably a dict) for this file's contents, find the block looking like the following:
-# <oval-def:definition id="oval:ssg-account_disable_post_pw_expiration:def:1" version="2" class="compliance">
-# Look for the child block matching <oval-def:criteria, like below:
-# <oval-def:criteria comment="the value INACTIVE parameter should be set appropriately in /etc/default/useradd" operator="AND">
-# Find the sub-block with the ID for the test, like below:
-# <oval-def:criterion test_ref="oval:ssg-test_etc_default_useradd_inactive:tst:1" />
-# TODO: Since there can be multiple criterion, we will need to trace all of these and generate for all of them
-# TODO: These are sequential, if we could calculate how many criterion each rule has, we can avoid lookups and just iterate linearly
-# Find the block matching this ID which is a textfilecontent54_test type (or maybe another type?):
-# <ind:textfilecontent54_test id="oval:ssg-test_etc_default_useradd_inactive:tst:1" version="1" check="all" comment="the value INACTIVE parameter should be set appropriately in /etc/default/useradd" state_operator="AND">
-# Find the sub-block in this which has the tag <ind:obj, and grab the object_ref from it:
-# <ind:object object_ref="oval:ssg-object_etc_default_useradd_inactive:obj:1" />
-# Finding the block with this as the ID gets us a textfilecontent54_object, which contains everything we need to autogenerate the check:
-# <ind:textfilecontent54_object id="oval:ssg-object_etc_default_useradd_inactive:obj:1" version="1">
-# <ind:filepath>/etc/default/useradd</ind:filepath>
-# <ind:pattern operation="pattern match">^\s*INACTIVE\s*=\s*(\d+)\s*$</ind:pattern>
-# <ind:instance datatype="int">1</ind:instance>
-# </ind:textfilecontent54_object>
-# In this case, we make some processing code for the various operations, with modularized shell code for each
-# Then we simply insert the values, and profit :)
-# Obviously we will need to check and test, but as long as the implementation of this is good, in theory the SSG guys have already tested all these controls, just with their own code
-# TODO: XML objects use references, we will need to do a lot of jumping around
-# TODO: Defined operations appear to be the following:
-# - File Operation (ind:filepath/ind:filename), appears to be accessing of files and directories
-#    - Glob/Wildcard match files in a directory
-# - Pattern Operation (ind:pattern), appears to be pattern based filtering on a target
-#    - Pattern Match to Regex string (grep -e?)
-# - Instance Operations (ind:instance), appears to be operations performed on the test pipeline
-#    - Greater than or Equal to integer (-eq?)
-# - Unix Behavior Operations (unix:), appears to be a category for general OS commands
-#    - Recurse Directories (find -exec?), labeled unix:behaviors
-#    - Operate on sysctl objects (sysctl?), labeled unix:sysctl_object
-#       - Appears to have the members sysctl
-# - Linux Behavior Operations (linux:), appears to be a category for Linux-specific concepts (e.g systemd units)
-#    - Systemd Manipulation (systemctl?), labeled linux:systemdunitdependency_object
-#    - Package Management Info (dpkg), labeled linux:dpkginfo
-
+# TODO: Implement Bob's new V2 spec of yaml files
 # TODO: Double check and improve tagging, some of it seems not fully correct
 # TODO: Implement ODV in the yaml output
 
@@ -91,16 +35,7 @@ import lxml
 from xsdata.formats.dataclass.parsers.handlers import LxmlEventHandler
 from xsdata.formats.dataclass.parsers import XmlParser
 from xsdata.formats.dataclass.parsers.config import ParserConfig
-#from oval.definitions.gov.nist.checklists.xccdf import *
-#from oval.definitions.org.mitre.oval.xmlschema import *
-#from oval.definitions.org.w3.pkg_2000.pkg_09.xmldsig import *
-#from oval.definitions.org.mitre.oval import *
-#from oval.definitions.gov.nist.scap.schema.scap.source import *
-#from oval.definitions.gov.nist.checklists.xccdf import *
 from scap import *
-#from scap.csrc.nist.gov.schema.scap.pkg_1.pkg_3 import *
-#from scap.scap.nist.gov.schema.xccdf.pkg_1.pkg_2.xccdf_1_2 import *
-#from scap.raw.githubusercontent.com.ovalproject.language.pkg_5.pkg_11.pkg_2.schemas import *
 from lxml import etree
 # TODO: This entire dumper section can definitely be cleaned up
 
@@ -187,253 +122,28 @@ yaml.representer.Representer.add_representer(multiline, str_presenter)
 
 yaml.representer.Representer.add_representer(str, str_presenter)
 
-def evaluate_behavior(behavior, ssg_os_controls, layer=0):
-    print(f"{"-- " * layer}Behavior")        
 
-def evaluate_variable(var, ssg_os_controls, layer=0):
-    print(f"{"-- " * layer}Var")
-
-def evaluate_state(state, ssg_os_controls, layer=0):
-    statereftype = state.prefix + ":" + state.name
-    print(f"{"-- " * layer}State {state["state_ref"]} {statereftype}")
-    # Now we need to find the actual state
-    stateobj = ssg_os_controls.find(attrs={"id":state["state_ref"]})
-    stateobjtype = stateobj.prefix + ":" + stateobj.name
-    print(f"{"-- " * layer}State Obj {stateobj["id"]} {stateobjtype}")
-
-def evaluate_object(object, ssg_os_controls, layer=0):
-    objtype = object.prefix + ":" + object.name
-    print(f"{"-- " * layer}Object {object["object_ref"]} {objtype}")
-    # Now we need to find the actual object object (lol)
-    objobj = ssg_os_controls.find(attrs={"id":object["object_ref"]})
-    objobjtype = objobj.prefix + ":" + objobj.name
-    print(f"{"-- " * layer}Object Obj {objobj["id"]} {objobjtype}")
-
-    # TODO: Would be great to make this into a functional language evaluator (Bison/ANTLR) or an XML transformer (xsl)
-    # So much duplication of code...
-    
-    # We will not support the old textfilecontent version, for now
-    if objobj.name == "textfilecontent54_object":
-        # We have a textfilecontent object, which is defined in independent-definitions-schema.xsd
-        # This is what generates the "set" of data we expect to get from this file
-        # It appears to do greedy perl matching, we should use -P for sure
-        pattern = objobj.find("pattern")
-        # This is how much of that set to return, e.g if equal to 1, return first, if greater than or equal to 1, return all
-        instance = objobj.find("instance")
-        # We are guaranteed one of two choices, either a full filepath, or a path and a filename
-        print(pattern)
-        print(instance)
-        print(objobj)
-        if objobj.find("filepath"):
-            filepath = objobj.find("filepath")
-            # Since we only need to search a filepath, we can just use grep
-            aggregator_command=f"grep -P '{pattern.get_text()}' {filepath.get_text()})"
-        else:
-            # We should have a path + filename
-            filename = objobj.find("filename")
-            path = objobj.find("path")
-            # Since we need to search a path for filenames, we should probably use find
-            # We also have to support recursion and recurse directions, along with max depth, if not pattern
-            if path.operation and path.operation == "pattern match":
-                # We have options for two layers of pattern matching here
-                if filename.operation and filename.operation == "pattern match":
-                    aggregator_command=f"find / -regex '{path.get_text() + "/" + filename.get_text()}' -exec grep -P '{pattern.get_text()}'" + r" \{} +"
-                else:
-                    # Need to test if this works the way I think it does
-                    aggregator_command=f"find / -regex '{path.get_text() + "/" + filename.get_text()}' -exec grep -P '{pattern.get_text()}'" + r" \{} +"
-            elif not path.operation or (path.operation and path.operation == "equals"):
-                # Now for recurse + depth + maybe file pattern matching
-                # Technically the spec says we have to support upwards recursion (why?)
-                # Since find does not support this, and as far as I can tell none of the XML files feature it, we will not support this.
-                behavior = objobj.find("behaviors")
-                extraargs = ""
-                if behavior:
-                    behaviors = behavior.attrs
-                    if "max_depth" in behaviors.keys():
-                        extraargs += f" -maxdepth {behaviors["max_depth"]} "
-                    if "recurse" in behaviors.keys():
-                        recursetype = behaviors["recurse"]
-                        if recursetype == "symlinks and directories":
-                            # Find follows dirs by default, so just add symlinks
-                            # We don't need to do anything if the type is directories, since that's default behavior too
-                            extraargs += " -L "
-                        elif recursetype == "symlinks":
-                            # This is an interesting variant from the OVAL standard and is difficult to implement. 
-                            # Since it is not natively supported by find, I am choosing to throw an error if this condition is ever encountered
-                            # Rather than generate a broken check.
-                            print("FATAL ERROR: XML Parsing encountered a recursion type of symlinks only, which is not currently implemented.")
-                            os.exit(-1)
-                    if "recurse_direction" in behaviors.keys():
-                        # By default this is down, but we aren't implementing upwards recursion, so we will inform the user and throw an error
-                        # For some reason this also has a "none" value, we will also not be implementing that.
-                        if behaviors["recurse_direction"] in ["upward","none"]:
-                            print("FATAL ERROR: XML Parsing encountered a recursion direction of down or none, which are not currently implemented.")
-                            os.exit(-1)
-                    if "recurse_file_system" in behaviors.keys():
-                        # The spec here is not clear, but it seems like "all" represents all file systems it encounters, e.g spare media mounted to /run, etc
-                        # "local" and "defined" seem mostly synonymous, in that "local" means to stick to the current file system, e.g if your path is /, do not check other fs
-                        # "defined" appears to also mean to stick to the file system defined, e.g if your path is /, do not check /run/media or other fs
-                        # In find, recursing other file systems is the default, so we only need to do something for restrictions on this
-                        if behaviors["recurse_file_system"] in ["local","defined"]:
-                            extraargs += " -mount "
-                aggregator_command=f"find {extraargs} / -regex '{path.get_text() + "/" + filename.get_text()}' -exec grep -P '{pattern.get_text()}'" + r" \{} +"
-            else:
-                print("FATAL ERROR: XML Parsing encountered an unexpected operation type.")
-                os.exit(-1)
-        processor = None
-        if instance and "operation" in instance.attrs.keys():
-            # Now we need to filter the set through the instance, which can basically subset n...m from our generated set
-            # For instance, if instance is 1 and the operation is equals, we go from 1..1 and get the first match
-            # Now if we have greater than or equal and 1, we go from 1...m and get every match in the set
-            operation = instance["operation"]
-            instancevalue = instance.get_text()
-            if operation == "equals":
-                # This prints exactly that line
-                processor = f"sed -n {instancevalue}p"
-            elif operation == "greater than or equal":
-                # This prints all remaining lines, starting at the value
-                processor = f"tail -n {instancevalue}"
-            else:
-                # This is unimplemented, so throw an error
-                print("FATAL ERROR: XML Parsing encountered an instance operation that is not == or >=, which means it is unimplemented.")
-                sys.exit(-1)
-        # Since I really would not like to make code with variables named 1234ABD=$()
-        # Let's start with lazy naming, and just remove symbols from the ID and cap it at 16 chars
-        variable_name=re.sub(r'[^a-zA-Z]', '', objobj["id"]).replace("ovalssgobject","")
-        # The object should produce a bash command that stores to a variable, which we can then compare to the state in our test
-        final_command=f"{variable_name}=$({aggregator_command} {str("| " + processor) if processor else ""})"
-        print(f"Created a bash command variable: {final_command}")
-                
-
-
-
-def evaluate_test(test, ssg_os_controls, layer=0):
-    print(f"{"-- " * layer}Test {test["id"]} {test.prefix + ":" + test.name}")
-    object=test.find(object_ref=True)
-    if object:
-        object = evaluate_object(object,ssg_os_controls,layer+1)
-    states=test.find_all(state_ref=True)
-    for state in states:
-        states = evaluate_state(state,ssg_os_controls,layer+1)
-    # Now, if we were doing a proper implementation, we'd evaluate here
-    # However, instead we want to generate some bash code that matches these states + object requirements 
-    # Unfortunately, we are going to need to do 26 different if statements here
-    # I guess we could make 26 classes instead? Maybe at some point
-
-def evaluate_criterion(criterion, ssg_os_controls, layer=0):
-    # This should create a BASH inline variable, called something creative if at all possible
-    print(f"{"-- " * layer}Criterion {criterion["test_ref"]}")
-    test=ssg_os_controls.find(attrs={"id":criterion["test_ref"]})
-    if test:
-        evaluate_test(test,ssg_os_controls,layer+1)
-        print(f"{"-- " * (layer + 1)}Test {test.name} {test["id"]}")
-        #object=ssg_os_controls.find(attrs={"id":test.findChildren(name=True,string=False)[0]["object_ref"]})
-        #if object:
-        #    print(f"{"-- " * (layer + 2)}Object {object.name} {object["id"]}")
-        #    # Here's where we do the granular handling of operations
-        #    children = object.findChildren(name=True,string=False)
-        #    if object.name == "textfilecontent54_object":
-        #        # There can be all sorts of stuff such as behaviors,filepath,pattern,instance in here
-        #        # This is basically like writing a compiler...
-        #        for child in children:
-        #            print(f"{"-- " * (layer + 3)}Attribute {child.name} {child.get_text()}")
-        #    else:
-        #        for child in children:
-        #            print(f"{"-- " * (layer + 3)}Attribute x{child.name} {child.get_text()}")
-
-def evaluate_criteria(criteria, ssg_os_controls, layer=0):
-    print(f"{"-- " * layer}Criteria operator is {criteria["operator"]}")
-    # This is where we will want to assemble the equivalency statements 
-    segments = []
-    for child in criteria.children:
-        #print(f"{child} name {child.name}")
-        if child.name == "extend_definition":
-            print(f"{"-- " * layer}Recursing extend_def..")
-            segments.append(evaluate_definition(ssg_os_controls.find("oval-def:definition",attrs={"id":child["definition_ref"]}), ssg_os_controls, layer=layer+1))
-            print(f"{"-- " * layer}Finished recursion layer...")
-        elif child.name == "criterion":
-            print(f"{"-- " * layer}Found criterion!")
-            segments.append(evaluate_criterion(child, ssg_os_controls, layer=layer+1))
-            print(f"{"-- " * layer}Finished evaluating criterion..")
-        elif child.name == "criteria":
-            print(f"{"-- " * layer}Recursing criteria..")
-            segments.append(evaluate_criteria(child, ssg_os_controls, layer=layer+1))
-            print(f"{"-- " * layer}Finished criteria recursion...")
-    
-def evaluate_definition(definition, ssg_os_controls, layer=0):
-    if definition.criteria:
-        print(f"{"-- " * layer}Found criteria in definition {definition["id"]}! Evaluating...")
-        return evaluate_criteria(definition.find("oval-def:criteria"), ssg_os_controls, layer=layer+1)
-
-def generate_state(state, vars, depth=0):
-    print(f"{"--" * depth}State {state.id}")
-
-def generate_object(object, vars, depth=0):
-    print(f"{"--" * depth}Obj {object.generate_check()}")
-    # This is where we're going to need to call class functions, and where it probably makes sense to add a "parse" function to the root
-
-def generate_test(test_ref, tests, states, objects, vars, depth=0):
-    test = tests[test_ref]
-    print(f"{"--" * depth}Test {test.id}")
-    # Get object which should exist
-    objectref = test.object_value.object_ref
-    generate_object(objects[objectref], vars, depth+1)
-    # Get states if they exist
-    staterefs = test.state
-    for stateref in staterefs:
-        generate_state(states[stateref.state_ref], vars, depth+1)
-
-def generate_criteria(criteria, tests, states, objects, vars, depth=0):
-    print(f"{"--" * depth}Criteria: {criteria.comment}")
-    # Check the relevant operator
-    operator = criteria.operator
-    print(f"{"--" * depth}Operator {operator}")
-    # Get the operands (criterion)
-    criterions = criteria.criterion
-    for criterion in criterions:
-        generate_test(criterion.test_ref, tests, states, objects, vars, depth+1)
-    #print(f"Criterions: {criterions}")
-    # Get the operands (criteria)
-    criterias = criteria.criteria
-    for crit in criterias:
-        generate_criteria(crit, tests, states, objects, vars, depth+1)
-    
-    
-# TODO: This will be in DESPERATE need of optimization
-# We went from roughly 20-30 rules a second to 1 at best! But that makes sense, we have to search a giant XML file...
-# We may have to consider preloading and creating an optimized file?
+# NOTE: Work in progress code below.
+# So far, we are able to successfully parse down to the variable level
+# TODO: Correct cyclical function parsing.
+# TODO: The XSDATA classes have no concept of child order, which is bad.
+# This means we may need to redo this system entirely and not use the XSDATA parsing format
 def generate_check(check, defs, tests, states, objects, vars):
     ovalref = check.find("xccdf-1.2:check-content-ref")["name"]
     # Grab Dictionary Object from Ref ID
     definition = defs[ovalref]
-
-    # print(f"\n\n {definition} \n\n")
     # Evaluate criteria and criterion 
     # We have a tree of CriteriaType nodes
-    criteriaroot = definition.criteria
-    print(f"\n\n Criteria Root: {criteriaroot}")
-    # Then we need to DFS down the criteria chain, and grab all criterion on each level. 
-    # Recursion? 
-    criteriachain = definition.generate_check(data={"tests":tests,"definitions":defs,"states":states,"objects":objects,"variables":vars})
-    #print(f"Got ovaldef: {ovaldef}")
-    #evaluate_definition(ovaldef, ssg_os_controls)
-    # Criteria appears to be structured like so:
-    # There is a criteria block, with an operator, generally AND or OR
-    # Inside of this, there can be multiple more criteria blocks, which are evaluated as well
-    # Inside of each criteria block, there are one of three things: a subcriteria, a criterion, or an extend_definition, which links to more criteria
-    # This is reminding me of BPF/functional programming...
-    # Our evaluation order should probably be: 
-    # Expand subcriteria first
-    # Then criterion
-    # Then extended_definitions?
-    #ovaltref = ovaldef.find("oval-def:criterion")["test_ref"]
-    #print(f"Got ovaltref: {ovaltref}")
-    #testref = ssg_os_controls.find(attrs={"id":ovaltref})
-    #print(f"Got testref: {testref}")
-    #objref = testref.find(text=False)["object_ref"]
-    #print(f"Got objref: {objref}")
-    #endref = ssg_os_controls.find(attrs={"id":objref})
-    #print(f"Check found! {endref}")
+    #criteriaroot = definition.criteria
+    #print(f"\n\n Criteria Root: {criteriaroot}")
+    # Pass in a dictionary of all the relevant data in the datastream which will be
+    # Needed to properly assemble the various references across the stream, since
+    # They are not directly parsed in the current implementation
+    
+    # TODO: Finish this.
+    # Commenting this out for now, as it breaks the script.
+    #check = definition.generate_check(data={"tests":tests,"definitions":defs,"states":states,"objects":objects,"variables":vars})
+    return "echo \"Check unimplemented. Please manually verify\""
 
 def main():
 
@@ -453,7 +163,7 @@ def main():
         print("Loading SSG guide files from this directory: " + str(results.mappings))
         print(f"Using {results.outputdir} as the output directory for newly generated yaml files")
     except IOError as msg:
-        # TODO: This really should be cleaner error handling
+        # TODO: Improve the error handling on this.
         parser.error(str(msg))
 
     # Attempt to load the working XLSX spreadsheet which we've specified the path to in args
@@ -483,6 +193,7 @@ def main():
 
     ssg_rules_dictionary = {}
 
+    # TODO: These are deprecated
     # We need to make dicts for each separate list of tests, states, etc, so that we can quickly parse based off of that
     ssg_defs_dict = {}
     ssg_tests_dict = {}
@@ -529,8 +240,7 @@ def main():
         # We probably need to preprocess and link every single element of this, thanks to all the IDREFs not autolinking...
 
         #XSDATA commands
-        # xsdata generate ..\resources\xml\sources\ --recursive --package oval.definitions -ss single-package --debug\
-        # test
+        # xsdata generate ..\resources\xml\sources\ --recursive --package oval.definitions -ss single-package --debug
         ssg_file_path = os.path.join(resources_path,ssg_control_file)
         try:
             with open(ssg_file_path, 'r', encoding='utf-8') as file:
@@ -634,7 +344,7 @@ def main():
     # Change to rules dir to begin creating test rules
     os.chdir(root_dir)
 
-    # Load NIST 800-53 yaml
+    # Load NIST 800-53 yaml types
     with open(root_dir + "/includes/800-53_baselines.yaml",'r') as file:
         nist_yaml = yaml.safe_load(file)
 
@@ -656,9 +366,6 @@ def main():
                 # (In our schema, both columns contain SSG-type rules, so defaulting to CIS is fine if both exist)
                 control_id = row[2] if row[2] else row[4]
 
-
-                # TODO: Probably should check if it exists or not in our rules dict
-                # One of the big benefits of DataStream over HTML is we can just straight up autofill this
                 # TODO: It would be really nice to create a "generic" XML file that contains all the values that are the same for every datastream
                 # For now, I guess we can grab every variant's value, compare, if any are unique, make it OS_VALUE, otherwise, make global the value
                 if control_id in [None, " "] or control_id not in ssg_rules_dictionary.keys():
@@ -706,7 +413,6 @@ def main():
                         # Now for the fun part! Grabbing the various CCIs, STIGs, and 800-53's from identifiers
                         identifiers = rule.find_all("xccdf-1.2:reference")
                         for identifier in identifiers:
-                            #idstr += str(identifier.string) + " "
                             if identifier["href"] == "https://public.cyber.mil/stigs/cci/":
                                 #This is a CCI, add this to the global refs
                                 unique_append(yaml_references["cci"], str(identifier.get_text()))
@@ -737,9 +443,9 @@ def main():
                         # We'll make the decision to go primarily with the oval checks
                         check = rule.find("xccdf-1.2:check",attrs={"system":"http://oval.mitre.org/XMLSchema/oval-definitions-5"})
                         if check:
-                            # This is gonna be slow... definitely future optimization candidate
-                            # There seems to be recursive definitions... Guess we have to write a function for this...
-                            generate_check(check,ssg_defs_dict[os_type],ssg_tests_dict[os_type],ssg_states_dict[os_type],ssg_objects_dict[os_type],ssg_vars_dict[os_type])
+                            # TODO: We need to completely implement an OVAL spec parser here. 
+                            # In progress, but for now, replace with dummy
+                            check = generate_check(check,ssg_defs_dict[os_type],ssg_tests_dict[os_type],ssg_states_dict[os_type],ssg_objects_dict[os_type],ssg_vars_dict[os_type])
                         #print(yaml_dict)
                 try:
                     with open(Path(os.getcwd() + "/" + results.outputdir + "/" + row[1] + "/" + row[0]), 'w') as file:
