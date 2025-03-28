@@ -18,6 +18,9 @@
 # TODO: Double check and improve tagging, some of it seems not fully correct
 # TODO: Implement ODV in the yaml output
 
+# Currently, running it like this:
+# python populate_rule_yaml_v2.py --spreadsheet="Sheet.xlsx" --mappings="/resources" --overwrite=True
+
 #!/usr/bin/env python3
 import openpyxl
 import traceback
@@ -253,6 +256,7 @@ def main():
                 parser = XmlParser(handler=LxmlEventHandler)
                 tree = lxml.etree.parse(ssg_file_path)
                 root = tree.getroot()
+                print(parser.parse(root))
                 # There has got to be a better way to do this... having to load the rule, then go find the def, then go find the checks, then go find the variables.. yeesh!d
                 # This data structure is so bad... it autocreated a specific list for each type, rather than a generic!
                 # Why even use the source schemas at all... I may have to go back and redo this 

@@ -5,3 +5,4 @@ openpyxl
 beautifulsoup4
 lxml
 chardet
+sklearn
