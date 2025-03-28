@@ -85,6 +85,7 @@ def main():
     
     # Render the graph
     output_name = f"{datastreamfile}_graph"
+    dot.unflatten(stagger=3)  
     dot.render(output_name, format='svg', cleanup=True)
     print(f"XML tree visualization saved as '{output_name}.svg'")
 
