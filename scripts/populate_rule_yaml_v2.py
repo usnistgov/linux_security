@@ -17,6 +17,7 @@
 # TODO: Implement Bob's new V2 spec of yaml files
 # TODO: Double check and improve tagging, some of it seems not fully correct
 # TODO: Implement ODV in the yaml output
+# TODO: Ignore existing extra checks/fixes, manually do that?
 
 # Currently, running it like this:
 # python populate_rule_yaml_v2.py --spreadsheet="Sheet.xlsx" --mappings="/resources" --overwrite=True
@@ -59,7 +60,7 @@ def regex_and_return_first_match(compiledre,targetstring):
         return None
     
 # Check if the provided value already exists in the list
-# If not, append the value to the list
+# If not, append the list to the list
 # Otherwise, do nothing
 def unique_append_lists(list1,list2):
     for value in list2:
@@ -126,8 +127,7 @@ yaml.representer.Representer.add_representer(multiline, str_presenter)
 yaml.representer.Representer.add_representer(str, str_presenter)
 
 
-# NOTE: Work in progress code below.
-# So far, we are able to successfully parse down to the variable level
+
 # TODO: Correct cyclical function parsing.
 # TODO: The XSDATA classes have no concept of child order, which is bad.
 # This means we may need to redo this system entirely and not use the XSDATA parsing format
