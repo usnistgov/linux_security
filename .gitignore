@@ -6,3 +6,4 @@ bin
 mscp_gems
 **/__pycache__/
 **/.ruff_cache/
+.project
