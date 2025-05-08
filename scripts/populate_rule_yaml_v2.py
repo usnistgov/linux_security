@@ -41,6 +41,9 @@ from xsdata.formats.dataclass.parsers import XmlParser
 from xsdata.formats.dataclass.parsers.config import ParserConfig
 from scap import *
 from lxml import etree
+
+from collections import defaultdict
+
 # TODO: This entire dumper section can definitely be cleaned up
 
 # Thanks to Reorx Xiao for this code that helps nicely format the yaml dumps!
@@ -78,6 +81,24 @@ def unique_append(list,value):
     # Sorting here is super wasteful since we could totally do it at the end, or inline
     # But for now, it doesn't matter
     sort_nicely(list)
+
+# Append dictionary path
+# Essentially, kind of like appending a registry key
+# Dict is your standard Pythonic dict
+# Path is a list of strings of sub-dicts
+# Value is any object, which will be set for last item in path list
+# Insert into the dict, and create relevant sub-dicts if needed to make path list work
+def path_unique_append(dict,path,key,value):
+    current = dict
+    for pathkey in path:
+        if pathkey not in current.keys():
+            current[pathkey] = {}
+        current = current[pathkey]
+    #print(f"Final path: {current}")
+    if key not in current.keys():
+        current[key] = []
+    unique_append(current[key],value)
+    
 
 # Shamelessly borrowing this function from Bob Gendler :)
 # Sort the given list in the way that humans expect.
@@ -132,9 +153,9 @@ yaml.representer.Representer.add_representer(str, str_presenter)
 # TODO: The XSDATA classes have no concept of child order, which is bad.
 # This means we may need to redo this system entirely and not use the XSDATA parsing format
 def generate_check(check, defs, tests, states, objects, vars):
-    ovalref = check.find("xccdf-1.2:check-content-ref")["name"]
+    #ovalref = check.find("xccdf-1.2:check-content-ref")["name"]
     # Grab Dictionary Object from Ref ID
-    definition = defs[ovalref]
+    #definition = defs[ovalref]
     # Evaluate criteria and criterion 
     # We have a tree of CriteriaType nodes
     #criteriaroot = definition.criteria
@@ -256,7 +277,7 @@ def main():
                 parser = XmlParser(handler=LxmlEventHandler)
                 tree = lxml.etree.parse(ssg_file_path)
                 root = tree.getroot()
-                print(parser.parse(root))
+                #print(parser.parse(root))
                 # There has got to be a better way to do this... having to load the rule, then go find the def, then go find the checks, then go find the variables.. yeesh!d
                 # This data structure is so bad... it autocreated a specific list for each type, rather than a generic!
                 # Why even use the source schemas at all... I may have to go back and redo this 
@@ -383,22 +404,9 @@ def main():
                 id = row[0].split(".")[0],
                 title = str(first_rule.title.get_text()),
                 discussion = str(first_rule.rationale.get_text()),
-                check = multiline("$OS_VALUE"),
-                result = {"integer":1},
-                fix = multiline("$OS_VALUE"),
-                references={
-                    "cce":["$OS_VALUE"],
-                    "cci":[],
-                    "800-53r4":[],
-                    "srg":[],
-                    "disa_stig":["$OS_VALUE"],
-                    "cis":{
-                        "benchmark":["$OS_VALUE"]
-                    },
-                },
-                tags = benchtags,
-                severity = str(first_rule["severity"]),
+                references = {},
                 os_specifics = {},
+                tags = benchtags,
                 )
                 start1 = time.time()
                 for rule, os_type in zip(ssg_rules_dictionary[control_id]["rules"],ssg_rules_dictionary[control_id]["os_name"]):
@@ -407,23 +415,33 @@ def main():
                         # Define the os specifics category here, since we don't care if it doesn't have the control :)
                         os_title = regex_and_return_first_match(regex_cache[0],os_type)
                         os_version = regex_and_return_first_match(regex_cache[1],os_type)
+
+                        # Create top-level dict for each OS's title (e.g, ubuntu)
                         if os_title not in yaml_dict["os_specifics"].keys():
-                            yaml_dict["os_specifics"][os_title] = {}
+                            yaml_dict["os_specifics"][os_title] = {
+                            "check":multiline("$OS_VALUE"),
+                            "result":multiline("$OS_VALUE"),
+                            "fix":multiline("$OS_VALUE"),
+                        }
+                            
+                        # Create sub-level dict for each OS's version (2004)
                         if os_version not in yaml_dict["os_specifics"][os_title].keys():
                             yaml_dict["os_specifics"][os_title][os_version] = {}
-                        yaml_dict["os_specifics"][os_title][os_version] = {"references":{"cce":[],"disa_stig":[]},"check":None,"fix":None}
-                        yaml_references = yaml_dict["references"]
-                        yaml_os_specificrefs = yaml_dict["os_specifics"][os_title][os_version]["references"]                        
-                        # Now for the fun part! Grabbing the various CCIs, STIGs, and 800-53's from identifiers
+
+                        yaml_dict["os_specifics"][os_title][os_version] = {"severity":rule["severity"],"benchmarks":None,"check":None,"result":{"integer":0},"fix":None}
+                        #yaml_references = yaml_dict["references"]
+                        #yaml_os_specificrefs = yaml_dict["os_specifics"][os_title][os_version]["references"]
+                                                
+                        # TODO: The way I'm doing pathing is inefficient/duplicated, would be nice to make this cleaner
                         identifiers = rule.find_all("xccdf-1.2:reference")
                         for identifier in identifiers:
                             if identifier["href"] == "https://public.cyber.mil/stigs/cci/":
                                 #This is a CCI, add this to the global refs
-                                unique_append(yaml_references["cci"], str(identifier.get_text()))
+                                path_unique_append(yaml_dict,["references","disa"],"cci", str(identifier.get_text()))
                             if identifier["href"] ==  "http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf":
                                 # This is an 800-53, so check against severity grading + add to global refs
                                 nistmatch = str(identifier.string)
-                                unique_append(yaml_references["800-53r4"], nistmatch)
+                                path_unique_append(yaml_dict,["references","nist"],"800-53r4", nistmatch)
                                 if nistmatch in nist_yaml["low"]:
                                     unique_append(yaml_dict["tags"],"800-53r5_low")
                                 if nistmatch in nist_yaml["moderate"]:
@@ -432,13 +450,15 @@ def main():
                                     unique_append(yaml_dict["tags"],"800-53r5_high")
                             if identifier["href"] ==  "https://public.cyber.mil/stigs/downloads/?_dl_facet_stigs=operating-systems%2Cgeneral-purpose-os":
                                 # This is an SRG, so add to global refs
-                                unique_append(yaml_references["srg"],str(identifier.get_text()))
+                                path_unique_append(yaml_dict,["references","disa"],"srg",str(identifier.get_text()))
                             if identifier["href"] ==  "https://public.cyber.mil/stigs/downloads/?_dl_facet_stigs=operating-systems%2Cunix-linux":
                                 # This is a STIG, so add it to os_specifics
-                                unique_append(yaml_os_specificrefs["disa_stig"],str(identifier.get_text()))
+                                #unique_append(yaml_os_specificrefs["disa_stig"],str(identifier.get_text()))
+                                path_unique_append(yaml_dict,["references","disa","disa_stig"],os_version, str(identifier.get_text()))
                         cce = rule.find("xccdf-1.2:ident")
                         if cce:
-                            unique_append(yaml_os_specificrefs["cce"],str(cce.get_text()))
+                            path_unique_append(yaml_dict,["references","nist","cce"],os_version,str(cce.get_text()))
+                            #unique_append(yaml_os_specificrefs["cce"],str(cce.get_text()))
                         fix = rule.find("xccdf-1.2:fix",attrs={"system":"urn:xccdf:fix:script:sh"})
                         if fix:
                             remediation = "[source,bash]\n---\n" + str(fix.get_text()) + "\n---"
