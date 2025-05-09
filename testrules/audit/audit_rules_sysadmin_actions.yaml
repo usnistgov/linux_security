@@ -3,64 +3,60 @@ title: Ensure auditd Collects System Administrator Actions
 discussion: |
   The actions taken by system administrators should be audited to keep a record
   of what was executed on the system, as well as, for accountability purposes.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000126
-    - CCI-000130
-    - CCI-000135
-    - CCI-000169
-    - CCI-000172
-    - CCI-002884
-  800-53r4:
-    - AC-2(7)(b)
-    - AC-6(9)
-    - AU-2(d)
-    - AU-12(c)
-    - CM-6(a)
-  srg:
-    - SRG-OS-000004-GPOS-00004
-    - SRG-OS-000037-GPOS-00015
-    - SRG-OS-000042-GPOS-00020
-    - SRG-OS-000062-GPOS-00031
-    - SRG-OS-000239-GPOS-00089
-    - SRG-OS-000240-GPOS-00090
-    - SRG-OS-000241-GPOS-00091
-    - SRG-OS-000303-GPOS-00120
-    - SRG-OS-000304-GPOS-00121
-    - SRG-OS-000392-GPOS-00172
-    - SRG-OS-000462-GPOS-00206
-    - SRG-OS-000466-GPOS-00210
-    - SRG-OS-000470-GPOS-00214
-    - SRG-OS-000471-GPOS-00215
-    - SRG-OS-000476-GPOS-00221
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - 800-53r5_high
-  - 800-53r5_moderate
-  - cis_lvl2
-  - client
-  - server
-severity: medium
+  disa:
+    cci:
+      - CCI-000126
+      - CCI-000130
+      - CCI-000135
+      - CCI-000169
+      - CCI-000172
+      - CCI-002884
+    srg:
+      - SRG-OS-000004-GPOS-00004
+      - SRG-OS-000037-GPOS-00015
+      - SRG-OS-000042-GPOS-00020
+      - SRG-OS-000062-GPOS-00031
+      - SRG-OS-000239-GPOS-00089
+      - SRG-OS-000240-GPOS-00090
+      - SRG-OS-000241-GPOS-00091
+      - SRG-OS-000303-GPOS-00120
+      - SRG-OS-000304-GPOS-00121
+      - SRG-OS-000392-GPOS-00172
+      - SRG-OS-000462-GPOS-00206
+      - SRG-OS-000466-GPOS-00210
+      - SRG-OS-000470-GPOS-00214
+      - SRG-OS-000471-GPOS-00215
+      - SRG-OS-000476-GPOS-00221
+  nist:
+    800-53r4:
+      - AC-2(7)(b)
+      - AC-6(9)
+      - AU-2(d)
+      - AU-12(c)
+      - CM-6(a)
+    cce:
+      '10':
+        - CCE-89678-7
+      '8':
+        - CCE-80743-8
+      '9':
+        - CCE-83729-4
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-89678-7
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -340,13 +336,15 @@ os_specifics:
 
         ---
     '8':
-      references:
-        cce:
-          - CCE-80743-8
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -626,13 +624,15 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-83729-4
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -912,14 +912,19 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -1200,13 +1205,15 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -1487,13 +1494,15 @@ os_specifics:
 
         ---
     '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -1773,3 +1782,9 @@ os_specifics:
         fi
 
         ---
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate
+  - cis_lvl2
+  - client
+  - server

@@ -12,43 +12,49 @@ discussion: |
   possible combinations that need to be tested before the password is compromised.
   Requiring a minimum number of special characters makes password guessing attacks
   more difficult by ensuring a larger search space.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-004066
-  800-53r4:
-    - CM-6(a)
-    - IA-5(1)(a)
-    - IA-5(4)
-    - IA-5(c)
-  srg:
-    - SRG-OS-000266-GPOS-00101
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - cis_lvl1
-  - cis_lvl2
-  - client
-  - server
-severity: medium
+  disa:
+    cci:
+      - CCI-004066
+    srg:
+      - SRG-OS-000266-GPOS-00101
+    disa_stig:
+      '8':
+        - RHEL-08-020280
+      '9':
+        - RHEL-09-611100
+      '2004':
+        - UBTU-20-010055
+      '2204':
+        - UBTU-22-611025
+  nist:
+    800-53r4:
+      - CM-6(a)
+      - IA-5(1)(a)
+      - IA-5(4)
+      - IA-5(c)
+    cce:
+      '10':
+        - CCE-89297-6
+      '8':
+        - CCE-80663-8
+      '9':
+        - CCE-83565-2
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-89297-6
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -96,13 +102,15 @@ os_specifics:
 
         ---
     '8':
-      references:
-        cce:
-          - CCE-80663-8
-        disa_stig:
-          - RHEL-08-020280
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -150,13 +158,15 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-83565-2
-        disa_stig:
-          - RHEL-09-611100
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -204,14 +214,19 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010055
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -253,13 +268,15 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-611025
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -301,13 +318,15 @@ os_specifics:
 
         ---
     '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -363,3 +382,8 @@ os_specifics:
         fi
 
         ---
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server

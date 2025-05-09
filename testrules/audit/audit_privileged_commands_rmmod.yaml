@@ -12,46 +12,37 @@ discussion: |
   which attempt to subvert their normal role of providing some necessary but
   limited capability. As such, motivation exists to monitor these programs for
   unusual activity.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000130
-    - CCI-000169
-    - CCI-000172
-    - CCI-002884
-  800-53r4:
-    - N/A
-  srg:
-    - SRG-OS-000037-GPOS-00015
-    - SRG-OS-000062-GPOS-00031
-    - SRG-OS-000392-GPOS-00172
-    - SRG-OS-000462-GPOS-00206
-    - SRG-OS-000471-GPOS-00215
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - cis_lvl2
-  - client
-  - server
-severity: medium
+  disa:
+    cci:
+      - CCI-000130
+      - CCI-000169
+      - CCI-000172
+      - CCI-002884
+    srg:
+      - SRG-OS-000037-GPOS-00015
+      - SRG-OS-000062-GPOS-00031
+      - SRG-OS-000392-GPOS-00172
+      - SRG-OS-000462-GPOS-00206
+      - SRG-OS-000471-GPOS-00215
+  nist:
+    cce:
+      '10':
+        - CCE-88804-0
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-88804-0
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -198,14 +189,18 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -353,13 +348,14 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -507,13 +503,14 @@ os_specifics:
 
         ---
     '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -660,3 +657,7 @@ os_specifics:
         fi
 
         ---
+tags:
+  - cis_lvl2
+  - client
+  - server

@@ -5,40 +5,49 @@ discussion: |
   can reboot the system. If accidentally pressed, as could happen in
   the case of mixed OS environment, this can create the risk of short-term
   loss of availability of systems due to unintentional reboot.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000366
-  800-53r4:
-    - AC-6(1)
-    - CM-6(a)
-    - CM-7(b)
-  srg:
-    - SRG-OS-000480-GPOS-00227
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - 800-53r5_high
-  - 800-53r5_moderate
-severity: high
+  disa:
+    cci:
+      - CCI-000366
+    srg:
+      - SRG-OS-000480-GPOS-00227
+    disa_stig:
+      '8':
+        - RHEL-08-040171
+      '9':
+        - RHEL-09-271105
+        - RHEL-09-271110
+      '2004':
+        - UBTU-20-010459
+      '2204':
+        - UBTU-22-271030
+  nist:
+    800-53r4:
+      - AC-6(1)
+      - CM-6(a)
+      - CM-7(b)
+    cce:
+      '10':
+        - CCE-90658-6
+      '8':
+        - CCE-84028-0
+      '9':
+        - CCE-88653-1
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-90658-6
-        disa_stig:
-          - N/A
+      severity: high
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -104,13 +113,15 @@ os_specifics:
 
         ---
     '8':
-      references:
-        cce:
-          - CCE-84028-0
-        disa_stig:
-          - RHEL-08-040171
+      severity: high
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -176,14 +187,15 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-88653-1
-        disa_stig:
-          - RHEL-09-271105
-          - RHEL-09-271110
+      severity: high
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -249,14 +261,19 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010459
+      severity: high
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -362,13 +379,15 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-271030
+      severity: high
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -473,3 +492,6 @@ os_specifics:
         fi
 
         ---
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate

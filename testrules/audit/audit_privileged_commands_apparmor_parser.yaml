@@ -7,37 +7,31 @@ discussion: |
   those responsible for one.
   Audit records can be generated from various components within the
   information system (e.g., module or policy filter).
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000172
-  800-53r4:
-    - N/A
-  srg:
-    - SRG-OS-000064-GPOS-00033
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - N/A
-severity: medium
+  disa:
+    cci:
+      - CCI-000172
+    srg:
+      - SRG-OS-000064-GPOS-00033
+    disa_stig:
+      '2004':
+        - UBTU-20-010166
+      '2204':
+        - UBTU-22-654010
 os_specifics:
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010166
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -364,13 +358,14 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-654010
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -696,3 +691,5 @@ os_specifics:
         fi
 
         ---
+tags:
+  - N/A

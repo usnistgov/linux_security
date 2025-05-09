@@ -4,40 +4,39 @@ discussion: |
   Allowing users to execute binaries from world-writable directories
   such as /var/tmp should never be necessary in normal operation and
   can expose the system to potential compromise.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-001764
-  800-53r4:
-    - N/A
-  srg:
-    - SRG-OS-000368-GPOS-00154
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - cis_lvl1
-  - cis_lvl2
-  - client
-  - server
-severity: medium
+  disa:
+    cci:
+      - CCI-001764
+    srg:
+      - SRG-OS-000368-GPOS-00154
+    disa_stig:
+      '8':
+        - RHEL-08-040134
+      '9':
+        - RHEL-09-231180
+  nist:
+    cce:
+      '10':
+        - CCE-87347-1
+      '8':
+        - CCE-82151-2
+      '9':
+        - CCE-83866-4
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-87347-1
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -94,13 +93,14 @@ os_specifics:
 
         ---
     '8':
-      references:
-        cce:
-          - CCE-82151-2
-        disa_stig:
-          - RHEL-08-040134
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -157,13 +157,14 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-83866-4
-        disa_stig:
-          - RHEL-09-231180
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -220,14 +221,18 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -284,13 +289,14 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -347,13 +353,14 @@ os_specifics:
 
         ---
     '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -409,3 +416,8 @@ os_specifics:
         fi
 
         ---
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server

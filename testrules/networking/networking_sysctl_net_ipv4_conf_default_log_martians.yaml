@@ -5,42 +5,42 @@ discussion: |
   as well as spoofed packets, source-routed packets, and redirects could be a
   sign of nefarious network activity. Logging these packets enables this activity
   to be detected.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000366
-  800-53r4:
-    - CM-7(a)
-    - CM-7(b)
-    - SC-5(3)(a)
-  srg:
-    - SRG-OS-000480-GPOS-00227
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - cis_lvl1
-  - cis_lvl2
-  - client
-  - server
-severity: unknown
+  disa:
+    cci:
+      - CCI-000366
+    srg:
+      - SRG-OS-000480-GPOS-00227
+    disa_stig:
+      '9':
+        - RHEL-09-253030
+  nist:
+    800-53r4:
+      - CM-7(a)
+      - CM-7(b)
+      - SC-5(3)(a)
+    cce:
+      '10':
+        - CCE-87672-2
+      '8':
+        - CCE-81020-0
+      '9':
+        - CCE-84014-0
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-87672-2
-        disa_stig:
-          - N/A
+      severity: unknown
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -114,13 +114,15 @@ os_specifics:
 
         ---
     '8':
-      references:
-        cce:
-          - CCE-81020-0
-        disa_stig:
-          - N/A
+      severity: unknown
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -194,13 +196,15 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-84014-0
-        disa_stig:
-          - RHEL-09-253030
+      severity: unknown
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -274,14 +278,19 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: unknown
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -354,13 +363,15 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: unknown
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -433,13 +444,15 @@ os_specifics:
 
         ---
     '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: unknown
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -511,3 +524,8 @@ os_specifics:
         fi
 
         ---
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server

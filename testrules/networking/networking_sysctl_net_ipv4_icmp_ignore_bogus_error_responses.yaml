@@ -3,45 +3,42 @@ title: Enable Kernel Parameter to Ignore Bogus ICMP Error Responses on IPv4 Inte
 discussion: |
   Ignoring bogus ICMP error responses reduces
   log size, although some activity would not be logged.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000366
-  800-53r4:
-    - CM-7(a)
-    - CM-7(b)
-    - SC-5
-  srg:
-    - SRG-OS-000480-GPOS-00227
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - 800-53r5_high
-  - 800-53r5_low
-  - 800-53r5_moderate
-  - cis_lvl1
-  - cis_lvl2
-  - client
-  - server
-severity: unknown
+  disa:
+    cci:
+      - CCI-000366
+    srg:
+      - SRG-OS-000480-GPOS-00227
+    disa_stig:
+      '9':
+        - RHEL-09-253060
+  nist:
+    800-53r4:
+      - CM-7(a)
+      - CM-7(b)
+      - SC-5
+    cce:
+      '10':
+        - CCE-87841-3
+      '8':
+        - CCE-81023-4
+      '9':
+        - CCE-84015-7
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-87841-3
-        disa_stig:
-          - N/A
+      severity: unknown
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -115,13 +112,15 @@ os_specifics:
 
         ---
     '8':
-      references:
-        cce:
-          - CCE-81023-4
-        disa_stig:
-          - N/A
+      severity: unknown
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -195,13 +194,15 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-84015-7
-        disa_stig:
-          - RHEL-09-253060
+      severity: unknown
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -275,14 +276,19 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: unknown
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -355,13 +361,15 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: unknown
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -434,13 +442,15 @@ os_specifics:
 
         ---
     '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: unknown
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -512,3 +522,11 @@ os_specifics:
         fi
 
         ---
+tags:
+  - 800-53r5_high
+  - 800-53r5_low
+  - 800-53r5_moderate
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server

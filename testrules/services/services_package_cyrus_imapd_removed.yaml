@@ -3,37 +3,28 @@ title: Uninstall cyrus-imapd Package
 discussion: |
   If there is no need to make the cyrus-imapd software available,
   removing it provides a safeguard against its activation.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - N/A
-  800-53r4:
-    - N/A
-  srg:
-    - N/A
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - N/A
-severity: unknown
+  nist:
+    cce:
+      '10':
+        - CCE-90156-1
+      '8':
+        - CCE-88119-3
+      '9':
+        - CCE-88120-1
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-90156-1
-        disa_stig:
-          - N/A
+      severity: unknown
+      benchmarks:
+        - N/A
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -50,13 +41,13 @@ os_specifics:
 
         ---
     '8':
-      references:
-        cce:
-          - CCE-88119-3
-        disa_stig:
-          - N/A
+      severity: unknown
+      benchmarks:
+        - N/A
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -73,13 +64,13 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-88120-1
-        disa_stig:
-          - N/A
+      severity: unknown
+      benchmarks:
+        - N/A
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -96,14 +87,17 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: unknown
+      benchmarks:
+        - N/A
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -118,13 +112,13 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: unknown
+      benchmarks:
+        - N/A
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -138,3 +132,5 @@ os_specifics:
         DEBIAN_FRONTEND=noninteractive apt-get remove -y "cyrus-imapd"
 
         ---
+tags:
+  - N/A

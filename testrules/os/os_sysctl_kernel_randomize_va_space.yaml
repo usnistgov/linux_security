@@ -7,44 +7,50 @@ discussion: |
   ASLR makes it more difficult for an attacker to know the location of
   existing code in order to re-purpose it using return oriented programming
   (ROP) techniques.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000366
-    - CCI-002824
-  800-53r4:
-    - CM-6(a)
-    - SC-30
-    - SC-30(2)
-  srg:
-    - SRG-OS-000433-GPOS-00193
-    - SRG-OS-000480-GPOS-00227
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - cis_lvl1
-  - cis_lvl2
-  - client
-  - server
-severity: medium
+  disa:
+    cci:
+      - CCI-000366
+      - CCI-002824
+    srg:
+      - SRG-OS-000433-GPOS-00193
+      - SRG-OS-000480-GPOS-00227
+    disa_stig:
+      '8':
+        - RHEL-08-010430
+      '9':
+        - RHEL-09-213070
+      '2004':
+        - UBTU-20-010448
+      '2204':
+        - UBTU-22-213020
+  nist:
+    800-53r4:
+      - CM-6(a)
+      - SC-30
+      - SC-30(2)
+    cce:
+      '10':
+        - CCE-87876-9
+      '8':
+        - CCE-80916-0
+      '9':
+        - CCE-83971-2
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-87876-9
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -116,13 +122,15 @@ os_specifics:
 
         ---
     '8':
-      references:
-        cce:
-          - CCE-80916-0
-        disa_stig:
-          - RHEL-08-010430
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -194,13 +202,15 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-83971-2
-        disa_stig:
-          - RHEL-09-213070
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -272,14 +282,19 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010448
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -350,13 +365,15 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-213020
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -427,13 +444,15 @@ os_specifics:
 
         ---
     '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -503,3 +522,8 @@ os_specifics:
         fi
 
         ---
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server

@@ -3,42 +3,42 @@ title: Disable Mounting of cramfs
 discussion: |
   Removing support for unneeded filesystem types reduces the local attack surface
   of the server.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000381
-  800-53r4:
-    - CM-6(a)
-    - CM-7(a)
-    - CM-7(b)
-  srg:
-    - SRG-OS-000095-GPOS-00049
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - cis_lvl1
-  - cis_lvl2
-  - client
-  - server
-severity: low
+  disa:
+    cci:
+      - CCI-000381
+    srg:
+      - SRG-OS-000095-GPOS-00049
+    disa_stig:
+      '8':
+        - RHEL-08-040025
+      '9':
+        - RHEL-09-231195
+  nist:
+    800-53r4:
+      - CM-6(a)
+      - CM-7(a)
+      - CM-7(b)
+    cce:
+      '8':
+        - CCE-81031-7
+      '9':
+        - CCE-83853-2
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '8':
-      references:
-        cce:
-          - CCE-81031-7
-        disa_stig:
-          - RHEL-08-040025
+      severity: low
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -63,13 +63,15 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-83853-2
-        disa_stig:
-          - RHEL-09-231195
+      severity: low
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -94,14 +96,19 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: low
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -127,13 +134,15 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: low
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -159,13 +168,15 @@ os_specifics:
 
         ---
     '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: low
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -190,3 +201,8 @@ os_specifics:
         fi
 
         ---
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server

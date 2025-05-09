@@ -4,37 +4,20 @@ discussion: |
   If ntp is in use on the system proper configuration is vital to ensuring time synchronization
   is working properly. Running ntpd under dedicated user accounts limits the attack surface for
   potential attacker exploiting security flaws in the daemon or the protocol.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
-references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - N/A
-  800-53r4:
-    - N/A
-  srg:
-    - N/A
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - N/A
-severity: medium
+references: {}
 os_specifics:
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - N/A
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -56,13 +39,13 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - N/A
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -83,3 +66,5 @@ os_specifics:
         fi
 
         ---
+tags:
+  - N/A

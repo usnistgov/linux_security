@@ -10,41 +10,48 @@ discussion: |
 
   Setting the minimum password age protects against users cycling back to a
   favorite password after satisfying the password reuse requirement.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-004066
-  800-53r4:
-    - CM-6(a)
-    - IA-5(1)(d)
-    - IA-5(f)
-  srg:
-    - SRG-OS-000075-GPOS-00043
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - cis_lvl2
-  - client
-  - server
-severity: medium
+  disa:
+    cci:
+      - CCI-004066
+    srg:
+      - SRG-OS-000075-GPOS-00043
+    disa_stig:
+      '8':
+        - RHEL-08-020190
+      '9':
+        - RHEL-09-611075
+      '2004':
+        - UBTU-20-010007
+      '2204':
+        - UBTU-22-411025
+  nist:
+    800-53r4:
+      - CM-6(a)
+      - IA-5(1)(d)
+      - IA-5(f)
+    cce:
+      '10':
+        - CCE-89307-3
+      '8':
+        - CCE-80648-9
+      '9':
+        - CCE-83610-6
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-89307-3
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -81,13 +88,15 @@ os_specifics:
 
         ---
     '8':
-      references:
-        cce:
-          - CCE-80648-9
-        disa_stig:
-          - RHEL-08-020190
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -124,13 +133,15 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-83610-6
-        disa_stig:
-          - RHEL-09-611075
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -167,14 +178,19 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010007
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -209,13 +225,15 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-411025
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -250,13 +268,15 @@ os_specifics:
 
         ---
     '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -290,3 +310,7 @@ os_specifics:
         fi
 
         ---
+tags:
+  - cis_lvl2
+  - client
+  - server

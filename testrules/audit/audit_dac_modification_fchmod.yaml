@@ -5,53 +5,60 @@ discussion: |
   gain access to information that would otherwise be disallowed. Auditing DAC modifications
   can facilitate the identification of patterns of abuse among both authorized and
   unauthorized users.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000130
-    - CCI-000135
-    - CCI-000169
-    - CCI-000172
-    - CCI-002884
-  800-53r4:
-    - AU-2(d)
-    - AU-12(c)
-    - CM-6(a)
-  srg:
-    - SRG-OS-000037-GPOS-00015
-    - SRG-OS-000042-GPOS-00020
-    - SRG-OS-000062-GPOS-00031
-    - SRG-OS-000064-GPOS-00033
-    - SRG-OS-000392-GPOS-00172
-    - SRG-OS-000458-GPOS-00203
-    - SRG-OS-000462-GPOS-00206
-    - SRG-OS-000466-GPOS-00210
-    - SRG-OS-000471-GPOS-00215
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - cis_lvl2
-  - client
-  - server
-severity: medium
+  disa:
+    cci:
+      - CCI-000130
+      - CCI-000135
+      - CCI-000169
+      - CCI-000172
+      - CCI-002884
+    srg:
+      - SRG-OS-000037-GPOS-00015
+      - SRG-OS-000042-GPOS-00020
+      - SRG-OS-000062-GPOS-00031
+      - SRG-OS-000064-GPOS-00033
+      - SRG-OS-000392-GPOS-00172
+      - SRG-OS-000458-GPOS-00203
+      - SRG-OS-000462-GPOS-00206
+      - SRG-OS-000466-GPOS-00210
+      - SRG-OS-000471-GPOS-00215
+    disa_stig:
+      '8':
+        - RHEL-08-030490
+      '9':
+        - RHEL-09-654015
+      '2004':
+        - UBTU-20-010152
+      '2204':
+        - UBTU-22-654155
+  nist:
+    800-53r4:
+      - AU-2(d)
+      - AU-12(c)
+      - CM-6(a)
+    cce:
+      '10':
+        - CCE-88200-1
+      '8':
+        - CCE-80687-7
+      '9':
+        - CCE-83832-6
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-88200-1
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -385,13 +392,15 @@ os_specifics:
 
         ---
     '8':
-      references:
-        cce:
-          - CCE-80687-7
-        disa_stig:
-          - RHEL-08-030490
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -725,13 +734,15 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-83832-6
-        disa_stig:
-          - RHEL-09-654015
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -1065,14 +1076,19 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010152
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -1407,13 +1423,15 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-654155
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -1748,13 +1766,15 @@ os_specifics:
 
         ---
     '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -2088,3 +2108,7 @@ os_specifics:
         fi
 
         ---
+tags:
+  - cis_lvl2
+  - client
+  - server

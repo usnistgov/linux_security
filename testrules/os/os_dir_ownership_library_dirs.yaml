@@ -5,38 +5,47 @@ discussion: |
   space of processes (including privileged ones) or of the kernel itself at
   runtime. Proper ownership of library directories is necessary to protect
   the integrity of the system.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-001499
-  800-53r4:
-    - CM-5(6)
-    - CM-5(6).1
-  srg:
-    - SRG-OS-000259-GPOS-00100
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - N/A
-severity: medium
+  disa:
+    cci:
+      - CCI-001499
+    srg:
+      - SRG-OS-000259-GPOS-00100
+    disa_stig:
+      '8':
+        - RHEL-08-010341
+      '9':
+        - RHEL-09-232210
+      '2004':
+        - UBTU-20-010429
+      '2204':
+        - UBTU-22-232060
+  nist:
+    800-53r4:
+      - CM-5(6)
+      - CM-5(6).1
+    cce:
+      '10':
+        - CCE-89745-4
+      '8':
+        - CCE-89021-0
+      '9':
+        - CCE-89022-8
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-89745-4
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -47,13 +56,15 @@ os_specifics:
 
         ---
     '8':
-      references:
-        cce:
-          - CCE-89021-0
-        disa_stig:
-          - RHEL-08-010341
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -64,13 +75,15 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-89022-8
-        disa_stig:
-          - RHEL-09-232210
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -81,14 +94,19 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010429
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -99,13 +117,15 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-232060
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -115,3 +135,5 @@ os_specifics:
         find -H /usr/lib64/  -type d -exec chown -L 0 {} \;
 
         ---
+tags:
+  - N/A

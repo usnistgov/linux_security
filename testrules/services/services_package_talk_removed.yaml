@@ -4,40 +4,26 @@ discussion: |
   The talk software presents a security risk as it uses unencrypted protocols
   for communications. Removing the talk package decreases the
   risk of the accidental (or intentional) activation of talk client program.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - N/A
-  800-53r4:
-    - N/A
-  srg:
-    - N/A
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - cis_lvl1
-  - cis_lvl2
-  - client
-  - server
-severity: medium
+  nist:
+    cce:
+      '8':
+        - CCE-80848-5
+      '9':
+        - CCE-84157-7
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '8':
-      references:
-        cce:
-          - CCE-80848-5
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - N/A
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -54,13 +40,13 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-84157-7
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - N/A
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -77,14 +63,17 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - N/A
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -99,13 +88,13 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - N/A
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -120,13 +109,13 @@ os_specifics:
 
         ---
     '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - N/A
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -140,3 +129,8 @@ os_specifics:
         DEBIAN_FRONTEND=noninteractive apt-get remove -y "talk"
 
         ---
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server

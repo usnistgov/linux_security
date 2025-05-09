@@ -5,40 +5,28 @@ discussion: |
   of an unencrypted transmission medium could allow an unauthorized user
   to steal credentials. The ssh package provides an
   encrypted session and stronger security and is included in Red Hat Enterprise Linux 10.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - N/A
-  800-53r4:
-    - N/A
-  srg:
-    - N/A
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - cis_lvl1
-  - cis_lvl2
-  - client
-  - server
-severity: low
+  nist:
+    cce:
+      '10':
+        - CCE-90545-5
+      '8':
+        - CCE-80849-3
+      '9':
+        - CCE-84146-0
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-90545-5
-        disa_stig:
-          - N/A
+      severity: low
+      benchmarks:
+        - N/A
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -55,13 +43,13 @@ os_specifics:
 
         ---
     '8':
-      references:
-        cce:
-          - CCE-80849-3
-        disa_stig:
-          - N/A
+      severity: low
+      benchmarks:
+        - N/A
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -78,13 +66,13 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-84146-0
-        disa_stig:
-          - N/A
+      severity: low
+      benchmarks:
+        - N/A
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -101,14 +89,17 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: low
+      benchmarks:
+        - N/A
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -123,13 +114,13 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: low
+      benchmarks:
+        - N/A
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -144,13 +135,13 @@ os_specifics:
 
         ---
     '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: low
+      benchmarks:
+        - N/A
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -164,3 +155,8 @@ os_specifics:
         DEBIAN_FRONTEND=noninteractive apt-get remove -y "telnet"
 
         ---
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server

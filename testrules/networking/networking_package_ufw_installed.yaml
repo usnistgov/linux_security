@@ -4,40 +4,31 @@ discussion: |
   ufw controls the Linux kernel network packet filtering
   code. ufw allows system operators to set up firewalls and IP
   masquerading, etc.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-002314
-  800-53r4:
-    - N/A
-  srg:
-    - SRG-OS-000297-GPOS-00115
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - cis_lvl1
-  - cis_lvl2
-  - client
-  - server
-severity: medium
+  disa:
+    cci:
+      - CCI-002314
+    srg:
+      - SRG-OS-000297-GPOS-00115
+    disa_stig:
+      '2004':
+        - UBTU-20-010433
+      '2204':
+        - UBTU-22-251010
 os_specifics:
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010433
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -53,13 +44,14 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-251010
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -75,13 +67,14 @@ os_specifics:
 
         ---
     '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -102,3 +95,8 @@ os_specifics:
         fi
 
         ---
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server

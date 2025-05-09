@@ -3,25 +3,87 @@ title: Limit Users' SSH Access
 discussion: |
   Specifying which accounts are allowed SSH access into the system reduces the
   possibility of unauthorized access to the system.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - N/A
-  800-53r4:
-    - AC-3
-    - CM-6(a)
-  srg:
-    - N/A
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
+  nist:
+    800-53r4:
+      - AC-3
+      - CM-6(a)
+    cce:
+      '10':
+        - CCE-90003-5
+      '8':
+        - CCE-82422-7
+      '9':
+        - CCE-86817-4
+os_specifics:
+  rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '10':
+      severity: unknown
+      benchmarks:
+        - nist_800-53r5
+      check:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '8':
+      severity: unknown
+      benchmarks:
+        - nist_800-53r5
+      check:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '9':
+      severity: unknown
+      benchmarks:
+        - nist_800-53r5
+      check:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+  ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '2004':
+      severity: unknown
+      benchmarks:
+        - nist_800-53r5
+      check:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '2204':
+      severity: unknown
+      benchmarks:
+        - nist_800-53r5
+      check:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '2404':
+      severity: unknown
+      benchmarks:
+        - nist_800-53r5
+      check:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
 tags:
   - 800-53r5_high
   - 800-53r5_low
@@ -30,67 +92,3 @@ tags:
   - cis_lvl2
   - client
   - server
-severity: unknown
-os_specifics:
-  rhel:
-    '10':
-      references:
-        cce:
-          - CCE-90003-5
-        disa_stig:
-          - N/A
-      check:
-        - N/A
-      fix:
-        - N/A
-    '8':
-      references:
-        cce:
-          - CCE-82422-7
-        disa_stig:
-          - N/A
-      check:
-        - N/A
-      fix:
-        - N/A
-    '9':
-      references:
-        cce:
-          - CCE-86817-4
-        disa_stig:
-          - N/A
-      check:
-        - N/A
-      fix:
-        - N/A
-  ubuntu:
-    '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-      check:
-        - N/A
-      fix:
-        - N/A
-    '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-      check:
-        - N/A
-      fix:
-        - N/A
-    '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-      check:
-        - N/A
-      fix:
-        - N/A

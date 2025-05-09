@@ -10,37 +10,26 @@ discussion: |
   System use notifications are required only for access via login interfaces
   with human users and are not required when such human interfaces do not
   exist.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - N/A
-  800-53r4:
-    - N/A
-  srg:
-    - N/A
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - N/A
-severity: medium
+  nist:
+    cce:
+      '8':
+        - CCE-83496-0
+      '9':
+        - CCE-83559-5
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '8':
-      references:
-        cce:
-          - CCE-83496-0
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - N/A
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -74,13 +63,13 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-83559-5
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - N/A
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -114,14 +103,17 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - N/A
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -156,13 +148,13 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - N/A
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -196,3 +188,5 @@ os_specifics:
         fi
 
         ---
+tags:
+  - N/A

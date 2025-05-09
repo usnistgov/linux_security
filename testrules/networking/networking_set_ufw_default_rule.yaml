@@ -4,59 +4,44 @@ discussion: |
   With a default accept policy the firewall will accept any packet that
   is not configured to be denied. It is easier to allow acceptable
   usage than to block unacceptable usage.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
-references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - N/A
-  800-53r4:
-    - N/A
-  srg:
-    - N/A
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
+references: {}
+os_specifics:
+  ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '2004':
+      severity: medium
+      benchmarks:
+        - N/A
+      check:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '2204':
+      severity: medium
+      benchmarks:
+        - N/A
+      check:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '2404':
+      severity: medium
+      benchmarks:
+        - N/A
+      check:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
 tags:
   - cis_lvl1
   - cis_lvl2
   - client
   - server
-severity: medium
-os_specifics:
-  ubuntu:
-    '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-      check:
-        - N/A
-      fix:
-        - N/A
-    '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-      check:
-        - N/A
-      fix:
-        - N/A
-    '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-      check:
-        - N/A
-      fix:
-        - N/A

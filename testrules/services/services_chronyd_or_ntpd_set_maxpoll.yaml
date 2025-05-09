@@ -4,43 +4,52 @@ discussion: |
   Inaccurate time stamps make it more difficult to correlate events and can lead to an inaccurate analysis. Determining the correct time a particular event occurred on a system is critical when conducting forensic analysis and investigating system events. Sources outside the configured acceptable allowance (drift) may be inaccurate.
   Synchronizing internal information system clocks provides uniformity of time stamps for information systems with multiple system clocks and systems connected over a network.
   Organizations should consider endpoints that may not have regular access to the authoritative time server (e.g., mobile, teleworking, and tactical endpoints).
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-001890
-    - CCI-004923
-    - CCI-004926
-  800-53r4:
-    - AU-8(1)(b)
-    - AU-12(1)
-    - CM-6(a)
-  srg:
-    - SRG-OS-000355-GPOS-00143
-    - SRG-OS-000356-GPOS-00144
-    - SRG-OS-000359-GPOS-00146
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - 800-53r5_high
-severity: medium
+  disa:
+    cci:
+      - CCI-001890
+      - CCI-004923
+      - CCI-004926
+    srg:
+      - SRG-OS-000355-GPOS-00143
+      - SRG-OS-000356-GPOS-00144
+      - SRG-OS-000359-GPOS-00146
+    disa_stig:
+      '8':
+        - RHEL-08-030740
+      '9':
+        - RHEL-09-252020
+      '2004':
+        - UBTU-20-010435
+      '2204':
+        - UBTU-22-252010
+  nist:
+    800-53r4:
+      - AU-8(1)(b)
+      - AU-12(1)
+      - CM-6(a)
+    cce:
+      '10':
+        - CCE-88549-1
+      '8':
+        - CCE-84059-5
+      '9':
+        - CCE-88648-1
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-88549-1
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -82,13 +91,15 @@ os_specifics:
 
         ---
     '8':
-      references:
-        cce:
-          - CCE-84059-5
-        disa_stig:
-          - RHEL-08-030740
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -130,13 +141,15 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-88648-1
-        disa_stig:
-          - RHEL-09-252020
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -178,14 +191,19 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010435
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -228,13 +246,15 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-252010
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -276,3 +296,5 @@ os_specifics:
         fi
 
         ---
+tags:
+  - 800-53r5_high

@@ -3,43 +3,37 @@ title: Use Only FIPS 140-2 Validated MACs
 discussion: |
   DoD Information Systems are required to use FIPS-approved cryptographic hash
   functions. The only SSHv2 hash algorithms meeting this requirement is SHA2.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000068
-    - CCI-000803
-    - CCI-000877
-    - CCI-001453
-    - CCI-003123
-  800-53r4:
-    - N/A
-  srg:
-    - SRG-OS-000125-GPOS-00065
-    - SRG-OS-000250-GPOS-00093
-    - SRG-OS-000394-GPOS-00174
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - N/A
-severity: medium
+  disa:
+    cci:
+      - CCI-000068
+      - CCI-000803
+      - CCI-000877
+      - CCI-001453
+      - CCI-003123
+    srg:
+      - SRG-OS-000125-GPOS-00065
+      - SRG-OS-000250-GPOS-00093
+      - SRG-OS-000394-GPOS-00174
+    disa_stig:
+      '2004':
+        - UBTU-20-010043
+      '2204':
+        - UBTU-22-255055
 os_specifics:
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010043
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -78,13 +72,14 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-255055
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -122,3 +117,5 @@ os_specifics:
         fi
 
         ---
+tags:
+  - N/A

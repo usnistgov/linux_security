@@ -2,41 +2,47 @@ id: os_aide_installed
 title: Install AIDE
 discussion: The AIDE package must be installed if it is to be available for integrity
   checking.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-001744
-    - CCI-002696
-  800-53r4:
-    - CM-6(a)
-  srg:
-    - SRG-OS-000445-GPOS-00199
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - cis_lvl1
-  - cis_lvl2
-  - client
-  - server
-severity: medium
+  disa:
+    cci:
+      - CCI-001744
+      - CCI-002696
+    srg:
+      - SRG-OS-000445-GPOS-00199
+    disa_stig:
+      '8':
+        - RHEL-08-010359
+      '9':
+        - RHEL-09-651010
+      '2004':
+        - UBTU-20-010450
+      '2204':
+        - UBTU-22-651010
+  nist:
+    800-53r4:
+      - CM-6(a)
+    cce:
+      '10':
+        - CCE-90477-1
+      '8':
+        - CCE-80844-4
+      '9':
+        - CCE-90843-4
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-90477-1
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -53,13 +59,15 @@ os_specifics:
 
         ---
     '8':
-      references:
-        cce:
-          - CCE-80844-4
-        disa_stig:
-          - RHEL-08-010359
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -76,13 +84,15 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-90843-4
-        disa_stig:
-          - RHEL-09-651010
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -99,14 +109,19 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010450
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -122,13 +137,15 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-651010
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -144,13 +161,15 @@ os_specifics:
 
         ---
     '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -165,3 +184,8 @@ os_specifics:
         fi
 
         ---
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server

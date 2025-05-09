@@ -9,39 +9,47 @@ discussion: |
   system, or those designed to be temporary file repositories. The setting is normally reserved
   for directories used by the system, by users for temporary file storage (such as /tmp),
   and for directories requiring global read/write access.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-001090
-  800-53r4:
-    - AC-6(1)
-    - CM-6(a)
-  srg:
-    - SRG-OS-000138-GPOS-00069
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - 800-53r5_high
-  - 800-53r5_moderate
-severity: medium
+  disa:
+    cci:
+      - CCI-001090
+    srg:
+      - SRG-OS-000138-GPOS-00069
+    disa_stig:
+      '8':
+        - RHEL-08-010190
+      '9':
+        - RHEL-09-232245
+      '2004':
+        - UBTU-20-010411
+      '2204':
+        - UBTU-22-232145
+  nist:
+    800-53r4:
+      - AC-6(1)
+      - CM-6(a)
+    cce:
+      '10':
+        - CCE-88397-5
+      '8':
+        - CCE-80783-4
+      '9':
+        - CCE-83895-3
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-88397-5
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -52,13 +60,15 @@ os_specifics:
 
         ---
     '8':
-      references:
-        cce:
-          - CCE-80783-4
-        disa_stig:
-          - RHEL-08-010190
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -69,13 +79,15 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-83895-3
-        disa_stig:
-          - RHEL-09-232245
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -86,14 +98,19 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010411
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -104,13 +121,15 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-232145
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -120,3 +139,6 @@ os_specifics:
         -exec chmod a+t {} +
 
         ---
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate

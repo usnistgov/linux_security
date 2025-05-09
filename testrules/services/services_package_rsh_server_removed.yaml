@@ -7,40 +7,47 @@ discussion: |
   could be compromised. The rsh-server package provides several obsolete and insecure
   network services. Removing it decreases the risk of those services' accidental (or intentional)
   activation.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000381
-  800-53r4:
-    - CM-6(a)
-    - CM-7(a)
-    - CM-7(b)
-    - IA-5(1)(c)
-  srg:
-    - SRG-OS-000095-GPOS-00049
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - N/A
-severity: high
+  disa:
+    cci:
+      - CCI-000381
+    srg:
+      - SRG-OS-000095-GPOS-00049
+    disa_stig:
+      '8':
+        - RHEL-08-040010
+      '9':
+        - RHEL-09-215035
+      '2004':
+        - UBTU-20-010406
+      '2204':
+        - UBTU-22-215030
+  nist:
+    800-53r4:
+      - CM-6(a)
+      - CM-7(a)
+      - CM-7(b)
+      - IA-5(1)(c)
+    cce:
+      '8':
+        - CCE-82184-3
+      '9':
+        - CCE-84143-7
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '8':
-      references:
-        cce:
-          - CCE-82184-3
-        disa_stig:
-          - RHEL-08-040010
+      severity: high
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -57,13 +64,15 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-84143-7
-        disa_stig:
-          - RHEL-09-215035
+      severity: high
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -80,14 +89,19 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010406
+      severity: high
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -102,13 +116,15 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-215030
+      severity: high
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -122,3 +138,5 @@ os_specifics:
         DEBIAN_FRONTEND=noninteractive apt-get remove -y "rsh-server"
 
         ---
+tags:
+  - N/A

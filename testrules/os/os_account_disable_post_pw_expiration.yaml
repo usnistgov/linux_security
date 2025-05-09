@@ -4,45 +4,49 @@ discussion: |
   Inactive identifiers pose a risk to systems and applications because attackers may exploit an inactive identifier and potentially obtain undetected access to the system.
   Disabling inactive accounts ensures that accounts which may not have been responsibly removed are not available to attackers who may have compromised their credentials.
   Owners of inactive accounts will not notice if unauthorized access to their user account has been obtained.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-003627
-    - CCI-003628
-  800-53r4:
-    - AC-2(3)
-    - CM-6(a)
-    - IA-4(e)
-  srg:
-    - SRG-OS-000118-GPOS-00060
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - 800-53r5_high
-  - 800-53r5_moderate
-  - cis_lvl1
-  - cis_lvl2
-  - client
-  - server
-severity: medium
+  disa:
+    cci:
+      - CCI-003627
+      - CCI-003628
+    srg:
+      - SRG-OS-000118-GPOS-00060
+    disa_stig:
+      '8':
+        - RHEL-08-020260
+      '9':
+        - RHEL-09-411050
+      '2004':
+        - UBTU-20-010409
+      '2204':
+        - UBTU-22-411035
+  nist:
+    800-53r4:
+      - AC-2(3)
+      - CM-6(a)
+      - IA-4(e)
+    cce:
+      '10':
+        - CCE-88966-7
+      '8':
+        - CCE-80954-1
+      '9':
+        - CCE-83627-0
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-88966-7
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -80,13 +84,15 @@ os_specifics:
 
         ---
     '8':
-      references:
-        cce:
-          - CCE-80954-1
-        disa_stig:
-          - RHEL-08-020260
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -124,13 +130,15 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-83627-0
-        disa_stig:
-          - RHEL-09-411050
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -168,14 +176,19 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010409
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -211,13 +224,15 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-411035
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -253,13 +268,15 @@ os_specifics:
 
         ---
     '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -294,3 +311,10 @@ os_specifics:
         fi
 
         ---
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server

@@ -4,43 +4,47 @@ discussion: |
   The umask value influences the permissions assigned to files when they are created.
   A misconfigured umask value could result in files with excessive permissions that can be read and
   written to by unauthorized users.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000366
-  800-53r4:
-    - AC-6(1)
-    - CM-6(a)
-  srg:
-    - SRG-OS-000480-GPOS-00228
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - 800-53r5_high
-  - 800-53r5_moderate
-  - cis_lvl1
-  - cis_lvl2
-  - client
-  - server
-severity: medium
+  disa:
+    cci:
+      - CCI-000366
+    srg:
+      - SRG-OS-000480-GPOS-00228
+    disa_stig:
+      '8':
+        - RHEL-08-020351
+      '9':
+        - RHEL-09-412065
+      '2004':
+        - UBTU-20-010016
+      '2204':
+        - UBTU-22-412035
+  nist:
+    800-53r4:
+      - AC-6(1)
+      - CM-6(a)
+    cce:
+      '10':
+        - CCE-89314-9
+      '8':
+        - CCE-82888-9
+      '9':
+        - CCE-83647-8
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-89314-9
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -78,13 +82,15 @@ os_specifics:
 
         ---
     '8':
-      references:
-        cce:
-          - CCE-82888-9
-        disa_stig:
-          - RHEL-08-020351
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -122,13 +128,15 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-83647-8
-        disa_stig:
-          - RHEL-09-412065
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -166,14 +174,19 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010016
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -209,13 +222,15 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-412035
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -251,13 +266,15 @@ os_specifics:
 
         ---
     '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -292,3 +309,10 @@ os_specifics:
         fi
 
         ---
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server

@@ -4,46 +4,43 @@ discussion: |
   Repositories hosts all packages that will be intsalled on the system during update.
       If a repository is not authenticated, the associated packages can't be trusted,
       and then should not be installed localy.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-003992
-  800-53r4:
-    - N/A
-  srg:
-    - SRG-OS-000366-GPOS-00153
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - N/A
-severity: unknown
+  disa:
+    cci:
+      - CCI-003992
+    srg:
+      - SRG-OS-000366-GPOS-00153
+    disa_stig:
+      '2004':
+        - UBTU-20-010438
+      '2204':
+        - UBTU-22-214010
 os_specifics:
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010438
+      severity: unknown
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix:
         - N/A
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-214010
+      severity: unknown
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix:
         - N/A
+tags:
+  - N/A

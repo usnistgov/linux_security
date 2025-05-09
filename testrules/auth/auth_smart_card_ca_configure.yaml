@@ -12,39 +12,33 @@ discussion: |
   providing time-based or challenge-response authenticators and smart cards such
   as the U.S. Government Personal Identity Verification card and the DoD Common
   Access Card.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000185
-    - CCI-004068
-  800-53r4:
-    - N/A
-  srg:
-    - SRG-OS-000066-GPOS-00034
-    - SRG-OS-000384-GPOS-00167
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - N/A
-severity: medium
+  disa:
+    cci:
+      - CCI-000185
+      - CCI-004068
+    srg:
+      - SRG-OS-000066-GPOS-00034
+      - SRG-OS-000384-GPOS-00167
+    disa_stig:
+      '2004':
+        - UBTU-20-010060
+      '2204':
+        - UBTU-22-612030
 os_specifics:
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010060
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -66,13 +60,14 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-612030
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -93,3 +88,5 @@ os_specifics:
         fi
 
         ---
+tags:
+  - N/A

@@ -3,46 +3,43 @@ title: Ensure sudo group has only necessary members
 discussion: |
   Any users assigned to the sudo group would be granted administrator
   access to the system.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-001084
-  800-53r4:
-    - N/A
-  srg:
-    - SRG-OS-000134-GPOS-00068
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - N/A
-severity: medium
+  disa:
+    cci:
+      - CCI-001084
+    srg:
+      - SRG-OS-000134-GPOS-00068
+    disa_stig:
+      '2004':
+        - UBTU-20-010012
+      '2204':
+        - UBTU-22-432015
 os_specifics:
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010012
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix:
         - N/A
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-432015
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix:
         - N/A
+tags:
+  - N/A

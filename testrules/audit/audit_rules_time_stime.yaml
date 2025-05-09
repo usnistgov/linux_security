@@ -5,42 +5,38 @@ discussion: |
   nefarious activities in log files, as well as to confuse network services that
   are highly dependent upon an accurate system time (such as sshd). All changes
   to the system time should be audited.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000169
-    - CCI-001487
-  800-53r4:
-    - AC-6(9)
-    - AU-2(d)
-    - AU-12(c)
-    - CM-6(a)
-  srg:
-    - N/A
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - 800-53r5_high
-  - 800-53r5_moderate
-severity: medium
+  disa:
+    cci:
+      - CCI-000169
+      - CCI-001487
+  nist:
+    800-53r4:
+      - AC-6(9)
+      - AU-2(d)
+      - AU-12(c)
+      - CM-6(a)
+    cce:
+      '10':
+        - CCE-89077-2
+      '8':
+        - CCE-80748-7
+      '9':
+        - CCE-83835-9
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-89077-2
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -385,13 +381,14 @@ os_specifics:
 
         ---
     '8':
-      references:
-        cce:
-          - CCE-80748-7
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -736,13 +733,14 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-83835-9
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -1087,14 +1085,18 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -1440,13 +1442,14 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -1791,3 +1794,6 @@ os_specifics:
         fi
 
         ---
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate

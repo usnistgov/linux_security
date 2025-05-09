@@ -20,37 +20,26 @@ discussion: |+
    add or modify the following line in /etc/pam.d/common-account:
   account required pam_tally2.so
 
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000044
-  800-53r4:
-    - N/A
-  srg:
-    - SRG-OS-000021-GPOS-00005
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - N/A
-severity: medium
+  disa:
+    cci:
+      - CCI-000044
+    srg:
+      - SRG-OS-000021-GPOS-00005
 os_specifics:
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -124,3 +113,5 @@ os_specifics:
         fi
 
         ---
+tags:
+  - N/A

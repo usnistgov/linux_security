@@ -7,49 +7,54 @@ discussion: |
   and can have significant adverse impacts on organizations. Auditing the use
   of privileged functions is one way to detect such misuse and identify the
   risk from insider threats and the advanced persistent threat.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-002233
-    - CCI-002234
-  800-53r4:
-    - AC-6(9)
-    - AU-7(a)
-    - AU-7(b)
-    - AU-8(b)
-    - AU-12(3)
-    - CM-5(1)
-  srg:
-    - SRG-OS-000326-GPOS-00126
-    - SRG-OS-000327-GPOS-00127
-    - SRG-OS-000755-GPOS-00220
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - 800-53r5_high
-  - 800-53r5_moderate
-  - cis_lvl2
-  - client
-  - server
-severity: medium
+  disa:
+    cci:
+      - CCI-002233
+      - CCI-002234
+    srg:
+      - SRG-OS-000326-GPOS-00126
+      - SRG-OS-000327-GPOS-00127
+      - SRG-OS-000755-GPOS-00220
+    disa_stig:
+      '8':
+        - RHEL-08-030000
+      '9':
+        - RHEL-09-654010
+      '2004':
+        - UBTU-20-010211
+      '2204':
+        - UBTU-22-654230
+  nist:
+    800-53r4:
+      - AC-6(9)
+      - AU-7(a)
+      - AU-7(b)
+      - AU-8(b)
+      - AU-12(3)
+      - CM-5(1)
+    cce:
+      '10':
+        - CCE-88933-7
+      '8':
+        - CCE-83556-1
+      '9':
+        - CCE-86402-5
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-88933-7
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -702,13 +707,15 @@ os_specifics:
 
         ---
     '8':
-      references:
-        cce:
-          - CCE-83556-1
-        disa_stig:
-          - RHEL-08-030000
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -1361,13 +1368,15 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-86402-5
-        disa_stig:
-          - RHEL-09-654010
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -2020,14 +2029,19 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010211
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -2681,13 +2695,15 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-654230
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -3341,13 +3357,15 @@ os_specifics:
 
         ---
     '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -4000,3 +4018,9 @@ os_specifics:
         fi
 
         ---
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate
+  - cis_lvl2
+  - client
+  - server

@@ -4,44 +4,44 @@ discussion: |
   Administrators should be made aware of an inability to record
   audit records. If a separate partition or logical volume of adequate size
   is used, running low on space for audit records should never occur.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-001855
-  800-53r4:
-    - AU-5(1)
-    - AU-5(2)
-    - AU-5(4)
-    - AU-5(b)
-    - CM-6(a)
-  srg:
-    - SRG-OS-000343-GPOS-00134
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - 800-53r5_high
-  - cis_lvl2
-  - client
-  - server
-severity: medium
+  disa:
+    cci:
+      - CCI-001855
+    srg:
+      - SRG-OS-000343-GPOS-00134
+    disa_stig:
+      '9':
+        - RHEL-09-653050
+  nist:
+    800-53r4:
+      - AU-5(1)
+      - AU-5(2)
+      - AU-5(4)
+      - AU-5(b)
+      - CM-6(a)
+    cce:
+      '10':
+        - CCE-89040-0
+      '8':
+        - CCE-80679-4
+      '9':
+        - CCE-83700-5
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-89040-0
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -83,13 +83,15 @@ os_specifics:
 
         ---
     '8':
-      references:
-        cce:
-          - CCE-80679-4
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -131,13 +133,15 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-83700-5
-        disa_stig:
-          - RHEL-09-653050
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -179,14 +183,19 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -227,13 +236,15 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -274,13 +285,15 @@ os_specifics:
 
         ---
     '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -320,3 +333,8 @@ os_specifics:
         fi
 
         ---
+tags:
+  - 800-53r5_high
+  - cis_lvl2
+  - client
+  - server

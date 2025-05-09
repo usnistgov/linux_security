@@ -5,90 +5,86 @@ discussion: |
   be inadvertently transferred outside the organization. The .forward file
   also poses a risk as it can be used to execute commands that may perform
   unintended actions.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - N/A
-  800-53r4:
-    - N/A
-  srg:
-    - N/A
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
+  nist:
+    cce:
+      '10':
+        - CCE-90050-6
+      '8':
+        - CCE-86755-6
+      '9':
+        - CCE-86756-4
+os_specifics:
+  rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '10':
+      severity: medium
+      benchmarks:
+        - N/A
+      check:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '8':
+      severity: medium
+      benchmarks:
+        - N/A
+      check:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '9':
+      severity: medium
+      benchmarks:
+        - N/A
+      check:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+  ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '2004':
+      severity: medium
+      benchmarks:
+        - N/A
+      check:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '2204':
+      severity: medium
+      benchmarks:
+        - N/A
+      check:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '2404':
+      severity: medium
+      benchmarks:
+        - N/A
+      check:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
 tags:
   - cis_lvl1
   - cis_lvl2
   - client
   - server
-severity: medium
-os_specifics:
-  rhel:
-    '10':
-      references:
-        cce:
-          - CCE-90050-6
-        disa_stig:
-          - N/A
-      check:
-        - N/A
-      fix:
-        - N/A
-    '8':
-      references:
-        cce:
-          - CCE-86755-6
-        disa_stig:
-          - N/A
-      check:
-        - N/A
-      fix:
-        - N/A
-    '9':
-      references:
-        cce:
-          - CCE-86756-4
-        disa_stig:
-          - N/A
-      check:
-        - N/A
-      fix:
-        - N/A
-  ubuntu:
-    '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-      check:
-        - N/A
-      fix:
-        - N/A
-    '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-      check:
-        - N/A
-      fix:
-        - N/A
-    '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-      check:
-        - N/A
-      fix:
-        - N/A

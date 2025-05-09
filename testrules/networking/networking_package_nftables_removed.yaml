@@ -1,37 +1,20 @@
 id: networking_package_nftables_removed
 title: Uninstall nftables package
 discussion: Running both firewalld and nftables may lead to conflict.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
-references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - N/A
-  800-53r4:
-    - N/A
-  srg:
-    - N/A
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - N/A
-severity: medium
+references: {}
 os_specifics:
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - N/A
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -46,13 +29,13 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - N/A
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -66,3 +49,5 @@ os_specifics:
         DEBIAN_FRONTEND=noninteractive apt-get remove -y "nftables"
 
         ---
+tags:
+  - N/A

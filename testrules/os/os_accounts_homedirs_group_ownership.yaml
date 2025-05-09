@@ -5,40 +5,39 @@ discussion: |
   not the same as the primary GID of the user, this would allow unauthorized
   access to the users files, and users that share the same group may not be
   able to access files that they legitimately should.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000366
-  800-53r4:
-    - N/A
-  srg:
-    - SRG-OS-000480-GPOS-00227
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - cis_lvl1
-  - cis_lvl2
-  - client
-  - server
-severity: medium
+  disa:
+    cci:
+      - CCI-000366
+    srg:
+      - SRG-OS-000480-GPOS-00227
+    disa_stig:
+      '8':
+        - RHEL-08-010740
+      '9':
+        - RHEL-09-411070
+  nist:
+    cce:
+      '10':
+        - CCE-87946-0
+      '8':
+        - CCE-83434-1
+      '9':
+        - CCE-83629-6
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-87946-0
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -47,13 +46,14 @@ os_specifics:
 
         ---
     '8':
-      references:
-        cce:
-          - CCE-83434-1
-        disa_stig:
-          - RHEL-08-010740
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -62,13 +62,14 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-83629-6
-        disa_stig:
-          - RHEL-09-411070
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -77,14 +78,18 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -93,13 +98,14 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -108,13 +114,14 @@ os_specifics:
 
         ---
     '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -122,3 +129,8 @@ os_specifics:
         awk -F':' '{ if ($3 >= 1000 && $3 != 65534) system("chgrp -f " $4" "$6) }' /etc/passwd
 
         ---
+tags:
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server

@@ -6,45 +6,31 @@ discussion: |
   default policy to DROP implements proper design for a firewall, i.e.
   any packets which are not explicitly permitted should not be
   accepted.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - N/A
-  800-53r4:
-    - CA-3(5)
-    - CM-6(a)
-    - CM-7(b)
-    - SC-7(23)
-  srg:
-    - N/A
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - 800-53r5_high
-  - 800-53r5_moderate
-  - cis_lvl1
-  - cis_lvl2
-  - client
-  - server
-severity: medium
+  nist:
+    800-53r4:
+      - CA-3(5)
+      - CM-6(a)
+      - CM-7(b)
+      - SC-7(23)
+    cce:
+      '8':
+        - CCE-85968-6
+      '9':
+        - CCE-85969-4
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '8':
-      references:
-        cce:
-          - CCE-85968-6
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -59,13 +45,13 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-85969-4
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -80,14 +66,17 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -102,13 +91,13 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -123,13 +112,13 @@ os_specifics:
 
         ---
     '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -143,3 +132,10 @@ os_specifics:
         fi
 
         ---
+tags:
+  - 800-53r5_high
+  - 800-53r5_moderate
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server

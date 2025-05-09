@@ -9,41 +9,41 @@ discussion: |
   will leverage user permissions and roles identifying the user accessing the
   tools and the corresponding rights the user enjoys to make access decisions
   regarding the access to audit tools.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-001493
-    - CCI-001494
-  800-53r4:
-    - N/A
-  srg:
-    - SRG-OS-000256-GPiOS-00097
-    - SRG-OS-000257-GPOS-00098
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - cis_lvl2
-  - client
-  - server
-severity: medium
+  disa:
+    cci:
+      - CCI-001493
+      - CCI-001494
+    srg:
+      - SRG-OS-000256-GPiOS-00097
+      - SRG-OS-000257-GPOS-00098
+    disa_stig:
+      '2004':
+        - UBTU-20-010200
+      '2204':
+        - UBTU-22-232110
+  nist:
+    cce:
+      '10':
+        - CCE-89400-6
+      '8':
+        - CCE-86453-8
+      '9':
+        - CCE-86454-6
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-89400-6
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -55,13 +55,14 @@ os_specifics:
 
         ---
     '8':
-      references:
-        cce:
-          - CCE-86453-8
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -74,13 +75,14 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-86454-6
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -93,14 +95,18 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010200
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -114,13 +120,14 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-232110
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -134,13 +141,14 @@ os_specifics:
 
         ---
     '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -153,3 +161,7 @@ os_specifics:
         chown 0 /sbin/augenrules
 
         ---
+tags:
+  - cis_lvl2
+  - client
+  - server

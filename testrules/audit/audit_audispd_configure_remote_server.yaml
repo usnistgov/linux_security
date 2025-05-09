@@ -4,38 +4,38 @@ discussion: |
   Information stored in one location is vulnerable to accidental or incidental
   deletion or alteration.Off-loading is a common process in information systems
   with limited audit storage capacity.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-001851
-  800-53r4:
-    - N/A
-  srg:
-    - SRG-OS-000342-GPOS-00133
-    - SRG-OS-000479-GPOS-00224
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - N/A
-severity: medium
+  disa:
+    cci:
+      - CCI-001851
+    srg:
+      - SRG-OS-000342-GPOS-00133
+      - SRG-OS-000479-GPOS-00224
+    disa_stig:
+      '2004':
+        - UBTU-20-010216
+      '2204':
+        - UBTU-22-653020
+  nist:
+    cce:
+      '8':
+        - CCE-80925-1
+      '9':
+        - CCE-89900-5
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '8':
-      references:
-        cce:
-          - CCE-80925-1
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -71,13 +71,14 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-89900-5
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -113,14 +114,18 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010216
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -175,13 +180,14 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-653020
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -235,3 +241,5 @@ os_specifics:
         fi
 
         ---
+tags:
+  - N/A

@@ -8,45 +8,38 @@ discussion: |
 
   Audit records can be generated from various components within the
   information system (e.g., module or policy filter).
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000130
-    - CCI-000169
-    - CCI-000172
-    - CCI-002884
-  800-53r4:
-    - AU-3
-    - AU-12(a)
-    - AU-12(c)
-    - MA-4(1)(a)
-  srg:
-    - N/A
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - 800-53r5_high
-  - 800-53r5_low
-  - 800-53r5_moderate
-severity: medium
+  disa:
+    cci:
+      - CCI-000130
+      - CCI-000169
+      - CCI-000172
+      - CCI-002884
+    disa_stig:
+      '2004':
+        - UBTU-20-010137
+      '2204':
+        - UBTU-22-654030
+  nist:
+    800-53r4:
+      - AU-3
+      - AU-12(a)
+      - AU-12(c)
+      - MA-4(1)(a)
 os_specifics:
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010137
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -373,13 +366,14 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-654030
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -705,3 +699,7 @@ os_specifics:
         fi
 
         ---
+tags:
+  - 800-53r5_high
+  - 800-53r5_low
+  - 800-53r5_moderate

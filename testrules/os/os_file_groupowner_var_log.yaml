@@ -4,37 +4,43 @@ discussion: |
   The /var/log directory contains files with logs of error
   messages in the system and should only be accessed by authorized
   personnel.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-001314
-  800-53r4:
-    - N/A
-  srg:
-    - SRG-OS-000206-GPOS-00084
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - N/A
-severity: medium
+  disa:
+    cci:
+      - CCI-001314
+    srg:
+      - SRG-OS-000206-GPOS-00084
+    disa_stig:
+      '8':
+        - RHEL-08-010260
+      '9':
+        - RHEL-09-232175
+      '2004':
+        - UBTU-20-010417
+      '2204':
+        - UBTU-22-232125
+  nist:
+    cce:
+      '10':
+        - CCE-89035-0
+      '8':
+        - CCE-83659-3
+      '9':
+        - CCE-83912-6
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-89035-0
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -42,13 +48,14 @@ os_specifics:
 
         ---
     '8':
-      references:
-        cce:
-          - CCE-83659-3
-        disa_stig:
-          - RHEL-08-010260
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -56,13 +63,14 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-83912-6
-        disa_stig:
-          - RHEL-09-232175
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -70,14 +78,18 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010417
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -85,16 +97,19 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-232125
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
         find -H /var/log/ -maxdepth 1 -type d -exec chgrp -L syslog {} \;
 
         ---
+tags:
+  - N/A

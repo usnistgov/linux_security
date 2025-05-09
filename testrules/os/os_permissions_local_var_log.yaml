@@ -4,39 +4,37 @@ discussion: |
   The Ubuntu 20.04 must generate error messages that provide information
   necessary for corrective actions without revealing information that could
   be exploited by adversaries.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-001312
-  800-53r4:
-    - SI-11(a)
-    - SI-11(b)
-    - SI-11.1(iii)
-  srg:
-    - SRG-OS-000205-GPOS-00083
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - N/A
-severity: medium
+  disa:
+    cci:
+      - CCI-001312
+    srg:
+      - SRG-OS-000205-GPOS-00083
+    disa_stig:
+      '2004':
+        - UBTU-20-010416
+      '2204':
+        - UBTU-22-232026
+  nist:
+    800-53r4:
+      - SI-11(a)
+      - SI-11(b)
+      - SI-11.1(iii)
 os_specifics:
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010416
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -48,13 +46,15 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-232026
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -65,3 +65,5 @@ os_specifics:
         find  /var/log/  -perm /u+xs,g+xws,o+xwrt ! -name 'history.log' ! -name 'eipp.log.xz' ! -name '*[bw]tmp' ! -name '*lastlog' -type f -regextype posix-extended -regex '.*' -exec chmod u-xs,g-xws,o-xwrt {} \;
 
         ---
+tags:
+  - N/A

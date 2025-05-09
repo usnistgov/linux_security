@@ -3,44 +3,48 @@ title: Configure auditd Disk Full Action when Disk Space Is Full
 discussion: |
   Taking appropriate action in case of a filled audit storage volume will minimize
   the possibility of losing audit records.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000140
-  800-53r4:
-    - AU-5(1)
-    - AU-5(2)
-    - AU-5(4)
-    - AU-5(b)
-    - CM-6(a)
-  srg:
-    - SRG-OS-000047-GPOS-00023
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - 800-53r5_high
-  - cis_lvl2
-  - client
-  - server
-severity: medium
+  disa:
+    cci:
+      - CCI-000140
+    srg:
+      - SRG-OS-000047-GPOS-00023
+    disa_stig:
+      '8':
+        - RHEL-08-030060
+      '2004':
+        - UBTU-20-010118
+      '2204':
+        - UBTU-22-653030
+  nist:
+    800-53r4:
+      - AU-5(1)
+      - AU-5(2)
+      - AU-5(4)
+      - AU-5(b)
+      - CM-6(a)
+    cce:
+      '10':
+        - CCE-88198-7
+      '8':
+        - CCE-84045-4
+      '9':
+        - CCE-83684-1
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-88198-7
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -80,13 +84,15 @@ os_specifics:
 
         ---
     '8':
-      references:
-        cce:
-          - CCE-84045-4
-        disa_stig:
-          - RHEL-08-030060
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -126,13 +132,15 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-83684-1
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -172,14 +180,19 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010118
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -218,13 +231,15 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-653030
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -263,13 +278,15 @@ os_specifics:
 
         ---
     '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -307,3 +324,8 @@ os_specifics:
         fi
 
         ---
+tags:
+  - 800-53r5_high
+  - cis_lvl2
+  - client
+  - server

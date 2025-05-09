@@ -20,44 +20,50 @@ discussion: |
   provide the capability to identify when the audit tools have been modified,
   manipulated, or replaced. An example is a checksum hash of the file or
   files.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-001493
-    - CCI-001494
-    - CCI-001495
-    - CCI-001496
-  800-53r4:
-    - AU-9(3)
-    - AU-9(3).1
-  srg:
-    - SRG-OS-000278-GPOS-00108
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - 800-53r5_high
-  - cis_lvl2
-  - client
-  - server
-severity: medium
+  disa:
+    cci:
+      - CCI-001493
+      - CCI-001494
+      - CCI-001495
+      - CCI-001496
+    srg:
+      - SRG-OS-000278-GPOS-00108
+    disa_stig:
+      '8':
+        - RHEL-08-030650
+      '9':
+        - RHEL-09-651025
+      '2004':
+        - UBTU-20-010205
+      '2204':
+        - UBTU-22-651030
+  nist:
+    800-53r4:
+      - AU-9(3)
+      - AU-9(3).1
+    cce:
+      '10':
+        - CCE-86441-3
+      '8':
+        - CCE-85964-5
+      '9':
+        - CCE-87757-1
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '10':
-      references:
-        cce:
-          - CCE-86441-3
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -125,13 +131,15 @@ os_specifics:
 
         ---
     '8':
-      references:
-        cce:
-          - CCE-85964-5
-        disa_stig:
-          - RHEL-08-030650
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -199,13 +207,15 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-87757-1
-        disa_stig:
-          - RHEL-09-651025
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -273,14 +283,19 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010205
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -347,13 +362,15 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-651030
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -412,13 +429,15 @@ os_specifics:
 
         ---
     '2404':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
+        - nist_800-53r5
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -476,3 +495,8 @@ os_specifics:
         fi
 
         ---
+tags:
+  - 800-53r5_high
+  - cis_lvl2
+  - client
+  - server

@@ -19,46 +19,43 @@ discussion: |
   and/or services to only those required, authorized, and approved to
   conduct official business or to address authorized quality of life
   issues.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000382
-  800-53r4:
-    - N/A
-  srg:
-    - SRG-OS-000096-GPOS-00050
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - N/A
-severity: medium
+  disa:
+    cci:
+      - CCI-000382
+    srg:
+      - SRG-OS-000096-GPOS-00050
+    disa_stig:
+      '2004':
+        - UBTU-20-010407
+      '2204':
+        - UBTU-22-251030
 os_specifics:
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010407
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix:
         - N/A
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-251030
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix:
         - N/A
+tags:
+  - N/A

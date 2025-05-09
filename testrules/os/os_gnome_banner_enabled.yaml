@@ -10,43 +10,43 @@ discussion: |
   System use notifications are required only for access via login interfaces
   with human users and are not required when such human interfaces do not
   exist.
-check: $OS_VALUE
-result:
-  integer: 1
-fix: $OS_VALUE
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000048
-    - CCI-001384
-    - CCI-001385
-    - CCI-001386
-    - CCI-001387
-    - CCI-001388
-  800-53r4:
-    - N/A
-  srg:
-    - SRG-OS-000023-GPOS-00006
-    - SRG-OS-000228-GPOS-00088
-  disa_stig:
-    - $OS_VALUE
-  cis:
-    benchmark:
-      - $OS_VALUE
-tags:
-  - N/A
-severity: medium
+  disa:
+    cci:
+      - CCI-000048
+      - CCI-001384
+      - CCI-001385
+      - CCI-001386
+      - CCI-001387
+      - CCI-001388
+    srg:
+      - SRG-OS-000023-GPOS-00006
+      - SRG-OS-000228-GPOS-00088
+    disa_stig:
+      '2004':
+        - UBTU-20-010038
+      '2204':
+        - UBTU-22-255020
+  nist:
+    cce:
+      '8':
+        - CCE-86147-6
+      '9':
+        - CCE-86148-4
 os_specifics:
   rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '8':
-      references:
-        cce:
-          - CCE-86147-6
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -80,13 +80,14 @@ os_specifics:
 
         ---
     '9':
-      references:
-        cce:
-          - CCE-86148-4
-        disa_stig:
-          - N/A
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -120,14 +121,18 @@ os_specifics:
 
         ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010038
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -162,13 +167,14 @@ os_specifics:
 
         ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-22-255020
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - disa_stigs
       check:
         - N/A
+      result:
+        integer: 0
       fix: |
         [source,bash]
         ---
@@ -202,3 +208,5 @@ os_specifics:
         fi
 
         ---
+tags:
+  - N/A
