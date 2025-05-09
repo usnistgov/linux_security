@@ -438,6 +438,8 @@ def main():
                             if identifier["href"] == "https://public.cyber.mil/stigs/cci/":
                                 #This is a CCI, add this to the global refs
                                 path_unique_append(yaml_dict,["references","disa"],"cci", str(identifier.get_text()))
+                                # Also add to specific benchmarks
+                                unique_append(yaml_dict["os_specifics"][os_title][os_version]["benchmarks"],"disa_stig")
                             if identifier["href"] ==  "http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf":
                                 # This is an 800-53, so check against severity grading + add to global refs
                                 nistmatch = str(identifier.string)
@@ -448,13 +450,19 @@ def main():
                                     unique_append(yaml_dict["tags"],"800-53r5_moderate")
                                 if nistmatch in nist_yaml["high"]:
                                     unique_append(yaml_dict["tags"],"800-53r5_high")
+                                # Also add to specific benchmarks
+                                unique_append(yaml_dict["os_specifics"][os_title][os_version]["benchmarks"],"nist_800-53r5")
                             if identifier["href"] ==  "https://public.cyber.mil/stigs/downloads/?_dl_facet_stigs=operating-systems%2Cgeneral-purpose-os":
                                 # This is an SRG, so add to global refs
                                 path_unique_append(yaml_dict,["references","disa"],"srg",str(identifier.get_text()))
+                                # Also add to specific benchmarks
+                                unique_append(yaml_dict["os_specifics"][os_title][os_version]["benchmarks"],"disa_stigs")
                             if identifier["href"] ==  "https://public.cyber.mil/stigs/downloads/?_dl_facet_stigs=operating-systems%2Cunix-linux":
                                 # This is a STIG, so add it to os_specifics
                                 #unique_append(yaml_os_specificrefs["disa_stig"],str(identifier.get_text()))
                                 path_unique_append(yaml_dict,["references","disa","disa_stig"],os_version, str(identifier.get_text()))
+                                # Also add to specific benchmarks
+                                unique_append(yaml_dict["os_specifics"][os_title][os_version]["benchmarks"],"disa_stig")
                         cce = rule.find("xccdf-1.2:ident")
                         if cce:
                             path_unique_append(yaml_dict,["references","nist","cce"],os_version,str(cce.get_text()))
