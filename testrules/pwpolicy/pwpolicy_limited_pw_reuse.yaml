@@ -17,8 +17,7 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - disa_stigs
-      check:
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -135,8 +134,7 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - disa_stigs
-      check:
+      enforcement_info:
         - N/A
       result:
         integer: 0

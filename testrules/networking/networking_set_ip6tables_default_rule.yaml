@@ -10,10 +10,10 @@ references:
   nist:
     800-53r4:
       - AC-4
-      - CA-3(5)
-      - CM-6(a)
-      - CM-7(b)
-      - SC-7(21)
+      - CA-3
+      - CM-6
+      - CM-7
+      - SC-7
     cce:
       '8':
         - CCE-85965-2
@@ -27,8 +27,8 @@ os_specifics:
     '8':
       severity: medium
       benchmarks:
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -48,8 +48,8 @@ os_specifics:
     '9':
       severity: medium
       benchmarks:
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -73,8 +73,8 @@ os_specifics:
     '2004':
       severity: medium
       benchmarks:
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -95,8 +95,8 @@ os_specifics:
     '2204':
       severity: medium
       benchmarks:
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -117,8 +117,8 @@ os_specifics:
     '2404':
       severity: medium
       benchmarks:
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -137,8 +137,9 @@ os_specifics:
 
         ---
 tags:
-  - 800-53r5_high
-  - 800-53r5_moderate
+  - 800-53r4_high
+  - 800-53r4_low
+  - 800-53r4_moderate
   - cis_lvl1
   - cis_lvl2
   - client

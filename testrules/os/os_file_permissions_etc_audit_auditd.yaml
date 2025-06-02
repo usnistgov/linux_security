@@ -24,7 +24,7 @@ references:
         - UBTU-22-653065
   nist:
     800-53r4:
-      - AU-12(b)
+      - AU-12
     cce:
       '10':
         - CCE-89306-5
@@ -41,9 +41,8 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -61,9 +60,8 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -81,9 +79,8 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -105,9 +102,8 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -125,9 +121,8 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -145,9 +140,8 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -162,6 +156,9 @@ os_specifics:
 
         ---
 tags:
+  - 800-53r4_high
+  - 800-53r4_low
+  - 800-53r4_moderate
   - cis_lvl2
   - client
   - server

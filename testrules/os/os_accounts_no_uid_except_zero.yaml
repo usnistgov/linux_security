@@ -19,9 +19,9 @@ references:
         - RHEL-09-411100
   nist:
     800-53r4:
-      - AC-6(5)
+      - AC-6
       - IA-2
-      - IA-4(b)
+      - IA-4
     cce:
       '10':
         - CCE-87552-6
@@ -38,9 +38,8 @@ os_specifics:
       severity: high
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -54,9 +53,8 @@ os_specifics:
       severity: high
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -70,9 +68,8 @@ os_specifics:
       severity: high
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -90,9 +87,8 @@ os_specifics:
       severity: high
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -106,9 +102,8 @@ os_specifics:
       severity: high
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -122,9 +117,8 @@ os_specifics:
       severity: high
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -135,9 +129,9 @@ os_specifics:
 
         ---
 tags:
-  - 800-53r5_high
-  - 800-53r5_low
-  - 800-53r5_moderate
+  - 800-53r4_high
+  - 800-53r4_low
+  - 800-53r4_moderate
   - cis_lvl1
   - cis_lvl2
   - client

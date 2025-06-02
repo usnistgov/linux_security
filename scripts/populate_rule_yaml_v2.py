@@ -428,7 +428,7 @@ def main():
                         if os_version not in yaml_dict["os_specifics"][os_title].keys():
                             yaml_dict["os_specifics"][os_title][os_version] = {}
 
-                        yaml_dict["os_specifics"][os_title][os_version] = {"severity":rule["severity"],"benchmarks":None,"check":None,"result":{"integer":0},"fix":None}
+                        yaml_dict["os_specifics"][os_title][os_version] = {"severity":rule["severity"],"benchmarks":[],"enforcement_info":None,"result":{"integer":0},"fix":None}
                         #yaml_references = yaml_dict["references"]
                         #yaml_os_specificrefs = yaml_dict["os_specifics"][os_title][os_version]["references"]
                                                 
@@ -440,23 +440,25 @@ def main():
                                 path_unique_append(yaml_dict,["references","disa"],"cci", str(identifier.get_text()))
                                 # Also add to specific benchmarks
                                 unique_append(yaml_dict["os_specifics"][os_title][os_version]["benchmarks"],"disa_stig")
+                            # TODO: Need to add 800-53r5 support soon
                             if identifier["href"] ==  "http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf":
                                 # This is an 800-53, so check against severity grading + add to global refs
-                                nistmatch = str(identifier.string)
+                                # This splits on the opening parentheses so that we can ignore subsections
+                                nistmatch = str(identifier.string).split("(")[0]
                                 path_unique_append(yaml_dict,["references","nist"],"800-53r4", nistmatch)
                                 if nistmatch in nist_yaml["low"]:
-                                    unique_append(yaml_dict["tags"],"800-53r5_low")
+                                    unique_append(yaml_dict["tags"],"800-53r4_low")
                                 if nistmatch in nist_yaml["moderate"]:
-                                    unique_append(yaml_dict["tags"],"800-53r5_moderate")
+                                    unique_append(yaml_dict["tags"],"800-53r4_moderate")
                                 if nistmatch in nist_yaml["high"]:
-                                    unique_append(yaml_dict["tags"],"800-53r5_high")
+                                    unique_append(yaml_dict["tags"],"800-53r4_high")
                                 # Also add to specific benchmarks
-                                unique_append(yaml_dict["os_specifics"][os_title][os_version]["benchmarks"],"nist_800-53r5")
+                                unique_append(yaml_dict["os_specifics"][os_title][os_version]["benchmarks"],"nist_800-53r4")
                             if identifier["href"] ==  "https://public.cyber.mil/stigs/downloads/?_dl_facet_stigs=operating-systems%2Cgeneral-purpose-os":
                                 # This is an SRG, so add to global refs
                                 path_unique_append(yaml_dict,["references","disa"],"srg",str(identifier.get_text()))
                                 # Also add to specific benchmarks
-                                unique_append(yaml_dict["os_specifics"][os_title][os_version]["benchmarks"],"disa_stigs")
+                                unique_append(yaml_dict["os_specifics"][os_title][os_version]["benchmarks"],"disa_stig")
                             if identifier["href"] ==  "https://public.cyber.mil/stigs/downloads/?_dl_facet_stigs=operating-systems%2Cunix-linux":
                                 # This is a STIG, so add it to os_specifics
                                 #unique_append(yaml_os_specificrefs["disa_stig"],str(identifier.get_text()))

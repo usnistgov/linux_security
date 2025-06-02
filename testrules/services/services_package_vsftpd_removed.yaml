@@ -20,13 +20,10 @@ references:
         - RHEL-09-215015
   nist:
     800-53r4:
-      - CM-6(a)
+      - CM-6
       - CM-7
-      - CM-7(a)
-      - CM-7(b)
-      - CM-7.1(ii)
-      - IA-5(1)(c)
-      - IA-5(1).1(v)
+      - CM-7.1
+      - IA-5
     cce:
       '10':
         - CCE-88674-7
@@ -43,9 +40,8 @@ os_specifics:
       severity: high
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -68,9 +64,8 @@ os_specifics:
       severity: high
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -93,9 +88,8 @@ os_specifics:
       severity: high
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -122,9 +116,8 @@ os_specifics:
       severity: high
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -145,9 +138,8 @@ os_specifics:
       severity: high
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -168,9 +160,8 @@ os_specifics:
       severity: high
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -188,9 +179,9 @@ os_specifics:
 
         ---
 tags:
-  - 800-53r5_high
-  - 800-53r5_low
-  - 800-53r5_moderate
+  - 800-53r4_high
+  - 800-53r4_low
+  - 800-53r4_moderate
   - cis_lvl1
   - cis_lvl2
   - client

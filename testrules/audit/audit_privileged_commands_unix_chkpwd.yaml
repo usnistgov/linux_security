@@ -34,17 +34,15 @@ references:
         - RHEL-09-654160
   nist:
     800-53r4:
-      - AC-2(4)
-      - AC-6(9)
-      - AU-2(d)
+      - AC-2
+      - AC-6
+      - AU-2
       - AU-3
       - AU-3.1
-      - AU-12(a)
-      - AU-12(c)
-      - AU-12.1(ii)
-      - AU-12.1(iv)
-      - CM-6(a)
-      - MA-4(1)(a)
+      - AU-12
+      - AU-12.1
+      - CM-6
+      - MA-4
     cce:
       '10':
         - CCE-89529-2
@@ -61,9 +59,8 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -395,9 +392,8 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -729,9 +725,8 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -1067,9 +1062,8 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -1402,9 +1396,8 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -1734,6 +1727,6 @@ os_specifics:
 
         ---
 tags:
-  - 800-53r5_high
-  - 800-53r5_low
-  - 800-53r5_moderate
+  - 800-53r4_high
+  - 800-53r4_low
+  - 800-53r4_moderate

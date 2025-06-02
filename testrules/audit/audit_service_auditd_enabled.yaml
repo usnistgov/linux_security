@@ -74,15 +74,15 @@ references:
         - UBTU-22-653015
   nist:
     800-53r4:
-      - AC-2(g)
-      - AC-6(9)
-      - AU-2(d)
+      - AC-2
+      - AC-6
+      - AU-2
       - AU-3
       - AU-10
-      - AU-12(c)
-      - AU-14(1)
-      - CM-6(a)
-      - SI-4(23)
+      - AU-12
+      - AU-14
+      - CM-6
+      - SI-4
     cce:
       '10':
         - CCE-87955-1
@@ -99,9 +99,8 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -127,9 +126,8 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -155,9 +153,8 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -187,9 +184,8 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -216,9 +212,8 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -245,9 +240,8 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -271,9 +265,9 @@ os_specifics:
 
         ---
 tags:
-  - 800-53r5_high
-  - 800-53r5_low
-  - 800-53r5_moderate
+  - 800-53r4_high
+  - 800-53r4_low
+  - 800-53r4_moderate
   - cis_lvl2
   - client
   - server

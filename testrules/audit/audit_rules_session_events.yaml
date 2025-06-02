@@ -6,9 +6,9 @@ discussion: |
 references:
   nist:
     800-53r4:
-      - AU-2(d)
-      - AU-12(c)
-      - CM-6(a)
+      - AU-2
+      - AU-12
+      - CM-6
     cce:
       '10':
         - CCE-89323-0
@@ -24,8 +24,8 @@ os_specifics:
     '10':
       severity: medium
       benchmarks:
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -441,8 +441,8 @@ os_specifics:
     '8':
       severity: medium
       benchmarks:
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -858,8 +858,8 @@ os_specifics:
     '9':
       severity: medium
       benchmarks:
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -1279,8 +1279,8 @@ os_specifics:
     '2004':
       severity: medium
       benchmarks:
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -1697,8 +1697,8 @@ os_specifics:
     '2204':
       severity: medium
       benchmarks:
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -2115,8 +2115,8 @@ os_specifics:
     '2404':
       severity: medium
       benchmarks:
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -2531,6 +2531,9 @@ os_specifics:
 
         ---
 tags:
+  - 800-53r4_high
+  - 800-53r4_low
+  - 800-53r4_moderate
   - cis_lvl2
   - client
   - server

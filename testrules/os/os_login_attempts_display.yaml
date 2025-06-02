@@ -23,7 +23,6 @@ references:
   nist:
     800-53r4:
       - AC-9
-      - AC-9(1)
     cce:
       '10':
         - CCE-88650-7
@@ -40,9 +39,8 @@ os_specifics:
       severity: low
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -341,9 +339,8 @@ os_specifics:
       severity: low
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -642,9 +639,8 @@ os_specifics:
       severity: low
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -947,9 +943,8 @@ os_specifics:
       severity: low
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -1248,9 +1243,8 @@ os_specifics:
       severity: low
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0

@@ -18,7 +18,7 @@ os_specifics:
       severity: medium
       benchmarks:
         - N/A
-      check:
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -48,7 +48,7 @@ os_specifics:
       severity: medium
       benchmarks:
         - N/A
-      check:
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -75,7 +75,7 @@ os_specifics:
       severity: medium
       benchmarks:
         - N/A
-      check:
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -102,7 +102,7 @@ os_specifics:
       severity: medium
       benchmarks:
         - N/A
-      check:
+      enforcement_info:
         - N/A
       result:
         integer: 0

@@ -20,7 +20,7 @@ os_specifics:
       severity: low
       benchmarks:
         - N/A
-      check:
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -43,7 +43,7 @@ os_specifics:
       severity: low
       benchmarks:
         - N/A
-      check:
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -66,7 +66,7 @@ os_specifics:
       severity: low
       benchmarks:
         - N/A
-      check:
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -93,7 +93,7 @@ os_specifics:
       severity: low
       benchmarks:
         - N/A
-      check:
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -114,7 +114,7 @@ os_specifics:
       severity: low
       benchmarks:
         - N/A
-      check:
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -135,7 +135,7 @@ os_specifics:
       severity: low
       benchmarks:
         - N/A
-      check:
+      enforcement_info:
         - N/A
       result:
         integer: 0

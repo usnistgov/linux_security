@@ -51,13 +51,11 @@ references:
         - UBTU-22-431015
   nist:
     800-53r4:
-      - AC-3(4)
-      - AC-6(8)
-      - AC-6(10)
-      - CM-6(a)
-      - CM-7(2)
-      - CM-7(5)(b)
-      - SC-7(21)
+      - AC-3
+      - AC-6
+      - CM-6
+      - CM-7
+      - SC-7
 os_specifics:
   ubuntu:
     check: $OS_VALUE
@@ -67,9 +65,8 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -100,9 +97,8 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -130,5 +126,6 @@ os_specifics:
 
         ---
 tags:
-  - 800-53r5_high
-  - 800-53r5_moderate
+  - 800-53r4_high
+  - 800-53r4_low
+  - 800-53r4_moderate

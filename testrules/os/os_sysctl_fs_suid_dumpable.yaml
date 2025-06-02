@@ -9,8 +9,7 @@ discussion: |
 references:
   nist:
     800-53r4:
-      - SI-11(a)
-      - SI-11(b)
+      - SI-11
     cce:
       '10':
         - CCE-88399-1
@@ -26,8 +25,8 @@ os_specifics:
     '10':
       severity: medium
       benchmarks:
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -104,8 +103,8 @@ os_specifics:
     '8':
       severity: medium
       benchmarks:
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -182,8 +181,8 @@ os_specifics:
     '9':
       severity: medium
       benchmarks:
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -264,8 +263,8 @@ os_specifics:
     '2004':
       severity: medium
       benchmarks:
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -341,8 +340,8 @@ os_specifics:
     '2204':
       severity: medium
       benchmarks:
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -418,8 +417,8 @@ os_specifics:
     '2404':
       severity: medium
       benchmarks:
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -493,6 +492,8 @@ os_specifics:
 
         ---
 tags:
+  - 800-53r4_high
+  - 800-53r4_moderate
   - cis_lvl1
   - cis_lvl2
   - client

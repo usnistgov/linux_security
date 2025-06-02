@@ -34,11 +34,11 @@ references:
         - UBTU-22-212015
   nist:
     800-53r4:
-      - AC-17(1)
+      - AC-17
       - AU-10
-      - AU-14(1)
-      - CM-6(a)
-      - IR-5(1)
+      - AU-14
+      - CM-6
+      - IR-5
     cce:
       '10':
         - CCE-88376-9
@@ -55,9 +55,8 @@ os_specifics:
       severity: low
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -92,9 +91,8 @@ os_specifics:
       severity: low
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -129,9 +127,8 @@ os_specifics:
       severity: low
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -170,9 +167,8 @@ os_specifics:
       severity: low
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -221,9 +217,8 @@ os_specifics:
       severity: low
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -272,9 +267,8 @@ os_specifics:
       severity: low
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -320,8 +314,9 @@ os_specifics:
 
         ---
 tags:
-  - 800-53r5_high
-  - 800-53r5_moderate
+  - 800-53r4_high
+  - 800-53r4_low
+  - 800-53r4_moderate
   - cis_lvl2
   - client
   - server

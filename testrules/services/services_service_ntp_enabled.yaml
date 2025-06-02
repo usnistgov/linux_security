@@ -18,8 +18,8 @@ references:
       - CCI-000160
   nist:
     800-53r4:
-      - AU-8(1)(a)
-      - CM-6(a)
+      - AU-8
+      - CM-6
 os_specifics:
   rhel:
     check: $OS_VALUE
@@ -29,8 +29,8 @@ os_specifics:
       severity: high
       benchmarks:
         - disa_stig
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -56,8 +56,8 @@ os_specifics:
       severity: high
       benchmarks:
         - disa_stig
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -87,8 +87,8 @@ os_specifics:
       severity: high
       benchmarks:
         - disa_stig
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -115,8 +115,8 @@ os_specifics:
       severity: high
       benchmarks:
         - disa_stig
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -140,4 +140,6 @@ os_specifics:
 
         ---
 tags:
-  - N/A
+  - 800-53r4_high
+  - 800-53r4_low
+  - 800-53r4_moderate

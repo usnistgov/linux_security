@@ -9,10 +9,8 @@ references:
       - CCI-000196
   nist:
     800-53r4:
-      - CM-6(a)
-      - IA-5(1)(c)
-      - IA-5(7)
-      - IA-5(h)
+      - CM-6
+      - IA-5
     cce:
       '10':
         - CCE-89147-3
@@ -29,8 +27,8 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -40,8 +38,8 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -51,8 +49,8 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -66,8 +64,8 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -77,8 +75,8 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -88,14 +86,17 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
       fix:
         - N/A
 tags:
+  - 800-53r4_high
+  - 800-53r4_low
+  - 800-53r4_moderate
   - cis_lvl1
   - cis_lvl2
   - client

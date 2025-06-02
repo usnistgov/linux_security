@@ -25,11 +25,10 @@ references:
         - UBTU-22-231010
   nist:
     800-53r4:
-      - AU-9(3)
-      - CM-6(a)
+      - AU-9
+      - CM-6
       - SC-13
       - SC-28
-      - SC-28(1)
     cce:
       '10':
         - CCE-89165-5
@@ -46,9 +45,8 @@ os_specifics:
       severity: high
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -58,9 +56,8 @@ os_specifics:
       severity: high
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -70,9 +67,8 @@ os_specifics:
       severity: high
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -86,9 +82,8 @@ os_specifics:
       severity: high
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
@@ -98,15 +93,14 @@ os_specifics:
       severity: high
       benchmarks:
         - disa_stig
-        - disa_stigs
-        - nist_800-53r5
-      check:
+        - nist_800-53r4
+      enforcement_info:
         - N/A
       result:
         integer: 0
       fix:
         - N/A
 tags:
-  - 800-53r5_high
-  - 800-53r5_low
-  - 800-53r5_moderate
+  - 800-53r4_high
+  - 800-53r4_low
+  - 800-53r4_moderate
