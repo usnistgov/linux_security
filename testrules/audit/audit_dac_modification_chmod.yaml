@@ -55,7 +55,21 @@ os_specifics:
         - disa_stig
         - nist_800-53r4
       enforcement_info:
-        - N/A
+        check: |
+           [source,bash]
+           ---
+            CHMOD32=$( grep -R -P "always,exit.*arch=b32.*\-S.*[ |,]chmod[ |,].*\-F auid\>\=1000 \-F auid\!\=unset \-F key\=perm\_mod" /etc/audit/* | wc -l)
+            CHMOD64=$(grep -R -P "always,exit.*arch=b64.*\-S.*[ |,]chmod[ |,].*\-F auid\>\=1000 \-F auid\!\=unset \-F key\=perm\_mod" /etc/audit/* | wc -l)
+            if [ $CHMOD32 -e 0 ]; then
+                echo 0
+            elif [ $CHMOD64 -e 0]; then
+                echo 0
+            else
+                echo 1
+            fi
+           ---
+        result:
+           integer: 1
       result:
         integer: 0
       fix: |

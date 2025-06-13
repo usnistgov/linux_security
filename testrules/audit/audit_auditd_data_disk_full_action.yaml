@@ -38,7 +38,18 @@ os_specifics:
         - disa_stig
         - nist_800-53r4
       enforcement_info:
-        - N/A
+        check: |
+           [source,bash]
+           ---
+            DISKFULL=$(cat /etc/audit/auditd.conf | grep -e "disk_full_action \= [syslog|exec|single|halt]" | wc -l)
+            if [[ $DISKFULL -ne 0 ]]; then
+              echo "PASS"
+            else
+              echo "FAIL"
+            fi
+           ---
+        result:
+           integer: 1
       result:
         integer: 0
       fix: |

@@ -32,7 +32,19 @@ os_specifics:
       benchmarks:
         - disa_stig
       enforcement_info:
-        - N/A
+        check: |
+           [source,bash]
+           ---
+            SERVERSET=$(cat /etc/audit/audisp-remote.conf | grep -e "remote_server \= [a-zA-Z]" | wc -l)
+            ACTIVE=$(cat /etc/audit/plugins.d/au-remote.conf | grep "active = yes" | wc -l)
+            if [[ $SERVERSET -ne 0 ]] && [[ $ACTIVE -ne 0 ]]; then
+              echo 0
+            else
+              echo 1
+            fi
+           ---
+        result:
+           integer: 1
       result:
         integer: 0
       fix: |
