@@ -1,0 +1,78 @@
+id: os_group_ownership_var_log_audit
+title: "Verify Group Ownership Permissions on /var/log/audit"
+discussion: |
+  Unauthorized disclosure of audit records can reveal system and configuration data to attackers, thus compromising confidentiality.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000162
+    - CCI-000163
+    - CCI-000164
+    - CCI-001314
+  800-53r5:
+    - CM-6(a)
+    - AC-6(1)
+    - AU-9(4)
+  srg:
+    - SRG-OS-000057-GPOS-00027
+    - SRG-OS-000058-GPOS-00028
+    - SRG-OS-000059-GPOS-00029
+    - SRG-OS-000206-GPOS-00084
+  disa_stig:
+    - UBTU-20-010124
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          RIGHTGROUP=$(/bin/ls -al /etc/motd | /usr/bin/awk '{print $4}' | /bin/grep root | wc -l)
+          if [ $RIGHTGROUP -e 0 ]; then
+             echo "FAIL"
+          else
+             echo "PASS"
+          fi
+        fix: |
+          [source,bash]
+          ---
+            # Remediation is applicable only in certain platforms
+            if [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ] && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q installed; then
+
+            if LC_ALL=C grep -iw log_file /etc/audit/auditd.conf; then
+              FILE=$(awk -F "=" '/^log_file/ {print $2}' /etc/audit/auditd.conf | tr -d ' ')
+            else
+              FILE="/var/log/audit/audit.log"
+            fi
+
+
+            if LC_ALL=C grep -m 1 -q ^log_group /etc/audit/auditd.conf; then
+              GROUP=$(awk -F "=" '/log_group/ {print $2}' /etc/audit/auditd.conf | tr -d ' ')
+                if ! [ "${GROUP}" == 'root' ]; then
+                  chgrp ${GROUP} $FILE*
+                else
+                  chgrp root $FILE*
+                fi
+            else
+              chgrp root $FILE*
+            fi
+
+            else
+                >&2 echo 'Remediation is not applicable, nothing was done'
+            fi
+          ---

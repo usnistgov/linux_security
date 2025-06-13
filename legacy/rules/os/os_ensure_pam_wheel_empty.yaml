@@ -1,0 +1,63 @@
+id: os_ensure_pam_wheel_empty.yaml
+title: The Ubuntu operating system should ensure that the group sugroup has no members and exists.
+discussion: |
+  The sugroup command is commonly used to allow users to perform su commands to run with altered privileges. While this is commonly used to run commands as root, this command should be limited to follow proper security practices.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references: 
+    cce: 
+      - $OS_VALUE
+    cci:  
+      - N/A
+    800_53r5: 
+      - N/A
+    srg: 
+      - N/A
+    disa_stig: 
+      - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - client
+  - server
+severity: 
+  - medium
+os_specifics: 
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          #! /bin/bash
+          var_pam_wheel_group_for_su='sugroup'
+          grp_memb=$(groupmems -g ${var_pam_wheel_group_for_su} -l)
+          # Create the group if not existant
+          if ! grep -q "^${var_pam_wheel_group_for_su}:[^:]*:[^:]*:[^:]*" /etc/group; then
+              echo "FAIL"
+          elif [ -n "${grp_memb}" ]; then
+              echo "FAIL"
+          else
+              echo "PASS"
+          fi
+        fix: |
+          #! /bin/bash
+          var_pam_wheel_group_for_su='sugroup'
+
+          # Create the group if not existant
+          if ! grep -q "^${var_pam_wheel_group_for_su}:[^:]*:[^:]*:[^:]*" /etc/group; then
+              groupadd ${var_pam_wheel_group_for_su}
+          fi
+
+          # group must be empty, delete members if any
+          grp_memb=$(groupmems -g ${var_pam_wheel_group_for_su} -l)
+          if [ -n "${grp_memb}" ]; then
+              for memb in ${grp_memb}; do
+                  deluser ${memb} ${var_pam_wheel_group_for_su}
+              done
+          fi

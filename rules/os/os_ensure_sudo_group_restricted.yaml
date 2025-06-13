@@ -1,47 +1,43 @@
 id: os_ensure_sudo_group_restricted
-title: The Ubuntu operating system must ensure only users who need access to security functions are part of sudo group.
+title: Ensure sudo group has only necessary members
 discussion: |
-  An isolation boundary provides access control and protects the integrity of the hardware, software, and firmware that perform security functions. 
- 
-  Security functions are the hardware, software, and/or firmware of the information system responsible for enforcing the system security policy and supporting the isolation of code and data on which the protection is based. Operating systems implement code separation (i.e., separation of security functions from nonsecurity functions) in a number of ways, including through the provision of security kernels via processor rings or processor modes. For non-kernel code, security function isolation is often achieved through file system protections that serve to protect the code on disk and address space protections that protect executing code. 
-  
-  Developers and implementers can increase the assurance in security functions by employing well-defined security policy models; structured, disciplined, and rigorous hardware and software development techniques; and sound system/security engineering principles. Implementation may include isolation of memory space and libraries.  
-  
-  The Ubuntu operating system restricts access to security functions through the use of access control mechanisms and by implementing least privilege capabilities.
-check: |
-  $OS_VALUE
-result:
-  integer: 1
-fix: |
-  $OS_VALUE
-references: 
-    cce: 
-      - $OS_VALUE
-    cci:  
+  Any users assigned to the sudo group would be granted administrator
+  access to the system.
+references:
+  disa:
+    cci:
       - CCI-001084
-    800_53r5: 
-      - AC-06(01)
-    srg: 
-      - SRG-OS-000076-GPOS-00068
-    disa_stig: 
-      - $OS_VALUE
-tags:
-  - 800-53r5_moderate
-  - 800-53r5_high
-  - client
-  - server
-  - manual
-severity: 
-  - medium
-os_specifics: 
+    srg:
+      - SRG-OS-000134-GPOS-00068
+    disa_stig:
+      '2004':
+        - UBTU-20-010012
+      '2204':
+        - UBTU-22-432015
+os_specifics:
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010012
-        check: |
-          # This test is a manual review of the sudo group for user access; $ grep sudo /etc/group 
-        fix: |
-          # This test is a manual review of the sudo group for user access; $ grep sudo /etc/group 
+      severity: medium
+      benchmarks:
+        - disa_stig
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '2204':
+      severity: medium
+      benchmarks:
+        - disa_stig
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+tags:
+  - N/A

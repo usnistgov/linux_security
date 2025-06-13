@@ -1,71 +1,138 @@
-id: os_accounts_no_uid_except_zero.yaml
-title: "The operating system must ensure that the only account with a UID of zero is the root account."
+id: os_accounts_no_uid_except_zero
+title: Verify Only Root Has UID 0
 discussion: |
-  Accounts other than root with a UID of 0 represent a significant security risk and should be promptly removed.
-check: |
-  $OS_VALUE
-result:
-  integer: 1
-fix: |
-  $OS_VALUE
+  An account has root authority if it has a UID of 0. Multiple accounts
+  with a UID of 0 afford more opportunity for potential intruders to
+  guess a password for a privileged account. Proper configuration of
+  sudo is recommended to afford multiple system administrators
+  access to root privileges in an accountable manner.
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000366
-  800-53r5:
-    - IA-2
-    - AC-6(5)
-    - IA-4(b)
-  srg:
-    - SRG-OS-000480-GPOS-00227
-  disa_stig:
-    - $OS_VALUE
+  disa:
+    cci:
+      - CCI-000366
+    srg:
+      - SRG-OS-000480-GPOS-00227
+    disa_stig:
+      '8':
+        - RHEL-08-040200
+      '9':
+        - RHEL-09-411100
+  nist:
+    800-53r4:
+      - AC-6
+      - IA-2
+      - IA-4
+    cce:
+      '10':
+        - CCE-87552-6
+      '8':
+        - CCE-80649-7
+      '9':
+        - CCE-83624-7
+os_specifics:
+  rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '10':
+      severity: high
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        awk -F: '$3 == 0 && $1 != "root" { print $1 }' /etc/passwd | xargs --no-run-if-empty --max-lines=1 passwd -l
+
+        ---
+    '8':
+      severity: high
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        awk -F: '$3 == 0 && $1 != "root" { print $1 }' /etc/passwd | xargs --no-run-if-empty --max-lines=1 passwd -l
+
+        ---
+    '9':
+      severity: high
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        awk -F: '$3 == 0 && $1 != "root" { print $1 }' /etc/passwd | xargs --no-run-if-empty --max-lines=1 passwd -l
+
+        ---
+  ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '2004':
+      severity: high
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        awk -F: '$3 == 0 && $1 != "root" { print $1 }' /etc/passwd | xargs --no-run-if-empty --max-lines=1 passwd -l
+
+        ---
+    '2204':
+      severity: high
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        awk -F: '$3 == 0 && $1 != "root" { print $1 }' /etc/passwd | xargs --no-run-if-empty --max-lines=1 passwd -l
+
+        ---
+    '2404':
+      severity: high
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        awk -F: '$3 == 0 && $1 != "root" { print $1 }' /etc/passwd | xargs --no-run-if-empty --max-lines=1 passwd -l
+
+        ---
 tags:
+  - 800-53r4_high
+  - 800-53r4_low
+  - 800-53r4_moderate
+  - cis_lvl1
+  - cis_lvl2
   - client
   - server
-severity: "high"
-os_specifics:
-  ubuntu:
-    '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-        check: |
-          #! /bin/bash
-          # TODO: This prints out the result of the NONROOTUIDS variable
-          NONROOTUIDS=$(awk -F: '$3 == 0 && $1 != "root" { print $1 }' /etc/passwd | xargs --no-run-if-empty --max-lines=1 passwd -l | wc -l)
-          if ($NONROOTUIDS) then
-            echo "FAIL"
-          else
-            echo "PASS"
-          fi
-        fix: |
-          [source,bash]
-          ---
-          echo "No automatic remediation at this time."
-          echo "Future algorithms could automatically change UIDs"
-          ---
-    '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-        check: |
-          #! /bin/bash
-          # TODO: This prints out the result of the NONROOTUIDS variable
-          NONROOTUIDS=$(awk -F: '$3 == 0 && $1 != "root" { print $1 }' /etc/passwd | xargs --no-run-if-empty --max-lines=1 passwd -l | wc -l)
-          if ($NONROOTUIDS) then
-            echo "FAIL"
-          else
-            echo "PASS"
-          fi
-        fix: |
-          [source,bash]
-          ---
-          echo "No automatic remediation at this time."
-          echo "Future algorithms could automatically change UIDs"
-          ---

@@ -1,0 +1,48 @@
+id: os_ensure_shadow_group_restricted
+title: The Ubuntu operating system should not enable user accounts to be a member of the shadow group. 
+discussion: |
+  End users should never be added to the shadow group, as it enables them to view the /etc/shadow file, which contains password hashes.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references: 
+    cce: 
+      - $OS_VALUE
+    cci:  
+      - N/A
+    800_53r5: 
+      - N/A
+    srg: 
+      - N/A
+    disa_stig: 
+      - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+  - manual
+severity: 
+  - medium
+os_specifics: 
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          #! /bin/bash
+          SHADOWUSERS=sudo getent shadow | awk -F: '{print $4}' | wc -m 
+          if $SHADOWUSERS > 1; then
+            echo "FAIL"
+          else
+            echo "PASS"
+          fi
+        fix: |
+          #! /bin/bash
+          sed -ri 's/(^shadow:[^:]*:[^:]*:)([^:]+$)/\1/' /etc/group

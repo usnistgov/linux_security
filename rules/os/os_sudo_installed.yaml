@@ -1,55 +1,184 @@
 id: os_sudo_installed
-title: "The Operating System MUST have sudo installed"
+title: Install sudo Package
 discussion: |
-  The sudo package must be installed to add a layer of additional security for superuser actions.
-check: |
-  $OS_VALUE
-result:
-  integer: 1
-fix: |
-  $OS_VALUE
+  sudo is a program designed to allow a system administrator to give
+  limited root privileges to users and log root activity. The basic philosophy
+  is to give as few privileges as possible but still allow system users to
+  get their work done.
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - N/A 
-  800-53r5:
-    - N/A 
-  srg:
-    - SRG-OS-000324-GPOS-00125
-  disa_stig:
-    - $OS_VALUE
+  disa:
+    cci:
+      - CCI-002235
+    srg:
+      - SRG-OS-000324-GPOS-00125
+    disa_stig:
+      '9':
+        - RHEL-09-432010
+  nist:
+    800-53r4:
+      - CM-6
+    cce:
+      '10':
+        - CCE-87100-4
+      '8':
+        - CCE-82214-8
+      '9':
+        - CCE-83523-1
+os_specifics:
+  rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '10':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        if ! rpm -q --quiet "sudo" ; then
+            dnf install -y "sudo"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        if ! rpm -q --quiet "sudo" ; then
+            yum install -y "sudo"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        if ! rpm -q --quiet "sudo" ; then
+            dnf install -y "sudo"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '2004':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        DEBIAN_FRONTEND=noninteractive apt-get install -y "sudo"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        DEBIAN_FRONTEND=noninteractive apt-get install -y "sudo"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+        DEBIAN_FRONTEND=noninteractive apt-get install -y "sudo"
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
 tags:
-  - 800-53r5_moderate
-  - 800-53r5_high
+  - 800-53r4_high
+  - 800-53r4_low
+  - 800-53r4_moderate
+  - cis_lvl1
+  - cis_lvl2
   - client
   - server
-severity: "medium"
-os_specifics:
-  ubuntu:
-    '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-        check: |
-          /usr/bin/dpkg -l | /usr/bin/grep -c "sudo"
-        fix: |
-          [source,bash]
-          ---
-          /usr/bin/apt-get -y install sudo
-          ---
-    '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-        check: |
-          /usr/bin/dpkg -l | /usr/bin/grep -c "sudo"
-        fix: |
-          [source,bash]
-          ---
-          /usr/bin/apt-get -y install sudo
-          ---

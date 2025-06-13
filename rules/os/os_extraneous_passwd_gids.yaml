@@ -1,89 +1,109 @@
-id: os_extraneous_passwd_gids.yaml
-title: The operating system should ensure that all accounts defined in /etc/passwd should have GIDs which exist in /etc/group.
+id: os_extraneous_passwd_gids
+title: All GIDs referenced in /etc/passwd must be defined in /etc/group
 discussion: |
-  User accounts with GIDs that are not present in /etc/group could present security concerns in the future if a group with that GID is subsequently created.
-check: |
-  $OS_VALUE
-result:
-  integer: 1
-fix: |
-  $OS_VALUE
+  If a user is assigned the Group Identifier (GID) of a group not existing on the system, and a group
+  with the Group Identifier (GID) is subsequently created, the user may have unintended rights to
+  any files associated with the group.
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000764
-  800-53r5:
-    - IA-2
-    - CM-6(a)
-  srg:
-    - SRG-OS-000104-GPOS-00051
-  disa_stig:
-    - $OS_VALUE
+  disa:
+    cci:
+      - CCI-000764
+    srg:
+      - SRG-OS-000104-GPOS-00051
+    disa_stig:
+      '9':
+        - RHEL-09-411045
+  nist:
+    800-53r4:
+      - CM-6
+      - IA-2
+    cce:
+      '10':
+        - CCE-87466-9
+      '8':
+        - CCE-80822-0
+      '9':
+        - CCE-83613-0
+os_specifics:
+  rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '10':
+      severity: low
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '8':
+      severity: low
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '9':
+      severity: low
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+  ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '2004':
+      severity: low
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '2204':
+      severity: low
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '2404':
+      severity: low
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
 tags:
+  - 800-53r4_high
+  - 800-53r4_low
+  - 800-53r4_moderate
+  - cis_lvl1
+  - cis_lvl2
   - client
   - server
-severity: "low"
-os_specifics:
-  ubuntu:
-    '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-        check: |
-          #! /bin/bash
-          # TODO: Rewrite this to be much cleaner
-          sudo getent passwd | while read -r line; do
-            USERNAME=$(echo $line | cut -d: -f1)
-            USERGROUPS=$(groups $USERNAME | cut -d: -f2)
-            for group in $USERGROUPS
-            do
-              if [ $(sudo getent group $group | wc -l) -eq 0 ]; then
-                touch /tmp/nonexistent_groups
-                break
-              fi
-            done
-          done
-          if test -e /tmp/nonexistent_groups; then
-            echo "FAIL"
-            rm /tmp/nonexistent_groups
-          else
-            echo "PASS"
-          fi
-        fix: |
-          [source,bash]
-          ---
-          echo "No automatic remediation at this time."
-          echo "Future remediations could consider replacing the bad group with a valid one"
-          ---
-    '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-        check: |
-          #! /bin/bash
-          EPOCHTODAY=$(date +%s)
-          FUTUREPWCHANGES=0
-          sudo passwd -S -a | while read -r line; do
-            DATESTR=$(echo $line | grep -P -o "\d{2}/\d{2}/\d{4}")
-            EPOCHDATE=$(date --date=$DATESTR +%s)
-            if [ $EPOCHDATE -gt $EPOCHTODAY ]; then
-              FUTUREPWCHANGES=1
-              break
-            fi
-          done
-          if [ $FUTUREPWCHANGES -gt 0 ]; then
-            echo "FAIL"
-          else
-            echo "PASS"
-          fi
-        fix: |
-          [source,bash]
-          ---
-          echo "No automatic remediation at this time."
-          echo "Future remediations could consider resetting passwords for non SHA512 hashes so users must set it on next login?"
-          ---

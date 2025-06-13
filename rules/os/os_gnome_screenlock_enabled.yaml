@@ -1,147 +1,611 @@
- id: os_gnome_screenlock_enabled.yaml
-title: The Ubuntu operating system must enable screen locking on the graphical user interface if installed.
+id: os_gnome_screenlock_enabled
+title: Enable GNOME3 Screensaver Lock After Idle Period
 discussion: |
-  An automatic screen lock on the installed desktop environment helps to form a "back-up" option in the event a user forgets to manually lock their screen.
-check: |
-  $OS_VALUE
-result:
-  integer: 1
-fix: |
-  $OS_VALUE
-references: 
-    cce: 
-      - $OS_VALUE
-    cci:  
+  A session lock is a temporary action taken when a user stops work and moves away from the immediate physical vicinity
+  of the information system but does not want to logout because of the temporary nature of the absense.
+references:
+  disa:
+    cci:
       - CCI-000056
-      - CCI-000058
-      - CCI-000060
-    800_53r5: 
-      - CM-06(a)
-      - AC-07
-    srg: 
+      - CCI-000057
+    srg:
       - SRG-OS-000028-GPOS-00009
       - SRG-OS-000030-GPOS-00011
-    disa_stig: 
-      - $OS_VALUE
-tags:
-  - client
-severity: 
-  - medium
-os_specifics: 
+    disa_stig:
+      '8':
+        - RHEL-08-020030
+      '9':
+        - RHEL-09-271055
+        - RHEL-09-271060
+      '2004':
+        - UBTU-20-010004
+      '2204':
+        - UBTU-22-271020
+  nist:
+    800-53r4:
+      - CM-6
+    cce:
+      '10':
+        - CCE-89684-5
+      '8':
+        - CCE-80777-6
+      '9':
+        - CCE-89302-4
+os_specifics:
+  rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '10':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q gdm && { [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; }; then
+
+        # Check for setting in any of the DConf db directories
+        # If files contain ibus or distro, ignore them.
+        # The assignment assumes that individual filenames don't contain :
+        readarray -t SETTINGSFILES < <(grep -r "\\[org/gnome/desktop/screensaver\\]" "/etc/dconf/db/" \
+                                        | grep -v 'distro\|ibus\|local.d' | cut -d":" -f1)
+        DCONFFILE="/etc/dconf/db/local.d/00-security-settings"
+        DBDIR="/etc/dconf/db/local.d"
+
+        mkdir -p "${DBDIR}"
+
+        # Comment out the configurations in databases different from the target one
+        if [ "${#SETTINGSFILES[@]}" -ne 0 ]
+        then
+            if grep -q "^\\s*lock-enabled\\s*=" "${SETTINGSFILES[@]}"
+            then
+
+                sed -Ei "s/(^\s*)lock-enabled(\s*=)/#\1lock-enabled\2/g" "${SETTINGSFILES[@]}"
+            fi
+        fi
+
+        [ ! -z "${DCONFFILE}" ] && echo "" >> "${DCONFFILE}"
+        if ! grep -q "\\[org/gnome/desktop/screensaver\\]" "${DCONFFILE}"
+        then
+            printf '%s\n' "[org/gnome/desktop/screensaver]" >> ${DCONFFILE}
+        fi
+
+        escaped_value="$(sed -e 's/\\/\\\\/g' <<< "true")"
+        if grep -q "^\\s*lock-enabled\\s*=" "${DCONFFILE}"
+        then
+                sed -i "s/\\s*lock-enabled\\s*=\\s*.*/lock-enabled=${escaped_value}/g" "${DCONFFILE}"
+            else
+                sed -i "\\|\\[org/gnome/desktop/screensaver\\]|a\\lock-enabled=${escaped_value}" "${DCONFFILE}"
+        fi
+        dconf update
+        # Check for setting in any of the DConf db directories
+        LOCKFILES=$(grep -r "^/org/gnome/desktop/screensaver/lock-enabled$" "/etc/dconf/db/" \
+                    | grep -v 'distro\|ibus\|local.d' | grep ":" | cut -d":" -f1)
+        LOCKSFOLDER="/etc/dconf/db/local.d/locks"
+
+        mkdir -p "${LOCKSFOLDER}"
+
+        # Comment out the configurations in databases different from the target one
+        if [[ ! -z "${LOCKFILES}" ]]
+        then
+            sed -i -E "s|^/org/gnome/desktop/screensaver/lock-enabled$|#&|" "${LOCKFILES[@]}"
+        fi
+
+        if ! grep -qr "^/org/gnome/desktop/screensaver/lock-enabled$" /etc/dconf/db/local.d/
+        then
+            echo "/org/gnome/desktop/screensaver/lock-enabled" >> "/etc/dconf/db/local.d/locks/00-security-settings-lock"
+        fi
+        dconf update
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q gdm && { [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; }; then
+
+        # Check for setting in any of the DConf db directories
+        # If files contain ibus or distro, ignore them.
+        # The assignment assumes that individual filenames don't contain :
+        readarray -t SETTINGSFILES < <(grep -r "\\[org/gnome/desktop/screensaver\\]" "/etc/dconf/db/" \
+                                        | grep -v 'distro\|ibus\|local.d' | cut -d":" -f1)
+        DCONFFILE="/etc/dconf/db/local.d/00-security-settings"
+        DBDIR="/etc/dconf/db/local.d"
+
+        mkdir -p "${DBDIR}"
+
+        # Comment out the configurations in databases different from the target one
+        if [ "${#SETTINGSFILES[@]}" -ne 0 ]
+        then
+            if grep -q "^\\s*lock-enabled\\s*=" "${SETTINGSFILES[@]}"
+            then
+
+                sed -Ei "s/(^\s*)lock-enabled(\s*=)/#\1lock-enabled\2/g" "${SETTINGSFILES[@]}"
+            fi
+        fi
+
+        [ ! -z "${DCONFFILE}" ] && echo "" >> "${DCONFFILE}"
+        if ! grep -q "\\[org/gnome/desktop/screensaver\\]" "${DCONFFILE}"
+        then
+            printf '%s\n' "[org/gnome/desktop/screensaver]" >> ${DCONFFILE}
+        fi
+
+        escaped_value="$(sed -e 's/\\/\\\\/g' <<< "true")"
+        if grep -q "^\\s*lock-enabled\\s*=" "${DCONFFILE}"
+        then
+                sed -i "s/\\s*lock-enabled\\s*=\\s*.*/lock-enabled=${escaped_value}/g" "${DCONFFILE}"
+            else
+                sed -i "\\|\\[org/gnome/desktop/screensaver\\]|a\\lock-enabled=${escaped_value}" "${DCONFFILE}"
+        fi
+        dconf update
+        # Check for setting in any of the DConf db directories
+        LOCKFILES=$(grep -r "^/org/gnome/desktop/screensaver/lock-enabled$" "/etc/dconf/db/" \
+                    | grep -v 'distro\|ibus\|local.d' | grep ":" | cut -d":" -f1)
+        LOCKSFOLDER="/etc/dconf/db/local.d/locks"
+
+        mkdir -p "${LOCKSFOLDER}"
+
+        # Comment out the configurations in databases different from the target one
+        if [[ ! -z "${LOCKFILES}" ]]
+        then
+            sed -i -E "s|^/org/gnome/desktop/screensaver/lock-enabled$|#&|" "${LOCKFILES[@]}"
+        fi
+
+        if ! grep -qr "^/org/gnome/desktop/screensaver/lock-enabled$" /etc/dconf/db/local.d/
+        then
+            echo "/org/gnome/desktop/screensaver/lock-enabled" >> "/etc/dconf/db/local.d/locks/00-security-settings-lock"
+        fi
+        dconf update
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q gdm && { [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; }; then
+
+        # Check for setting in any of the DConf db directories
+        # If files contain ibus or distro, ignore them.
+        # The assignment assumes that individual filenames don't contain :
+        readarray -t SETTINGSFILES < <(grep -r "\\[org/gnome/desktop/screensaver\\]" "/etc/dconf/db/" \
+                                        | grep -v 'distro\|ibus\|local.d' | cut -d":" -f1)
+        DCONFFILE="/etc/dconf/db/local.d/00-security-settings"
+        DBDIR="/etc/dconf/db/local.d"
+
+        mkdir -p "${DBDIR}"
+
+        # Comment out the configurations in databases different from the target one
+        if [ "${#SETTINGSFILES[@]}" -ne 0 ]
+        then
+            if grep -q "^\\s*lock-enabled\\s*=" "${SETTINGSFILES[@]}"
+            then
+
+                sed -Ei "s/(^\s*)lock-enabled(\s*=)/#\1lock-enabled\2/g" "${SETTINGSFILES[@]}"
+            fi
+        fi
+
+        [ ! -z "${DCONFFILE}" ] && echo "" >> "${DCONFFILE}"
+        if ! grep -q "\\[org/gnome/desktop/screensaver\\]" "${DCONFFILE}"
+        then
+            printf '%s\n' "[org/gnome/desktop/screensaver]" >> ${DCONFFILE}
+        fi
+
+        escaped_value="$(sed -e 's/\\/\\\\/g' <<< "true")"
+        if grep -q "^\\s*lock-enabled\\s*=" "${DCONFFILE}"
+        then
+                sed -i "s/\\s*lock-enabled\\s*=\\s*.*/lock-enabled=${escaped_value}/g" "${DCONFFILE}"
+            else
+                sed -i "\\|\\[org/gnome/desktop/screensaver\\]|a\\lock-enabled=${escaped_value}" "${DCONFFILE}"
+        fi
+        dconf update
+        # Check for setting in any of the DConf db directories
+        LOCKFILES=$(grep -r "^/org/gnome/desktop/screensaver/lock-enabled$" "/etc/dconf/db/" \
+                    | grep -v 'distro\|ibus\|local.d' | grep ":" | cut -d":" -f1)
+        LOCKSFOLDER="/etc/dconf/db/local.d/locks"
+
+        mkdir -p "${LOCKSFOLDER}"
+
+        # Comment out the configurations in databases different from the target one
+        if [[ ! -z "${LOCKFILES}" ]]
+        then
+            sed -i -E "s|^/org/gnome/desktop/screensaver/lock-enabled$|#&|" "${LOCKFILES[@]}"
+        fi
+
+        if ! grep -qr "^/org/gnome/desktop/screensaver/lock-enabled$" /etc/dconf/db/local.d/
+        then
+            echo "/org/gnome/desktop/screensaver/lock-enabled" >> "/etc/dconf/db/local.d/locks/00-security-settings-lock"
+        fi
+        dconf update
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010004
-        check: |
-          #! /bin/bash
-          if sudo gsettings get org.gnome.desktop.screensaver lock-enabled | grep -q true; then
-            echo "PASS"
-          else
-            echo "FAIL"
-          fi
-        fix: |
-          #! /bin/bash
-          # Remediation taken from the STIG guide for Ubuntu 22.04 LTS guide
-          # Remediation is applicable only in certain platforms
-          gsettings set org.gnome.desktop.screensaver lock-enabled true
-          
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'gdm3' 2>/dev/null | grep -q '^installed' && { [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; }; then
+
+        mkdir -p /etc/dconf/profile
+        dconf_profile_path=/etc/dconf/profile/user
+
+        [[ -s "${dconf_profile_path}" ]] || echo > "${dconf_profile_path}"
+
+        if ! grep -Pzq "(?s)^\s*user-db:user.*\n\s*system-db:local" "${dconf_profile_path}"; then
+            sed -i --follow-symlinks "1s/^/user-db:user\nsystem-db:local\n/" "${dconf_profile_path}"
+        fi
+
+        # Make sure the corresponding directories exist
+        mkdir -p /etc/dconf/db/local.d
+
+        # Make sure permissions allow regular users to read dconf settings.
+        # Also define the umask to avoid `dconf update` changing permissions.
+        chmod -R u=rwX,go=rX /etc/dconf/profile
+        (umask 0022 && dconf update)
+        mkdir -p /etc/dconf/profile
+        dconf_profile_path=/etc/dconf/profile/gdm
+
+        [[ -s "${dconf_profile_path}" ]] || echo > "${dconf_profile_path}"
+
+        if ! grep -Pzq "(?s)^\s*user-db:user.*\n\s*system-db:gdm" "${dconf_profile_path}"; then
+            sed -i --follow-symlinks "1s/^/user-db:user\nsystem-db:gdm\n/" "${dconf_profile_path}"
+        fi
+
+        # Make sure the corresponding directories exist
+        mkdir -p /etc/dconf/db/gdm.d
+
+        # Make sure permissions allow regular users to read dconf settings.
+        # Also define the umask to avoid `dconf update` changing permissions.
+        chmod -R u=rwX,go=rX /etc/dconf/profile
+        (umask 0022 && dconf update)
+
+
+
+        # Check for setting in any of the DConf db directories
+        # If files contain ibus or distro, ignore them.
+        # The assignment assumes that individual filenames don't contain :
+        readarray -t SETTINGSFILES < <(grep -r "\\[org/gnome/desktop/screensaver\\]" "/etc/dconf/db/" \
+                                        | grep -v 'distro\|ibus\|local.d' | cut -d":" -f1)
+        DCONFFILE="/etc/dconf/db/local.d/00-security-settings"
+        DBDIR="/etc/dconf/db/local.d"
+
+        mkdir -p "${DBDIR}"
+
+        # Comment out the configurations in databases different from the target one
+        if [ "${#SETTINGSFILES[@]}" -ne 0 ]
+        then
+            if grep -q "^\\s*lock-enabled\\s*=" "${SETTINGSFILES[@]}"
+            then
+
+                sed -Ei "s/(^\s*)lock-enabled(\s*=)/#\1lock-enabled\2/g" "${SETTINGSFILES[@]}"
+            fi
+        fi
+
+        [ ! -z "${DCONFFILE}" ] && echo "" >> "${DCONFFILE}"
+        if ! grep -q "\\[org/gnome/desktop/screensaver\\]" "${DCONFFILE}"
+        then
+            printf '%s\n' "[org/gnome/desktop/screensaver]" >> ${DCONFFILE}
+        fi
+
+        escaped_value="$(sed -e 's/\\/\\\\/g' <<< "true")"
+        if grep -q "^\\s*lock-enabled\\s*=" "${DCONFFILE}"
+        then
+                sed -i "s/\\s*lock-enabled\\s*=\\s*.*/lock-enabled=${escaped_value}/g" "${DCONFFILE}"
+            else
+                sed -i "\\|\\[org/gnome/desktop/screensaver\\]|a\\lock-enabled=${escaped_value}" "${DCONFFILE}"
+        fi
+        # Make sure permissions allow regular users to read dconf settings.
+        # Also define the umask to avoid `dconf update` changing permissions.
+        chmod -R u=rwX,go=rX /etc/dconf/db
+        (umask 0022 && dconf update)
+        # Check for setting in any of the DConf db directories
+        LOCKFILES=$(grep -r "^/org/gnome/desktop/screensaver/lock-enabled$" "/etc/dconf/db/" \
+                    | grep -v 'distro\|ibus\|local.d' | grep ":" | cut -d":" -f1)
+        LOCKSFOLDER="/etc/dconf/db/local.d/locks"
+
+        mkdir -p "${LOCKSFOLDER}"
+
+        # Comment out the configurations in databases different from the target one
+        if [[ ! -z "${LOCKFILES}" ]]
+        then
+            sed -i -E "s|^/org/gnome/desktop/screensaver/lock-enabled$|#&|" "${LOCKFILES[@]}"
+        fi
+
+        if ! grep -qr "^/org/gnome/desktop/screensaver/lock-enabled$" /etc/dconf/db/local.d/
+        then
+            echo "/org/gnome/desktop/screensaver/lock-enabled" >> "/etc/dconf/db/local.d/locks/00-security-settings-lock"
+        fi
+        # Make sure permissions allow regular users to read dconf settings.
+        # Also define the umask to avoid `dconf update` changing permissions.
+        chmod -R u=rwX,go=rX /etc/dconf/db
+        (umask 0022 && dconf update)
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010004
-        check: |
-          #! /bin/bash
-          if gsettings get org.gnome.login-screen banner-message-enable| grep -q true; then
-            echo "PASS"
-          else
-            echo "FAIL"
-        fix: |
-          #! /bin/bash
-          # Script taken from Ubuntu Pro script
-          # Remediation is applicable only in certain platforms
-          if [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; then
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'gdm3' 2>/dev/null | grep -q '^installed' && { [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; }; then
 
-          login_banner_text='You are accessing a U.S. Government information system, which includes: 1) this computer, 2) this computer network, 3) all computers connected to this network, and 4) all devices and storage media attached to this network or to a computer on this network. You understand and consent to the following: you may access this information system for authorized use only; you have no reasonable expectation of privacy regarding any communication of data transiting or stored on this information system; at any time and for any lawful Government purpose, the Government may monitor, intercept, and search and seize any communication or data transiting or stored on this information system; and any communications or data transiting or stored on this information system may be disclosed or used for any lawful Government purpose.'
+        mkdir -p /etc/dconf/profile
+        dconf_profile_path=/etc/dconf/profile/user
 
-          # Multiple regexes transform the banner regex into a usable banner
-          # 0 - Remove anchors around the banner text
-          login_banner_text=$(echo "$login_banner_text" | sed 's/^\^\(.*\)\$$/\1/g')
-          # 1 - Keep only the first banners if there are multiple
-          #    (dod_banners contains the long and short banner)
-          login_banner_text=$(echo "$login_banner_text" | sed 's/^(\(.*\)|.*)$/\1/g')
-          # 2 - Add spaces ' '. (Transforms regex for "space or newline" into a " ")
-          login_banner_text=$(echo "$login_banner_text" | sed 's/\[\\s\\n\]+/ /g')
-          # 3 - Adds newlines. (Transforms "(?:\[\\n\]+|(?:\\n)+)" into "\n")
-          login_banner_text=$(echo "$login_banner_text" | sed 's/(?:\[\\n\]+|(?:\\\\n)+)/\n/g')
-          # 4 - Remove any leftover backslash. (From any parethesis in the banner, for example).
-          login_banner_text=$(echo "$login_banner_text" | sed 's/\\//g')
-          formatted=$(echo "$login_banner_text" | fold -sw 80)
+        [[ -s "${dconf_profile_path}" ]] || echo > "${dconf_profile_path}"
 
-          cat <<EOF >/etc/issue.net
-          $formatted
-          EOF
+        if ! grep -Pzq "(?s)^\s*user-db:user.*\n\s*system-db:local" "${dconf_profile_path}"; then
+            sed -i --follow-symlinks "1s/^/user-db:user\nsystem-db:local\n/" "${dconf_profile_path}"
+        fi
 
-          else
-              >&2 echo 'Remediation is not applicable, nothing was done'
-          fi
+        # Make sure the corresponding directories exist
+        mkdir -p /etc/dconf/db/local.d
 
-          if dpkg-query --show --showformat='${db:Status-Status}\n' 'gdm3' 2>/dev/null | grep -q installed; then
+        # Make sure permissions allow regular users to read dconf settings.
+        # Also define the umask to avoid `dconf update` changing permissions.
+        chmod -R u=rwX,go=rX /etc/dconf/profile
+        (umask 0022 && dconf update)
+        mkdir -p /etc/dconf/profile
+        dconf_profile_path=/etc/dconf/profile/gdm
 
-          # Will do both approach, since we plan to migrate to checks over dconf db. That way, future updates of the tool
-          # will pass the check even if we decide to check only for the dconf db path.
-          if [ -e "/etc/gdm3/greeter.dconf-defaults" ] ; then
-              
-              LC_ALL=C sed -i "/^\s*banner\-message\-enable/Id" "/etc/gdm3/greeter.dconf-defaults"
-          else
-              touch "/etc/gdm3/greeter.dconf-defaults"
-          fi
-          cp "/etc/gdm3/greeter.dconf-defaults" "/etc/gdm3/greeter.dconf-defaults.bak"
-          # Insert after the line matching the regex '\[org/gnome/login-screen\]'
-          line_number="$(LC_ALL=C grep -n "\[org/gnome/login-screen\]" "/etc/gdm3/greeter.dconf-defaults.bak" | LC_ALL=C sed 's/:.*//g')"
-          if [ -z "$line_number" ]; then
-              # There was no match of '\[org/gnome/login-screen\]', insert at
-              # the end of the file.
-              printf '%s\n' "banner-message-enable=true" >> "/etc/gdm3/greeter.dconf-defaults"
-          else
-              head -n "$(( line_number ))" "/etc/gdm3/greeter.dconf-defaults.bak" > "/etc/gdm3/greeter.dconf-defaults"
-              printf '%s\n' "banner-message-enable=true" >> "/etc/gdm3/greeter.dconf-defaults"
-              tail -n "+$(( line_number + 1 ))" "/etc/gdm3/greeter.dconf-defaults.bak" >> "/etc/gdm3/greeter.dconf-defaults"
-          fi
-          # Clean up after ourselves.
-          rm "/etc/gdm3/greeter.dconf-defaults.bak"
-          # Check for setting in any of the DConf db directories
-          # If files contain ibus or distro, ignore them.
-          # The assignment assumes that individual filenames don't contain :
-          readarray -t SETTINGSFILES < <(grep -r "\\[org/gnome/login-screen\\]" "/etc/dconf/db/" | grep -v 'distro\|ibus' | cut -d":" -f1)
-          DCONFFILE="/etc/dconf/db/gdm.d/00-security-settings"
-          DBDIR="/etc/dconf/db/gdm.d"
+        [[ -s "${dconf_profile_path}" ]] || echo > "${dconf_profile_path}"
 
-          mkdir -p "${DBDIR}"
+        if ! grep -Pzq "(?s)^\s*user-db:user.*\n\s*system-db:gdm" "${dconf_profile_path}"; then
+            sed -i --follow-symlinks "1s/^/user-db:user\nsystem-db:gdm\n/" "${dconf_profile_path}"
+        fi
 
-          if [ "${#SETTINGSFILES[@]}" -eq 0 ]
-          then
-              [ ! -z ${DCONFFILE} ] || echo "" >> ${DCONFFILE}
-              printf '%s\n' "[org/gnome/login-screen]" >> ${DCONFFILE}
-              printf '%s=%s\n' "banner-message-enable" "true" >> ${DCONFFILE}
-          else
-              escaped_value="$(sed -e 's/\\/\\\\/g' <<< "true")"
-              if grep -q "^\\s*banner-message-enable\\s*=" "${SETTINGSFILES[@]}"
-              then
-                  
-                  sed -i "s/\\s*banner-message-enable\\s*=\\s*.*/banner-message-enable=${escaped_value}/g" "${SETTINGSFILES[@]}"
-              else
-                  sed -i "\\|\\[org/gnome/login-screen\\]|a\\banner-message-enable=${escaped_value}" "${SETTINGSFILES[@]}"
-              fi
-          fi
+        # Make sure the corresponding directories exist
+        mkdir -p /etc/dconf/db/gdm.d
 
-          dconf update
-          # No need to use dconf update, since bash_dconf_settings does that already
+        # Make sure permissions allow regular users to read dconf settings.
+        # Also define the umask to avoid `dconf update` changing permissions.
+        chmod -R u=rwX,go=rX /etc/dconf/profile
+        (umask 0022 && dconf update)
 
-          else
-              >&2 echo 'Remediation is not applicable, nothing was done'
-          fi
+
+
+        # Check for setting in any of the DConf db directories
+        # If files contain ibus or distro, ignore them.
+        # The assignment assumes that individual filenames don't contain :
+        readarray -t SETTINGSFILES < <(grep -r "\\[org/gnome/desktop/screensaver\\]" "/etc/dconf/db/" \
+                                        | grep -v 'distro\|ibus\|local.d' | cut -d":" -f1)
+        DCONFFILE="/etc/dconf/db/local.d/00-security-settings"
+        DBDIR="/etc/dconf/db/local.d"
+
+        mkdir -p "${DBDIR}"
+
+        # Comment out the configurations in databases different from the target one
+        if [ "${#SETTINGSFILES[@]}" -ne 0 ]
+        then
+            if grep -q "^\\s*lock-enabled\\s*=" "${SETTINGSFILES[@]}"
+            then
+
+                sed -Ei "s/(^\s*)lock-enabled(\s*=)/#\1lock-enabled\2/g" "${SETTINGSFILES[@]}"
+            fi
+        fi
+
+        [ ! -z "${DCONFFILE}" ] && echo "" >> "${DCONFFILE}"
+        if ! grep -q "\\[org/gnome/desktop/screensaver\\]" "${DCONFFILE}"
+        then
+            printf '%s\n' "[org/gnome/desktop/screensaver]" >> ${DCONFFILE}
+        fi
+
+        escaped_value="$(sed -e 's/\\/\\\\/g' <<< "true")"
+        if grep -q "^\\s*lock-enabled\\s*=" "${DCONFFILE}"
+        then
+                sed -i "s/\\s*lock-enabled\\s*=\\s*.*/lock-enabled=${escaped_value}/g" "${DCONFFILE}"
+            else
+                sed -i "\\|\\[org/gnome/desktop/screensaver\\]|a\\lock-enabled=${escaped_value}" "${DCONFFILE}"
+        fi
+        # Make sure permissions allow regular users to read dconf settings.
+        # Also define the umask to avoid `dconf update` changing permissions.
+        chmod -R u=rwX,go=rX /etc/dconf/db
+        (umask 0022 && dconf update)
+        # Check for setting in any of the DConf db directories
+        LOCKFILES=$(grep -r "^/org/gnome/desktop/screensaver/lock-enabled$" "/etc/dconf/db/" \
+                    | grep -v 'distro\|ibus\|local.d' | grep ":" | cut -d":" -f1)
+        LOCKSFOLDER="/etc/dconf/db/local.d/locks"
+
+        mkdir -p "${LOCKSFOLDER}"
+
+        # Comment out the configurations in databases different from the target one
+        if [[ ! -z "${LOCKFILES}" ]]
+        then
+            sed -i -E "s|^/org/gnome/desktop/screensaver/lock-enabled$|#&|" "${LOCKFILES[@]}"
+        fi
+
+        if ! grep -qr "^/org/gnome/desktop/screensaver/lock-enabled$" /etc/dconf/db/local.d/
+        then
+            echo "/org/gnome/desktop/screensaver/lock-enabled" >> "/etc/dconf/db/local.d/locks/00-security-settings-lock"
+        fi
+        # Make sure permissions allow regular users to read dconf settings.
+        # Also define the umask to avoid `dconf update` changing permissions.
+        chmod -R u=rwX,go=rX /etc/dconf/db
+        (umask 0022 && dconf update)
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'gdm3' 2>/dev/null | grep -q '^installed' && { [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; }; then
+
+        mkdir -p /etc/dconf/profile
+        dconf_profile_path=/etc/dconf/profile/user
+
+        [[ -s "${dconf_profile_path}" ]] || echo > "${dconf_profile_path}"
+
+        if ! grep -Pzq "(?s)^\s*user-db:user.*\n\s*system-db:local" "${dconf_profile_path}"; then
+            sed -i --follow-symlinks "1s/^/user-db:user\nsystem-db:local\n/" "${dconf_profile_path}"
+        fi
+
+        # Make sure the corresponding directories exist
+        mkdir -p /etc/dconf/db/local.d
+
+        # Make sure permissions allow regular users to read dconf settings.
+        # Also define the umask to avoid `dconf update` changing permissions.
+        chmod -R u=rwX,go=rX /etc/dconf/profile
+        (umask 0022 && dconf update)
+        mkdir -p /etc/dconf/profile
+        dconf_profile_path=/etc/dconf/profile/gdm
+
+        [[ -s "${dconf_profile_path}" ]] || echo > "${dconf_profile_path}"
+
+        if ! grep -Pzq "(?s)^\s*user-db:user.*\n\s*system-db:gdm" "${dconf_profile_path}"; then
+            sed -i --follow-symlinks "1s/^/user-db:user\nsystem-db:gdm\n/" "${dconf_profile_path}"
+        fi
+
+        # Make sure the corresponding directories exist
+        mkdir -p /etc/dconf/db/gdm.d
+
+        # Make sure permissions allow regular users to read dconf settings.
+        # Also define the umask to avoid `dconf update` changing permissions.
+        chmod -R u=rwX,go=rX /etc/dconf/profile
+        (umask 0022 && dconf update)
+
+
+
+        # Check for setting in any of the DConf db directories
+        # If files contain ibus or distro, ignore them.
+        # The assignment assumes that individual filenames don't contain :
+        readarray -t SETTINGSFILES < <(grep -r "\\[org/gnome/desktop/screensaver\\]" "/etc/dconf/db/" \
+                                        | grep -v 'distro\|ibus\|local.d' | cut -d":" -f1)
+        DCONFFILE="/etc/dconf/db/local.d/00-security-settings"
+        DBDIR="/etc/dconf/db/local.d"
+
+        mkdir -p "${DBDIR}"
+
+        # Comment out the configurations in databases different from the target one
+        if [ "${#SETTINGSFILES[@]}" -ne 0 ]
+        then
+            if grep -q "^\\s*lock-enabled\\s*=" "${SETTINGSFILES[@]}"
+            then
+
+                sed -Ei "s/(^\s*)lock-enabled(\s*=)/#\1lock-enabled\2/g" "${SETTINGSFILES[@]}"
+            fi
+        fi
+
+        [ ! -z "${DCONFFILE}" ] && echo "" >> "${DCONFFILE}"
+        if ! grep -q "\\[org/gnome/desktop/screensaver\\]" "${DCONFFILE}"
+        then
+            printf '%s\n' "[org/gnome/desktop/screensaver]" >> ${DCONFFILE}
+        fi
+
+        escaped_value="$(sed -e 's/\\/\\\\/g' <<< "true")"
+        if grep -q "^\\s*lock-enabled\\s*=" "${DCONFFILE}"
+        then
+                sed -i "s/\\s*lock-enabled\\s*=\\s*.*/lock-enabled=${escaped_value}/g" "${DCONFFILE}"
+            else
+                sed -i "\\|\\[org/gnome/desktop/screensaver\\]|a\\lock-enabled=${escaped_value}" "${DCONFFILE}"
+        fi
+        # Make sure permissions allow regular users to read dconf settings.
+        # Also define the umask to avoid `dconf update` changing permissions.
+        chmod -R u=rwX,go=rX /etc/dconf/db
+        (umask 0022 && dconf update)
+        # Check for setting in any of the DConf db directories
+        LOCKFILES=$(grep -r "^/org/gnome/desktop/screensaver/lock-enabled$" "/etc/dconf/db/" \
+                    | grep -v 'distro\|ibus\|local.d' | grep ":" | cut -d":" -f1)
+        LOCKSFOLDER="/etc/dconf/db/local.d/locks"
+
+        mkdir -p "${LOCKSFOLDER}"
+
+        # Comment out the configurations in databases different from the target one
+        if [[ ! -z "${LOCKFILES}" ]]
+        then
+            sed -i -E "s|^/org/gnome/desktop/screensaver/lock-enabled$|#&|" "${LOCKFILES[@]}"
+        fi
+
+        if ! grep -qr "^/org/gnome/desktop/screensaver/lock-enabled$" /etc/dconf/db/local.d/
+        then
+            echo "/org/gnome/desktop/screensaver/lock-enabled" >> "/etc/dconf/db/local.d/locks/00-security-settings-lock"
+        fi
+        # Make sure permissions allow regular users to read dconf settings.
+        # Also define the umask to avoid `dconf update` changing permissions.
+        chmod -R u=rwX,go=rX /etc/dconf/db
+        (umask 0022 && dconf update)
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+tags:
+  - 800-53r4_high
+  - 800-53r4_low
+  - 800-53r4_moderate
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server

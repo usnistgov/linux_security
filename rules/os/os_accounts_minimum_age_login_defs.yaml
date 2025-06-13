@@ -1,61 +1,312 @@
 id: os_accounts_minimum_age_login_defs
-title: The Ubuntu operating system must enforce 24 hours/1 day as the minimum password lifetime. Passwords for new users must have a 24 hours/1 day minimum password lifetime restriction.
+title: Set Password Minimum Age
 discussion: |
-  Enforcing a minimum password lifetime helps to prevent repeated password changes to defeat the password reuse or history enforcement requirement. If users are allowed to immediately and continually change their password, then the password could be repeatedly changed in a short period of time to defeat the organization's policy regarding password reuse.
-check: |
-  $OS_VALUE
-result:
-  integer: 1
-fix: |
-  $OS_VALUE
-references: 
-    cce: 
-      - $OS_VALUE
-    cci:  
-      - CCI-000198
-    800_53r5: 
+  Enforcing a minimum password lifetime helps to prevent repeated password
+  changes to defeat the password reuse or history enforcement requirement. If
+  users are allowed to immediately and continually change their password,
+  then the password could be repeatedly changed in a short period of time to
+  defeat the organization's policy regarding password reuse.
+
+
+  Setting the minimum password age protects against users cycling back to a
+  favorite password after satisfying the password reuse requirement.
+references:
+  disa:
+    cci:
+      - CCI-004066
+    srg:
+      - SRG-OS-000075-GPOS-00043
+    disa_stig:
+      '8':
+        - RHEL-08-020190
+      '9':
+        - RHEL-09-611075
+      '2004':
+        - UBTU-20-010007
+      '2204':
+        - UBTU-22-411025
+  nist:
+    800-53r4:
+      - CM-6
       - IA-5
-    srg: 
-      - SRG-OS-000076-GPOS-00043
-    disa_stig: 
-      - $OS_VALUE
+    cce:
+      '10':
+        - CCE-89307-3
+      '8':
+        - CCE-80648-9
+      '9':
+        - CCE-83610-6
+os_specifics:
+  rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '10':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q shadow-utils; then
+
+        var_accounts_minimum_age_login_defs=''
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^PASS_MIN_DAYS")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s %s" "$stripped_key" "$var_accounts_minimum_age_login_defs"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^PASS_MIN_DAYS\\>" "/etc/login.defs"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^PASS_MIN_DAYS\\>.*/$escaped_formatted_output/gi" "/etc/login.defs"
+        else
+            if [[ -s "/etc/login.defs" ]] && [[ -n "$(tail -c 1 -- "/etc/login.defs" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/login.defs"
+            fi
+            cce="CCE-89307-3"
+            printf '# Per %s: Set %s in %s\n' "${cce}" "${formatted_output}" "/etc/login.defs" >> "/etc/login.defs"
+            printf '%s\n' "$formatted_output" >> "/etc/login.defs"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q shadow-utils; then
+
+        var_accounts_minimum_age_login_defs=''
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^PASS_MIN_DAYS")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s %s" "$stripped_key" "$var_accounts_minimum_age_login_defs"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^PASS_MIN_DAYS\\>" "/etc/login.defs"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^PASS_MIN_DAYS\\>.*/$escaped_formatted_output/gi" "/etc/login.defs"
+        else
+            if [[ -s "/etc/login.defs" ]] && [[ -n "$(tail -c 1 -- "/etc/login.defs" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/login.defs"
+            fi
+            cce="CCE-80648-9"
+            printf '# Per %s: Set %s in %s\n' "${cce}" "${formatted_output}" "/etc/login.defs" >> "/etc/login.defs"
+            printf '%s\n' "$formatted_output" >> "/etc/login.defs"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q shadow-utils; then
+
+        var_accounts_minimum_age_login_defs=''
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^PASS_MIN_DAYS")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s %s" "$stripped_key" "$var_accounts_minimum_age_login_defs"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^PASS_MIN_DAYS\\>" "/etc/login.defs"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^PASS_MIN_DAYS\\>.*/$escaped_formatted_output/gi" "/etc/login.defs"
+        else
+            if [[ -s "/etc/login.defs" ]] && [[ -n "$(tail -c 1 -- "/etc/login.defs" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/login.defs"
+            fi
+            cce="CCE-83610-6"
+            printf '# Per %s: Set %s in %s\n' "${cce}" "${formatted_output}" "/etc/login.defs" >> "/etc/login.defs"
+            printf '%s\n' "$formatted_output" >> "/etc/login.defs"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '2004':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'login' 2>/dev/null | grep -q '^installed'; then
+
+        var_accounts_minimum_age_login_defs=''
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^PASS_MIN_DAYS")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s %s" "$stripped_key" "$var_accounts_minimum_age_login_defs"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^PASS_MIN_DAYS\\>" "/etc/login.defs"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^PASS_MIN_DAYS\\>.*/$escaped_formatted_output/gi" "/etc/login.defs"
+        else
+            if [[ -s "/etc/login.defs" ]] && [[ -n "$(tail -c 1 -- "/etc/login.defs" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/login.defs"
+            fi
+            printf '%s\n' "$formatted_output" >> "/etc/login.defs"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'login' 2>/dev/null | grep -q '^installed'; then
+
+        var_accounts_minimum_age_login_defs=''
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^PASS_MIN_DAYS")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s %s" "$stripped_key" "$var_accounts_minimum_age_login_defs"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^PASS_MIN_DAYS\\>" "/etc/login.defs"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^PASS_MIN_DAYS\\>.*/$escaped_formatted_output/gi" "/etc/login.defs"
+        else
+            if [[ -s "/etc/login.defs" ]] && [[ -n "$(tail -c 1 -- "/etc/login.defs" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/login.defs"
+            fi
+            printf '%s\n' "$formatted_output" >> "/etc/login.defs"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'login' 2>/dev/null | grep -q '^installed'; then
+
+        var_accounts_minimum_age_login_defs=''
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^PASS_MIN_DAYS")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s %s" "$stripped_key" "$var_accounts_minimum_age_login_defs"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^PASS_MIN_DAYS\\>" "/etc/login.defs"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^PASS_MIN_DAYS\\>.*/$escaped_formatted_output/gi" "/etc/login.defs"
+        else
+            if [[ -s "/etc/login.defs" ]] && [[ -n "$(tail -c 1 -- "/etc/login.defs" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/login.defs"
+            fi
+            printf '%s\n' "$formatted_output" >> "/etc/login.defs"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
 tags:
-  - 800-53r5_moderate
-  - 800-53r5_high
+  - 800-53r4_high
+  - 800-53r4_low
+  - 800-53r4_moderate
+  - cis_lvl2
   - client
   - server
-  - manual
-severity: 
-  - medium
-os_specifics: 
-  ubuntu:
-    '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010007
-        check: |
-          #!/bin/bash
-          # Define the min number of days after a password change
-          min_days=1
-          # Check if INACTIVE is set and greater than or equal to 1
-          if [ -z "$min_days" ]; then
-            echo "PASS_MIN_DAYS is not defined in $login_defs_file"
-            exit 1
-          else
-            echo "PASS_MIN_DAYS is set to $min_days days"
-          fi
-        fix: |
-          # Remediation is applicable only in certain platforms
-          if dpkg-query --show --showformat='${db:Status-Status}\n' 'login' 2>/dev/null | grep -q installed; then
-          var_accounts_minimum_age_login_defs='1'
-          grep -q ^PASS_MIN_DAYS /etc/login.defs && \
-            sed -i "s/PASS_MIN_DAYS.*/PASS_MIN_DAYS     $var_accounts_minimum_age_login_defs/g" /etc/login.defs
-          if ! [ $? -eq 0 ]; then
-              echo "PASS_MIN_DAYS      $var_accounts_minimum_age_login_defs" >> /etc/login.defs
-          fi
-          else
-              >&2 echo 'Remediation is not applicable, nothing was done'
-          fi
-          # END fix for 'accounts_minimum_age_login_defs'

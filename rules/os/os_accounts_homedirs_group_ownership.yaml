@@ -1,56 +1,130 @@
 id: os_accounts_homedirs_group_ownership
-title: The Ubuntu operating system must ensure that user home directories are owned by the proper group.
+title: All Interactive User Home Directories Must Be Group-Owned By The Primary Group
 discussion: |
-  The home directory provided to an interactive user should be group owned by that interactive user's primary group. Malicious modification of these files (if they have improper permissions) could compromise logins.
-check: |
-  $OS_VALUE
-result:
-  integer: 1
-fix: |
-  $OS_VALUE
-references: 
-    cce: 
-      - $OS_VALUE
-    cci:  
+  If the Group Identifier (GID) of a local interactive users home directory is
+  not the same as the primary GID of the user, this would allow unauthorized
+  access to the users files, and users that share the same group may not be
+  able to access files that they legitimately should.
+references:
+  disa:
+    cci:
       - CCI-000366
-    800_53r5: 
-      - N/A
-    srg: 
+    srg:
       - SRG-OS-000480-GPOS-00227
-    disa_stig: 
-      - $OS_VALUE
+    disa_stig:
+      '8':
+        - RHEL-08-010740
+      '9':
+        - RHEL-09-411070
+  nist:
+    cce:
+      '10':
+        - CCE-87946-0
+      '8':
+        - CCE-83434-1
+      '9':
+        - CCE-83629-6
+os_specifics:
+  rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '10':
+      severity: medium
+      benchmarks:
+        - disa_stig
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+
+        awk -F':' '{ if ($3 >= 1000 && $3 != 65534) system("chgrp -f " $4" "$6) }' /etc/passwd
+
+        ---
+    '8':
+      severity: medium
+      benchmarks:
+        - disa_stig
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+
+        awk -F':' '{ if ($3 >= 1000 && $3 != 65534) system("chgrp -f " $4" "$6) }' /etc/passwd
+
+        ---
+    '9':
+      severity: medium
+      benchmarks:
+        - disa_stig
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+
+        awk -F':' '{ if ($3 >= 1000 && $3 != 65534) system("chgrp -f " $4" "$6) }' /etc/passwd
+
+        ---
+  ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '2004':
+      severity: medium
+      benchmarks:
+        - disa_stig
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+
+        awk -F':' '{ if ($3 >= 1000 && $3 != 65534) system("chgrp -f " $4" "$6) }' /etc/passwd
+
+        ---
+    '2204':
+      severity: medium
+      benchmarks:
+        - disa_stig
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+
+        awk -F':' '{ if ($3 >= 1000 && $3 != 65534) system("chgrp -f " $4" "$6) }' /etc/passwd
+
+        ---
+    '2404':
+      severity: medium
+      benchmarks:
+        - disa_stig
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+
+        awk -F':' '{ if ($3 >= 1000 && $3 != 65534) system("chgrp -f " $4" "$6) }' /etc/passwd
+
+        ---
 tags:
-  - 800-53r5_moderate
-  - 800-53r5_high
+  - cis_lvl1
+  - cis_lvl2
   - client
   - server
-  - manual
-severity: 
-  - medium
-os_specifics: 
-  ubuntu:
-    '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-        check: |
-          #!/bin/bash
-          BADOWNERS=0
-          while IFS= read -r split; do
-              home=$(echo $split | cut -d ' ' -f1)
-              groupnum=$(echo $split | cut -d ' ' -f2)
-              if [ -d $home ]; then
-                  if [[ $(stat -c "%g" $home) != $groupnum ]]; then
-                      BADOWNERS=1
-                  fi
-              fi
-          done <   <(awk -F':' '{ if ($3 >= 1000 && $3 != 65534) printf("%s %d\n",$6,$4) }' /etc/passwd)
-          if [[ $BADOWNERS -gt 0 ]]; then
-            echo "FAIL"
-          else
-            echo "PASS"
-          fi
-        fix: |
-          awk -F':' '{ if ($3 >= 1000 && $3 != 65534) system("chgrp -f " $4" "$6) }' /etc/passwd

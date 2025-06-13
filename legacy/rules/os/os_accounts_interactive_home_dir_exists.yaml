@@ -1,0 +1,54 @@
+id: os_accounts_interactive_home_dir_exists
+title: The Ubuntu operating system must ensure that every interactive user on the system has an existant home directory.
+discussion: |
+  Local interactive users should be given access to a home directory upon sign in to ensure standard behavior on the system.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references: 
+    cce: 
+      - $OS_VALUE
+    cci:  
+      - CCI-000366
+    800_53r5: 
+      - N/A
+    srg: 
+      - SRG-OS-000480-GPOS-00227
+    disa_stig: 
+      - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+  - manual
+severity: 
+  - medium
+os_specifics: 
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          #!/bin/bash
+          NOHOMEDIR=0
+          for user in $(awk -F':' '{ if ($3 >= 1000 && $3 != 65534) print $6}' /etc/passwd); do
+              if [ ! -d $user ]; then
+                  NOHOMEDIR=1
+              fi
+          done
+          if [ $NOHOMEDIR == 1 ]; then
+             echo "FAIL"
+          else
+             echo "PASS"
+          fi
+        fix: |
+          for user in $(awk -F':' '{ if ($3 >= 1000 && $3 != 65534) print $1}' /etc/passwd); do
+              mkhomedir_helper $user 0077;
+          done

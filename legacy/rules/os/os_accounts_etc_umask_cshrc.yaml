@@ -1,0 +1,60 @@
+id: os_account_etc_umask_cshrc
+title: The Ubuntu operating system must set a secure umask value for the cshrc template file.
+discussion: |
+  A properly configured cshrc template file ensures that files created by users are only readable by users in their group and no one else.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references: 
+    cce: 
+      - $OS_VALUE
+    cci:  
+      - CCI-000366
+    800_53r5: 
+      - AC-6(1)
+      - CM-6(a)
+    srg: 
+      - SRG-OS-000480-GPOS-00228
+      - SRG-OS-000480-GPOS-00227
+    disa_stig: 
+      - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+  - manual
+severity: 
+  - medium
+os_specifics: 
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          #!/bin/bash
+          UMASK=$(grep -P "umask" /etc/csh.cshrc | cut -d ' ' -f2)
+          if [[ ${#UMASK} > 0 ]]; then
+              if [[ "$UMASK" != "027" ]]; then
+                  echo "FAIL"
+              else
+                  echo "PASS"
+              fi
+          else
+              echo "FAIL"
+          fi
+          
+        fix: |
+          var_accounts_user_umask='027'
+
+          grep -q "^\s*umask" /etc/csh.cshrc && \
+            sed -i -E -e "s/^(\s*umask).*/\1 $var_accounts_user_umask/g" /etc/bash.bashrc
+          if ! [ $? -eq 0 ]; then
+              echo "umask $var_accounts_user_umask" >> /etc/csh.cshrc
+          fi

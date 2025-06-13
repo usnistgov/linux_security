@@ -1,70 +1,90 @@
 id: os_accounts_unique_names
-title: "Ensure that accounts have unique names"
-discussion: |
-  Duplicate names could lead to confusion for end-users and potentially create dangerous circumstances on a system.
-check: |
-  $OS_VALUE
-result:
-  integer: 1
-fix: |
-  $OS_VALUE
+title: Ensure All Accounts on the System Have Unique Names
+discussion: Unique usernames allow for accountability on the system.
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000770
-    - CCI-000804
-  800-53r5:
-    -  N/A
-  srg:
-    - N/A
-  disa_stig:
-    - $OS_VALUE
+  disa:
+    cci:
+      - CCI-000770
+      - CCI-000804
+  nist:
+    cce:
+      '10':
+        - CCE-90323-7
+      '8':
+        - CCE-80674-5
+      '9':
+        - CCE-83628-8
+os_specifics:
+  rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '10':
+      severity: medium
+      benchmarks:
+        - disa_stig
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '8':
+      severity: medium
+      benchmarks:
+        - disa_stig
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '9':
+      severity: medium
+      benchmarks:
+        - disa_stig
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+  ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '2004':
+      severity: medium
+      benchmarks:
+        - disa_stig
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '2204':
+      severity: medium
+      benchmarks:
+        - disa_stig
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '2404':
+      severity: medium
+      benchmarks:
+        - disa_stig
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
 tags:
+  - cis_lvl1
+  - cis_lvl2
   - client
   - server
-severity: "medium"
-os_specifics:
-  ubuntu:
-    '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-        check: |
-          #! /bin/bash
-          # TODO: This prints out the result of the DUPLICATES variable
-          DUPLICATES=sudo getent passwd | awk -F: '{print $1}' | uniq -d | wc -l
-          if ($DUPLICATES) then
-            echo "FAIL"
-          else
-            echo "PASS"
-          fi
-        fix: |
-          [source,bash]
-          ---
-          echo "No automatic remediation at this time."
-          echo "Future algorithms could append a number to the end.""
-          ---
-    '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-        check: |
-          #! /bin/bash
-          # TODO: This prints out the result of the DUPLICATES variable
-          DUPLICATES=sudo getent passwd | awk -F: '{print $1}' | uniq -d | wc -l
-          if ($DUPLICATES) then
-            echo "FAIL"
-          else
-            echo "PASS"
-          fi
-        fix: |
-          [source,bash]
-          ---
-          echo "No automatic remediation at this time."
-          echo "Future algorithms could append a number to the end.""
-          ---

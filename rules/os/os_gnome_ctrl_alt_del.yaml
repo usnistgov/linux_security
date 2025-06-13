@@ -1,153 +1,493 @@
-id: os_gnome_ctrl_alt_del.yaml
-title: The Ubuntu operating system must disable the x86 Ctrl-Alt-Delete key sequence if a graphical user interface is installed.
+id: os_gnome_ctrl_alt_del
+title: Disable Ctrl-Alt-Del Reboot Key Sequence in GNOME3
 discussion: |
-  A locally logged-on user who presses Ctrl-Alt-Delete, when at the console, can reboot the system. If accidentally pressed, as could happen in the case of a mixed OS environment, this can create the risk of short-term loss of availability of systems due to unintentional reboot. In the graphical environment, risk of unintentional reboot from the Ctrl-Alt-Delete sequence is reduced because the user will be prompted before any action is taken.  The check and fix look at org.gnome.settings-daemon.plugins.media-keys logout setting.
-check: |
-  $OS_VALUE
-result:
-  integer: 1
-fix: |
-  $OS_VALUE
-references: 
-    cce: 
-      - $OS_VALUE
-    cci:  
+  A locally logged-in user who presses Ctrl-Alt-Del, when at the console,
+  can reboot the system. If accidentally pressed, as could happen in
+  the case of mixed OS environment, this can create the risk of short-term
+  loss of availability of systems due to unintentional reboot.
+references:
+  disa:
+    cci:
       - CCI-000366
-    800_53r5: 
-      - CM-06(a)
-    srg: 
+    srg:
       - SRG-OS-000480-GPOS-00227
-    disa_stig: 
-      - $OS_VALUE
-tags:
-  - 800-53r5_moderate
-  - 800-53r5_high
-  - client
-  - server
-  - manual
-severity: 
-  - high
-os_specifics: 
+    disa_stig:
+      '8':
+        - RHEL-08-040171
+      '9':
+        - RHEL-09-271105
+        - RHEL-09-271110
+      '2004':
+        - UBTU-20-010459
+      '2204':
+        - UBTU-22-271030
+  nist:
+    800-53r4:
+      - AC-6
+      - CM-6
+      - CM-7
+    cce:
+      '10':
+        - CCE-90658-6
+      '8':
+        - CCE-84028-0
+      '9':
+        - CCE-88653-1
+os_specifics:
+  rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '10':
+      severity: high
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q gdm && { [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; }; then
+
+        # Check for setting in any of the DConf db directories
+        # If files contain ibus or distro, ignore them.
+        # The assignment assumes that individual filenames don't contain :
+        readarray -t SETTINGSFILES < <(grep -r "\\[org/gnome/settings-daemon/plugins/media-keys\\]" "/etc/dconf/db/" \
+                                        | grep -v 'distro\|ibus\|local.d' | cut -d":" -f1)
+        DCONFFILE="/etc/dconf/db/local.d/00-security-settings"
+        DBDIR="/etc/dconf/db/local.d"
+
+        mkdir -p "${DBDIR}"
+
+        # Comment out the configurations in databases different from the target one
+        if [ "${#SETTINGSFILES[@]}" -ne 0 ]
+        then
+            if grep -q "^\\s*logout\\s*=" "${SETTINGSFILES[@]}"
+            then
+
+                sed -Ei "s/(^\s*)logout(\s*=)/#\1logout\2/g" "${SETTINGSFILES[@]}"
+            fi
+        fi
+
+        [ ! -z "${DCONFFILE}" ] && echo "" >> "${DCONFFILE}"
+        if ! grep -q "\\[org/gnome/settings-daemon/plugins/media-keys\\]" "${DCONFFILE}"
+        then
+            printf '%s\n' "[org/gnome/settings-daemon/plugins/media-keys]" >> ${DCONFFILE}
+        fi
+
+        escaped_value="$(sed -e 's/\\/\\\\/g' <<< "['']")"
+        if grep -q "^\\s*logout\\s*=" "${DCONFFILE}"
+        then
+                sed -i "s/\\s*logout\\s*=\\s*.*/logout=${escaped_value}/g" "${DCONFFILE}"
+            else
+                sed -i "\\|\\[org/gnome/settings-daemon/plugins/media-keys\\]|a\\logout=${escaped_value}" "${DCONFFILE}"
+        fi
+        dconf update
+        # Check for setting in any of the DConf db directories
+        LOCKFILES=$(grep -r "^/org/gnome/settings-daemon/plugins/media-keys/logout$" "/etc/dconf/db/" \
+                    | grep -v 'distro\|ibus\|local.d' | grep ":" | cut -d":" -f1)
+        LOCKSFOLDER="/etc/dconf/db/local.d/locks"
+
+        mkdir -p "${LOCKSFOLDER}"
+
+        # Comment out the configurations in databases different from the target one
+        if [[ ! -z "${LOCKFILES}" ]]
+        then
+            sed -i -E "s|^/org/gnome/settings-daemon/plugins/media-keys/logout$|#&|" "${LOCKFILES[@]}"
+        fi
+
+        if ! grep -qr "^/org/gnome/settings-daemon/plugins/media-keys/logout$" /etc/dconf/db/local.d/
+        then
+            echo "/org/gnome/settings-daemon/plugins/media-keys/logout" >> "/etc/dconf/db/local.d/locks/00-security-settings-lock"
+        fi
+        dconf update
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      severity: high
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q gdm && { [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; }; then
+
+        # Check for setting in any of the DConf db directories
+        # If files contain ibus or distro, ignore them.
+        # The assignment assumes that individual filenames don't contain :
+        readarray -t SETTINGSFILES < <(grep -r "\\[org/gnome/settings-daemon/plugins/media-keys\\]" "/etc/dconf/db/" \
+                                        | grep -v 'distro\|ibus\|local.d' | cut -d":" -f1)
+        DCONFFILE="/etc/dconf/db/local.d/00-security-settings"
+        DBDIR="/etc/dconf/db/local.d"
+
+        mkdir -p "${DBDIR}"
+
+        # Comment out the configurations in databases different from the target one
+        if [ "${#SETTINGSFILES[@]}" -ne 0 ]
+        then
+            if grep -q "^\\s*logout\\s*=" "${SETTINGSFILES[@]}"
+            then
+
+                sed -Ei "s/(^\s*)logout(\s*=)/#\1logout\2/g" "${SETTINGSFILES[@]}"
+            fi
+        fi
+
+        [ ! -z "${DCONFFILE}" ] && echo "" >> "${DCONFFILE}"
+        if ! grep -q "\\[org/gnome/settings-daemon/plugins/media-keys\\]" "${DCONFFILE}"
+        then
+            printf '%s\n' "[org/gnome/settings-daemon/plugins/media-keys]" >> ${DCONFFILE}
+        fi
+
+        escaped_value="$(sed -e 's/\\/\\\\/g' <<< "['']")"
+        if grep -q "^\\s*logout\\s*=" "${DCONFFILE}"
+        then
+                sed -i "s/\\s*logout\\s*=\\s*.*/logout=${escaped_value}/g" "${DCONFFILE}"
+            else
+                sed -i "\\|\\[org/gnome/settings-daemon/plugins/media-keys\\]|a\\logout=${escaped_value}" "${DCONFFILE}"
+        fi
+        dconf update
+        # Check for setting in any of the DConf db directories
+        LOCKFILES=$(grep -r "^/org/gnome/settings-daemon/plugins/media-keys/logout$" "/etc/dconf/db/" \
+                    | grep -v 'distro\|ibus\|local.d' | grep ":" | cut -d":" -f1)
+        LOCKSFOLDER="/etc/dconf/db/local.d/locks"
+
+        mkdir -p "${LOCKSFOLDER}"
+
+        # Comment out the configurations in databases different from the target one
+        if [[ ! -z "${LOCKFILES}" ]]
+        then
+            sed -i -E "s|^/org/gnome/settings-daemon/plugins/media-keys/logout$|#&|" "${LOCKFILES[@]}"
+        fi
+
+        if ! grep -qr "^/org/gnome/settings-daemon/plugins/media-keys/logout$" /etc/dconf/db/local.d/
+        then
+            echo "/org/gnome/settings-daemon/plugins/media-keys/logout" >> "/etc/dconf/db/local.d/locks/00-security-settings-lock"
+        fi
+        dconf update
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      severity: high
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q gdm && { [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; }; then
+
+        # Check for setting in any of the DConf db directories
+        # If files contain ibus or distro, ignore them.
+        # The assignment assumes that individual filenames don't contain :
+        readarray -t SETTINGSFILES < <(grep -r "\\[org/gnome/settings-daemon/plugins/media-keys\\]" "/etc/dconf/db/" \
+                                        | grep -v 'distro\|ibus\|local.d' | cut -d":" -f1)
+        DCONFFILE="/etc/dconf/db/local.d/00-security-settings"
+        DBDIR="/etc/dconf/db/local.d"
+
+        mkdir -p "${DBDIR}"
+
+        # Comment out the configurations in databases different from the target one
+        if [ "${#SETTINGSFILES[@]}" -ne 0 ]
+        then
+            if grep -q "^\\s*logout\\s*=" "${SETTINGSFILES[@]}"
+            then
+
+                sed -Ei "s/(^\s*)logout(\s*=)/#\1logout\2/g" "${SETTINGSFILES[@]}"
+            fi
+        fi
+
+        [ ! -z "${DCONFFILE}" ] && echo "" >> "${DCONFFILE}"
+        if ! grep -q "\\[org/gnome/settings-daemon/plugins/media-keys\\]" "${DCONFFILE}"
+        then
+            printf '%s\n' "[org/gnome/settings-daemon/plugins/media-keys]" >> ${DCONFFILE}
+        fi
+
+        escaped_value="$(sed -e 's/\\/\\\\/g' <<< "['']")"
+        if grep -q "^\\s*logout\\s*=" "${DCONFFILE}"
+        then
+                sed -i "s/\\s*logout\\s*=\\s*.*/logout=${escaped_value}/g" "${DCONFFILE}"
+            else
+                sed -i "\\|\\[org/gnome/settings-daemon/plugins/media-keys\\]|a\\logout=${escaped_value}" "${DCONFFILE}"
+        fi
+        dconf update
+        # Check for setting in any of the DConf db directories
+        LOCKFILES=$(grep -r "^/org/gnome/settings-daemon/plugins/media-keys/logout$" "/etc/dconf/db/" \
+                    | grep -v 'distro\|ibus\|local.d' | grep ":" | cut -d":" -f1)
+        LOCKSFOLDER="/etc/dconf/db/local.d/locks"
+
+        mkdir -p "${LOCKSFOLDER}"
+
+        # Comment out the configurations in databases different from the target one
+        if [[ ! -z "${LOCKFILES}" ]]
+        then
+            sed -i -E "s|^/org/gnome/settings-daemon/plugins/media-keys/logout$|#&|" "${LOCKFILES[@]}"
+        fi
+
+        if ! grep -qr "^/org/gnome/settings-daemon/plugins/media-keys/logout$" /etc/dconf/db/local.d/
+        then
+            echo "/org/gnome/settings-daemon/plugins/media-keys/logout" >> "/etc/dconf/db/local.d/locks/00-security-settings-lock"
+        fi
+        dconf update
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010459
-        check: |
-          #! /bin/bash
-          if [[ $(gsettings get org.gnome.settings-daemon.plugins.media-keys logout) = "['<Control><Alt>Delete']" ]]; then
-            echo "FAIL"
-          else
-            echo "PASS"
-          fi
-        fix: |
-          #! /bin/bash
-          # Remediation take from Ubuntu Pro scripts
-          # Remediation is applicable only in certain platforms
-          if dpkg-query --show --showformat='${db:Status-Status}\n' 'gdm3' 2>/dev/null | grep -q installed && { [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; }; then
+      severity: high
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'gdm3' 2>/dev/null | grep -q '^installed' && { [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; }; then
 
-          # Check for setting in any of the DConf db directories
-          # If files contain ibus or distro, ignore them.
-          # The assignment assumes that individual filenames don't contain :
-          readarray -t SETTINGSFILES < <(grep -r "\\[org/gnome/settings-daemon/plugins/media-keys\\]" "/etc/dconf/db/" | grep -v 'distro\|ibus' | cut -d":" -f1)
-          DCONFFILE="/etc/dconf/db/local.d/00-security-settings"
-          DBDIR="/etc/dconf/db/local.d"
+        mkdir -p /etc/dconf/profile
+        dconf_profile_path=/etc/dconf/profile/user
 
-          mkdir -p "${DBDIR}"
+        [[ -s "${dconf_profile_path}" ]] || echo > "${dconf_profile_path}"
 
-          if [ "${#SETTINGSFILES[@]}" -eq 0 ]
-          then
-              [ ! -z ${DCONFFILE} ] || echo "" >> ${DCONFFILE}
-              printf '%s\n' "[org/gnome/settings-daemon/plugins/media-keys]" >> ${DCONFFILE}
-              printf '%s=%s\n' "logout" "''" >> ${DCONFFILE}
-          else
-              escaped_value="$(sed -e 's/\\/\\\\/g' <<< "''")"
-              if grep -q "^\\s*logout\\s*=" "${SETTINGSFILES[@]}"
-              then
-                  
-                  sed -i "s/\\s*logout\\s*=\\s*.*/logout=${escaped_value}/g" "${SETTINGSFILES[@]}"
-              else
-                  sed -i "\\|\\[org/gnome/settings-daemon/plugins/media-keys\\]|a\\logout=${escaped_value}" "${SETTINGSFILES[@]}"
-              fi
-          fi
+        if ! grep -Pzq "(?s)^\s*user-db:user.*\n\s*system-db:local" "${dconf_profile_path}"; then
+            sed -i --follow-symlinks "1s/^/user-db:user\nsystem-db:local\n/" "${dconf_profile_path}"
+        fi
 
-          dconf update
-          # Check for setting in any of the DConf db directories
-          LOCKFILES=$(grep -r "^/org/gnome/settings-daemon/plugins/media-keys/logout$" "/etc/dconf/db/" | grep -v 'distro\|ibus' | cut -d":" -f1)
-          LOCKSFOLDER="/etc/dconf/db/local.d/locks"
+        # Make sure the corresponding directories exist
+        mkdir -p /etc/dconf/db/local.d
 
-          mkdir -p "${LOCKSFOLDER}"
+        # Make sure permissions allow regular users to read dconf settings.
+        # Also define the umask to avoid `dconf update` changing permissions.
+        chmod -R u=rwX,go=rX /etc/dconf/profile
+        (umask 0022 && dconf update)
+        mkdir -p /etc/dconf/profile
+        dconf_profile_path=/etc/dconf/profile/gdm
 
-          if [[ -z "${LOCKFILES}" ]]
-          then
-              echo "/org/gnome/settings-daemon/plugins/media-keys/logout" >> "/etc/dconf/db/local.d/locks/00-security-settings-lock"
-          fi
+        [[ -s "${dconf_profile_path}" ]] || echo > "${dconf_profile_path}"
 
-          dconf update
+        if ! grep -Pzq "(?s)^\s*user-db:user.*\n\s*system-db:gdm" "${dconf_profile_path}"; then
+            sed -i --follow-symlinks "1s/^/user-db:user\nsystem-db:gdm\n/" "${dconf_profile_path}"
+        fi
 
-          else
-              >&2 echo 'Remediation is not applicable, nothing was done'
-          fi
+        # Make sure the corresponding directories exist
+        mkdir -p /etc/dconf/db/gdm.d
+
+        # Make sure permissions allow regular users to read dconf settings.
+        # Also define the umask to avoid `dconf update` changing permissions.
+        chmod -R u=rwX,go=rX /etc/dconf/profile
+        (umask 0022 && dconf update)
+
+
+        # Check for setting in any of the DConf db directories
+        # If files contain ibus or distro, ignore them.
+        # The assignment assumes that individual filenames don't contain :
+        readarray -t SETTINGSFILES < <(grep -r "\\[org/gnome/settings-daemon/plugins/media-keys\\]" "/etc/dconf/db/" \
+                                        | grep -v 'distro\|ibus\|local.d' | cut -d":" -f1)
+        DCONFFILE="/etc/dconf/db/local.d/00-security-settings"
+        DBDIR="/etc/dconf/db/local.d"
+
+        mkdir -p "${DBDIR}"
+
+        # Comment out the configurations in databases different from the target one
+        if [ "${#SETTINGSFILES[@]}" -ne 0 ]
+        then
+            if grep -q "^\\s*logout\\s*=" "${SETTINGSFILES[@]}"
+            then
+
+                sed -Ei "s/(^\s*)logout(\s*=)/#\1logout\2/g" "${SETTINGSFILES[@]}"
+            fi
+        fi
+
+        [ ! -z "${DCONFFILE}" ] && echo "" >> "${DCONFFILE}"
+        if ! grep -q "\\[org/gnome/settings-daemon/plugins/media-keys\\]" "${DCONFFILE}"
+        then
+            printf '%s\n' "[org/gnome/settings-daemon/plugins/media-keys]" >> ${DCONFFILE}
+        fi
+
+        escaped_value="$(sed -e 's/\\/\\\\/g' <<< "['']")"
+        if grep -q "^\\s*logout\\s*=" "${DCONFFILE}"
+        then
+                sed -i "s/\\s*logout\\s*=\\s*.*/logout=${escaped_value}/g" "${DCONFFILE}"
+            else
+                sed -i "\\|\\[org/gnome/settings-daemon/plugins/media-keys\\]|a\\logout=${escaped_value}" "${DCONFFILE}"
+        fi
+        # Make sure permissions allow regular users to read dconf settings.
+        # Also define the umask to avoid `dconf update` changing permissions.
+        chmod -R u=rwX,go=rX /etc/dconf/db
+        (umask 0022 && dconf update)
+        # Check for setting in any of the DConf db directories
+        LOCKFILES=$(grep -r "^/org/gnome/settings-daemon/plugins/media-keys/logout$" "/etc/dconf/db/" \
+                    | grep -v 'distro\|ibus\|local.d' | grep ":" | cut -d":" -f1)
+        LOCKSFOLDER="/etc/dconf/db/local.d/locks"
+
+        mkdir -p "${LOCKSFOLDER}"
+
+        # Comment out the configurations in databases different from the target one
+        if [[ ! -z "${LOCKFILES}" ]]
+        then
+            sed -i -E "s|^/org/gnome/settings-daemon/plugins/media-keys/logout$|#&|" "${LOCKFILES[@]}"
+        fi
+
+        if ! grep -qr "^/org/gnome/settings-daemon/plugins/media-keys/logout$" /etc/dconf/db/local.d/
+        then
+            echo "/org/gnome/settings-daemon/plugins/media-keys/logout" >> "/etc/dconf/db/local.d/locks/00-security-settings-lock"
+        fi
+        # Make sure permissions allow regular users to read dconf settings.
+        # Also define the umask to avoid `dconf update` changing permissions.
+        chmod -R u=rwX,go=rX /etc/dconf/db
+        (umask 0022 && dconf update)
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010459
-        check: |
-          #! /bin/bash
-          if [[ $(gsettings get org.gnome.settings-daemon.plugins.media-keys logout) = "['<Control><Alt>Delete']" ]]; then
-            echo "FAIL"
-          else
-            echo "PASS"
-          fi
-        fix: |
-          #! /bin/bash
-          # Remediation take from Ubuntu Pro scripts
-          # Remediation is applicable only in certain platforms
-          if dpkg-query --show --showformat='${db:Status-Status}\n' 'gdm3' 2>/dev/null | grep -q installed && { [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; }; then
+      severity: high
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'gdm3' 2>/dev/null | grep -q '^installed' && { [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; }; then
 
-          # Check for setting in any of the DConf db directories
-          # If files contain ibus or distro, ignore them.
-          # The assignment assumes that individual filenames don't contain :
-          readarray -t SETTINGSFILES < <(grep -r "\\[org/gnome/settings-daemon/plugins/media-keys\\]" "/etc/dconf/db/" | grep -v 'distro\|ibus' | cut -d":" -f1)
-          DCONFFILE="/etc/dconf/db/local.d/00-security-settings"
-          DBDIR="/etc/dconf/db/local.d"
+        mkdir -p /etc/dconf/profile
+        dconf_profile_path=/etc/dconf/profile/user
 
-          mkdir -p "${DBDIR}"
+        [[ -s "${dconf_profile_path}" ]] || echo > "${dconf_profile_path}"
 
-          if [ "${#SETTINGSFILES[@]}" -eq 0 ]
-          then
-              [ ! -z ${DCONFFILE} ] || echo "" >> ${DCONFFILE}
-              printf '%s\n' "[org/gnome/settings-daemon/plugins/media-keys]" >> ${DCONFFILE}
-              printf '%s=%s\n' "logout" "''" >> ${DCONFFILE}
-          else
-              escaped_value="$(sed -e 's/\\/\\\\/g' <<< "''")"
-              if grep -q "^\\s*logout\\s*=" "${SETTINGSFILES[@]}"
-              then
-                  
-                  sed -i "s/\\s*logout\\s*=\\s*.*/logout=${escaped_value}/g" "${SETTINGSFILES[@]}"
-              else
-                  sed -i "\\|\\[org/gnome/settings-daemon/plugins/media-keys\\]|a\\logout=${escaped_value}" "${SETTINGSFILES[@]}"
-              fi
-          fi
+        if ! grep -Pzq "(?s)^\s*user-db:user.*\n\s*system-db:local" "${dconf_profile_path}"; then
+            sed -i --follow-symlinks "1s/^/user-db:user\nsystem-db:local\n/" "${dconf_profile_path}"
+        fi
 
-          dconf update
-          # Check for setting in any of the DConf db directories
-          LOCKFILES=$(grep -r "^/org/gnome/settings-daemon/plugins/media-keys/logout$" "/etc/dconf/db/" | grep -v 'distro\|ibus' | cut -d":" -f1)
-          LOCKSFOLDER="/etc/dconf/db/local.d/locks"
+        # Make sure the corresponding directories exist
+        mkdir -p /etc/dconf/db/local.d
 
-          mkdir -p "${LOCKSFOLDER}"
+        # Make sure permissions allow regular users to read dconf settings.
+        # Also define the umask to avoid `dconf update` changing permissions.
+        chmod -R u=rwX,go=rX /etc/dconf/profile
+        (umask 0022 && dconf update)
+        mkdir -p /etc/dconf/profile
+        dconf_profile_path=/etc/dconf/profile/gdm
 
-          if [[ -z "${LOCKFILES}" ]]
-          then
-              echo "/org/gnome/settings-daemon/plugins/media-keys/logout" >> "/etc/dconf/db/local.d/locks/00-security-settings-lock"
-          fi
+        [[ -s "${dconf_profile_path}" ]] || echo > "${dconf_profile_path}"
 
-          dconf update
+        if ! grep -Pzq "(?s)^\s*user-db:user.*\n\s*system-db:gdm" "${dconf_profile_path}"; then
+            sed -i --follow-symlinks "1s/^/user-db:user\nsystem-db:gdm\n/" "${dconf_profile_path}"
+        fi
 
-          else
-              >&2 echo 'Remediation is not applicable, nothing was done'
-          fi
+        # Make sure the corresponding directories exist
+        mkdir -p /etc/dconf/db/gdm.d
+
+        # Make sure permissions allow regular users to read dconf settings.
+        # Also define the umask to avoid `dconf update` changing permissions.
+        chmod -R u=rwX,go=rX /etc/dconf/profile
+        (umask 0022 && dconf update)
+
+
+        # Check for setting in any of the DConf db directories
+        # If files contain ibus or distro, ignore them.
+        # The assignment assumes that individual filenames don't contain :
+        readarray -t SETTINGSFILES < <(grep -r "\\[org/gnome/settings-daemon/plugins/media-keys\\]" "/etc/dconf/db/" \
+                                        | grep -v 'distro\|ibus\|local.d' | cut -d":" -f1)
+        DCONFFILE="/etc/dconf/db/local.d/00-security-settings"
+        DBDIR="/etc/dconf/db/local.d"
+
+        mkdir -p "${DBDIR}"
+
+        # Comment out the configurations in databases different from the target one
+        if [ "${#SETTINGSFILES[@]}" -ne 0 ]
+        then
+            if grep -q "^\\s*logout\\s*=" "${SETTINGSFILES[@]}"
+            then
+
+                sed -Ei "s/(^\s*)logout(\s*=)/#\1logout\2/g" "${SETTINGSFILES[@]}"
+            fi
+        fi
+
+        [ ! -z "${DCONFFILE}" ] && echo "" >> "${DCONFFILE}"
+        if ! grep -q "\\[org/gnome/settings-daemon/plugins/media-keys\\]" "${DCONFFILE}"
+        then
+            printf '%s\n' "[org/gnome/settings-daemon/plugins/media-keys]" >> ${DCONFFILE}
+        fi
+
+        escaped_value="$(sed -e 's/\\/\\\\/g' <<< "['']")"
+        if grep -q "^\\s*logout\\s*=" "${DCONFFILE}"
+        then
+                sed -i "s/\\s*logout\\s*=\\s*.*/logout=${escaped_value}/g" "${DCONFFILE}"
+            else
+                sed -i "\\|\\[org/gnome/settings-daemon/plugins/media-keys\\]|a\\logout=${escaped_value}" "${DCONFFILE}"
+        fi
+        # Make sure permissions allow regular users to read dconf settings.
+        # Also define the umask to avoid `dconf update` changing permissions.
+        chmod -R u=rwX,go=rX /etc/dconf/db
+        (umask 0022 && dconf update)
+        # Check for setting in any of the DConf db directories
+        LOCKFILES=$(grep -r "^/org/gnome/settings-daemon/plugins/media-keys/logout$" "/etc/dconf/db/" \
+                    | grep -v 'distro\|ibus\|local.d' | grep ":" | cut -d":" -f1)
+        LOCKSFOLDER="/etc/dconf/db/local.d/locks"
+
+        mkdir -p "${LOCKSFOLDER}"
+
+        # Comment out the configurations in databases different from the target one
+        if [[ ! -z "${LOCKFILES}" ]]
+        then
+            sed -i -E "s|^/org/gnome/settings-daemon/plugins/media-keys/logout$|#&|" "${LOCKFILES[@]}"
+        fi
+
+        if ! grep -qr "^/org/gnome/settings-daemon/plugins/media-keys/logout$" /etc/dconf/db/local.d/
+        then
+            echo "/org/gnome/settings-daemon/plugins/media-keys/logout" >> "/etc/dconf/db/local.d/locks/00-security-settings-lock"
+        fi
+        # Make sure permissions allow regular users to read dconf settings.
+        # Also define the umask to avoid `dconf update` changing permissions.
+        chmod -R u=rwX,go=rX /etc/dconf/db
+        (umask 0022 && dconf update)
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+tags:
+  - 800-53r4_high
+  - 800-53r4_low
+  - 800-53r4_moderate

@@ -1,65 +1,208 @@
-id: os_account_etc_umask_profile
-title: The Ubuntu operating system must set a secure umask value for the /etc/profile template file.
+id: os_accounts_etc_umask_profile
+title: Ensure the Default Umask is Set Correctly in /etc/profile
 discussion: |
-  A properly configured /etc/profile template file ensures that files created by users are only readable by users in their group and no one else.
-check: |
-  $OS_VALUE
-result:
-  integer: 1
-fix: |
-  $OS_VALUE
-references: 
-    cce: 
-      - $OS_VALUE
-    cci:  
+  The umask value influences the permissions assigned to files when they are created.
+  A misconfigured umask value could result in files with excessive permissions that can be read or
+  written to by unauthorized users.
+references:
+  disa:
+    cci:
       - CCI-000366
-    800_53r5: 
-      - AC-6(1)
-      - CM-6(a)
-    srg: 
-      - SRG-OS-000480-GPOS-00228
+    srg:
       - SRG-OS-000480-GPOS-00227
-    disa_stig: 
-      - $OS_VALUE
-tags:
-  - 800-53r5_moderate
-  - 800-53r5_high
-  - client
-  - server
-  - manual
-severity: 
-  - medium
-os_specifics: 
-  ubuntu:
-    '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-        check: |
-          #!/bin/bash
-          UMASK=$(grep -P "umask" /etc/profile | cut -d ' ' -f2)
-          if [[ ${#UMASK} > 0 ]]; then
-              if [[ "$UMASK" != "027" ]]; then
-                  echo "FAIL"
-              else
-                  echo "PASS"
-              fi
-          else
-              echo "FAIL"
-          fi
-          
-        fix: |
-         var_accounts_user_umask='027'
+      - SRG-OS-000480-GPOS-00228
+    disa_stig:
+      '8':
+        - RHEL-08-020353
+      '9':
+        - RHEL-09-412070
+  nist:
+    800-53r4:
+      - AC-6
+      - CM-6
+    cce:
+      '10':
+        - CCE-87651-6
+      '8':
+        - CCE-81035-8
+      '9':
+        - CCE-90828-5
+os_specifics:
+  rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '10':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+
+        var_accounts_user_umask=''
 
 
         readarray -t profile_files < <(find /etc/profile.d/ -type f -name '*.sh' -or -name 'sh.local')
 
         for file in "${profile_files[@]}" /etc/profile; do
-          grep -qE '^[^#]*umask' "$file" && sed -i "s/umask.*/umask $var_accounts_user_umask/g" "$file"
+          grep -qE '^[^#]*umask' "$file" && sed -i -E "s/^(\s*umask\s*)[0-7]+/\1$var_accounts_user_umask/g" "$file"
         done
 
         if ! grep -qrE '^[^#]*umask' /etc/profile*; then
           echo "umask $var_accounts_user_umask" >> /etc/profile
         fi
+
+        ---
+    '8':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+
+        var_accounts_user_umask=''
+
+
+        readarray -t profile_files < <(find /etc/profile.d/ -type f -name '*.sh' -or -name 'sh.local')
+
+        for file in "${profile_files[@]}" /etc/profile; do
+          grep -qE '^[^#]*umask' "$file" && sed -i -E "s/^(\s*umask\s*)[0-7]+/\1$var_accounts_user_umask/g" "$file"
+        done
+
+        if ! grep -qrE '^[^#]*umask' /etc/profile*; then
+          echo "umask $var_accounts_user_umask" >> /etc/profile
+        fi
+
+        ---
+    '9':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+
+        var_accounts_user_umask=''
+
+
+        readarray -t profile_files < <(find /etc/profile.d/ -type f -name '*.sh' -or -name 'sh.local')
+
+        for file in "${profile_files[@]}" /etc/profile; do
+          grep -qE '^[^#]*umask' "$file" && sed -i -E "s/^(\s*umask\s*)[0-7]+/\1$var_accounts_user_umask/g" "$file"
+        done
+
+        if ! grep -qrE '^[^#]*umask' /etc/profile*; then
+          echo "umask $var_accounts_user_umask" >> /etc/profile
+        fi
+
+        ---
+  ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '2004':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+
+        var_accounts_user_umask=''
+
+
+        readarray -t profile_files < <(find /etc/profile.d/ -type f -name '*.sh' -or -name 'sh.local')
+
+        for file in "${profile_files[@]}" /etc/profile; do
+          grep -qE '^[^#]*umask' "$file" && sed -i -E "s/^(\s*umask\s*)[0-7]+/\1$var_accounts_user_umask/g" "$file"
+        done
+
+        if ! grep -qrE '^[^#]*umask' /etc/profile*; then
+          echo "umask $var_accounts_user_umask" >> /etc/profile
+        fi
+
+        ---
+    '2204':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+
+        var_accounts_user_umask=''
+
+
+        readarray -t profile_files < <(find /etc/profile.d/ -type f -name '*.sh' -or -name 'sh.local')
+
+        for file in "${profile_files[@]}" /etc/profile; do
+          grep -qE '^[^#]*umask' "$file" && sed -i -E "s/^(\s*umask\s*)[0-7]+/\1$var_accounts_user_umask/g" "$file"
+        done
+
+        if ! grep -qrE '^[^#]*umask' /etc/profile*; then
+          echo "umask $var_accounts_user_umask" >> /etc/profile
+        fi
+
+        ---
+    '2404':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+
+        var_accounts_user_umask=''
+
+
+        readarray -t profile_files < <(find /etc/profile.d/ -type f -name '*.sh' -or -name 'sh.local')
+
+        for file in "${profile_files[@]}" /etc/profile; do
+          grep -qE '^[^#]*umask' "$file" && sed -i -E "s/^(\s*umask\s*)[0-7]+/\1$var_accounts_user_umask/g" "$file"
+        done
+
+        if ! grep -qrE '^[^#]*umask' /etc/profile*; then
+          echo "umask $var_accounts_user_umask" >> /etc/profile
+        fi
+
+        ---
+tags:
+  - 800-53r4_high
+  - 800-53r4_low
+  - 800-53r4_moderate
+  - cis_lvl1
+  - cis_lvl2
+  - client
+  - server

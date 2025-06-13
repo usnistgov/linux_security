@@ -1,0 +1,63 @@
+id: os_accounts_pw_warn_age_login_defs
+title: The Ubuntu operating system must inform users that they will need a change a password in the near future.
+discussion: |
+  Any password, no matter how complex, can eventually be cracked. Therefore, passwords need to be changed periodically. Notifying users that they will need to change their password soon is beneficial to end users.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references: 
+    cce: 
+      - $OS_VALUE
+    cci:  
+      - N/A
+    800_53r5: 
+      - IA-5(f)
+      - IA-5(d)
+      - CM-6(a)
+    srg: 
+      - N/A
+    disa_stig: 
+      - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+  - manual
+severity: 
+  - medium
+os_specifics: 
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          #!/bin/bash
+          if grep -q -P 'PASS_WARN_AGE\t7' /etc/login.defs; then
+            echo "PASS"
+          else
+            echo "FAIL"
+          fi
+        fix: |
+          # Remediation is applicable only in certain platforms
+          if dpkg-query --show --showformat='${db:Status-Status}\n' 'login' 2>/dev/null | grep -q installed; then
+
+          var_accounts_password_warn_age_login_defs='7'
+
+
+          grep -q ^PASS_WARN_AGE /etc/login.defs && \
+          sed -i "s/PASS_WARN_AGE.*/PASS_WARN_AGE\t$var_accounts_password_warn_age_login_defs/g" /etc/login.defs
+          if ! [ $? -eq 0 ]
+          then
+            echo -e "PASS_WARN_AGE\t$var_accounts_password_warn_age_login_defs" >> /etc/login.defs
+          fi
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi

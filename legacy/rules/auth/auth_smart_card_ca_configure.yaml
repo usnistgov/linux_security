@@ -1,0 +1,83 @@
+id: auth_smart_card_ca_configure
+title: "Configure Smart Card Certificate Authority Validation"
+discussion: |
+  Using an authentication device, such as a CAC or token that is separate from the information system, ensures that even if the information system is compromised, that compromise will not affect credentials stored on the authentication device.
+
+  Multifactor solutions that require devices separate from information systems gaining access include, for example, hardware tokens providing time-based or challenge-response authenticators and smart cards such as the U.S. Government Personal Identity Verification card and the DoD Common Access Card.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000851
+    - CCI-001991
+  800-53r5:
+    - N/A 
+  srg:
+    - SRG-OS-000066-GPOS-00034
+    - SRG-OS-000384-GPOS-00167
+  disa_stig:
+    - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010060
+        check: |
+          echo "Check This"
+        fix: |
+          [source,bash]
+          ---
+          # Remediation is applicable only in certain platforms
+          if [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; then
+
+          if [ ! -f /etc/pam_pkcs11/pam_pkcs11.conf ]; then
+              cp /usr/share/doc/libpam-pkcs11/examples/pam_pkcs11.conf.example /etc/pam_pkcs11/pam_pkcs11.conf
+          fi
+
+          if grep -v "^\s*\#+cert_policy" /etc/pam_pkcs11/pam_pkcs11.conf | grep -qv "ca"; then
+              sed -i "s/\(^[[:blank:]]*\)\(\(\#*[[:blank:]]*cert_policy[[:blank:]]*=[[:blank:]]*.*;\)[^ $]*\)/\1cert_policy = ca,signature,ocsp_on;/" /etc/pam_pkcs11/pam_pkcs11.conf
+          fi
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi
+          ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        check: |
+          echo "Check This"
+        fix: |
+          [source,bash]
+          ---
+          # Remediation is applicable only in certain platforms
+          if [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; then
+
+          if [ ! -f /etc/pam_pkcs11/pam_pkcs11.conf ]; then
+              cp /usr/share/doc/libpam-pkcs11/examples/pam_pkcs11.conf.example /etc/pam_pkcs11/pam_pkcs11.conf
+          fi
+
+          if grep -v "^\s*\#+cert_policy" /etc/pam_pkcs11/pam_pkcs11.conf | grep -qv "ca"; then
+              sed -i "s/\(^[[:blank:]]*\)\(\(\#*[[:blank:]]*cert_policy[[:blank:]]*=[[:blank:]]*.*;\)[^ $]*\)/\1cert_policy = ca,signature,ocsp_on;/" /etc/pam_pkcs11/pam_pkcs11.conf
+          fi
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi
+          ---

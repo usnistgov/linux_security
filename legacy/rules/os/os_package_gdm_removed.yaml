@@ -1,0 +1,49 @@
+id: os_package_gdm_removed
+title: "The operating system MUST remove GNOME Display Manager (GDM)"
+discussion: |
+  Unnecessary service packages must not be installed to decrease the attack surface of the system. A graphical environment is unnecessary for certain types of systems including a virtualization hypervisor.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r5:
+    - CM-7(a)
+    - CM-7(b)
+  srg:
+    - SRG-OS-000480-GPOS-00227
+  disa_stig:
+    - $OS_VALUE
+tags:
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        check: |
+          dpkg-query --show --showformat='${db:Status-Status}\n' 'gdm3' 2>/dev/null | grep -q installed
+        fix: |
+          [source,bash]
+          ---
+          apt-get remove -y "gdm3"
+          ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        check: |
+          dpkg-query --show --showformat='${db:Status-Status}\n' 'gdm3' 2>/dev/null | grep -q installed
+        fix: |
+          [source,bash]
+          ---
+          apt-get remove -y "gdm3"
+          ---

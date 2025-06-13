@@ -1,0 +1,157 @@
+id: os_sudo_custom_logfile_used.yaml
+title: "The Operating System should use a custom log file to monitor sudo usage."
+discussion: |
+  A custom log file to monitor sudo usage simplifies auditing and facilitates better incident response.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r5:
+    - AU-12
+  srg:
+    - N/A
+  disa_stig:
+    - N/A
+tags:
+  - client
+  - server
+severity: "low"
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          #! /bin/bash
+          # Checks to see if /etc/sudoers either doesn't contain a sudo log file or a diff path for it
+          # Remediation is applicable only in certain platforms
+          if dpkg-query --show --showformat='${db:Status-Status}\n' 'sudo' 2>/dev/null | grep -q installed; then
+
+          var_sudo_logfile='/var/log/sudo.log'
+
+          # Can we access it?
+          if /usr/sbin/visudo -qcf /etc/sudoers; then
+              if ! grep -P '^[\s]*Defaults[\s]*\blogfile=("(?:\\"|\\\\|[^"\\\n])*"\B|[^"](?:(?:\\,|\\"|\\ |\\\\|[^", \\\n])*)\b)\b.*$' /etc/sudoers; then
+                  # sudoers file doesn't define Option logfile
+                  echo "FAIL"
+              else
+                  # sudoers file defines Option logfile, remediate if appropriate value is not set
+                  if ! grep -P "^[\s]*Defaults.*\blogfile=${var_sudo_logfile}\b.*$" /etc/sudoers; then
+                      echo "FAIL"
+                  else
+                      echo "PASS"
+                  fi
+              fi
+        fix: |
+          #! /bin/bash
+          # Remediation is applicable only in certain platforms
+          if dpkg-query --show --showformat='${db:Status-Status}\n' 'sudo' 2>/dev/null | grep -q installed; then
+
+          var_sudo_logfile='/var/log/sudo.log'
+
+
+          if /usr/sbin/visudo -qcf /etc/sudoers; then
+              cp /etc/sudoers /etc/sudoers.bak
+              if ! grep -P '^[\s]*Defaults[\s]*\blogfile=("(?:\\"|\\\\|[^"\\\n])*"\B|[^"](?:(?:\\,|\\"|\\ |\\\\|[^", \\\n])*)\b)\b.*$' /etc/sudoers; then
+                  # sudoers file doesn't define Option logfile
+                  echo "Defaults logfile=${var_sudo_logfile}" >> /etc/sudoers
+              else
+                  # sudoers file defines Option logfile, remediate if appropriate value is not set
+                  if ! grep -P "^[\s]*Defaults.*\blogfile=${var_sudo_logfile}\b.*$" /etc/sudoers; then
+                      
+                      escaped_variable=${var_sudo_logfile//$'/'/$'\/'}
+                      sed -Ei "s/(^[\s]*Defaults.*\blogfile=)[-]?.+(\b.*$)/\1$escaped_variable\2/" /etc/sudoers
+                  fi
+              fi
+              
+              # Check validity of sudoers and cleanup bak
+              if /usr/sbin/visudo -qcf /etc/sudoers; then
+                  rm -f /etc/sudoers.bak
+              else
+                  echo "Fail to validate remediated /etc/sudoers, reverting to original file."
+                  mv /etc/sudoers.bak /etc/sudoers
+                  false
+              fi
+          else
+              echo "Skipping remediation, /etc/sudoers failed to validate"
+              false
+          fi
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi 
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          #! /bin/bash
+          # Checks to see if /etc/sudoers either doesn't contain a sudo log file or a diff path for it
+          # Remediation is applicable only in certain platforms
+          if dpkg-query --show --showformat='${db:Status-Status}\n' 'sudo' 2>/dev/null | grep -q installed; then
+
+          var_sudo_logfile='/var/log/sudo.log'
+
+          # Can we access it?
+          if /usr/sbin/visudo -qcf /etc/sudoers; then
+              if ! grep -P '^[\s]*Defaults[\s]*\blogfile=("(?:\\"|\\\\|[^"\\\n])*"\B|[^"](?:(?:\\,|\\"|\\ |\\\\|[^", \\\n])*)\b)\b.*$' /etc/sudoers; then
+                  # sudoers file doesn't define Option logfile
+                  echo "FAIL"
+              else
+                  # sudoers file defines Option logfile, remediate if appropriate value is not set
+                  if ! grep -P "^[\s]*Defaults.*\blogfile=${var_sudo_logfile}\b.*$" /etc/sudoers; then
+                      echo "FAIL"
+                  else
+                      echo "PASS"
+                  fi
+              fi
+        fix: |
+          #! /bin/bash
+          # Remediation is applicable only in certain platforms
+          if dpkg-query --show --showformat='${db:Status-Status}\n' 'sudo' 2>/dev/null | grep -q installed; then
+
+          var_sudo_logfile='/var/log/sudo.log'
+
+
+          if /usr/sbin/visudo -qcf /etc/sudoers; then
+              cp /etc/sudoers /etc/sudoers.bak
+              if ! grep -P '^[\s]*Defaults[\s]*\blogfile=("(?:\\"|\\\\|[^"\\\n])*"\B|[^"](?:(?:\\,|\\"|\\ |\\\\|[^", \\\n])*)\b)\b.*$' /etc/sudoers; then
+                  # sudoers file doesn't define Option logfile
+                  echo "Defaults logfile=${var_sudo_logfile}" >> /etc/sudoers
+              else
+                  # sudoers file defines Option logfile, remediate if appropriate value is not set
+                  if ! grep -P "^[\s]*Defaults.*\blogfile=${var_sudo_logfile}\b.*$" /etc/sudoers; then
+                      
+                      escaped_variable=${var_sudo_logfile//$'/'/$'\/'}
+                      sed -Ei "s/(^[\s]*Defaults.*\blogfile=)[-]?.+(\b.*$)/\1$escaped_variable\2/" /etc/sudoers
+                  fi
+              fi
+              
+              # Check validity of sudoers and cleanup bak
+              if /usr/sbin/visudo -qcf /etc/sudoers; then
+                  rm -f /etc/sudoers.bak
+              else
+                  echo "Fail to validate remediated /etc/sudoers, reverting to original file."
+                  mv /etc/sudoers.bak /etc/sudoers
+                  false
+              fi
+          else
+              echo "Skipping remediation, /etc/sudoers failed to validate"
+              false
+          fi
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi 

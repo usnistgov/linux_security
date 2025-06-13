@@ -1,0 +1,68 @@
+id: os_directory_permissions_var_log_audit
+title: "Verify Directory Permissions on /var/log/audit"
+discussion: |
+  If users can write to audit logs, audit trails can be modified or destroyed.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000162
+    - CCI-000163
+    - CCI-000164
+  800-53r5:
+    - CM-6(a)
+    - AC-6(1)
+    - AU-9
+  srg:
+    - SRG-OS-000057-GPOS-00027
+    - SRG-OS-000058-GPOS-00028
+    - SRG-OS-000059-GPOS-00029
+  disa_stig:
+    - UBTU-20-010128
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          LOGGROUP=$(cat /etc/audit/auditd.conf | grep -e "log_group.*\=.*root" | wc -l)
+          if [ $LOGGROUP -e 0 ]; then
+             RIGHTPERMS=$(/usr/bin/stat -c "%a" /var/log/audit | grep "750" | wc -l)4
+             if [ $RIGHTPERMS -e 1 ]; then
+                echo "PASS"
+             else
+                echo "FAIL"
+             fi
+          else
+             RIGHTPERMS=$(/usr/bin/stat -c "%a" /var/log/audit | grep "700" | wc -l)
+             if [ $RIGHTPERMS -e 1 ]; then 
+               echo "PASS"
+             else
+               echo "FAIL"
+             fi
+          fi
+        fix: |
+          [source,bash]
+          ---
+          LOGGROUP=$(cat /etc/audit/auditd.conf | grep -e "log_group.*\=.*root" | wc -l)
+          if [ $LOGGROUP -e 0 ]; then
+             sudo chmod 0750 /var/log/audit
+          else
+             sudo chmod 0700 /var/log/audit
+          fi
+          ---

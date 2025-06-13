@@ -1,68 +1,270 @@
 id: os_directory_permissions_var_log_audit
-title: "Verify Directory Permissions on /var/log/audit"
-discussion: |
-  If users can write to audit logs, audit trails can be modified or destroyed.
-check: |
-  $OS_VALUE
-result:
-  integer: 1
-fix: |
-  $OS_VALUE
+title: System Audit Logs Must Have Mode 0750 or Less Permissive
+discussion: If users can write to audit logs, audit trails can be modified or destroyed.
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000162
-    - CCI-000163
-    - CCI-000164
-  800-53r5:
-    - CM-6(a)
-    - AC-6(1)
-    - AU-9
-  srg:
-    - SRG-OS-000057-GPOS-00027
-    - SRG-OS-000058-GPOS-00028
-    - SRG-OS-000059-GPOS-00029
-  disa_stig:
-    - UBTU-20-010128
+  disa:
+    cci:
+      - CCI-000162
+      - CCI-000163
+      - CCI-000164
+    srg:
+      - SRG-OS-000057-GPOS-00027
+      - SRG-OS-000058-GPOS-00028
+      - SRG-OS-000059-GPOS-00029
+    disa_stig:
+      '8':
+        - RHEL-08-030120
+      '2004':
+        - UBTU-20-010128
+      '2204':
+        - UBTU-22-653060
+  nist:
+    800-53r4:
+      - AC-6
+      - AU-9
+      - CM-6
+    cce:
+      '10':
+        - CCE-86750-7
+      '8':
+        - CCE-84048-8
+      '9':
+        - CCE-83734-4
+os_specifics:
+  rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '10':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q audit && rpm --quiet -q kernel; then
+
+        if LC_ALL=C grep -iw ^log_file /etc/audit/auditd.conf; then
+          DIR=$(awk -F "=" '/^log_file/ {print $2}' /etc/audit/auditd.conf | tr -d ' ' | rev | cut -d"/" -f2- | rev)
+        else
+          DIR="/var/log/audit"
+        fi
+
+
+        if LC_ALL=C grep -m 1 -q ^log_group /etc/audit/auditd.conf; then
+          GROUP=$(awk -F "=" '/log_group/ {print $2}' /etc/audit/auditd.conf | tr -d ' ')
+          if ! [ "${GROUP}" == 'root' ] ; then
+            chmod 0750 $DIR
+          else
+            chmod 0700 $DIR
+          fi
+        else
+          chmod 0700 $DIR
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q audit && rpm --quiet -q kernel; then
+
+        if LC_ALL=C grep -iw ^log_file /etc/audit/auditd.conf; then
+          DIR=$(awk -F "=" '/^log_file/ {print $2}' /etc/audit/auditd.conf | tr -d ' ' | rev | cut -d"/" -f2- | rev)
+        else
+          DIR="/var/log/audit"
+        fi
+
+
+        chmod 0700 $DIR
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q audit && rpm --quiet -q kernel; then
+
+        if LC_ALL=C grep -iw ^log_file /etc/audit/auditd.conf; then
+          DIR=$(awk -F "=" '/^log_file/ {print $2}' /etc/audit/auditd.conf | tr -d ' ' | rev | cut -d"/" -f2- | rev)
+        else
+          DIR="/var/log/audit"
+        fi
+
+
+        if LC_ALL=C grep -m 1 -q ^log_group /etc/audit/auditd.conf; then
+          GROUP=$(awk -F "=" '/log_group/ {print $2}' /etc/audit/auditd.conf | tr -d ' ')
+          if ! [ "${GROUP}" == 'root' ] ; then
+            chmod 0750 $DIR
+          else
+            chmod 0700 $DIR
+          fi
+        else
+          chmod 0700 $DIR
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '2004':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q '^installed'; then
+
+        if LC_ALL=C grep -iw ^log_file /etc/audit/auditd.conf; then
+          DIR=$(awk -F "=" '/^log_file/ {print $2}' /etc/audit/auditd.conf | tr -d ' ' | rev | cut -d"/" -f2- | rev)
+        else
+          DIR="/var/log/audit"
+        fi
+
+
+        if LC_ALL=C grep -m 1 -q ^log_group /etc/audit/auditd.conf; then
+          GROUP=$(awk -F "=" '/log_group/ {print $2}' /etc/audit/auditd.conf | tr -d ' ')
+          if ! [ "${GROUP}" == 'root' ] ; then
+            chmod 0750 $DIR
+          else
+            chmod 0700 $DIR
+          fi
+        else
+          chmod 0700 $DIR
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q '^installed'; then
+
+        if LC_ALL=C grep -iw ^log_file /etc/audit/auditd.conf; then
+          DIR=$(awk -F "=" '/^log_file/ {print $2}' /etc/audit/auditd.conf | tr -d ' ' | rev | cut -d"/" -f2- | rev)
+        else
+          DIR="/var/log/audit"
+        fi
+
+
+        if LC_ALL=C grep -m 1 -q ^log_group /etc/audit/auditd.conf; then
+          GROUP=$(awk -F "=" '/log_group/ {print $2}' /etc/audit/auditd.conf | tr -d ' ')
+          if ! [ "${GROUP}" == 'root' ] ; then
+            chmod 0750 $DIR
+          else
+            chmod 0700 $DIR
+          fi
+        else
+          chmod 0700 $DIR
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q '^installed'; then
+
+        if LC_ALL=C grep -iw ^log_file /etc/audit/auditd.conf; then
+          DIR=$(awk -F "=" '/^log_file/ {print $2}' /etc/audit/auditd.conf | tr -d ' ' | rev | cut -d"/" -f2- | rev)
+        else
+          DIR="/var/log/audit"
+        fi
+
+
+        if LC_ALL=C grep -m 1 -q ^log_group /etc/audit/auditd.conf; then
+          GROUP=$(awk -F "=" '/log_group/ {print $2}' /etc/audit/auditd.conf | tr -d ' ')
+          if ! [ "${GROUP}" == 'root' ] ; then
+            chmod 0750 $DIR
+          else
+            chmod 0700 $DIR
+          fi
+        else
+          chmod 0700 $DIR
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
 tags:
-  - 800-53r5_moderate
-  - 800-53r5_high
+  - 800-53r4_high
+  - 800-53r4_low
+  - 800-53r4_moderate
+  - cis_lvl2
   - client
   - server
-severity: "medium"
-os_specifics:
-  ubuntu:
-    '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-        check: |
-          LOGGROUP=$(cat /etc/audit/auditd.conf | grep -e "log_group.*\=.*root" | wc -l)
-          if [ $LOGGROUP -e 0 ]; then
-             RIGHTPERMS=$(/usr/bin/stat -c "%a" /var/log/audit | grep "750" | wc -l)4
-             if [ $RIGHTPERMS -e 1 ]; then
-                echo "PASS"
-             else
-                echo "FAIL"
-             fi
-          else
-             RIGHTPERMS=$(/usr/bin/stat -c "%a" /var/log/audit | grep "700" | wc -l)
-             if [ $RIGHTPERMS -e 1 ]; then 
-               echo "PASS"
-             else
-               echo "FAIL"
-             fi
-          fi
-        fix: |
-          [source,bash]
-          ---
-          LOGGROUP=$(cat /etc/audit/auditd.conf | grep -e "log_group.*\=.*root" | wc -l)
-          if [ $LOGGROUP -e 0 ]; then
-             sudo chmod 0750 /var/log/audit
-          else
-             sudo chmod 0700 /var/log/audit
-          fi
-          ---

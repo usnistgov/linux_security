@@ -1,68 +1,76 @@
-id: os_accounts_root_gid_zero.yaml
-title: "The operating system should ensure that the root (UID 0) user has a primary group of zero."
+id: os_ensure_single_user_mode_locked
+title: Ensure Authentication Required for Single User Mode
 discussion: |
-  The root user account is used to perform elevated tasks, such as sudoing, and for securing files on the system from non-privileged viewing. Giving the root user a non-zero GID may result in root-owned files being exposed to non-root users.
-check: |
-  $OS_VALUE
-result:
-  integer: 1
-fix: |
-  $OS_VALUE
+  Requiring authentication in single user mode prevents an unauthorized
+  user from rebooting the system into single user to gain root privileges
+  without credentials.
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - 
-  800-53r5:
-    - N/A
-  srg:
-    - N/A
-  disa_stig:
-    - $OS_VALUE
-tags:
-  - client
-  - server
-severity: "high"
+  nist:
+    cce:
+      '10':
+        - CCE-89334-7
+      '8':
+        - CCE-86517-0
+      '9':
+        - CCE-87101-2
 os_specifics:
+  rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '10':
+      severity: medium
+      benchmarks:
+        - N/A
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '8':
+      severity: medium
+      benchmarks:
+        - N/A
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '9':
+      severity: medium
+      benchmarks:
+        - N/A
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-        check: |
-          #! /bin/bash
-          if ($id root | grep -q "gid=0(root)); then
-             echo "PASS"
-          else
-             echo "FAIL"
-          fi
-        fix: |
-          [source,bash]
-          ---
-          sudo usermod -g 0 root
-          ---
+      severity: medium
+      benchmarks:
+        - N/A
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
     '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-        check: |
-          #! /bin/bash
-          EMERGENCYAUTH=$(grep -P "^ExecStart=-/lib/systemd/systemd-sulogin-shell emergency" /lib/systemd/system/rescue.service | wc -l)
-          RESCUEAUTH=$(grep -P "^ExecStart=-/lib/systemd/systemd-sulogin-shell rescue" | wc -l)
-          if [[ $EMERGENCYAUTH -ne 1 ]]; then
-             echo "FAIL"
-          elif [[ $RESCUEAUTH -ne 1 ]]; then
-             echo "FAIL"
-          else
-             echo "FAIL"
-          fi
-        fix: |
-          [source,bash]
-          ---
-          sudo sed -i 's#^\(ExecStart=\).*#\1-/lib/systemd/systemd-sulogin-shell rescue#' /lib/systemd/system/rescue.service
-          sudo sed -i 's#^\(ExecStart=\).*#\1-/lib/systemd/systemd-sulogin-shell emergency#' /lib/systemd/system/emergency.service
-          ---
+      severity: medium
+      benchmarks:
+        - N/A
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+tags:
+  - N/A

@@ -1,0 +1,147 @@
+ id: os_gnome_screenlock_enabled.yaml
+title: The Ubuntu operating system must enable screen locking on the graphical user interface if installed.
+discussion: |
+  An automatic screen lock on the installed desktop environment helps to form a "back-up" option in the event a user forgets to manually lock their screen.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references: 
+    cce: 
+      - $OS_VALUE
+    cci:  
+      - CCI-000056
+      - CCI-000058
+      - CCI-000060
+    800_53r5: 
+      - CM-06(a)
+      - AC-07
+    srg: 
+      - SRG-OS-000028-GPOS-00009
+      - SRG-OS-000030-GPOS-00011
+    disa_stig: 
+      - $OS_VALUE
+tags:
+  - client
+severity: 
+  - medium
+os_specifics: 
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010004
+        check: |
+          #! /bin/bash
+          if sudo gsettings get org.gnome.desktop.screensaver lock-enabled | grep -q true; then
+            echo "PASS"
+          else
+            echo "FAIL"
+          fi
+        fix: |
+          #! /bin/bash
+          # Remediation taken from the STIG guide for Ubuntu 22.04 LTS guide
+          # Remediation is applicable only in certain platforms
+          gsettings set org.gnome.desktop.screensaver lock-enabled true
+          
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010004
+        check: |
+          #! /bin/bash
+          if gsettings get org.gnome.login-screen banner-message-enable| grep -q true; then
+            echo "PASS"
+          else
+            echo "FAIL"
+        fix: |
+          #! /bin/bash
+          # Script taken from Ubuntu Pro script
+          # Remediation is applicable only in certain platforms
+          if [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; then
+
+          login_banner_text='You are accessing a U.S. Government information system, which includes: 1) this computer, 2) this computer network, 3) all computers connected to this network, and 4) all devices and storage media attached to this network or to a computer on this network. You understand and consent to the following: you may access this information system for authorized use only; you have no reasonable expectation of privacy regarding any communication of data transiting or stored on this information system; at any time and for any lawful Government purpose, the Government may monitor, intercept, and search and seize any communication or data transiting or stored on this information system; and any communications or data transiting or stored on this information system may be disclosed or used for any lawful Government purpose.'
+
+          # Multiple regexes transform the banner regex into a usable banner
+          # 0 - Remove anchors around the banner text
+          login_banner_text=$(echo "$login_banner_text" | sed 's/^\^\(.*\)\$$/\1/g')
+          # 1 - Keep only the first banners if there are multiple
+          #    (dod_banners contains the long and short banner)
+          login_banner_text=$(echo "$login_banner_text" | sed 's/^(\(.*\)|.*)$/\1/g')
+          # 2 - Add spaces ' '. (Transforms regex for "space or newline" into a " ")
+          login_banner_text=$(echo "$login_banner_text" | sed 's/\[\\s\\n\]+/ /g')
+          # 3 - Adds newlines. (Transforms "(?:\[\\n\]+|(?:\\n)+)" into "\n")
+          login_banner_text=$(echo "$login_banner_text" | sed 's/(?:\[\\n\]+|(?:\\\\n)+)/\n/g')
+          # 4 - Remove any leftover backslash. (From any parethesis in the banner, for example).
+          login_banner_text=$(echo "$login_banner_text" | sed 's/\\//g')
+          formatted=$(echo "$login_banner_text" | fold -sw 80)
+
+          cat <<EOF >/etc/issue.net
+          $formatted
+          EOF
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi
+
+          if dpkg-query --show --showformat='${db:Status-Status}\n' 'gdm3' 2>/dev/null | grep -q installed; then
+
+          # Will do both approach, since we plan to migrate to checks over dconf db. That way, future updates of the tool
+          # will pass the check even if we decide to check only for the dconf db path.
+          if [ -e "/etc/gdm3/greeter.dconf-defaults" ] ; then
+              
+              LC_ALL=C sed -i "/^\s*banner\-message\-enable/Id" "/etc/gdm3/greeter.dconf-defaults"
+          else
+              touch "/etc/gdm3/greeter.dconf-defaults"
+          fi
+          cp "/etc/gdm3/greeter.dconf-defaults" "/etc/gdm3/greeter.dconf-defaults.bak"
+          # Insert after the line matching the regex '\[org/gnome/login-screen\]'
+          line_number="$(LC_ALL=C grep -n "\[org/gnome/login-screen\]" "/etc/gdm3/greeter.dconf-defaults.bak" | LC_ALL=C sed 's/:.*//g')"
+          if [ -z "$line_number" ]; then
+              # There was no match of '\[org/gnome/login-screen\]', insert at
+              # the end of the file.
+              printf '%s\n' "banner-message-enable=true" >> "/etc/gdm3/greeter.dconf-defaults"
+          else
+              head -n "$(( line_number ))" "/etc/gdm3/greeter.dconf-defaults.bak" > "/etc/gdm3/greeter.dconf-defaults"
+              printf '%s\n' "banner-message-enable=true" >> "/etc/gdm3/greeter.dconf-defaults"
+              tail -n "+$(( line_number + 1 ))" "/etc/gdm3/greeter.dconf-defaults.bak" >> "/etc/gdm3/greeter.dconf-defaults"
+          fi
+          # Clean up after ourselves.
+          rm "/etc/gdm3/greeter.dconf-defaults.bak"
+          # Check for setting in any of the DConf db directories
+          # If files contain ibus or distro, ignore them.
+          # The assignment assumes that individual filenames don't contain :
+          readarray -t SETTINGSFILES < <(grep -r "\\[org/gnome/login-screen\\]" "/etc/dconf/db/" | grep -v 'distro\|ibus' | cut -d":" -f1)
+          DCONFFILE="/etc/dconf/db/gdm.d/00-security-settings"
+          DBDIR="/etc/dconf/db/gdm.d"
+
+          mkdir -p "${DBDIR}"
+
+          if [ "${#SETTINGSFILES[@]}" -eq 0 ]
+          then
+              [ ! -z ${DCONFFILE} ] || echo "" >> ${DCONFFILE}
+              printf '%s\n' "[org/gnome/login-screen]" >> ${DCONFFILE}
+              printf '%s=%s\n' "banner-message-enable" "true" >> ${DCONFFILE}
+          else
+              escaped_value="$(sed -e 's/\\/\\\\/g' <<< "true")"
+              if grep -q "^\\s*banner-message-enable\\s*=" "${SETTINGSFILES[@]}"
+              then
+                  
+                  sed -i "s/\\s*banner-message-enable\\s*=\\s*.*/banner-message-enable=${escaped_value}/g" "${SETTINGSFILES[@]}"
+              else
+                  sed -i "\\|\\[org/gnome/login-screen\\]|a\\banner-message-enable=${escaped_value}" "${SETTINGSFILES[@]}"
+              fi
+          fi
+
+          dconf update
+          # No need to use dconf update, since bash_dconf_settings does that already
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi

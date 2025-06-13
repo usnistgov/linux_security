@@ -1,0 +1,82 @@
+id: os_account_etc_umask_logindefs
+title: The Ubuntu operating system must set a secure umask value for the login.defs template file.
+discussion: |
+  A properly configured login.defs template file ensures that files created by users are only readable by users in their group and no one else.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references: 
+    cce: 
+      - $OS_VALUE
+    cci:  
+      - CCI-000366
+    800_53r5: 
+      - AC-6(1)
+      - CM-6(a)
+    srg: 
+      - SRG-OS-000480-GPOS-00228
+      - SRG-OS-000480-GPOS-00227
+    disa_stig: 
+      - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+  - manual
+severity: 
+  - medium
+os_specifics: 
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          #!/bin/bash
+          UMASK=$(grep -P "UMASK" /etc/login.defs | cut -d ' ' -f2)
+          if [[ ${#UMASK} > 0 ]]; then
+              if [[ "$UMASK" != "027" ]]; then
+                  echo "FAIL"
+              else
+                  echo "PASS"
+              fi
+          else
+              echo "FAIL"
+          fi
+          
+        fix: |
+          # Remediation is applicable only in certain platforms
+          if dpkg-query --show --showformat='${db:Status-Status}\n' 'login' 2>/dev/null | grep -q installed; then
+
+          var_accounts_user_umask='027'
+
+
+          # Strip any search characters in the key arg so that the key can be replaced without
+          # adding any search characters to the config file.
+          stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^UMASK")
+
+          # shellcheck disable=SC2059
+          printf -v formatted_output "%s %s" "$stripped_key" "$var_accounts_user_umask"
+
+          # If the key exists, change it. Otherwise, add it to the config_file.
+          # We search for the key string followed by a word boundary (matched by \>),
+          # so if we search for 'setting', 'setting2' won't match.
+          if LC_ALL=C grep -q -m 1 -i -e "^UMASK\\>" "/etc/login.defs"; then
+              escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+              LC_ALL=C sed -i --follow-symlinks "s/^UMASK\\>.*/$escaped_formatted_output/gi" "/etc/login.defs"
+          else
+              if [[ -s "/etc/login.defs" ]] && [[ -n "$(tail -c 1 -- "/etc/login.defs" || true)" ]]; then
+                  LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/login.defs"
+              fi
+              printf '%s\n' "$formatted_output" >> "/etc/login.defs"
+          fi
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi

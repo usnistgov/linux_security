@@ -1,0 +1,76 @@
+id: os_accounts_max_concurrent_logins
+title: The Ubuntu operating system must limit the number of concurrent logins to the machine.
+discussion: |
+  Limiting the number of allowed users and sessions can limit risks related to Denial of Service attacks.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references: 
+    cce: 
+      - $OS_VALUE
+    cci:  
+      - CCI-000054
+    800_53r5: 
+      - AC-10
+      - CM-6(a)
+    srg: 
+      - SRG-OS-000027-GPOS-00008
+    disa_stig: 
+      - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+  - manual
+severity: 
+  - low
+os_specifics: 
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010400
+        check: |
+          if dpkg-query --show --showformat='${db:Status-Status}\n' 'libpam-runtime' 2>/dev/null | grep -q installed; then
+
+          var_accounts_max_concurrent_login_sessions='10'
+
+          MAXSET=0
+          if grep -q -s '^maxlogins 10' /etc/security/limits.d/*.conf; then
+                MAXSET=1
+          elif grep -q '^maxlogins 10' /etc/security/limits.conf; then
+                MAXSET=1
+          fi
+          if [[ $MAXSET == 1 ]]; then
+            echo "PASS"
+          else
+            echo "FAIL"
+          fi
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi
+        fix: |
+          # Remediation is applicable only in certain platforms
+          if dpkg-query --show --showformat='${db:Status-Status}\n' 'libpam-runtime' 2>/dev/null | grep -q installed; then
+
+          var_accounts_max_concurrent_login_sessions='10'
+
+
+          if grep -q '^[^#]*\<maxlogins\>' /etc/security/limits.d/*.conf; then
+            sed -i "/^[^#]*\<maxlogins\>/ s/maxlogins.*/maxlogins $var_accounts_max_concurrent_login_sessions/" /etc/security/limits.d/*.conf
+          elif grep -q '^[^#]*\<maxlogins\>' /etc/security/limits.conf; then
+            sed -i "/^[^#]*\<maxlogins\>/ s/maxlogins.*/maxlogins $var_accounts_max_concurrent_login_sessions/" /etc/security/limits.conf
+          else
+            echo "*	hard	maxlogins	$var_accounts_max_concurrent_login_sessions" >> /etc/security/limits.conf
+          fi
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi

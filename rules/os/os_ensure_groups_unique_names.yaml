@@ -1,69 +1,75 @@
 id: os_ensure_groups_unique_names
-title: "The operating system must ensure that all groups have unique names assigned to them."
-discussion: |
-  Duplicate names could lead to confusion for end-users and potentially create dangerous circumstances on a system.
-check: |
-  $OS_VALUE
-result:
-  integer: 1
-fix: |
-  $OS_VALUE
+title: Ensure All Groups on the System Have Unique Group Names
+discussion: To assure accountability and prevent unauthenticated access, groups must
+  be identified uniquely to prevent potential misuse and compromise of the system.
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - N/A
-  800-53r5:
-    -  N/A
-  srg:
-    - N/A
-  disa_stig:
-    - $OS_VALUE
+  nist:
+    cce:
+      '10':
+        - CCE-88449-4
+      '8':
+        - CCE-86328-2
+os_specifics:
+  rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '10':
+      severity: medium
+      benchmarks:
+        - N/A
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '8':
+      severity: medium
+      benchmarks:
+        - N/A
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+  ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '2004':
+      severity: medium
+      benchmarks:
+        - N/A
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '2204':
+      severity: medium
+      benchmarks:
+        - N/A
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '2404':
+      severity: medium
+      benchmarks:
+        - N/A
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
 tags:
+  - cis_lvl1
+  - cis_lvl2
   - client
   - server
-severity: "medium"
-os_specifics:
-  ubuntu:
-    '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-        check: |
-          #! /bin/bash
-          # TODO: This prints out the result of the DUPLICATES variable
-          DUPLICATES=$(sudo getent group | awk -F: '{print $1}' | uniq -d | wc -l)
-          if [[ $DUPLICATES > 0 ]]; then
-            echo "FAIL"
-          else
-            echo "PASS"
-          fi
-        fix: |
-          [source,bash]
-          ---
-          echo "No automatic remediation at this time."
-          echo "This is primarily due to the fact that each system may have unique name requirements."
-          ---
-    '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-        check: |
-          #! /bin/bash
-          # TODO: This prints out the result of the DUPLICATES variable
-          DUPLICATES=$(sudo getent group | awk -F: '{print $1}' | uniq -d | wc -l)
-          if [[ $DUPLICATES > 0 ]]; then
-            echo "FAIL"
-          else
-            echo "PASS"
-          fi
-        fix: |
-          [source,bash]
-          ---
-          echo "No automatic remediation at this time."
-          echo "This is primarily due to the fact that each system may have unique name requirements."
-          ---

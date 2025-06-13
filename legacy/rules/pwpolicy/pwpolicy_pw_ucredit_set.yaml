@@ -1,0 +1,112 @@
+id: pwpolicy_pw_ucredit_set
+title: "Ensure PAM Enforces Password Requirements - Minimum Uppercase Characters"
+discussion: |
+  The pam_pwquality module's ucredit= parameter controls requirements for usage of uppercase letters in a password. When set to a negative number, any password will be required to contain that many uppercase characters. When set to a positive number, pam_pwquality will grant +1 additional length credit for each uppercase character. Modify the ucredit setting in /etc/security/pwquality.conf to require the use of an uppercase character in passwords.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000192
+    - CCI-000193
+  800-53r5:
+    - CM-6(a)
+    - IA-5(c)
+    - IA-5(1)(a)
+    - IA-5(4) 
+  srg:
+    - SRG-OS-000069-GPOS-00037
+    - SRG-OS-000070-GPOS-00038
+  disa_stig:
+    - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010050
+        check: |
+          echo "Check This"
+        fix: |
+          [source,bash]
+          ---
+          # Remediation is applicable only in certain platforms
+          if dpkg-query --show --showformat='${db:Status-Status}\n' 'libpam-runtime' 2>/dev/null | grep -q installed; then
+
+          var_password_pam_ucredit='-1'
+
+          # Strip any search characters in the key arg so that the key can be replaced without
+          # adding any search characters to the config file.
+          stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^ucredit")
+
+          # shellcheck disable=SC2059
+          printf -v formatted_output "%s = %s" "$stripped_key" "$var_password_pam_ucredit"
+
+          # If the key exists, change it. Otherwise, add it to the config_file.
+          # We search for the key string followed by a word boundary (matched by \>),
+          # so if we search for 'setting', 'setting2' won't match.
+          if LC_ALL=C grep -q -m 1 -i -e "^ucredit\\>" "/etc/security/pwquality.conf"; then
+              escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+              LC_ALL=C sed -i --follow-symlinks "s/^ucredit\\>.*/$escaped_formatted_output/gi" "/etc/security/pwquality.conf"
+          else
+              if [[ -s "/etc/security/pwquality.conf" ]] && [[ -n "$(tail -c 1 -- "/etc/security/pwquality.conf" || true)" ]]; then
+                  LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/security/pwquality.conf"
+              fi
+              printf '%s\n' "$formatted_output" >> "/etc/security/pwquality.conf"
+          fi
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi
+          ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        check: |
+          echo "Check This"
+        fix: |
+          [source,bash]
+          ---
+          # Remediation is applicable only in certain platforms
+          if dpkg-query --show --showformat='${db:Status-Status}\n' 'libpam-runtime' 2>/dev/null | grep -q installed; then
+
+          var_password_pam_ucredit='-1'
+
+          # Strip any search characters in the key arg so that the key can be replaced without
+          # adding any search characters to the config file.
+          stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^ucredit")
+
+          # shellcheck disable=SC2059
+          printf -v formatted_output "%s = %s" "$stripped_key" "$var_password_pam_ucredit"
+
+          # If the key exists, change it. Otherwise, add it to the config_file.
+          # We search for the key string followed by a word boundary (matched by \>),
+          # so if we search for 'setting', 'setting2' won't match.
+          if LC_ALL=C grep -q -m 1 -i -e "^ucredit\\>" "/etc/security/pwquality.conf"; then
+              escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+              LC_ALL=C sed -i --follow-symlinks "s/^ucredit\\>.*/$escaped_formatted_output/gi" "/etc/security/pwquality.conf"
+          else
+              if [[ -s "/etc/security/pwquality.conf" ]] && [[ -n "$(tail -c 1 -- "/etc/security/pwquality.conf" || true)" ]]; then
+                  LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/security/pwquality.conf"
+              fi
+              printf '%s\n' "$formatted_output" >> "/etc/security/pwquality.conf"
+          fi
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi
+          ---

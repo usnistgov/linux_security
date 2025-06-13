@@ -1,0 +1,71 @@
+id: os_accounts_no_uid_except_zero.yaml
+title: "The operating system must ensure that the only account with a UID of zero is the root account."
+discussion: |
+  Accounts other than root with a UID of 0 represent a significant security risk and should be promptly removed.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000366
+  800-53r5:
+    - IA-2
+    - AC-6(5)
+    - IA-4(b)
+  srg:
+    - SRG-OS-000480-GPOS-00227
+  disa_stig:
+    - $OS_VALUE
+tags:
+  - client
+  - server
+severity: "high"
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          #! /bin/bash
+          # TODO: This prints out the result of the NONROOTUIDS variable
+          NONROOTUIDS=$(awk -F: '$3 == 0 && $1 != "root" { print $1 }' /etc/passwd | xargs --no-run-if-empty --max-lines=1 passwd -l | wc -l)
+          if ($NONROOTUIDS) then
+            echo "FAIL"
+          else
+            echo "PASS"
+          fi
+        fix: |
+          [source,bash]
+          ---
+          echo "No automatic remediation at this time."
+          echo "Future algorithms could automatically change UIDs"
+          ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          #! /bin/bash
+          # TODO: This prints out the result of the NONROOTUIDS variable
+          NONROOTUIDS=$(awk -F: '$3 == 0 && $1 != "root" { print $1 }' /etc/passwd | xargs --no-run-if-empty --max-lines=1 passwd -l | wc -l)
+          if ($NONROOTUIDS) then
+            echo "FAIL"
+          else
+            echo "PASS"
+          fi
+        fix: |
+          [source,bash]
+          ---
+          echo "No automatic remediation at this time."
+          echo "Future algorithms could automatically change UIDs"
+          ---

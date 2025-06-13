@@ -1,0 +1,61 @@
+id: os_root_login_prevent
+title: "The operating system should disable direct root logins."
+discussion: |
+  Direct root logins should not be allowed, as this encourages administrators to utilize su or sudo, and allows for increased auditing as a result. 
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000770
+  800-53r5:
+    - N/A
+  srg:
+    - SRG-OS-000109-GPOS-00056
+  disa_stig:
+    - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010408
+        check: |
+          #!/bin/bash
+          STATE=$(sudo passwd -S root | cut -d ' ' -f2)
+          if [[ $STATE == "L" ]]; then
+             echo "PASS"
+          else
+             echo "FAIL"
+          fi
+        fix: |
+          [source,bash]
+          ---
+          sudo passwd -l root
+          ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          /usr/bin/dpkg -l | /usr/bin/grep -c "prelink"
+        fix: |
+          [source,bash]
+          ---
+          /usr/sbin/prelink -ua
+          ---

@@ -1,48 +1,65 @@
-id: os_ensure_shadow_group_restricted
-title: The Ubuntu operating system should not enable user accounts to be a member of the shadow group. 
+id: os_ensure_shadow_group_empty
+title: Ensure shadow Group is Empty
 discussion: |
-  End users should never be added to the shadow group, as it enables them to view the /etc/shadow file, which contains password hashes.
-check: |
-  $OS_VALUE
-result:
-  integer: 1
-fix: |
-  $OS_VALUE
-references: 
-    cce: 
-      - $OS_VALUE
-    cci:  
-      - N/A
-    800_53r5: 
-      - N/A
-    srg: 
-      - N/A
-    disa_stig: 
-      - $OS_VALUE
+  Any users assigned to the shadow group would be granted read access to the
+  /etc/shadow file. If attackers can gain read access to the /etc/shadow file,
+  they can easily run a password cracking program against the hashed passwords
+  to break them. Other security information that is stored in the /etc/shadow
+  file (such as expiration) could also be useful to subvert additional user
+  accounts.
+references: {}
+os_specifics:
+  ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '2004':
+      severity: medium
+      benchmarks:
+        - N/A
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+
+        sed -ri 's/(^shadow:[^:]*:[^:]*:)([^:]+$)/\1/' /etc/group
+
+        ---
+    '2204':
+      severity: medium
+      benchmarks:
+        - N/A
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+
+        sed -ri 's/(^shadow:[^:]*:[^:]*:)([^:]+$)/\1/' /etc/group
+
+        ---
+    '2404':
+      severity: medium
+      benchmarks:
+        - N/A
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+
+        sed -ri 's/(^shadow:[^:]*:[^:]*:)([^:]+$)/\1/' /etc/group
+
+        ---
 tags:
-  - 800-53r5_moderate
-  - 800-53r5_high
+  - cis_lvl1
+  - cis_lvl2
   - client
   - server
-  - manual
-severity: 
-  - medium
-os_specifics: 
-  ubuntu:
-    '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-        check: |
-          #! /bin/bash
-          SHADOWUSERS=sudo getent shadow | awk -F: '{print $4}' | wc -m 
-          if $SHADOWUSERS > 1; then
-            echo "FAIL"
-          else
-            echo "PASS"
-          fi
-        fix: |
-          #! /bin/bash
-          sed -ri 's/(^shadow:[^:]*:[^:]*:)([^:]+$)/\1/' /etc/group

@@ -1,0 +1,115 @@
+id: pwpolicy_failed_pw_attemtps_deny
+title: "Set Deny For Failed Password Attempts"
+discussion: |
+  By limiting the number of failed logon attempts, the risk of unauthorized system access via user password guessing, otherwise known as brute-force attacks, is reduced. Limits are imposed by locking the account. To configure the operating system to lock an account after three unsuccessful consecutive access attempts using pam_tally2.so, modify the content of both /etc/pam.d/common-auth and /etc/pam.d/common-account as follows:
+    add or modify the pam_tally2.so module line in /etc/pam.d/common-auth to ensure both onerr=fail and deny=5 are present. For example:
+      auth required pam_tally2.so onerr=fail silent audit deny=3
+    add or modify the following line in /etc/pam.d/common-account:
+      account required pam_tally2.so
+  The DoD STIG requirement is 3 or greater.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000044
+  800-53r5:
+    - 
+  srg:
+    - SRG-OS-000021-GPOS-00005
+  disa_stig:
+    - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010072
+        check: |
+          echo "Check This"
+        fix: |
+          [source,bash]
+          ---
+          # Remediation is applicable only in certain platforms
+          if dpkg-query --show --showformat='${db:Status-Status}\n' 'libpam-runtime' 2>/dev/null | grep -q installed; then
+
+          var_password_pam_tally2='3'
+
+          # Use a non-number regexp to force update of the value of the deny option
+          if ! grep -qP '^\s*auth\s+'"required"'\s+pam_tally2.so\s*.*' "/etc/pam.d/common-auth"; then
+              # Line matching group + control + module was not found. Check group + module.
+              if [ "$(grep -cP '^\s*auth\s+.*\s+pam_tally2.so\s*' "/etc/pam.d/common-auth")" -eq 1 ]; then
+                  # The control is updated only if one single line matches.
+                  sed -i -E --follow-symlinks 's/^(\s*auth\s+).*(\bpam_tally2.so.*)/\1'"required"' \2/' "/etc/pam.d/common-auth"
+              else
+                  echo 'auth    '"required"'    pam_tally2.so' >> "/etc/pam.d/common-auth"
+              fi
+          fi
+          # Check the option
+          if ! grep -qP '^\s*auth\s+'"required"'\s+pam_tally2.so\s*.*\sdeny\b' "/etc/pam.d/common-auth"; then
+              sed -i -E --follow-symlinks '/\s*auth\s+'"required"'\s+pam_tally2.so.*/ s/$/ deny='"${var_password_pam_tally2}"'/' "/etc/pam.d/common-auth"
+          else
+              sed -i -E --follow-symlinks 's/(\s*auth\s+'"required"'\s+pam_tally2.so\s+.*)('"deny"'=)[[:alnum:]]+\s*(.*)/\1\2'"${var_password_pam_tally2}"' \3/' "/etc/pam.d/common-auth"
+          fi
+          if ! grep -qP '^\s*auth\s+'"required"'\s+pam_tally2.so\s*.*' "/etc/pam.d/common-auth"; then
+              # Line matching group + control + module was not found. Check group + module.
+              if [ "$(grep -cP '^\s*auth\s+.*\s+pam_tally2.so\s*' "/etc/pam.d/common-auth")" -eq 1 ]; then
+                  # The control is updated only if one single line matches.
+                  sed -i -E --follow-symlinks 's/^(\s*auth\s+).*(\bpam_tally2.so.*)/\1'"required"' \2/' "/etc/pam.d/common-auth"
+              else
+                  LAST_MATCH_LINE=$(grep -nP "(fail)" "/etc/pam.d/common-auth" | tail -n 1 | cut -d: -f 1)
+                  if [ ! -z $LAST_MATCH_LINE ]; then
+                      sed -i --follow-symlinks $LAST_MATCH_LINE' a auth     '"required"'    pam_tally2.so' "/etc/pam.d/common-auth"
+                  else
+                      echo 'auth    '"required"'    pam_tally2.so' >> "/etc/pam.d/common-auth"
+                  fi
+              fi
+          fi
+          # Check the option
+          if ! grep -qP '^\s*auth\s+'"required"'\s+pam_tally2.so\s*.*\sonerr\b' "/etc/pam.d/common-auth"; then
+              sed -i -E --follow-symlinks '/\s*auth\s+'"required"'\s+pam_tally2.so.*/ s/$/ onerr='"fail"'/' "/etc/pam.d/common-auth"
+          else
+              sed -i -E --follow-symlinks 's/(\s*auth\s+'"required"'\s+pam_tally2.so\s+.*)('"onerr"'=)[[:alnum:]]+\s*(.*)/\1\2'"fail"' \3/' "/etc/pam.d/common-auth"
+          fi
+          if ! grep -qP '^\s*account\s+'"required"'\s+pam_tally2.so\s*.*' "/etc/pam.d/common-account"; then
+              # Line matching group + control + module was not found. Check group + module.
+              if [ "$(grep -cP '^\s*account\s+.*\s+pam_tally2.so\s*' "/etc/pam.d/common-account")" -eq 1 ]; then
+                  # The control is updated only if one single line matches.
+                  sed -i -E --follow-symlinks 's/^(\s*account\s+).*(\bpam_tally2.so.*)/\1'"required"' \2/' "/etc/pam.d/common-account"
+              else
+                  echo 'account    '"required"'    pam_tally2.so' >> "/etc/pam.d/common-account"
+              fi
+          fi
+          # Check the option
+          if ! grep -qP '^\s*account\s+'"required"'\s+pam_tally2.so\s*.*\s\b' "/etc/pam.d/common-account"; then
+              sed -i -E --follow-symlinks '/\s*account\s+'"required"'\s+pam_tally2.so.*/ s/$/ /' "/etc/pam.d/common-account"
+          fi
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi
+          ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        check: |
+          /usr/bin/dpkg -l | /usr/bin/grep -c "aide"
+        fix: |
+          [source,bash]
+          ---
+          /usr/bin/apt-get -y install aide
+          ---

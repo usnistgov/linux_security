@@ -1,56 +1,185 @@
 id: os_group_ownership_audit_configuration
-title: "Verify Group Ownership Permissions on /etc/audit/*"
+title: Audit Configuration Files Must Be Owned By Group root
 discussion: |
-  Without the capability to restrict which roles and individuals can select which events are audited, unauthorized personnel may be able to prevent the auditing of critical events.
-check: |
-  $OS_VALUE
-result:
-  integer: 1
-fix: |
-  $OS_VALUE
+  Without the capability to restrict which roles and individuals can
+  select which events are audited, unauthorized personnel may be able
+  to prevent the auditing of critical events.
+  Misconfigured audits may degrade the system's performance by
+  overwhelming the audit log. Misconfigured audits may also make it more
+  difficult to establish, correlate, and investigate the events relating
+  to an incident or identify those responsible for one.
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000171
-  800-53r5:
-    - N/A
-  srg:
-    - SRG-OS-000063-GPOS-00032
-  disa_stig:
-    - UBTU-20-010135
+  disa:
+    cci:
+      - CCI-000171
+    srg:
+      - SRG-OS-000063-GPOS-00032
+    disa_stig:
+      '9':
+        - RHEL-09-232104
+      '2004':
+        - UBTU-20-010135
+      '2204':
+        - UBTU-22-653075
+  nist:
+    cce:
+      '10':
+        - CCE-88238-1
+      '8':
+        - CCE-86405-8
+      '9':
+        - CCE-86446-2
+os_specifics:
+  rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '10':
+      severity: medium
+      benchmarks:
+        - disa_stig
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q audit && rpm --quiet -q kernel; then
+
+        find -L /etc/audit/ -maxdepth 1 -type f ! -group 0 -regextype posix-extended -regex '^.*audit(\.rules|d\.conf)$' -exec chgrp -L 0 {} \;
+
+        find -L /etc/audit/rules.d/ -maxdepth 1 -type f ! -group 0 -regextype posix-extended -regex '^.*\.rules$' -exec chgrp -L 0 {} \;
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      severity: medium
+      benchmarks:
+        - disa_stig
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q audit && rpm --quiet -q kernel; then
+
+        find -L /etc/audit/ -maxdepth 1 -type f ! -group 0 -regextype posix-extended -regex '^.*audit(\.rules|d\.conf)$' -exec chgrp -L 0 {} \;
+
+        find -L /etc/audit/rules.d/ -maxdepth 1 -type f ! -group 0 -regextype posix-extended -regex '^.*\.rules$' -exec chgrp -L 0 {} \;
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      severity: medium
+      benchmarks:
+        - disa_stig
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q audit && rpm --quiet -q kernel; then
+
+        find -L /etc/audit/ -maxdepth 1 -type f ! -group 0 -regextype posix-extended -regex '^.*audit(\.rules|d\.conf)$' -exec chgrp -L 0 {} \;
+
+        find -L /etc/audit/rules.d/ -maxdepth 1 -type f ! -group 0 -regextype posix-extended -regex '^.*\.rules$' -exec chgrp -L 0 {} \;
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '2004':
+      severity: medium
+      benchmarks:
+        - disa_stig
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q '^installed'; then
+
+        find -L /etc/audit/ -maxdepth 1 -type f ! -group 0 -regextype posix-extended -regex '^.*audit(\.rules|d\.conf)$' -exec chgrp -L 0 {} \;
+
+        find -L /etc/audit/rules.d/ -maxdepth 1 -type f ! -group 0 -regextype posix-extended -regex '^.*\.rules$' -exec chgrp -L 0 {} \;
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      severity: medium
+      benchmarks:
+        - disa_stig
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q '^installed'; then
+
+        find -L /etc/audit/ -maxdepth 1 -type f ! -group 0 -regextype posix-extended -regex '^.*audit(\.rules|d\.conf)$' -exec chgrp -L 0 {} \;
+
+        find -L /etc/audit/rules.d/ -maxdepth 1 -type f ! -group 0 -regextype posix-extended -regex '^.*\.rules$' -exec chgrp -L 0 {} \;
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      severity: medium
+      benchmarks:
+        - disa_stig
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q '^installed'; then
+
+        find -L /etc/audit/ -maxdepth 1 -type f ! -group 0 -regextype posix-extended -regex '^.*audit(\.rules|d\.conf)$' -exec chgrp -L 0 {} \;
+
+        find -L /etc/audit/rules.d/ -maxdepth 1 -type f ! -group 0 -regextype posix-extended -regex '^.*\.rules$' -exec chgrp -L 0 {} \;
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
 tags:
-  - 800-53r5_moderate
-  - 800-53r5_high
+  - cis_lvl2
   - client
   - server
-severity: "medium"
-os_specifics:
-  ubuntu:
-    '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-        check: |
-          GROUPMATCH=$(stat -c "%G" /etc/audit/* | grep -v "root" | wc -l)
-          if [ $GROUPMATCH -e 0 ]; then
-             echo "PASS"
-          else
-             echo "FAIL"
-          fi
-        fix: |
-          [source,bash]
-          ---
-            # Remediation is applicable only in certain platforms
-            if [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ] && dpkg-query --show --showformat='${db:Status-Status}\n' 'auditd' 2>/dev/null | grep -q installed; then
-
-            find /etc/audit/ -maxdepth 1 -type f ! -gid 0 -regex '^audit(\.rules|d\.conf)$' -exec chgrp 0 {} \;
-
-            find /etc/audit/rules.d/ -maxdepth 1 -type f ! -gid 0 -regex '^.*\.rules$' -exec chgrp 0 {} \;
-
-            else
-                >&2 echo 'Remediation is not applicable, nothing was done'
-            fi
-          ---

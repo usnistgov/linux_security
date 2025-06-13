@@ -1,0 +1,52 @@
+id: os_mfetp_installed
+title: "The Operating System MUST deploy Endpoint Security for Linux Threat Prevention (ENSLTP)"
+discussion: |
+  Without the use of automated mechanisms to scan for security flaws on a continuous and/or periodic basis, the operating system or other system components may remain vulnerable to the exploits presented by undetected software flaws. To support this requirement, the operating system may have an integrated solution incorporating continuous scanning using HBSS and periodic scanning using other tools, as specified in the requirement.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-001233
+  800-53r5:
+    - N/A
+  srg:
+    - SRG-OS-000191-GPOS-00080
+    - SRG-OS-000445-GPOS-00199
+  disa_stig:
+    - $OS_VALUE
+tags:
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010415
+        check: |
+          /usr/bin/dpkg -l | /usr/bin/grep -c "mfetp"
+        fix: |
+          [source,bash]
+          ---
+          /usr/bin/apt-get -y install mfetp
+          ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        check: |
+          /usr/bin/dpkg -l | /usr/bin/grep -c "mfetp"
+        fix: |
+          [source,bash]
+          ---
+          /usr/bin/apt-get -y install mfetp
+          ---

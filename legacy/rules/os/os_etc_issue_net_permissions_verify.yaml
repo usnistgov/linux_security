@@ -1,0 +1,54 @@
+id: os_etc_issue_net_permissions_verify
+title: "Verify Permissions on System Login Banner for Remote Connections"
+discussion: |
+  Display of a standardized and approved use notification before granting access to the operating system ensures privacy and security notification verbiage used is consistent with applicable federal laws, Executive Orders, directives, policies, regulations, standards, and guidance.
+Proper permissions will ensure that only root user can modify the banner.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r5:
+    - N/A 
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          /usr/bin/stat -c "%a" /etc/issue.net | grep 644
+        fix: |
+          [source,bash]
+          ---
+          sudo chmod 644 /etc/issue.net
+          ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        check: |
+          /usr/bin/stat -c "%a" /etc/issue.net | grep 644
+        fix: |
+          [source,bash]
+          ---
+          sudo chmod 644 /etc/issue.net
+          ---

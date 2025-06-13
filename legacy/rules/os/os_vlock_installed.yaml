@@ -1,0 +1,56 @@
+id: os_vlock_installed
+title: "Check that vlock is installed to allow session locking"
+discussion: |
+  A session lock is a temporary action taken when a user stops work and moves away from the immediate physical vicinity of the information system but does not want to log out because of the temporary nature of the absence. The session lock is implemented at the point where session activity can be determined. Regardless of where the session lock is determined and implemented, once invoked, the session lock must remain in place until the user reauthenticates. No other activity aside from reauthentication must unlock the system.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - CCI-000056
+    - CCI-000058
+    - CCI-000060
+  800-53r5:
+    - N/A 
+  srg:
+    - SRG-OS-000028-GPOS-00009
+    - SRG-OS-000030-GPOS-00011
+  disa_stig:
+    - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010005
+        check: |
+          /usr/bin/dpkg -l | /usr/bin/grep -c "vlock"
+        fix: |
+          [source,bash]
+          ---
+          /usr/bin/apt-get -y install vlock
+          ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        check: |
+          /usr/bin/dpkg -l | /usr/bin/grep -c "vlock"
+        fix: |
+          [source,bash]
+          ---
+          /usr/bin/apt-get -y install vlock
+          ---

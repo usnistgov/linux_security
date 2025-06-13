@@ -1,0 +1,55 @@
+id: os_sudo_installed
+title: "The Operating System MUST have sudo installed"
+discussion: |
+  The sudo package must be installed to add a layer of additional security for superuser actions.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A 
+  800-53r5:
+    - N/A 
+  srg:
+    - SRG-OS-000324-GPOS-00125
+  disa_stig:
+    - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          /usr/bin/dpkg -l | /usr/bin/grep -c "sudo"
+        fix: |
+          [source,bash]
+          ---
+          /usr/bin/apt-get -y install sudo
+          ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          /usr/bin/dpkg -l | /usr/bin/grep -c "sudo"
+        fix: |
+          [source,bash]
+          ---
+          /usr/bin/apt-get -y install sudo
+          ---

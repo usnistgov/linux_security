@@ -1,138 +1,576 @@
 id: pwpolicy_pw_retry_set
-title: "Ensure PAM Enforces Password Requirements - Authentication Retry Prompts Permitted Per-Session"
+title: Ensure PAM Enforces Password Requirements - Authentication Retry Prompts Permitted
+  Per-Session
 discussion: |
-  Setting the password retry prompts that are permitted on a per-session basis to a low value requires some software, such as SSH, to re-connect. This can slow down and draw additional attention to some types of password-guessing attacks. Note that this is different from account lockout, which is provided by the pam_faillock module.
-check: |
-  $OS_VALUE
-result:
-  integer: 1
-fix: |
-  $OS_VALUE
+  Setting the password retry prompts that are permitted on a per-session basis to a low value
+  requires some software, such as SSH, to re-connect. This can slow down and
+  draw additional attention to some types of password-guessing attacks. Note that this
+  is different from account lockout, which is provided by the pam_faillock module.
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000192
-  800-53r5:
-    - AC-7(a)
-    - CM-6(a)
-    - IA-5(4) 
-  srg:
-    - SRG-OS-000069-GPOS-00037
-    - SRG-OS-000480-GPOS-00227
-  disa_stig:
-    - $OS_VALUE
-tags:
-  - 800-53r5_moderate
-  - 800-53r5_high
-  - client
-  - server
-severity: "medium"
+  disa:
+    cci:
+      - CCI-004066
+    srg:
+      - SRG-OS-000069-GPOS-00037
+      - SRG-OS-000480-GPOS-00227
+    disa_stig:
+      '8':
+        - RHEL-08-020104
+      '9':
+        - RHEL-09-611010
+      '2004':
+        - UBTU-20-010057
+      '2204':
+        - UBTU-22-611045
+  nist:
+    800-53r4:
+      - AC-7
+      - CM-6
+      - IA-5
+    cce:
+      '10':
+        - CCE-90554-7
+      '8':
+        - CCE-80664-6
+      '9':
+        - CCE-83569-4
 os_specifics:
+  rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '10':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q pam; then
+
+        var_password_pam_retry=''
+
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^retry")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "$var_password_pam_retry"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^retry\\>" "/etc/security/pwquality.conf"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^retry\\>.*/$escaped_formatted_output/gi" "/etc/security/pwquality.conf"
+        else
+            if [[ -s "/etc/security/pwquality.conf" ]] && [[ -n "$(tail -c 1 -- "/etc/security/pwquality.conf" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/security/pwquality.conf"
+            fi
+            cce="CCE-90554-7"
+            printf '# Per %s: Set %s in %s\n' "${cce}" "${formatted_output}" "/etc/security/pwquality.conf" >> "/etc/security/pwquality.conf"
+            printf '%s\n' "$formatted_output" >> "/etc/security/pwquality.conf"
+        fi
+
+              if [ -e "/etc/pam.d/password-auth" ] ; then
+            PAM_FILE_PATH="/etc/pam.d/password-auth"
+            if [ -f /usr/bin/authselect ]; then
+
+                if ! authselect check; then
+                echo "
+                authselect integrity check failed. Remediation aborted!
+                This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                It is not recommended to manually edit the PAM files when authselect tool is available.
+                In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                exit 1
+                fi
+
+                CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                # If not already in use, a custom profile is created preserving the enabled features.
+                if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                    ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                    # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                    # If currently used, it is replaced by "sssd", which is the best option in this case.
+                    if [[ $CURRENT_PROFILE == local ]]; then
+                        CURRENT_PROFILE="sssd"
+                    fi
+                    authselect create-profile hardening -b $CURRENT_PROFILE
+                    CURRENT_PROFILE="custom/hardening"
+
+                    authselect apply-changes -b --backup=before-hardening-custom-profile
+                    authselect select $CURRENT_PROFILE
+                    for feature in $ENABLED_FEATURES; do
+                        authselect enable-feature $feature;
+                    done
+
+                    authselect apply-changes -b --backup=after-hardening-custom-profile
+                fi
+                PAM_FILE_NAME=$(basename "/etc/pam.d/password-auth")
+                PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                authselect apply-changes -b
+            fi
+
+        if grep -qP "^\s*password\s.*\bpam_pwquality.so\s.*\bretry\b" "$PAM_FILE_PATH"; then
+            sed -i -E --follow-symlinks "s/(.*password.*pam_pwquality.so.*)\bretry\b=?[[:alnum:]]*(.*)/\1\2/g" "$PAM_FILE_PATH"
+        fi
+            if [ -f /usr/bin/authselect ]; then
+
+                authselect apply-changes -b
+            fi
+        else
+            echo "/etc/pam.d/password-auth was not found" >&2
+        fi
+
+              if [ -e "/etc/pam.d/system-auth" ] ; then
+            PAM_FILE_PATH="/etc/pam.d/system-auth"
+            if [ -f /usr/bin/authselect ]; then
+
+                if ! authselect check; then
+                echo "
+                authselect integrity check failed. Remediation aborted!
+                This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                It is not recommended to manually edit the PAM files when authselect tool is available.
+                In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                exit 1
+                fi
+
+                CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                # If not already in use, a custom profile is created preserving the enabled features.
+                if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                    ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                    # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                    # If currently used, it is replaced by "sssd", which is the best option in this case.
+                    if [[ $CURRENT_PROFILE == local ]]; then
+                        CURRENT_PROFILE="sssd"
+                    fi
+                    authselect create-profile hardening -b $CURRENT_PROFILE
+                    CURRENT_PROFILE="custom/hardening"
+
+                    authselect apply-changes -b --backup=before-hardening-custom-profile
+                    authselect select $CURRENT_PROFILE
+                    for feature in $ENABLED_FEATURES; do
+                        authselect enable-feature $feature;
+                    done
+
+                    authselect apply-changes -b --backup=after-hardening-custom-profile
+                fi
+                PAM_FILE_NAME=$(basename "/etc/pam.d/system-auth")
+                PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                authselect apply-changes -b
+            fi
+
+        if grep -qP "^\s*password\s.*\bpam_pwquality.so\s.*\bretry\b" "$PAM_FILE_PATH"; then
+            sed -i -E --follow-symlinks "s/(.*password.*pam_pwquality.so.*)\bretry\b=?[[:alnum:]]*(.*)/\1\2/g" "$PAM_FILE_PATH"
+        fi
+            if [ -f /usr/bin/authselect ]; then
+
+                authselect apply-changes -b
+            fi
+        else
+            echo "/etc/pam.d/system-auth was not found" >&2
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q pam; then
+
+        var_password_pam_retry=''
+
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^retry")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "$var_password_pam_retry"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^retry\\>" "/etc/security/pwquality.conf"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^retry\\>.*/$escaped_formatted_output/gi" "/etc/security/pwquality.conf"
+        else
+            if [[ -s "/etc/security/pwquality.conf" ]] && [[ -n "$(tail -c 1 -- "/etc/security/pwquality.conf" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/security/pwquality.conf"
+            fi
+            cce="CCE-80664-6"
+            printf '# Per %s: Set %s in %s\n' "${cce}" "${formatted_output}" "/etc/security/pwquality.conf" >> "/etc/security/pwquality.conf"
+            printf '%s\n' "$formatted_output" >> "/etc/security/pwquality.conf"
+        fi
+
+              if [ -e "/etc/pam.d/password-auth" ] ; then
+            PAM_FILE_PATH="/etc/pam.d/password-auth"
+            if [ -f /usr/bin/authselect ]; then
+
+                if ! authselect check; then
+                echo "
+                authselect integrity check failed. Remediation aborted!
+                This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                It is not recommended to manually edit the PAM files when authselect tool is available.
+                In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                exit 1
+                fi
+
+                CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                # If not already in use, a custom profile is created preserving the enabled features.
+                if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                    ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                    # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                    # If currently used, it is replaced by "sssd", which is the best option in this case.
+                    if [[ $CURRENT_PROFILE == local ]]; then
+                        CURRENT_PROFILE="sssd"
+                    fi
+                    authselect create-profile hardening -b $CURRENT_PROFILE
+                    CURRENT_PROFILE="custom/hardening"
+
+                    authselect apply-changes -b --backup=before-hardening-custom-profile
+                    authselect select $CURRENT_PROFILE
+                    for feature in $ENABLED_FEATURES; do
+                        authselect enable-feature $feature;
+                    done
+
+                    authselect apply-changes -b --backup=after-hardening-custom-profile
+                fi
+                PAM_FILE_NAME=$(basename "/etc/pam.d/password-auth")
+                PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                authselect apply-changes -b
+            fi
+
+        if grep -qP "^\s*password\s.*\bpam_pwquality.so\s.*\bretry\b" "$PAM_FILE_PATH"; then
+            sed -i -E --follow-symlinks "s/(.*password.*pam_pwquality.so.*)\bretry\b=?[[:alnum:]]*(.*)/\1\2/g" "$PAM_FILE_PATH"
+        fi
+            if [ -f /usr/bin/authselect ]; then
+
+                authselect apply-changes -b
+            fi
+        else
+            echo "/etc/pam.d/password-auth was not found" >&2
+        fi
+
+              if [ -e "/etc/pam.d/system-auth" ] ; then
+            PAM_FILE_PATH="/etc/pam.d/system-auth"
+            if [ -f /usr/bin/authselect ]; then
+
+                if ! authselect check; then
+                echo "
+                authselect integrity check failed. Remediation aborted!
+                This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                It is not recommended to manually edit the PAM files when authselect tool is available.
+                In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                exit 1
+                fi
+
+                CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                # If not already in use, a custom profile is created preserving the enabled features.
+                if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                    ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                    # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                    # If currently used, it is replaced by "sssd", which is the best option in this case.
+                    if [[ $CURRENT_PROFILE == local ]]; then
+                        CURRENT_PROFILE="sssd"
+                    fi
+                    authselect create-profile hardening -b $CURRENT_PROFILE
+                    CURRENT_PROFILE="custom/hardening"
+
+                    authselect apply-changes -b --backup=before-hardening-custom-profile
+                    authselect select $CURRENT_PROFILE
+                    for feature in $ENABLED_FEATURES; do
+                        authselect enable-feature $feature;
+                    done
+
+                    authselect apply-changes -b --backup=after-hardening-custom-profile
+                fi
+                PAM_FILE_NAME=$(basename "/etc/pam.d/system-auth")
+                PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                authselect apply-changes -b
+            fi
+
+        if grep -qP "^\s*password\s.*\bpam_pwquality.so\s.*\bretry\b" "$PAM_FILE_PATH"; then
+            sed -i -E --follow-symlinks "s/(.*password.*pam_pwquality.so.*)\bretry\b=?[[:alnum:]]*(.*)/\1\2/g" "$PAM_FILE_PATH"
+        fi
+            if [ -f /usr/bin/authselect ]; then
+
+                authselect apply-changes -b
+            fi
+        else
+            echo "/etc/pam.d/system-auth was not found" >&2
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q pam; then
+
+        var_password_pam_retry=''
+
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^retry")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s = %s" "$stripped_key" "$var_password_pam_retry"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^retry\\>" "/etc/security/pwquality.conf"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^retry\\>.*/$escaped_formatted_output/gi" "/etc/security/pwquality.conf"
+        else
+            if [[ -s "/etc/security/pwquality.conf" ]] && [[ -n "$(tail -c 1 -- "/etc/security/pwquality.conf" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/security/pwquality.conf"
+            fi
+            cce="CCE-83569-4"
+            printf '# Per %s: Set %s in %s\n' "${cce}" "${formatted_output}" "/etc/security/pwquality.conf" >> "/etc/security/pwquality.conf"
+            printf '%s\n' "$formatted_output" >> "/etc/security/pwquality.conf"
+        fi
+
+              if [ -e "/etc/pam.d/password-auth" ] ; then
+            PAM_FILE_PATH="/etc/pam.d/password-auth"
+            if [ -f /usr/bin/authselect ]; then
+
+                if ! authselect check; then
+                echo "
+                authselect integrity check failed. Remediation aborted!
+                This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                It is not recommended to manually edit the PAM files when authselect tool is available.
+                In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                exit 1
+                fi
+
+                CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                # If not already in use, a custom profile is created preserving the enabled features.
+                if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                    ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                    # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                    # If currently used, it is replaced by "sssd", which is the best option in this case.
+                    if [[ $CURRENT_PROFILE == local ]]; then
+                        CURRENT_PROFILE="sssd"
+                    fi
+                    authselect create-profile hardening -b $CURRENT_PROFILE
+                    CURRENT_PROFILE="custom/hardening"
+
+                    authselect apply-changes -b --backup=before-hardening-custom-profile
+                    authselect select $CURRENT_PROFILE
+                    for feature in $ENABLED_FEATURES; do
+                        authselect enable-feature $feature;
+                    done
+
+                    authselect apply-changes -b --backup=after-hardening-custom-profile
+                fi
+                PAM_FILE_NAME=$(basename "/etc/pam.d/password-auth")
+                PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                authselect apply-changes -b
+            fi
+
+        if grep -qP "^\s*password\s.*\bpam_pwquality.so\s.*\bretry\b" "$PAM_FILE_PATH"; then
+            sed -i -E --follow-symlinks "s/(.*password.*pam_pwquality.so.*)\bretry\b=?[[:alnum:]]*(.*)/\1\2/g" "$PAM_FILE_PATH"
+        fi
+            if [ -f /usr/bin/authselect ]; then
+
+                authselect apply-changes -b
+            fi
+        else
+            echo "/etc/pam.d/password-auth was not found" >&2
+        fi
+
+              if [ -e "/etc/pam.d/system-auth" ] ; then
+            PAM_FILE_PATH="/etc/pam.d/system-auth"
+            if [ -f /usr/bin/authselect ]; then
+
+                if ! authselect check; then
+                echo "
+                authselect integrity check failed. Remediation aborted!
+                This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.
+                It is not recommended to manually edit the PAM files when authselect tool is available.
+                In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended."
+                exit 1
+                fi
+
+                CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')
+                # If not already in use, a custom profile is created preserving the enabled features.
+                if [[ ! $CURRENT_PROFILE == custom/* ]]; then
+                    ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')
+                    # The "local" profile does not contain essential security features required by multiple Benchmarks.
+                    # If currently used, it is replaced by "sssd", which is the best option in this case.
+                    if [[ $CURRENT_PROFILE == local ]]; then
+                        CURRENT_PROFILE="sssd"
+                    fi
+                    authselect create-profile hardening -b $CURRENT_PROFILE
+                    CURRENT_PROFILE="custom/hardening"
+
+                    authselect apply-changes -b --backup=before-hardening-custom-profile
+                    authselect select $CURRENT_PROFILE
+                    for feature in $ENABLED_FEATURES; do
+                        authselect enable-feature $feature;
+                    done
+
+                    authselect apply-changes -b --backup=after-hardening-custom-profile
+                fi
+                PAM_FILE_NAME=$(basename "/etc/pam.d/system-auth")
+                PAM_FILE_PATH="/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME"
+
+                authselect apply-changes -b
+            fi
+
+        if grep -qP "^\s*password\s.*\bpam_pwquality.so\s.*\bretry\b" "$PAM_FILE_PATH"; then
+            sed -i -E --follow-symlinks "s/(.*password.*pam_pwquality.so.*)\bretry\b=?[[:alnum:]]*(.*)/\1\2/g" "$PAM_FILE_PATH"
+        fi
+            if [ -f /usr/bin/authselect ]; then
+
+                authselect apply-changes -b
+            fi
+        else
+            echo "/etc/pam.d/system-auth was not found" >&2
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010057
-        check: |
-          echo "Check This"
-        fix: |
-          [source,bash]
-          ---
-          # Remediation is applicable only in certain platforms
-          if dpkg-query --show --showformat='${db:Status-Status}\n' 'libpam-runtime' 2>/dev/null | grep -q installed; then
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'libpam-runtime' 2>/dev/null | grep -q '^installed'; then
 
-          var_password_pam_retry='3'
+        var_password_pam_retry=''
 
-          if [ -e "/etc/pam.d/common-password" ] ; then
-              valueRegex="$var_password_pam_retry" defaultValue="$var_password_pam_retry"
-              # non-empty values need to be preceded by an equals sign
-              [ -n "${valueRegex}" ] && valueRegex="=${valueRegex}"
-              # add an equals sign to non-empty values
-              [ -n "${defaultValue}" ] && defaultValue="=${defaultValue}"
 
-              # fix 'type' if it's wrong
-              if grep -q -P "^\\s*(?"'!'"password\\s)[[:alnum:]]+\\s+[[:alnum:]]+\\s+pam_pwquality.so" < "/etc/pam.d/common-password" ; then
-                  sed --follow-symlinks -i -E -e "s/^(\\s*)[[:alnum:]]+(\\s+[[:alnum:]]+\\s+pam_pwquality.so)/\\1password\\2/" "/etc/pam.d/common-password"
-              fi
+        conf_name=cac_pwquality
+        if [ ! -f /usr/share/pam-configs/"$conf_name" ]; then
+            cat << EOF > /usr/share/pam-configs/"$conf_name"
+        Name: Pwquality password strength checking
+        Default: yes
+        Priority: 1025
+        Conflicts: cracklib, pwquality
+        Password-Type: Primary
+        Password:
+            requisite                   pam_pwquality.so
+        EOF
+        fi
 
-              # fix 'control' if it's wrong
-              if grep -q -P "^\\s*password\\s+(?"'!'"requisite)[[:alnum:]]+\\s+pam_pwquality.so" < "/etc/pam.d/common-password" ; then
-                  sed --follow-symlinks -i -E -e "s/^(\\s*password\\s+)[[:alnum:]]+(\\s+pam_pwquality.so)/\\1requisite\\2/" "/etc/pam.d/common-password"
-              fi
+        DEBIAN_FRONTEND=noninteractive pam-auth-update
+        PWQUALITY_CONF="/etc/security/pwquality.conf"
+            regex="^\s*retry\s*="
+            line="retry = $var_password_pam_retry"
+            if ! grep -q $regex $PWQUALITY_CONF; then
+                echo $line >> $PWQUALITY_CONF
+            else
+                sed -i --follow-symlinks 's|^\s*\(retry\s*=\s*\)\(\S\+\)|\1'"$var_password_pam_retry"'|g' $PWQUALITY_CONF
+            fi
 
-              # fix the value for 'option' if one exists but does not match 'valueRegex'
-              if grep -q -P "^\\s*password\\s+requisite\\s+pam_pwquality.so(\\s.+)?\\s+retry(?"'!'"${valueRegex}(\\s|\$))" < "/etc/pam.d/common-password" ; then
-                  sed --follow-symlinks -i -E -e "s/^(\\s*password\\s+requisite\\s+pam_pwquality.so(\\s.+)?\\s)retry=[^[:space:]]*/\\1retry${defaultValue}/" "/etc/pam.d/common-password"
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
 
-              # add 'option=default' if option is not set
-              elif grep -q -E "^\\s*password\\s+requisite\\s+pam_pwquality.so" < "/etc/pam.d/common-password" &&
-                      grep    -E "^\\s*password\\s+requisite\\s+pam_pwquality.so" < "/etc/pam.d/common-password" | grep -q -E -v "\\sretry(=|\\s|\$)" ; then
-
-                  sed --follow-symlinks -i -E -e "s/^(\\s*password\\s+requisite\\s+pam_pwquality.so[^\\n]*)/\\1 retry${defaultValue}/" "/etc/pam.d/common-password"
-              # add a new entry if none exists
-              elif ! grep -q -P "^\\s*password\\s+requisite\\s+pam_pwquality.so(\\s.+)?\\s+retry${valueRegex}(\\s|\$)" < "/etc/pam.d/common-password" ; then
-                  echo "password requisite pam_pwquality.so retry${defaultValue}" >> "/etc/pam.d/common-password"
-              fi
-          else
-              echo "/etc/pam.d/common-password doesn't exist" >&2
-          fi
-
-          else
-              >&2 echo 'Remediation is not applicable, nothing was done'
-          fi
-          ---
+        ---
     '2204':
-      references:
-        cce:
-          - N/A
-        check: |
-          echo "Check This"
-        fix: |
-          [source,bash]
-          ---
-          # Remediation is applicable only in certain platforms
-          if dpkg-query --show --showformat='${db:Status-Status}\n' 'libpam-runtime' 2>/dev/null | grep -q installed; then
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'libpam-runtime' 2>/dev/null | grep -q '^installed'; then
 
-          var_password_pam_retry='3'
+        var_password_pam_retry=''
 
-          if [ -e "/etc/pam.d/common-password" ] ; then
-              valueRegex="$var_password_pam_retry" defaultValue="$var_password_pam_retry"
-              # non-empty values need to be preceded by an equals sign
-              [ -n "${valueRegex}" ] && valueRegex="=${valueRegex}"
-              # add an equals sign to non-empty values
-              [ -n "${defaultValue}" ] && defaultValue="=${defaultValue}"
 
-              # fix 'type' if it's wrong
-              if grep -q -P "^\\s*(?"'!'"password\\s)[[:alnum:]]+\\s+[[:alnum:]]+\\s+pam_pwquality.so" < "/etc/pam.d/common-password" ; then
-                  sed --follow-symlinks -i -E -e "s/^(\\s*)[[:alnum:]]+(\\s+[[:alnum:]]+\\s+pam_pwquality.so)/\\1password\\2/" "/etc/pam.d/common-password"
-              fi
+        conf_name=cac_pwquality
+        if [ ! -f /usr/share/pam-configs/"$conf_name" ]; then
+            cat << EOF > /usr/share/pam-configs/"$conf_name"
+        Name: Pwquality password strength checking
+        Default: yes
+        Priority: 1025
+        Conflicts: cracklib, pwquality
+        Password-Type: Primary
+        Password:
+            requisite                   pam_pwquality.so
+        EOF
+        fi
 
-              # fix 'control' if it's wrong
-              if grep -q -P "^\\s*password\\s+(?"'!'"requisite)[[:alnum:]]+\\s+pam_pwquality.so" < "/etc/pam.d/common-password" ; then
-                  sed --follow-symlinks -i -E -e "s/^(\\s*password\\s+)[[:alnum:]]+(\\s+pam_pwquality.so)/\\1requisite\\2/" "/etc/pam.d/common-password"
-              fi
+        DEBIAN_FRONTEND=noninteractive pam-auth-update
+        PWQUALITY_CONF="/etc/security/pwquality.conf"
+            regex="^\s*retry\s*="
+            line="retry = $var_password_pam_retry"
+            if ! grep -q $regex $PWQUALITY_CONF; then
+                echo $line >> $PWQUALITY_CONF
+            else
+                sed -i --follow-symlinks 's|^\s*\(retry\s*=\s*\)\(\S\+\)|\1'"$var_password_pam_retry"'|g' $PWQUALITY_CONF
+            fi
 
-              # fix the value for 'option' if one exists but does not match 'valueRegex'
-              if grep -q -P "^\\s*password\\s+requisite\\s+pam_pwquality.so(\\s.+)?\\s+retry(?"'!'"${valueRegex}(\\s|\$))" < "/etc/pam.d/common-password" ; then
-                  sed --follow-symlinks -i -E -e "s/^(\\s*password\\s+requisite\\s+pam_pwquality.so(\\s.+)?\\s)retry=[^[:space:]]*/\\1retry${defaultValue}/" "/etc/pam.d/common-password"
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
 
-              # add 'option=default' if option is not set
-              elif grep -q -E "^\\s*password\\s+requisite\\s+pam_pwquality.so" < "/etc/pam.d/common-password" &&
-                      grep    -E "^\\s*password\\s+requisite\\s+pam_pwquality.so" < "/etc/pam.d/common-password" | grep -q -E -v "\\sretry(=|\\s|\$)" ; then
-
-                  sed --follow-symlinks -i -E -e "s/^(\\s*password\\s+requisite\\s+pam_pwquality.so[^\\n]*)/\\1 retry${defaultValue}/" "/etc/pam.d/common-password"
-              # add a new entry if none exists
-              elif ! grep -q -P "^\\s*password\\s+requisite\\s+pam_pwquality.so(\\s.+)?\\s+retry${valueRegex}(\\s|\$)" < "/etc/pam.d/common-password" ; then
-                  echo "password requisite pam_pwquality.so retry${defaultValue}" >> "/etc/pam.d/common-password"
-              fi
-          else
-              echo "/etc/pam.d/common-password doesn't exist" >&2
-          fi
-
-          else
-              >&2 echo 'Remediation is not applicable, nothing was done'
-          fi
-          ---
+        ---
+tags:
+  - 800-53r4_high
+  - 800-53r4_low
+  - 800-53r4_moderate

@@ -1,96 +1,103 @@
 id: pwpolicy_failed_login_delay
-title: "Enforce Delay After Failed Logon Attempts"
+title: Enforce Delay After Failed Logon Attempts
 discussion: |
-  Limiting the number of logon attempts over a certain time interval reduces the chances that an unauthorized user may gain access to an account.
-  The DoD STIG requirement is 4000000 or greater (over an hour, are you kidding!)
-check: |
-  $OS_VALUE
-result:
-  integer: 1
-fix: |
-  $OS_VALUE
+  Limiting the number of logon attempts over a certain time interval reduces
+  the chances that an unauthorized user may gain access to an account.
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000366
-  800-53r5:
-    - 
-  srg:
-    - SRG-OS-000480-GPOS-00226
-  disa_stig:
-    - $OS_VALUE
-tags:
-  - 800-53r5_moderate
-  - 800-53r5_high
-  - client
-  - server
-severity: "medium"
+  disa:
+    cci:
+      - CCI-000366
+    srg:
+      - SRG-OS-000480-GPOS-00226
+    disa_stig:
+      '2004':
+        - UBTU-20-010075
+      '2204':
+        - UBTU-22-412010
 os_specifics:
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010075
-        check: |
-          echo "Check This"
-        fix: |
-          [source,bash]
-          ---
-          # Remediation is applicable only in certain platforms
-          if dpkg-query --show --showformat='${db:Status-Status}\n' 'libpam-runtime' 2>/dev/null | grep -q installed; then
+      severity: medium
+      benchmarks:
+        - disa_stig
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'libpam-runtime' 2>/dev/null | grep -q '^installed'; then
 
-          var_password_pam_delay='4000000'
+        var_password_pam_delay=''
 
 
-          if [ -e "/etc/pam.d/common-auth" ] ; then
-              valueRegex="$var_password_pam_delay" defaultValue="$var_password_pam_delay"
-              # non-empty values need to be preceded by an equals sign
-              [ -n "${valueRegex}" ] && valueRegex="=${valueRegex}"
-              # add an equals sign to non-empty values
-              [ -n "${defaultValue}" ] && defaultValue="=${defaultValue}"
 
-              # fix 'type' if it's wrong
-              if grep -q -P "^\\s*(?"'!'"auth\\s)[[:alnum:]]+\\s+[[:alnum:]]+\\s+pam_faildelay.so" < "/etc/pam.d/common-auth" ; then
-                  sed --follow-symlinks -i -E -e "s/^(\\s*)[[:alnum:]]+(\\s+[[:alnum:]]+\\s+pam_faildelay.so)/\\1auth\\2/" "/etc/pam.d/common-auth"
-              fi
 
-              # fix 'control' if it's wrong
-              if grep -q -P "^\\s*auth\\s+(?"'!'"required)[[:alnum:]]+\\s+pam_faildelay.so" < "/etc/pam.d/common-auth" ; then
-                  sed --follow-symlinks -i -E -e "s/^(\\s*auth\\s+)[[:alnum:]]+(\\s+pam_faildelay.so)/\\1required\\2/" "/etc/pam.d/common-auth"
-              fi
+        if ! grep -qP "^\s*auth\s+required\s+pam_faildelay.so\s*.*" "/etc/pam.d/common-auth"; then
+            # Line matching group + control + module was not found. Check group + module.
+            if [ "$(grep -cP '^\s*auth\s+.*\s+pam_faildelay.so\s*' "/etc/pam.d/common-auth")" -eq 1 ]; then
+                # The control is updated only if one single line matches.
+                sed -i -E --follow-symlinks "s/^(\s*auth\s+).*(\bpam_faildelay.so.*)/\1required \2/" "/etc/pam.d/common-auth"
+            else
+                sed -i --follow-symlinks "1i auth     required    pam_faildelay.so" "/etc/pam.d/common-auth"
+            fi
+        fi
+        # Check the option
+        if ! grep -qP "^\s*auth\s+required\s+pam_faildelay.so\s*.*\sdelay\b" "/etc/pam.d/common-auth"; then
+            sed -i -E --follow-symlinks "/\s*auth\s+required\s+pam_faildelay.so.*/ s/$/ delay=$var_password_pam_delay/" "/etc/pam.d/common-auth"
+        else
+            sed -i -E --follow-symlinks "s/(\s*auth\s+required\s+pam_faildelay.so\s+.*)(delay=)[[:alnum:]]+\s*(.*)/\1\2$var_password_pam_delay \3/" "/etc/pam.d/common-auth"
+        fi
 
-              # fix the value for 'option' if one exists but does not match 'valueRegex'
-              if grep -q -P "^\\s*auth\\s+required\\s+pam_faildelay.so(\\s.+)?\\s+delay(?"'!'"${valueRegex}(\\s|\$))" < "/etc/pam.d/common-auth" ; then
-                  sed --follow-symlinks -i -E -e "s/^(\\s*auth\\s+required\\s+pam_faildelay.so(\\s.+)?\\s)delay=[^[:space:]]*/\\1delay${defaultValue}/" "/etc/pam.d/common-auth"
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
 
-              # add 'option=default' if option is not set
-              elif grep -q -E "^\\s*auth\\s+required\\s+pam_faildelay.so" < "/etc/pam.d/common-auth" &&
-                      grep    -E "^\\s*auth\\s+required\\s+pam_faildelay.so" < "/etc/pam.d/common-auth" | grep -q -E -v "\\sdelay(=|\\s|\$)" ; then
-
-                  sed --follow-symlinks -i -E -e "s/^(\\s*auth\\s+required\\s+pam_faildelay.so[^\\n]*)/\\1 delay${defaultValue}/" "/etc/pam.d/common-auth"
-              # add a new entry if none exists
-              elif ! grep -q -P "^\\s*auth\\s+required\\s+pam_faildelay.so(\\s.+)?\\s+delay${valueRegex}(\\s|\$)" < "/etc/pam.d/common-auth" ; then
-                  echo "auth required pam_faildelay.so delay${defaultValue}" >> "/etc/pam.d/common-auth"
-              fi
-          else
-              echo "/etc/pam.d/common-auth doesn't exist" >&2
-          fi
-
-          else
-              >&2 echo 'Remediation is not applicable, nothing was done'
-          fi
-          ---
+        ---
     '2204':
-      references:
-        cce:
-          - N/A
-        check: |
-          echo "Check This"
-        fix: |
-          [source,bash]
-          ---
-          /usr/bin/apt-get -y install aide
-          ---
+      severity: medium
+      benchmarks:
+        - disa_stig
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'libpam-runtime' 2>/dev/null | grep -q '^installed'; then
+
+        var_password_pam_delay=''
+
+
+
+
+        if ! grep -qP "^\s*auth\s+required\s+pam_faildelay.so\s*.*" "/etc/pam.d/common-auth"; then
+            # Line matching group + control + module was not found. Check group + module.
+            if [ "$(grep -cP '^\s*auth\s+.*\s+pam_faildelay.so\s*' "/etc/pam.d/common-auth")" -eq 1 ]; then
+                # The control is updated only if one single line matches.
+                sed -i -E --follow-symlinks "s/^(\s*auth\s+).*(\bpam_faildelay.so.*)/\1required \2/" "/etc/pam.d/common-auth"
+            else
+                sed -i --follow-symlinks "1i auth     required    pam_faildelay.so" "/etc/pam.d/common-auth"
+            fi
+        fi
+        # Check the option
+        if ! grep -qP "^\s*auth\s+required\s+pam_faildelay.so\s*.*\sdelay\b" "/etc/pam.d/common-auth"; then
+            sed -i -E --follow-symlinks "/\s*auth\s+required\s+pam_faildelay.so.*/ s/$/ delay=$var_password_pam_delay/" "/etc/pam.d/common-auth"
+        else
+            sed -i -E --follow-symlinks "s/(\s*auth\s+required\s+pam_faildelay.so\s+.*)(delay=)[[:alnum:]]+\s*(.*)/\1\2$var_password_pam_delay \3/" "/etc/pam.d/common-auth"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+tags:
+  - N/A

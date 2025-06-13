@@ -1,52 +1,82 @@
 id: os_mfetp_installed
-title: "The Operating System MUST deploy Endpoint Security for Linux Threat Prevention (ENSLTP)"
+title: Install McAfee Endpoint Security for Linux (ENSL)
 discussion: |
-  Without the use of automated mechanisms to scan for security flaws on a continuous and/or periodic basis, the operating system or other system components may remain vulnerable to the exploits presented by undetected software flaws. To support this requirement, the operating system may have an integrated solution incorporating continuous scanning using HBSS and periodic scanning using other tools, as specified in the requirement.
-check: |
-  $OS_VALUE
-result:
-  integer: 1
-fix: |
-  $OS_VALUE
+  Virus scanning software can be used to detect if a system has been compromised by
+  computer viruses, as well as to limit their spread to other systems.
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-001233
-  800-53r5:
-    - N/A
-  srg:
-    - SRG-OS-000191-GPOS-00080
-    - SRG-OS-000445-GPOS-00199
-  disa_stig:
-    - $OS_VALUE
-tags:
-  - client
-  - server
-severity: "medium"
+  disa:
+    cci:
+      - CCI-000366
+      - CCI-001263
+    srg:
+      - SRG-OS-000191-GPOS-00080
+    disa_stig:
+      '8':
+        - RHEL-08-010001
+      '2004':
+        - UBTU-20-010415
+  nist:
+    800-53r4:
+      - SI-2
+    cce:
+      '8':
+        - CCE-86260-7
+      '9':
+        - CCE-86236-7
 os_specifics:
+  rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '8':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '9':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010415
-        check: |
-          /usr/bin/dpkg -l | /usr/bin/grep -c "mfetp"
-        fix: |
-          [source,bash]
-          ---
-          /usr/bin/apt-get -y install mfetp
-          ---
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
     '2204':
-      references:
-        cce:
-          - N/A
-        check: |
-          /usr/bin/dpkg -l | /usr/bin/grep -c "mfetp"
-        fix: |
-          [source,bash]
-          ---
-          /usr/bin/apt-get -y install mfetp
-          ---
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+tags:
+  - 800-53r4_high
+  - 800-53r4_low
+  - 800-53r4_moderate

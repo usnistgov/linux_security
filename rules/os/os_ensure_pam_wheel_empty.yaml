@@ -1,63 +1,203 @@
-id: os_ensure_pam_wheel_empty.yaml
-title: The Ubuntu operating system should ensure that the group sugroup has no members and exists.
+id: os_ensure_pam_wheel_empty
+title: Ensure the Group Used by pam_wheel.so Module Exists on System and is Empty
 discussion: |
-  The sugroup command is commonly used to allow users to perform su commands to run with altered privileges. While this is commonly used to run commands as root, this command should be limited to follow proper security practices.
-check: |
-  $OS_VALUE
-result:
-  integer: 1
-fix: |
-  $OS_VALUE
-references: 
-    cce: 
-      - $OS_VALUE
-    cci:  
-      - N/A
-    800_53r5: 
-      - N/A
-    srg: 
-      - N/A
-    disa_stig: 
-      - $OS_VALUE
+  The su program allows to run commands with a substitute user and group ID.
+  It is commonly used to run commands as the root user.
+  Limiting access to such command is considered a good security practice.
+references:
+  nist:
+    cce:
+      '10':
+        - CCE-89099-6
+      '8':
+        - CCE-86071-8
+      '9':
+        - CCE-86072-6
+os_specifics:
+  rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '10':
+      severity: medium
+      benchmarks:
+        - N/A
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q pam; then
+
+        var_pam_wheel_group_for_su=''
+
+
+        if ! grep -q "^${var_pam_wheel_group_for_su}:[^:]*:[^:]*:[^:]*" /etc/group; then
+            groupadd ${var_pam_wheel_group_for_su}
+        fi
+
+        # group must be empty
+        gpasswd -M '' ${var_pam_wheel_group_for_su}
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      severity: medium
+      benchmarks:
+        - N/A
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q pam; then
+
+        var_pam_wheel_group_for_su=''
+
+
+        if ! grep -q "^${var_pam_wheel_group_for_su}:[^:]*:[^:]*:[^:]*" /etc/group; then
+            groupadd ${var_pam_wheel_group_for_su}
+        fi
+
+        # group must be empty
+        gpasswd -M '' ${var_pam_wheel_group_for_su}
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      severity: medium
+      benchmarks:
+        - N/A
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q pam; then
+
+        var_pam_wheel_group_for_su=''
+
+
+        if ! grep -q "^${var_pam_wheel_group_for_su}:[^:]*:[^:]*:[^:]*" /etc/group; then
+            groupadd ${var_pam_wheel_group_for_su}
+        fi
+
+        # group must be empty
+        gpasswd -M '' ${var_pam_wheel_group_for_su}
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+  ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '2004':
+      severity: medium
+      benchmarks:
+        - N/A
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'libpam-runtime' 2>/dev/null | grep -q '^installed'; then
+
+        var_pam_wheel_group_for_su=''
+
+
+        if ! grep -q "^${var_pam_wheel_group_for_su}:[^:]*:[^:]*:[^:]*" /etc/group; then
+            groupadd ${var_pam_wheel_group_for_su}
+        fi
+
+        # group must be empty
+        gpasswd -M '' ${var_pam_wheel_group_for_su}
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2204':
+      severity: medium
+      benchmarks:
+        - N/A
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'libpam-runtime' 2>/dev/null | grep -q '^installed'; then
+
+        var_pam_wheel_group_for_su=''
+
+
+        if ! grep -q "^${var_pam_wheel_group_for_su}:[^:]*:[^:]*:[^:]*" /etc/group; then
+            groupadd ${var_pam_wheel_group_for_su}
+        fi
+
+        # group must be empty
+        gpasswd -M '' ${var_pam_wheel_group_for_su}
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '2404':
+      severity: medium
+      benchmarks:
+        - N/A
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}\n' 'libpam-runtime' 2>/dev/null | grep -q '^installed'; then
+
+        var_pam_wheel_group_for_su=''
+
+
+        if ! grep -q "^${var_pam_wheel_group_for_su}:[^:]*:[^:]*:[^:]*" /etc/group; then
+            groupadd ${var_pam_wheel_group_for_su}
+        fi
+
+        # group must be empty
+        gpasswd -M '' ${var_pam_wheel_group_for_su}
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
 tags:
-  - 800-53r5_moderate
+  - cis_lvl1
+  - cis_lvl2
   - client
   - server
-severity: 
-  - medium
-os_specifics: 
-  ubuntu:
-    '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-        check: |
-          #! /bin/bash
-          var_pam_wheel_group_for_su='sugroup'
-          grp_memb=$(groupmems -g ${var_pam_wheel_group_for_su} -l)
-          # Create the group if not existant
-          if ! grep -q "^${var_pam_wheel_group_for_su}:[^:]*:[^:]*:[^:]*" /etc/group; then
-              echo "FAIL"
-          elif [ -n "${grp_memb}" ]; then
-              echo "FAIL"
-          else
-              echo "PASS"
-          fi
-        fix: |
-          #! /bin/bash
-          var_pam_wheel_group_for_su='sugroup'
-
-          # Create the group if not existant
-          if ! grep -q "^${var_pam_wheel_group_for_su}:[^:]*:[^:]*:[^:]*" /etc/group; then
-              groupadd ${var_pam_wheel_group_for_su}
-          fi
-
-          # group must be empty, delete members if any
-          grp_memb=$(groupmems -g ${var_pam_wheel_group_for_su} -l)
-          if [ -n "${grp_memb}" ]; then
-              for memb in ${grp_memb}; do
-                  deluser ${memb} ${var_pam_wheel_group_for_su}
-              done
-          fi

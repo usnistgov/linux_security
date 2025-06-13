@@ -1,49 +1,110 @@
 id: os_partition_home_ensure
-title: "Ensure /home Located On Separate Partition"
+title: Ensure /home Located On Separate Partition
 discussion: |
-  Ensuring that /home is mounted on its own partition enables the setting of more restrictive mount options, and also helps ensure that users cannot trivially fill partitions used for log or audit data storage.
-check: |
-  $OS_VALUE
-result:
-  integer: 1
-fix: |
-  $OS_VALUE
+  Ensuring that /home is mounted on its own partition enables the
+  setting of more restrictive mount options, and also helps ensure that
+  users cannot trivially fill partitions used for log or audit data storage.
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000366
-    - CCI-001208
-  800-53r5:
-    - SC-5 
-  srg:
-    - SRG-OS-000480-GPOS-00227
-  disa_stig:
-    - $OS_VALUE
+  disa:
+    cci:
+      - CCI-000366
+    srg:
+      - SRG-OS-000480-GPOS-00227
+    disa_stig:
+      '8':
+        - RHEL-08-010800
+      '9':
+        - RHEL-09-231010
+  nist:
+    800-53r4:
+      - CM-6
+      - SC-5
+    cce:
+      '10':
+        - CCE-88231-6
+      '8':
+        - CCE-81044-0
+      '9':
+        - CCE-83468-9
+os_specifics:
+  rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '10':
+      severity: low
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '8':
+      severity: low
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '9':
+      severity: low
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+  ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '2004':
+      severity: low
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '2204':
+      severity: low
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
+    '2404':
+      severity: low
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix:
+        - N/A
 tags:
+  - 800-53r4_high
+  - 800-53r4_low
+  - 800-53r4_moderate
+  - cis_lvl2
   - client
   - server
-  - manual
-severity: "low"
-os_specifics:
-  ubuntu:
-    '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-        check: |
-          /bin/mount | /bin/grep -E "/home "
-        fix: |
-          No automated fix
-    '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-        check: |
-          /bin/mount | /bin/grep -E "/home "
-        fix: |
-          No automated fix

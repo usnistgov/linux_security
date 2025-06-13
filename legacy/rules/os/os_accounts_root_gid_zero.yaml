@@ -1,0 +1,63 @@
+id: os_accounts_root_gid_zero.yaml
+title: "The operating system should ensure that the root (UID 0) user has a primary group of zero."
+discussion: |
+  The root user account is used to perform elevated tasks, such as sudoing, and for securing files on the system from non-privileged viewing. Giving the root user a non-zero GID may result in root-owned files being exposed to non-root users.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - 
+  800-53r5:
+    - N/A
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+tags:
+  - client
+  - server
+severity: "high"
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          #! /bin/bash
+          if ($id root | grep -q "gid=0(root)); then
+             echo "PASS"
+          else
+             echo "FAIL"
+          fi
+        fix: |
+          [source,bash]
+          ---
+          sudo usermod -g 0 root
+          ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          #! /bin/bash
+          if ($id root | grep -q "gid=0(root)); then
+             echo "PASS"
+          else
+             echo "FAIL"
+          fi
+        fix: |
+          [source,bash]
+          ---
+          sudo usermod -g 0 root
+          ---

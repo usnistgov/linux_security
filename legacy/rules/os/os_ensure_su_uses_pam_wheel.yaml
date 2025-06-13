@@ -1,0 +1,61 @@
+id: os_ensure_su_uses_pam_wheel.yaml
+title: The Ubuntu operating system must ensure that only members of the requiste group can use the su command.
+discussion: |
+  Ensuring that the su command is properly locked down is essential to maintaining the security of the system. 
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references: 
+    cce: 
+      - $OS_VALUE
+    cci:  
+      - N/A
+    800_53r5: 
+      - N/A
+    srg: 
+      - N/A
+    disa_stig: 
+      - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+severity: 
+  - medium
+os_specifics: 
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          #! /bin/bash
+          SUGROUP=$(grep "auth required pam_wheel.so use_uid group=sugroup" /etc/pam.d/su | wc -l)
+          if [[ $SUGROUP != 1 ]]; then
+            echo "FAIL"
+          else
+            echo "PASS"
+          fi
+        fix: |
+          #! /bin/bash
+          var_pam_wheel_group_for_su='sugroup'
+
+
+          PAM_CONF=/etc/pam.d/su
+
+          pamstr=$(grep -P '^auth\s+required\s+pam_wheel\.so\s+(?=[^#]*\buse_uid\b)(?=[^#]*\bgroup=)' ${PAM_CONF})
+          if [ -z "$pamstr" ]; then
+              sed -Ei '/^auth\b.*\brequired\b.*\bpam_wheel\.so/d' ${PAM_CONF} # remove any remaining uncommented pam_wheel.so line
+              sed -Ei "/^auth\s+sufficient\s+pam_rootok\.so.*$/a auth required pam_wheel.so use_uid group=${var_pam_wheel_group_for_su}" ${PAM_CONF}
+          else
+              group_val=$(echo -n "$pamstr" | egrep -o '\bgroup=[_a-z][-0-9_a-z]*' | cut -d '=' -f 2)
+              if [ -z "${group_val}" ] || [ ${group_val} != ${var_pam_wheel_group_for_su} ]; then
+                  sed -Ei "s/(^auth\s+required\s+pam_wheel.so\s+[^#]*group=)[_a-z][-0-9_a-z]*/\1${var_pam_wheel_group_for_su}/" ${PAM_CONF}
+              fi
+          fi

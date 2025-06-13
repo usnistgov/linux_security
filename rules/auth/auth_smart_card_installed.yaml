@@ -1,59 +1,188 @@
 id: auth_smart_card_installed
-title: "Install Smart Card Packages For Multifactor Authentication"
+title: Install Smart Card Packages For Multifactor Authentication
 discussion: |
-  Using an authentication device, such as a CAC or token that is separate from the information system, ensures that even if the information system is compromised, that compromise will not affect credentials stored on the authentication device.
+  Using an authentication device, such as a CAC or token that is separate from
+  the information system, ensures that even if the information system is
+  compromised, that compromise will not affect credentials stored on the
+  authentication device.
 
-  Multifactor solutions that require devices separate from information systems gaining access include, for example, hardware tokens providing time-based or challenge-response authenticators and smart cards such as the U.S. Government Personal Identity Verification card and the DoD Common Access Card.
-check: |
-  $OS_VALUE
-result:
-  integer: 1
-fix: |
-  $OS_VALUE
+
+  Multifactor solutions that require devices separate from
+  information systems gaining access include, for example, hardware tokens
+  providing time-based or challenge-response authenticators and smart cards such
+  as the U.S. Government Personal Identity Verification card and the DoD Common
+  Access Card.
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - CCI-000765
-    - CCI-001948
-    - CCI-001953
-    - CCI-001954
-  800-53r5:
-    - CM-6(a) 
-  srg:
-    - SRG-OS-000375-GPOS-00160
-    - SRG-OS-000375-GPOS-00161
-  disa_stig:
-    - $OS_VALUE
-tags:
-  - 800-53r5_moderate
-  - 800-53r5_high
-  - client
-  - server
-severity: "medium"
+  disa:
+    cci:
+      - CCI-000765
+      - CCI-001953
+      - CCI-001954
+      - CCI-004046
+    srg:
+      - SRG-OS-000105-GPOS-00052
+      - SRG-OS-000375-GPOS-00160
+      - SRG-OS-000375-GPOS-00161
+      - SRG-OS-000377-GPOS-00162
+    disa_stig:
+      '8':
+        - RHEL-08-010390
+      '9':
+        - RHEL-09-215075
+      '2004':
+        - UBTU-20-010063
+      '2204':
+        - UBTU-22-612010
+  nist:
+    800-53r4:
+      - CM-6
+    cce:
+      '10':
+        - CCE-86642-6
+      '8':
+        - CCE-84029-8
+      '9':
+        - CCE-83596-7
 os_specifics:
+  rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '10':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel && { ! ( grep -sqE "^.*\.s390x$" /proc/sys/kernel/osrelease || grep -sqE "^s390x$" /proc/sys/kernel/arch; ); }; then
+
+        if ! rpm -q --quiet "pkcs11-provider" ; then
+            dnf install -y "pkcs11-provider"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '8':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel && { ! ( grep -sqE "^.*\.s390x$" /proc/sys/kernel/osrelease || grep -sqE "^s390x$" /proc/sys/kernel/arch; ); }; then
+
+        if ! rpm -q --quiet "openssl-pkcs11" ; then
+            yum install -y "openssl-pkcs11"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+    '9':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel && { ! ( grep -sqE "^.*\.s390x$" /proc/sys/kernel/osrelease || grep -sqE "^s390x$" /proc/sys/kernel/arch; ); }; then
+
+        if ! rpm -q --quiet "openssl-pkcs11" ; then
+            dnf install -y "openssl-pkcs11"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
   ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
     '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - UBTU-20-010063
-        check: |
-          /usr/bin/dpkg -l | /usr/bin/grep -c "libpam-pkcs1"
-        fix: |
-          [source,bash]
-          ---
-          /usr/bin/apt-get -y install libpam-pkcs1
-          ---
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && { ! ( grep -sqE "^.*\.s390x$" /proc/sys/kernel/osrelease || grep -sqE "^s390x$" /proc/sys/kernel/arch; ); }; then
+
+        DEBIAN_FRONTEND=noninteractive apt-get install -y "libpam-pkcs11"
+
+        if [ ! -f /etc/pam_pkcs11/pam_pkcs11.conf ]; then
+            cp /usr/share/doc/libpam-pkcs11/examples/pam_pkcs11.conf.example /etc/pam_pkcs11/pam_pkcs11.conf
+        fi
+
+        sed -i -e 's/debug = true/debug = false/g' -e 's|module = /usr/lib/opensc-pkcs11|module = /usr/lib/x86_64-linux-gnu/pkcs11/opensc-pkcs11|' /etc/pam_pkcs11/pam_pkcs11.conf
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
     '2204':
-      references:
-        cce:
-          - N/A
-        check: |
-          /usr/bin/dpkg -l | /usr/bin/grep -c "libpam-pkcs1"
-        fix: |
-          [source,bash]
-          ---
-          /usr/bin/apt-get -y install libpam-pkcs1
-          ---
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && { ! ( grep -sqE "^.*\.s390x$" /proc/sys/kernel/osrelease || grep -sqE "^s390x$" /proc/sys/kernel/arch; ); }; then
+
+        DEBIAN_FRONTEND=noninteractive apt-get install -y "libpam-pkcs11"
+
+        if [ ! -f /etc/pam_pkcs11/pam_pkcs11.conf ]; then
+            cp /usr/share/doc/libpam-pkcs11/examples/pam_pkcs11.conf.example /etc/pam_pkcs11/pam_pkcs11.conf
+        fi
+
+        sed -i -e 's/debug = true/debug = false/g' -e 's|module = /usr/lib/opensc-pkcs11|module = /usr/lib/x86_64-linux-gnu/pkcs11/opensc-pkcs11|' /etc/pam_pkcs11/pam_pkcs11.conf
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
+tags:
+  - 800-53r4_high
+  - 800-53r4_low
+  - 800-53r4_moderate

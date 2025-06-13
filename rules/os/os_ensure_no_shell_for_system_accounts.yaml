@@ -1,149 +1,175 @@
 id: os_ensure_no_shell_for_system_accounts
-title: The Ubuntu operating system must ensure that traditional system accounts (man, etc) do not have useable login shells.
+title: Ensure that System Accounts Do Not Run a Shell Upon Login
 discussion: |
-  System accounts having a valid login shell presents a significant security vulnerability, as these accounts are not designed to grant access to a shell.
-check: |
-  $OS_VALUE
-result:
-  integer: 1
-fix: |
-  $OS_VALUE
-references: 
-    cce: 
-      - $OS_VALUE
-    cci:  
-      - CCI-000366
-    800_53r5: 
-      - AC-6
-      - CM-6(a)
-      - CM-6(b)
-      - CM-6.1(iv)
-    srg: 
-      - SRG-OS-000480-GPOS-00227
-    disa_stig: 
-      - $OS_VALUE
-tags:
-  - 800-53r5_moderate
-  - 800-53r5_high
-  - client
-  - server
-  - manual
-severity: 
-  - medium
-os_specifics: 
-  ubuntu:
-    '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-id: os_accounts_pw_last_change_in_past.yaml
-title: Ensure that all accounts on the system have prior password change dates.
-discussion: |
-  If a user account had a password change date in the future, they could bypass set password expirations.
-check: |
-  $OS_VALUE
-result:
-  integer: 1
-fix: |
-  $OS_VALUE
+  Ensuring shells are not given to system accounts upon login makes it more difficult for
+  attackers to make use of system accounts.
 references:
-  cce:
-    - $OS_VALUE
-  cci:
-    - N/A
-  800-53r5:
-    - N/A
-  srg:
-    - N/A
-  disa_stig:
-    - $OS_VALUE
+  disa:
+    cci:
+      - CCI-000366
+    srg:
+      - SRG-OS-000480-GPOS-00227
+    disa_stig:
+      '9':
+        - RHEL-09-411035
+  nist:
+    800-53r4:
+      - AC-6
+      - CM-6
+      - CM-6.1
+    cce:
+      '10':
+        - CCE-87448-7
+      '8':
+        - CCE-80843-6
+      '9':
+        - CCE-83623-9
+os_specifics:
+  rhel:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '10':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+
+        readarray -t systemaccounts < <(awk -F: '($3 < 1000 && $3 != root \
+          && $7 != "\/sbin\/shutdown" && $7 != "\/sbin\/halt" && $7 != "\/bin\/sync") \
+          { print $1 }' /etc/passwd)
+
+        for systemaccount in "${systemaccounts[@]}"; do
+            usermod -s /sbin/nologin "$systemaccount"
+        done
+
+        ---
+    '8':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+
+        readarray -t systemaccounts < <(awk -F: '($3 < 1000 && $3 != root \
+          && $7 != "\/sbin\/shutdown" && $7 != "\/sbin\/halt" && $7 != "\/bin\/sync") \
+          { print $1 }' /etc/passwd)
+
+        for systemaccount in "${systemaccounts[@]}"; do
+            usermod -s /sbin/nologin "$systemaccount"
+        done
+
+        ---
+    '9':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+
+        readarray -t systemaccounts < <(awk -F: '($3 < 1000 && $3 != root \
+          && $7 != "\/sbin\/shutdown" && $7 != "\/sbin\/halt" && $7 != "\/bin\/sync") \
+          { print $1 }' /etc/passwd)
+
+        for systemaccount in "${systemaccounts[@]}"; do
+            usermod -s /sbin/nologin "$systemaccount"
+        done
+
+        ---
+  ubuntu:
+    check: $OS_VALUE
+    result: $OS_VALUE
+    fix: $OS_VALUE
+    '2004':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+
+        readarray -t systemaccounts < <(awk -F: '($3 < 1000 && $3 != root \
+          && $7 != "\/sbin\/shutdown" && $7 != "\/sbin\/halt" && $7 != "\/bin\/sync") \
+          { print $1 }' /etc/passwd)
+
+        for systemaccount in "${systemaccounts[@]}"; do
+            usermod -s /sbin/nologin "$systemaccount"
+        done
+
+        ---
+    '2204':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+
+        readarray -t systemaccounts < <(awk -F: '($3 < 1000 && $3 != root \
+          && $7 != "\/sbin\/shutdown" && $7 != "\/sbin\/halt" && $7 != "\/bin\/sync") \
+          { print $1 }' /etc/passwd)
+
+        for systemaccount in "${systemaccounts[@]}"; do
+            usermod -s /sbin/nologin "$systemaccount"
+        done
+
+        ---
+    '2404':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+      enforcement_info:
+        - N/A
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+
+        readarray -t systemaccounts < <(awk -F: '($3 < 1000 && $3 != root \
+          && $7 != "\/sbin\/shutdown" && $7 != "\/sbin\/halt" && $7 != "\/bin\/sync") \
+          { print $1 }' /etc/passwd)
+
+        for systemaccount in "${systemaccounts[@]}"; do
+            usermod -s /sbin/nologin "$systemaccount"
+        done
+
+        ---
 tags:
+  - 800-53r4_high
+  - 800-53r4_low
+  - 800-53r4_moderate
+  - cis_lvl1
+  - cis_lvl2
   - client
   - server
-severity: "medium"
-os_specifics:
-  ubuntu:
-    '2004':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-        check: |
-          #! /bin/bash
-          DANGEROUSACCOUNTS=0
-          while IFS= read -r line; do
-             USERNAME=$(echo $line | cut -d: -f1)
-             USERID=$(echo $line | cut -d: -f3)
-             USERSHELL = $(echo $line | cut -d: -f7)
-             if [[ $USERID -lt 1000 ]]; then
-               if [[ $USERNAME != root ]]; then
-                 SHELLMATCH=$(echo "$USERSHELL" | grep -P "/usr/sbin/nologin|/bin/false|/bin/sync")
-                 if [[ $SHELLMATCH -ne 1 ]]; then 
-                   echo "$USERSHELL"
-                   DANGEROUSACCOUNTS=1
-                   break
-                 fi
-               fi
-             fi 
-          done < /etc/passwd
-          if [ $DANGEROUSACCOUNTS -gt 0 ]; then
-             echo "FAIL"
-          else
-             echo "PASS"
-          fi
-        fix: |
-          [source,bash]
-          ---
-          # This remediation was taken from the CIS guide for Ubuntu 20.04 LTS
-          readarray -t systemaccounts < <(awk -F: '($3 < 1000 && $3 != root \
-          && $7 != "\/sbin\/shutdown" && $7 != "\/sbin\/halt" && $7 != "\/bin\/sync") \
-          { print $1 }' /etc/passwd)
-
-          for systemaccount in "${systemaccounts[@]}"; do
-              usermod -s /sbin/nologin "$systemaccount"
-          done
-          ---
-    '2204':
-      references:
-        cce:
-          - N/A
-        disa_stig:
-          - N/A
-        check: |
-          #! /bin/bash
-          DANGEROUSACCOUNTS=0
-          while IFS= read -r line; do
-             USERNAME=$(echo $line | cut -d: -f1)
-             USERID=$(echo $line | cut -d: -f3)
-             USERSHELL = $(echo $line | cut -d: -f7)
-             if [[ $USERID -lt 1000 ]]; then
-               if [[ $USERNAME != root ]]; then
-                 SHELLMATCH=$(echo "$USERSHELL" | grep -P "/usr/sbin/nologin|/bin/false|/bin/sync")
-                 if [[ $SHELLMATCH -ne 1 ]]; then 
-                   echo "$USERSHELL"
-                   DANGEROUSACCOUNTS=1
-                   break
-                 fi
-               fi
-             fi 
-          done < /etc/passwd
-          if [ $DANGEROUSACCOUNTS -gt 0 ]; then
-             echo "FAIL"
-          else
-             echo "PASS"
-          fi
-        fix: |
-          [source,bash]
-          ---
-          # This remediation was taken from the CIS guide for Ubuntu 20.04 LTS
-          readarray -t systemaccounts < <(awk -F: '($3 < 1000 && $3 != root \
-          && $7 != "\/sbin\/shutdown" && $7 != "\/sbin\/halt" && $7 != "\/bin\/sync") \
-          { print $1 }' /etc/passwd)
-
-          for systemaccount in "${systemaccounts[@]}"; do
-              usermod -s /sbin/nologin "$systemaccount"
-          done
-          ---

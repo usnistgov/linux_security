@@ -1,0 +1,85 @@
+id: os_accounts_pw_last_change_in_past.yaml
+title: Ensure that all accounts on the system have prior password change dates.
+discussion: |
+  If a user account had a password change date in the future, they could bypass set password expirations.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references:
+  cce:
+    - $OS_VALUE
+  cci:
+    - N/A
+  800-53r5:
+    - N/A
+  srg:
+    - N/A
+  disa_stig:
+    - $OS_VALUE
+tags:
+  - client
+  - server
+severity: "medium"
+os_specifics:
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          #! /bin/bash
+          EPOCHTODAY=$(date +%s)
+          FUTUREPWCHANGES=0
+          sudo passwd -S -a | while read -r line; do
+            DATESTR=$(echo $line | grep -P -o "\d{2}/\d{2}/\d{4}")
+            EPOCHDATE=$(date --date=$DATESTR +%s)
+            if [ $EPOCHDATE -gt $EPOCHTODAY ]; then
+              FUTUREPWCHANGES=1
+              break
+            fi
+          done
+          if [ $FUTUREPWCHANGES -gt 0 ]; then
+            echo "FAIL"
+          else
+            echo "PASS"
+          fi
+        fix: |
+          [source,bash]
+          ---
+          echo "No automatic remediation at this time."
+          echo "Future remediations could consider immediately forcing a password change on next login?"
+          ---
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - N/A
+        check: |
+          #! /bin/bash
+          EPOCHTODAY=$(date +%s)
+          FUTUREPWCHANGES=0
+          sudo passwd -S -a | while read -r line; do
+            DATESTR=$(echo $line | grep -P -o "\d{2}/\d{2}/\d{4}")
+            EPOCHDATE=$(date --date=$DATESTR +%s)
+            if [ $EPOCHDATE -gt $EPOCHTODAY ]; then
+              FUTUREPWCHANGES=1
+              break
+            fi
+          done
+          if [ $FUTUREPWCHANGES -gt 0 ]; then
+            echo "FAIL"
+          else
+            echo "PASS"
+          fi
+        fix: |
+          [source,bash]
+          ---
+          echo "No automatic remediation at this time."
+          echo "Future remediations could consider resetting passwords for non SHA512 hashes so users must set it on next login?"
+          ---

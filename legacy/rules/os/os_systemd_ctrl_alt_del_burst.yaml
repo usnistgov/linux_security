@@ -1,0 +1,113 @@
+id: os_systemd_ctrl_alt_del_burst.yaml
+title: The Ubuntu operating system must disable the x86 Ctrl-Alt-Delete "burst" action which is by default enabled through Systemd.
+discussion: |
+  A locally logged-on user who presses Ctrl-Alt-Delete more than seven times in two seconds, can trigger a system reboot. If accidentally pressed, as could happen in the case of a mixed OS environment, this can create the risk of short-term loss of availability of systems due to unintentional reboot. This fix disables the functionality via a system.conf file change.
+check: |
+  $OS_VALUE
+result:
+  integer: 1
+fix: |
+  $OS_VALUE
+references: 
+    cce: 
+      - $OS_VALUE
+    cci:  
+      - CCI-000366
+    800_53r5: 
+      - CM-06(a)
+      - AC-6(1)
+    srg: 
+      - SRG-OS-000324-GPOS-00125
+      - SRG-OS-000480-GPOS-00227
+    disa_stig: 
+      - $OS_VALUE
+tags:
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - client
+  - server
+  - manual
+severity: 
+  - high
+os_specifics: 
+  ubuntu:
+    '2004':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010460
+        check: |
+          #! /bin/bash
+          if grep -q -m 1 -i -e "^CtrlAltDelBurstAction=none" "/etc/systemd/system.conf"; then
+            echo "FAIL"
+          else
+            echo "PASS"
+          fi
+        fix: |
+          # Remediation is applicable only in certain platforms
+          if dpkg-query --show --showformat='${db:Status-Status}\n' 'systemd' 2>/dev/null | grep -q installed; then
+
+          # Strip any search characters in the key arg so that the key can be replaced without
+          # adding any search characters to the config file.
+          stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^CtrlAltDelBurstAction=")
+
+          # shellcheck disable=SC2059
+          printf -v formatted_output "%s=%s" "$stripped_key" "none"
+
+          # If the key exists, change it. Otherwise, add it to the config_file.
+          # We search for the key string followed by a word boundary (matched by \>),
+          # so if we search for 'setting', 'setting2' won't match.
+          if LC_ALL=C grep -q -m 1 -i -e "^CtrlAltDelBurstAction=\\>" "/etc/systemd/system.conf"; then
+              escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+              LC_ALL=C sed -i --follow-symlinks "s/^CtrlAltDelBurstAction=\\>.*/$escaped_formatted_output/gi" "/etc/systemd/system.conf"
+          else
+              if [[ -s "/etc/systemd/system.conf" ]] && [[ -n "$(tail -c 1 -- "/etc/systemd/system.conf" || true)" ]]; then
+                  LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/systemd/system.conf"
+              fi
+              printf '%s\n' "$formatted_output" >> "/etc/systemd/system.conf"
+          fi
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi
+    '2204':
+      references:
+        cce:
+          - N/A
+        disa_stig:
+          - UBTU-20-010460
+        check: |
+          #! /bin/bash
+          if grep -q -m 1 -i -e "^CtrlAltDelBurstAction=none" "/etc/systemd/system.conf"; then
+            echo "FAIL"
+          else
+            echo "PASS"
+          fi
+        fix: |
+          # Remediation is applicable only in certain platforms
+          if dpkg-query --show --showformat='${db:Status-Status}\n' 'systemd' 2>/dev/null | grep -q installed; then
+
+          # Strip any search characters in the key arg so that the key can be replaced without
+          # adding any search characters to the config file.
+          stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^CtrlAltDelBurstAction=")
+
+          # shellcheck disable=SC2059
+          printf -v formatted_output "%s=%s" "$stripped_key" "none"
+
+          # If the key exists, change it. Otherwise, add it to the config_file.
+          # We search for the key string followed by a word boundary (matched by \>),
+          # so if we search for 'setting', 'setting2' won't match.
+          if LC_ALL=C grep -q -m 1 -i -e "^CtrlAltDelBurstAction=\\>" "/etc/systemd/system.conf"; then
+              escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+              LC_ALL=C sed -i --follow-symlinks "s/^CtrlAltDelBurstAction=\\>.*/$escaped_formatted_output/gi" "/etc/systemd/system.conf"
+          else
+              if [[ -s "/etc/systemd/system.conf" ]] && [[ -n "$(tail -c 1 -- "/etc/systemd/system.conf" || true)" ]]; then
+                  LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/systemd/system.conf"
+              fi
+              printf '%s\n' "$formatted_output" >> "/etc/systemd/system.conf"
+          fi
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi
