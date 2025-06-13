@@ -38,9 +38,9 @@ os_specifics:
             SERVERSET=$(cat /etc/audit/audisp-remote.conf | grep -e "remote_server \= [a-zA-Z]" | wc -l)
             ACTIVE=$(cat /etc/audit/plugins.d/au-remote.conf | grep "active = yes" | wc -l)
             if [[ $SERVERSET -ne 0 ]] && [[ $ACTIVE -ne 0 ]]; then
-              echo 0
-            else
               echo 1
+            else
+              echo 0
             fi
            ---
         result:

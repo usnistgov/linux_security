@@ -62,11 +62,11 @@ os_specifics:
             CHMOD32=$( grep -R -P "always,exit.*arch=b32.*\-S.*[ |,]chown[ |,].*\-F auid\>\=1000 \-F auid\!\=unset \-F key\=perm\_mod" /etc/audit/* | wc -l)
             CHMOD64=$(grep -R -P "always,exit.*arch=b64.*\-S.*[ |,]chown[ |,].*\-F auid\>\=1000 \-F auid\!\=unset \-F key\=perm\_mod" /etc/audit/* | wc -l)
             if [ $CHMOD32 -e 0 ]; then
-                echo 0
-            elif [ $CHMOD64 -e 0]; then
-                echo 0
-            else
                 echo 1
+            elif [ $CHMOD64 -e 0]; then
+                echo 1
+            else
+                echo 0
             fi
            ---
         result:

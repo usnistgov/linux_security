@@ -43,9 +43,9 @@ os_specifics:
            ---
             DISKFULL=$(cat /etc/audit/auditd.conf | grep -e "disk_full_action \= [syslog|exec|single|halt]" | wc -l)
             if [[ $DISKFULL -ne 0 ]]; then
-              echo "PASS"
+              echo 0
             else
-              echo "FAIL"
+              echo 1
             fi
            ---
         result:
