@@ -1,0 +1,47 @@
+name: Work Issue
+description: Use this to indicate you're working on something
+title: "[Work]: "
+labels: ["work"]
+# projects: ["octo-org/1", "octo-org/44"]
+# assignees:
+#   - octocat
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for working on the SCPLinux project! Please fill this out to let us know what you're working on.
+  - type: dropdown
+    id: what-are-you-doing
+    attributes:
+      label: What are you working on?
+      description: Please select what you're working on with this issue
+      options:
+        - Rule Fixes
+        - Other
+      multiple: true
+    validations:
+      required: true
+  - type: input
+    id: name
+    attributes:
+      label: Name
+      description: We know everyone likes their cool usernames, what's your real name so we can be polite?
+      placeholder: ex. Jane Doe
+    validations:
+      required: false
+  - type: textarea
+    id: work-scope
+    attributes:
+      label: What's the scope of your work?
+      description: Tell us exactly what you plan on working on so that others know not to duplicate work efforts
+      placeholder: I'm working on all of the SSH rules in rules/ssh/
+    validations:
+      required: true
+  # - type: checkboxes
+  #   id: terms
+  #   attributes:
+  #     label: Code of Conduct
+  #     description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com).
+  #     options:
+  #       - label: I agree to follow this project's Code of Conduct
+  #         required: true
