@@ -13,59 +13,53 @@ references:
         - CCE-90806-1
 os_specifics:
   rhel:
-    check: $OS_VALUE
-    result: $OS_VALUE
-    fix: $OS_VALUE
+    enforcement_info:
+      check: |
+        /usr/sbin/sshd -T | grep -q "allowtcpforwarding no"; echo $?
+      result: 
+        integer: 0
+      fix: | 
+          # Remediation is applicable only in certain platforms
+          if rpm --quiet -q kernel; then
+
+          mkdir -p /etc/ssh/sshd_config.d
+          touch /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
+          chmod 0600 /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
+
+          LC_ALL=C sed -i "/^\s*AllowTcpForwarding\s\+/Id" "/etc/ssh/sshd_config"
+          LC_ALL=C sed -i "/^\s*AllowTcpForwarding\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
+          if [ -e "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" ] ; then
+
+              LC_ALL=C sed -i "/^\s*AllowTcpForwarding\s\+/Id" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
+          else
+              touch "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
+          fi
+          # make sure file has newline at the end
+          sed -i -e '$a\' "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
+
+          cp "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
+          # Insert at the beginning of the file
+          printf '%s\n' "AllowTcpForwarding no" > "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
+          cat "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak" >> "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
+          # Clean up after ourselves.
+          rm "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi
     '10':
       severity: medium
       benchmarks:
         - N/A
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
 
-        mkdir -p /etc/ssh/sshd_config.d
-        touch /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
-        chmod 0600 /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
-
-        LC_ALL=C sed -i "/^\s*AllowTcpForwarding\s\+/Id" "/etc/ssh/sshd_config"
-        LC_ALL=C sed -i "/^\s*AllowTcpForwarding\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
-        if [ -e "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" ] ; then
-
-            LC_ALL=C sed -i "/^\s*AllowTcpForwarding\s\+/Id" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        else
-            touch "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-
-        cp "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "AllowTcpForwarding no" > "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        cat "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak" >> "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
 
         ---
     '8':
       severity: medium
       benchmarks:
         - N/A
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -96,11 +90,6 @@ os_specifics:
       severity: medium
       benchmarks:
         - N/A
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -134,20 +123,11 @@ os_specifics:
 
         ---
   ubuntu:
-    check: $OS_VALUE
-    result: $OS_VALUE
-    fix: $OS_VALUE
-    '2004':
-      severity: medium
-      benchmarks:
-        - N/A
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
-        [source,bash]
-        ---
+    check: |
+      /usr/sbin/sshd -T | grep -q "allowtcpforwarding no"; echo $?
+    result: 
+      integer: 0
+    fix: |
         # Remediation is applicable only in certain platforms
         if dpkg-query --show --showformat='${db:Status-Status}
         ' 'linux-base' 2>/dev/null | grep -q ^installed; then
@@ -177,17 +157,14 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-
-        ---
+    '2004':
+      severity: medium
+      benchmarks:
+        - N/A
     '2204':
       severity: medium
       benchmarks:
         - N/A
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -222,4 +199,5 @@ os_specifics:
 
         ---
 tags:
-  - N/A
+  - cis_lvl2
+  - server
