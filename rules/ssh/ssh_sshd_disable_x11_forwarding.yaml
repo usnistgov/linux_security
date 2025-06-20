@@ -146,11 +146,12 @@ os_specifics:
 
         ---
   ubuntu:
-    check: |
-        /usr/sbin/sshd -T | grep -q "x11forwarding no"; echo $?
-    result: 
-      integer: 0
-    fix: |
+    enforcement_info:
+      check: |
+          /usr/sbin/sshd -T | grep -q "x11forwarding no"; echo $?
+      result: 
+        integer: 0
+      fix: |
         # Remediation is applicable only in certain platforms
         if dpkg-query --show --showformat='${db:Status-Status}
         ' 'linux-base' 2>/dev/null | grep -q ^installed; then

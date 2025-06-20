@@ -26,21 +26,11 @@ references:
         - CCE-90797-2
 os_specifics:
   rhel:
-    check: $OS_VALUE
-    result: $OS_VALUE
-    fix: $OS_VALUE
-    '10':
-      severity: medium
-      benchmarks:
-        - disa_stig
-        - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
+    enforcement_info:
+      check: /usr/sbin/sshd -T | grep -q "ignorerhosts yes"; echo $?
+      result: 
         integer: 0
       fix: |
-        [source,bash]
-        ---
         # Remediation is applicable only in certain platforms
         if rpm --quiet -q kernel; then
 
@@ -69,6 +59,14 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
+    '10':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+        [source,bash]
+        ---
+
 
         ---
     '8':
@@ -76,11 +74,6 @@ os_specifics:
       benchmarks:
         - disa_stig
         - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -112,11 +105,6 @@ os_specifics:
       benchmarks:
         - disa_stig
         - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -150,21 +138,11 @@ os_specifics:
 
         ---
   ubuntu:
-    check: $OS_VALUE
-    result: $OS_VALUE
-    fix: $OS_VALUE
-    '2004':
-      severity: medium
-      benchmarks:
-        - disa_stig
-        - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
+    enforcement_info:
+      check: /usr/sbin/sshd -T | grep -q "ignorerhosts yes"; echo $?
+      result: 
         integer: 0
       fix: |
-        [source,bash]
-        ---
         # Remediation is applicable only in certain platforms
         if dpkg-query --show --showformat='${db:Status-Status}
         ' 'linux-base' 2>/dev/null | grep -q ^installed; then
@@ -194,6 +172,14 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
+    '2004':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+        [source,bash]
+        ---
+
 
         ---
     '2204':
@@ -201,11 +187,6 @@ os_specifics:
       benchmarks:
         - disa_stig
         - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -244,11 +225,6 @@ os_specifics:
       benchmarks:
         - disa_stig
         - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
