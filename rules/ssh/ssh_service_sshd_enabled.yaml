@@ -45,21 +45,11 @@ references:
         - CCE-90822-8
 os_specifics:
   rhel:
-    check: $OS_VALUE
-    result: $OS_VALUE
-    fix: $OS_VALUE
-    '10':
-      severity: medium
-      benchmarks:
-        - disa_stig
-        - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
+    enforcement_info:
+      check: /bin/systemctl is-enabled sshd
+      result: 
+        string: "enabled"
       fix: |
-        [source,bash]
-        ---
         # Remediation is applicable only in certain platforms
         if rpm --quiet -q kernel; then
 
@@ -73,18 +63,16 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-
-        ---
+    '10':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
     '8':
       severity: medium
       benchmarks:
         - disa_stig
         - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -107,11 +95,6 @@ os_specifics:
       benchmarks:
         - disa_stig
         - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -130,21 +113,11 @@ os_specifics:
 
         ---
   ubuntu:
-    check: $OS_VALUE
-    result: $OS_VALUE
-    fix: $OS_VALUE
-    '2004':
-      severity: medium
-      benchmarks:
-        - disa_stig
-        - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
+    enforcement_info:
+      check: /bin/systemctl is-enabled sshd
+      result: 
+        string: "enabled"
       fix: |
-        [source,bash]
-        ---
         # Remediation is applicable only in certain platforms
         if dpkg-query --show --showformat='${db:Status-Status}
         ' 'linux-base' 2>/dev/null | grep -q ^installed; then
@@ -159,18 +132,16 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-
-        ---
+    '2004':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
     '2204':
       severity: medium
       benchmarks:
         - disa_stig
         - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms

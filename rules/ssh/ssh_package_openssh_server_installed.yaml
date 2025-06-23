@@ -37,106 +37,59 @@ references:
         - CCE-90823-6
 os_specifics:
   rhel:
-    check: $OS_VALUE
-    result: $OS_VALUE
-    fix: $OS_VALUE
+    enforcement_info:
+      check: /usr/bin/rpm --quiet -q "openssh-server"; echo $?
+      result: 
+        integer: 0
+      fix: |
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        if ! rpm -q --quiet "openssh-server" ; then
+            dnf install -y "openssh-server"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
     '10':
       severity: medium
       benchmarks:
         - disa_stig
         - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        if ! rpm -q --quiet "openssh-server" ; then
-            dnf install -y "openssh-server"
-        fi
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
     '8':
       severity: medium
       benchmarks:
         - disa_stig
         - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        if ! rpm -q --quiet "openssh-server" ; then
-            yum install -y "openssh-server"
-        fi
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
     '9':
       severity: medium
       benchmarks:
         - disa_stig
         - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        if ! rpm -q --quiet "openssh-server" ; then
-            dnf install -y "openssh-server"
-        fi
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
   ubuntu:
-    check: $OS_VALUE
-    result: $OS_VALUE
-    fix: $OS_VALUE
+    enforcement_info:
+      check: /usr/bin/dpkg-query -W --showformat='${db:Status-Status}' openssh-server
+      result: 
+        string: "installed"
+      fix: |
+          # Remediation is applicable only in certain platforms
+          if dpkg-query --show --showformat='${db:Status-Status}
+          ' 'linux-base' 2>/dev/null | grep -q ^installed; then
+
+          DEBIAN_FRONTEND=noninteractive apt-get install -y "openssh-servelir"
+
+          else
+              >&2 echo 'Remediation is not applicable, nothing was done'
+          fi
     '2004':
       severity: medium
       benchmarks:
         - disa_stig
         - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
 
-        DEBIAN_FRONTEND=noninteractive apt-get install -y "openssh-server"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
 
         ---
     '2204':
@@ -144,24 +97,6 @@ os_specifics:
       benchmarks:
         - disa_stig
         - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
-
-        DEBIAN_FRONTEND=noninteractive apt-get install -y "openssh-server"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
 tags:
   - 800-53r4_high
   - 800-53r4_low

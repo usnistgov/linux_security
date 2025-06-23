@@ -27,41 +27,58 @@ references:
         - CCE-82198-3
 os_specifics:
   rhel:
-    check: $OS_VALUE
-    result: $OS_VALUE
-    fix: $OS_VALUE
+    enforcement_info:
+      check: /usr/sbin/sshd -T | /bin/grep -q "macs $ODV"; echo $?
+      result: 
+        integer: 0
+      fix: | 
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel; then
+
+        sshd_approved_macs='$ODV'
+
+
+        # Strip any search characters in the key arg so that the key can be replaced without
+        # adding any search characters to the config file.
+        stripped_key=$(sed 's/[\^=\$,;+]*//g' <<< "^MACs")
+
+        # shellcheck disable=SC2059
+        printf -v formatted_output "%s %s" "$stripped_key" "$sshd_approved_macs"
+
+        # If the key exists, change it. Otherwise, add it to the config_file.
+        # We search for the key string followed by a word boundary (matched by \>),
+        # so if we search for 'setting', 'setting2' won't match.
+        if LC_ALL=C grep -q -m 1 -i -e "^MACs\\>" "/etc/ssh/sshd_config"; then
+            escaped_formatted_output=$(sed -e 's|/|\\/|g' <<< "$formatted_output")
+            LC_ALL=C sed -i --follow-symlinks "s/^MACs\\>.*/$escaped_formatted_output/gi" "/etc/ssh/sshd_config"
+        else
+            if [[ -s "/etc/ssh/sshd_config" ]] && [[ -n "$(tail -c 1 -- "/etc/ssh/sshd_config" || true)" ]]; then
+                LC_ALL=C sed -i --follow-symlinks '$a'\\ "/etc/ssh/sshd_config"
+            fi
+            cce="CCE-82198-3"
+            printf '# Per %s: Set %s in %s\n' "${cce}" "${formatted_output}" "/etc/ssh/sshd_config" >> "/etc/ssh/sshd_config"
+            printf '%s\n' "$formatted_output" >> "/etc/ssh/sshd_config"
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
     '8':
       severity: medium
       benchmarks:
         - disa_stig
         - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix:
-        - N/A
   ubuntu:
-    check: $OS_VALUE
-    result: $OS_VALUE
-    fix: $OS_VALUE
-    '2004':
-      severity: medium
-      benchmarks:
-        - disa_stig
-        - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
+    enforcement_info:
+      check: /usr/sbin/sshd -T | /bin/grep -q "macs $ODV"; echo $?
+      result: 
         integer: 0
-      fix: |
-        [source,bash]
-        ---
+      fix: | 
         # Remediation is applicable only in certain platforms
         if dpkg-query --show --showformat='${db:Status-Status}
         ' 'linux-base' 2>/dev/null | grep -q ^installed; then
 
-        sshd_approved_macs=''
+        sshd_approved_macs='$ODV'
 
 
         # Strip any search characters in the key arg so that the key can be replaced without
@@ -87,8 +104,16 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-
-        ---
+    '2004':
+      severity: medium
+      benchmarks:
+        - disa_stig
+        - nist_800-53r4
+odv:
+  hint:
+    datatype: string
+    description: List of approved MACs to use for SSH connections. Order specific.
+  recommended: hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256
 tags:
   - 800-53r4_high
   - 800-53r4_low

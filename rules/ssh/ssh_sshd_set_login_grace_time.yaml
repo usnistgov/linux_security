@@ -15,24 +15,15 @@ references:
         - CCE-86552-7
 os_specifics:
   rhel:
-    check: $OS_VALUE
-    result: $OS_VALUE
-    fix: $OS_VALUE
-    '10':
-      severity: medium
-      benchmarks:
-        - N/A
-      enforcement_info:
-        - N/A
-      result:
+    enforcement_info:
+      check: /usr/sbin/sshd -T | /bin/grep -q "logingracetime $ODV"; echo $?
+      result: 
         integer: 0
       fix: |
-        [source,bash]
-        ---
         # Remediation is applicable only in certain platforms
         if rpm --quiet -q kernel; then
 
-        var_sshd_set_login_grace_time=''
+        var_sshd_set_login_grace_time='$ODV'
 
 
         mkdir -p /etc/ssh/sshd_config.d
@@ -60,17 +51,14 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-
-        ---
+    '10':
+      severity: medium
+      benchmarks:
+        - N/A
     '8':
       severity: medium
       benchmarks:
         - N/A
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -105,11 +93,6 @@ os_specifics:
       severity: medium
       benchmarks:
         - N/A
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -146,25 +129,16 @@ os_specifics:
 
         ---
   ubuntu:
-    check: $OS_VALUE
-    result: $OS_VALUE
-    fix: $OS_VALUE
-    '2004':
-      severity: medium
-      benchmarks:
-        - N/A
-      enforcement_info:
-        - N/A
-      result:
+    enforcement_info:
+      check: /usr/sbin/sshd -T | /bin/grep -q "logingracetime $ODV"; echo $?
+      result: 
         integer: 0
       fix: |
-        [source,bash]
-        ---
         # Remediation is applicable only in certain platforms
         if dpkg-query --show --showformat='${db:Status-Status}
         ' 'linux-base' 2>/dev/null | grep -q ^installed; then
 
-        var_sshd_set_login_grace_time=''
+        var_sshd_set_login_grace_time='$ODV'
 
 
         mkdir -p /etc/ssh/sshd_config.d
@@ -192,17 +166,14 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-
-        ---
+    '2004':
+      severity: medium
+      benchmarks:
+        - N/A
     '2204':
       severity: medium
       benchmarks:
         - N/A
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -243,11 +214,6 @@ os_specifics:
       severity: medium
       benchmarks:
         - N/A
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -284,6 +250,16 @@ os_specifics:
         fi
 
         ---
+odv:
+  hint:
+    datatype: number
+    description: Number of seconds, e.g. 60
+    validation:
+      min: 0
+  recommended: 60
+  cis_lvl1: 60
+  cis_lvl2: 60
+  stig: 60
 tags:
   - cis_lvl1
   - cis_lvl2

@@ -21,20 +21,11 @@ references:
         - CCE-90813-7
 os_specifics:
   rhel:
-    check: $OS_VALUE
-    result: $OS_VALUE
-    fix: $OS_VALUE
-    '10':
-      severity: low
-      benchmarks:
-        - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
+    enforcement_info:
+      check: /usr/sbin/sshd -T | /bin/grep -q "loglevel $ODV"; echo $?
+      result: 
         integer: 0
       fix: |
-        [source,bash]
-        ---
         # Remediation is applicable only in certain platforms
         if rpm --quiet -q kernel; then
 
@@ -55,7 +46,7 @@ os_specifics:
 
         cp "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
         # Insert at the beginning of the file
-        printf '%s\n' "LogLevel INFO" > "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+        printf '%s\n' "LogLevel $ODV" > "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
         cat "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak" >> "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
         # Clean up after ourselves.
         rm "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
@@ -63,17 +54,19 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
+    '10':
+      severity: low
+      benchmarks:
+        - nist_800-53r4
+        [source,bash]
+        ---
+
 
         ---
     '8':
       severity: low
       benchmarks:
         - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -104,11 +97,6 @@ os_specifics:
       severity: low
       benchmarks:
         - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -142,20 +130,11 @@ os_specifics:
 
         ---
   ubuntu:
-    check: $OS_VALUE
-    result: $OS_VALUE
-    fix: $OS_VALUE
-    '2004':
-      severity: low
-      benchmarks:
-        - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
+    enforcement_info:
+      check: /usr/sbin/sshd -T | /bin/grep -q "loglevel $ODV"; echo $?
+      result: 
         integer: 0
       fix: |
-        [source,bash]
-        ---
         # Remediation is applicable only in certain platforms
         if dpkg-query --show --showformat='${db:Status-Status}
         ' 'linux-base' 2>/dev/null | grep -q ^installed; then
@@ -177,7 +156,7 @@ os_specifics:
 
         cp "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
         # Insert at the beginning of the file
-        printf '%s\n' "LogLevel INFO" > "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
+        printf '%s\n' "LogLevel $ODV" > "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
         cat "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak" >> "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
         # Clean up after ourselves.
         rm "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
@@ -185,17 +164,14 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-
-        ---
+    '2004':
+      severity: low
+      benchmarks:
+        - nist_800-53r4
     '2204':
       severity: low
       benchmarks:
         - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -233,11 +209,6 @@ os_specifics:
       severity: low
       benchmarks:
         - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -271,6 +242,14 @@ os_specifics:
         fi
 
         ---
+odv:
+  hint:
+    datatype: string
+    description: Log level, e.g INFO
+  recommended: "INFO"
+  cis_lvl1: "INFO"
+  cis_lvl2: "INFO"
+  stig: "INFO"
 tags:
   - 800-53r4_high
   - 800-53r4_low

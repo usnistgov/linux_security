@@ -14,24 +14,15 @@ references:
         - CCE-90810-3
 os_specifics:
   rhel:
-    check: $OS_VALUE
-    result: $OS_VALUE
-    fix: $OS_VALUE
-    '10':
-      severity: medium
-      benchmarks:
-        - N/A
-      enforcement_info:
-        - N/A
-      result:
+    enforcement_info:
+      check: /usr/sbin/sshd -T | /bin/grep -q "maxauthtries $ODV"; echo $?
+      result: 
         integer: 0
       fix: |
-        [source,bash]
-        ---
         # Remediation is applicable only in certain platforms
         if rpm --quiet -q kernel; then
 
-        sshd_max_auth_tries_value=''
+        sshd_max_auth_tries_value='$ODV'
 
 
         mkdir -p /etc/ssh/sshd_config.d
@@ -59,17 +50,14 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-
-        ---
+    '10':
+      severity: medium
+      benchmarks:
+        - N/A
     '8':
       severity: medium
       benchmarks:
         - N/A
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -104,11 +92,6 @@ os_specifics:
       severity: medium
       benchmarks:
         - N/A
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -145,25 +128,16 @@ os_specifics:
 
         ---
   ubuntu:
-    check: $OS_VALUE
-    result: $OS_VALUE
-    fix: $OS_VALUE
-    '2004':
-      severity: medium
-      benchmarks:
-        - N/A
-      enforcement_info:
-        - N/A
-      result:
+    enforcement_info:
+      check: /usr/sbin/sshd -T | /bin/grep -q "maxauthtries $ODV"; echo $?
+      result: 
         integer: 0
       fix: |
-        [source,bash]
-        ---
         # Remediation is applicable only in certain platforms
         if dpkg-query --show --showformat='${db:Status-Status}
         ' 'linux-base' 2>/dev/null | grep -q ^installed; then
 
-        sshd_max_auth_tries_value=''
+        sshd_max_auth_tries_value='$ODV'
 
 
         mkdir -p /etc/ssh/sshd_config.d
@@ -191,17 +165,14 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-
-        ---
+    '2004':
+      severity: medium
+      benchmarks:
+        - N/A
     '2204':
       severity: medium
       benchmarks:
         - N/A
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -242,11 +213,6 @@ os_specifics:
       severity: medium
       benchmarks:
         - N/A
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -283,6 +249,15 @@ os_specifics:
         fi
 
         ---
+odv:
+  hint:
+    datatype: number
+    description: Number of tries before rejection, e.g 4
+    validation:
+      min: 1
+  recommended: 4
+  cis_lvl1: 4
+  cis_lvl2: 4
 tags:
   - cis_lvl1
   - cis_lvl2

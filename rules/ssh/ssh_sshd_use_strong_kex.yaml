@@ -16,24 +16,15 @@ references:
         - CCE-86768-9
 os_specifics:
   rhel:
-    check: $OS_VALUE
-    result: $OS_VALUE
-    fix: $OS_VALUE
-    '10':
-      severity: medium
-      benchmarks:
-        - N/A
-      enforcement_info:
-        - N/A
-      result:
+    enforcement_info:
+      check: /usr/sbin/sshd -T | /bin/grep -q "kexalgorithms $ODV"; echo $?
+      result: 
         integer: 0
-      fix: |
-        [source,bash]
-        ---
+      fix: |     
         # Remediation is applicable only in certain platforms
         if rpm --quiet -q kernel; then
 
-        sshd_strong_kex=''
+        sshd_strong_kex='$ODV'
 
 
         if [ -e "/etc/ssh/sshd_config" ] ; then
@@ -55,17 +46,14 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-
-        ---
+    '10':
+      severity: medium
+      benchmarks:
+        - N/A
     '8':
       severity: medium
       benchmarks:
         - N/A
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -99,11 +87,6 @@ os_specifics:
       severity: medium
       benchmarks:
         - N/A
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -134,25 +117,16 @@ os_specifics:
 
         ---
   ubuntu:
-    check: $OS_VALUE
-    result: $OS_VALUE
-    fix: $OS_VALUE
-    '2004':
-      severity: medium
-      benchmarks:
-        - N/A
-      enforcement_info:
-        - N/A
-      result:
+    enforcement_info:
+      check: /usr/sbin/sshd -T | /bin/grep -q "kexalgorithms $ODV"; echo $?
+      result: 
         integer: 0
       fix: |
-        [source,bash]
-        ---
         # Remediation is applicable only in certain platforms
         if dpkg-query --show --showformat='${db:Status-Status}
         ' 'linux-base' 2>/dev/null | grep -q ^installed; then
 
-        sshd_strong_kex=''
+        sshd_strong_kex='$ODV'
 
 
         if [ -e "/etc/ssh/sshd_config" ] ; then
@@ -173,18 +147,15 @@ os_specifics:
 
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        fi 
+    '2004':
+      severity: medium
+      benchmarks:
+        - N/A
     '2204':
       severity: medium
       benchmarks:
         - N/A
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -219,11 +190,6 @@ os_specifics:
       severity: medium
       benchmarks:
         - N/A
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -254,6 +220,14 @@ os_specifics:
         fi
 
         ---
+odv:
+  hint:
+    datatype: string
+    description: List of approved key exchange algorithms (KEX) to use for SSH connections. Order specific.
+  recommended: ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512
+  cis_lvl1: curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256
+  cis_lvl2: curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256
+  stig: ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512
 tags:
   - cis_lvl1
   - cis_lvl2
