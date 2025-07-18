@@ -1,16 +1,13 @@
 id: ssh_sshd_set_loglevel_info
 title: Set LogLevel to INFO
 discussion: |
-  SSH provides several logging levels with varying amounts of verbosity. DEBUG is specifically
-  not recommended other than strictly for debugging SSH communications since it provides
-  so much data that it is difficult to identify important security information. INFO level is the
-  basic level that only records login activity of SSH users. In many situations, such as Incident
-  Response, it is important to determine when a particular user was active on a system. The
-  logout record can eliminate those users who disconnected, which helps narrow the field.
+  SSH provides several logging levels with varying amounts of verbosity. DEBUG is specifically not recommended other than strictly for debugging SSH communications since it provides so much data that it is difficult to identify important security information. INFO level is the basic level that only records login activity of SSH users. In many situations, such as Incident
+  
+  Response, it is important to determine when a particular user was active on a system. The logout record can eliminate those users who disconnected, which helps narrow the field.
 references:
   nist:
-    800-53r4:
-      - AC-17
+    800-53r5:
+      - AU-2
       - CM-6
     cce:
       '10':
@@ -54,81 +51,18 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-    '10':
-      severity: low
+    '10': 
       benchmarks:
-        - nist_800-53r4
-        [source,bash]
-        ---
-
-
-        ---
-    '8':
-      severity: low
+        - name: cis_lvl1
+        - name: cis_lvl2
+    '8': 
       benchmarks:
-        - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        if [ -e "/etc/ssh/sshd_config" ] ; then
-
-            LC_ALL=C sed -i "/^\s*LogLevel\s\+/Id" "/etc/ssh/sshd_config"
-        else
-            touch "/etc/ssh/sshd_config"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config"
-
-        cp "/etc/ssh/sshd_config" "/etc/ssh/sshd_config.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "LogLevel INFO" > "/etc/ssh/sshd_config"
-        cat "/etc/ssh/sshd_config.bak" >> "/etc/ssh/sshd_config"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
-    '9':
-      severity: low
+        - name: cis_lvl1
+        - name: cis_lvl2
+    '9': 
       benchmarks:
-        - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        mkdir -p /etc/ssh/sshd_config.d
-        touch /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
-        chmod 0600 /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
-
-        LC_ALL=C sed -i "/^\s*LogLevel\s\+/Id" "/etc/ssh/sshd_config"
-        LC_ALL=C sed -i "/^\s*LogLevel\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
-        if [ -e "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" ] ; then
-
-            LC_ALL=C sed -i "/^\s*LogLevel\s\+/Id" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        else
-            touch "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-
-        cp "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "LogLevel INFO" > "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        cat "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak" >> "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        - name: cis_lvl1
+        - name: cis_lvl2
   ubuntu:
     enforcement_info:
       check: /usr/sbin/sshd -T | /bin/grep -q "loglevel $ODV"; echo $?
@@ -164,84 +98,18 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-    '2004':
-      severity: low
+    '2004': 
       benchmarks:
-        - nist_800-53r4
-    '2204':
-      severity: low
+        - name: cis_lvl1
+        - name: cis_lvl2
+    '2204': 
       benchmarks:
-        - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
-
-        mkdir -p /etc/ssh/sshd_config.d
-        touch /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
-        chmod 0600 /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
-
-        LC_ALL=C sed -i "/^\s*LogLevel\s\+/Id" "/etc/ssh/sshd_config"
-        LC_ALL=C sed -i "/^\s*LogLevel\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
-        if [ -e "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" ] ; then
-
-            LC_ALL=C sed -i "/^\s*LogLevel\s\+/Id" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        else
-            touch "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-
-        cp "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "LogLevel INFO" > "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        cat "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak" >> "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
-    '2404':
-      severity: low
+        - name: cis_lvl1
+        - name: cis_lvl2
+    '2404': 
       benchmarks:
-        - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
-
-        mkdir -p /etc/ssh/sshd_config.d
-        touch /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
-        chmod 0600 /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
-
-        LC_ALL=C sed -i "/^\s*LogLevel\s\+/Id" "/etc/ssh/sshd_config"
-        LC_ALL=C sed -i "/^\s*LogLevel\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
-        if [ -e "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" ] ; then
-
-            LC_ALL=C sed -i "/^\s*LogLevel\s\+/Id" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        else
-            touch "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-
-        cp "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "LogLevel INFO" > "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        cat "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak" >> "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        - name: cis_lvl1
+        - name: cis_lvl2
 odv:
   hint:
     datatype: string
@@ -251,10 +119,8 @@ odv:
   cis_lvl2: "INFO"
   stig: "INFO"
 tags:
-  - 800-53r4_high
-  - 800-53r4_low
-  - 800-53r4_moderate
-  - cis_lvl1
-  - cis_lvl2
+  - 800-53r5_high
+  - 800-53r5_low
+  - 800-53r5_moderate
   - client
   - server

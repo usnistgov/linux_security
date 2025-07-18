@@ -1,16 +1,8 @@
 id: ssh_service_sshd_enabled
 title: Enable the OpenSSH Service
 discussion: |
-  Without protection of the transmitted information, confidentiality, and
-  integrity may be compromised because unprotected communications can be
-  intercepted and either read or altered.
-
-
-  This checklist item applies to both internal and external networks and all types
-  of information system components from which information can be transmitted (e.g., servers,
-  mobile devices, notebook computers, printers, copiers, scanners, etc). Communication paths
-  outside the physical protection of a controlled boundary are exposed to the possibility
-  of interception and modification.
+  Remote access sessions _MUST_ use encrypted methods to protect unauthorized individuals from gaining access.
+  Without protection of the transmitted information, confidentiality, and integrity may be compromised because unprotected communications can be intercepted and either read or altered.
 references:
   disa:
     cci:
@@ -33,8 +25,10 @@ references:
       '2204':
         - UBTU-22-255015
   nist:
-    800-53r4:
-      - CM-6
+    800-53r5:
+      - IA-2(8)
+      - AC-3
+      - AC-17
       - SC-8
     cce:
       '10':
@@ -67,51 +61,14 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
     '8':
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        SYSTEMCTL_EXEC='/usr/bin/systemctl'
-        "$SYSTEMCTL_EXEC" unmask 'sshd.service'
-        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
-          "$SYSTEMCTL_EXEC" start 'sshd.service'
-        fi
-        "$SYSTEMCTL_EXEC" enable 'sshd.service'
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
     '9':
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        SYSTEMCTL_EXEC='/usr/bin/systemctl'
-        "$SYSTEMCTL_EXEC" unmask 'sshd.service'
-        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
-          "$SYSTEMCTL_EXEC" start 'sshd.service'
-        fi
-        "$SYSTEMCTL_EXEC" enable 'sshd.service'
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
   ubuntu:
     enforcement_info:
       check: /bin/systemctl is-enabled sshd
@@ -141,26 +98,7 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
-
-        SYSTEMCTL_EXEC='/usr/bin/systemctl'
-        "$SYSTEMCTL_EXEC" unmask 'ssh.service'
-        if [[ $("$SYSTEMCTL_EXEC" is-system-running) != "offline" ]]; then
-          "$SYSTEMCTL_EXEC" start 'ssh.service'
-        fi
-        "$SYSTEMCTL_EXEC" enable 'ssh.service'
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
 tags:
-  - 800-53r4_high
-  - 800-53r4_low
-  - 800-53r4_moderate
+  - 800-53r5_high
+  - 800-53r5_low
+  - 800-53r5_moderate

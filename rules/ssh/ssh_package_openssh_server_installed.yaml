@@ -1,9 +1,7 @@
 id: ssh_package_openssh_server_installed
 title: Install the OpenSSH Server Package
 discussion: |
-  Without protection of the transmitted information, confidentiality, and
-  integrity may be compromised because unprotected communications can be
-  intercepted and either read or altered.
+  Without protection of the transmitted information, confidentiality, and integrity may be compromised because unprotected communications can be intercepted and either read or altered.
 references:
   disa:
     cci:
@@ -26,7 +24,7 @@ references:
       '2204':
         - UBTU-22-255010
   nist:
-    800-53r4:
+    800-53r5:
       - CM-6
     cce:
       '10':
@@ -56,17 +54,14 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
     '8':
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
     '9':
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
   ubuntu:
     enforcement_info:
       check: /usr/bin/dpkg-query -W --showformat='${db:Status-Status}' openssh-server
@@ -86,18 +81,11 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
-        [source,bash]
-        ---
-
-
-        ---
     '2204':
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
 tags:
-  - 800-53r4_high
-  - 800-53r4_low
-  - 800-53r4_moderate
+  - 800-53r5_high
+  - 800-53r5_low
+  - 800-53r5_moderate

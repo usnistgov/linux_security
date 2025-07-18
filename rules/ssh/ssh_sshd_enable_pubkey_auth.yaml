@@ -1,13 +1,11 @@
 id: ssh_sshd_enable_pubkey_auth
 title: Enable Public Key Authentication
 discussion: |
-  Without the use of multifactor authentication, the ease of access to
-  privileged functions is greatly increased. Multifactor authentication
-  requires using two or more factors to achieve authentication.
-  A privileged account is defined as an information system account with
-  authorizations of a privileged user.
-  The DoD CAC with DoD-approved PKI is an example of multifactor
-  authentication.
+  Without the use of multifactor authentication, the ease of access to privileged functions is greatly increased. Multifactor authentication requires using two or more factors to achieve authentication.
+  
+  A privileged account is defined as an information system account with authorizations of a privileged user.
+  
+  The DoD CAC with DoD-approved PKI is an example of multifactor authentication.
 references:
   disa:
     cci:
@@ -31,6 +29,9 @@ references:
         - CCE-90625-5
       '9':
         - CCE-86138-5
+    800-53r5:
+      - IA-2(1)
+      - IA-2(2)
 os_specifics:
   rhel:
     enforcement_info:
@@ -67,75 +68,17 @@ os_specifics:
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
     '10':
-      severity: medium
       benchmarks:
-        - disa_stig
+        - name: disa_stig
+          severity: medium
     '8':
-      severity: medium
       benchmarks:
-        - disa_stig
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        if [ -e "/etc/ssh/sshd_config" ] ; then
-
-            LC_ALL=C sed -i "/^\s*PubkeyAuthentication\s\+/Id" "/etc/ssh/sshd_config"
-        else
-            touch "/etc/ssh/sshd_config"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config"
-
-        cp "/etc/ssh/sshd_config" "/etc/ssh/sshd_config.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "PubkeyAuthentication yes" > "/etc/ssh/sshd_config"
-        cat "/etc/ssh/sshd_config.bak" >> "/etc/ssh/sshd_config"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        - name: disa_stig
+          severity: medium     
     '9':
-      severity: medium
       benchmarks:
-        - disa_stig
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        mkdir -p /etc/ssh/sshd_config.d
-        touch /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
-        chmod 0600 /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
-
-        LC_ALL=C sed -i "/^\s*PubkeyAuthentication\s\+/Id" "/etc/ssh/sshd_config"
-        LC_ALL=C sed -i "/^\s*PubkeyAuthentication\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
-        if [ -e "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" ] ; then
-
-            LC_ALL=C sed -i "/^\s*PubkeyAuthentication\s\+/Id" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        else
-            touch "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-
-        cp "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "PubkeyAuthentication yes" > "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        cat "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak" >> "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        - name: disa_stig
+          severity: medium
   ubuntu:
     enforcement_info:
       check: /usr/sbin/sshd -T | grep -q "pubkeyauthentication yes"; echo $?
@@ -172,45 +115,14 @@ os_specifics:
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
     '2004':
-      severity: medium
       benchmarks:
-        - disa_stig
+        - name: disa_stig
+          severity: medium
     '2204':
-      severity: medium
       benchmarks:
-        - disa_stig
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
-
-        mkdir -p /etc/ssh/sshd_config.d
-        touch /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
-        chmod 0600 /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
-
-        LC_ALL=C sed -i "/^\s*PubkeyAuthentication\s\+/Id" "/etc/ssh/sshd_config"
-        LC_ALL=C sed -i "/^\s*PubkeyAuthentication\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
-        if [ -e "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" ] ; then
-
-            LC_ALL=C sed -i "/^\s*PubkeyAuthentication\s\+/Id" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        else
-            touch "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-
-        cp "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "PubkeyAuthentication yes" > "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        cat "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak" >> "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        - name: disa_stig
+          severity: medium
 tags:
-  - N/A
+  - 800-53r5_high
+  - 800-53r5_low
+  - 800-53r5_moderate

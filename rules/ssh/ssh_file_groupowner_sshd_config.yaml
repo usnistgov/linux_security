@@ -1,10 +1,7 @@
 id: ssh_file_groupowner_sshd_config
 title: Verify Group Who Owns SSH Server config file
 discussion: |
-  Service configuration files enable or disable features of their respective
-  services that if configured incorrectly can lead to insecure and vulnerable
-  configurations. Therefore, service configuration files should be owned by the
-  correct group to prevent unauthorized changes.
+  Service configuration files enable or disable features of their respective services that if configured incorrectly can lead to insecure and vulnerable configurations. Therefore, service configuration files should be owned by the correct group to prevent unauthorized changes.
 references:
   disa:
     cci:
@@ -15,9 +12,8 @@ references:
       '9':
         - RHEL-09-255105
   nist:
-    800-53r4:
+    800-53r5:
       - AC-6
-      - AC-17
       - CM-6
     cce:
       '10':
@@ -45,12 +41,10 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
     '8':
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -67,7 +61,6 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -99,7 +92,6 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -117,17 +109,13 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
     '2404':
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
 tags:
   - 800-53r4_high
   - 800-53r4_low
   - 800-53r4_moderate
-  - cis_lvl1
-  - cis_lvl2
   - client
   - server

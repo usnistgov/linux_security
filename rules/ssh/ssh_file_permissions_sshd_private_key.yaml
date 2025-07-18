@@ -1,8 +1,9 @@
 id: ssh_file_permissions_sshd_private_key
 title: Verify Permissions on SSH Server Private *_key Key Files
 discussion: |
-  If an unauthorized user obtains the private SSH host key file, the host could be
-  impersonated.
+  If an unauthorized user obtains the private SSH host key file, the host could be impersonated. 
+
+  SSH server private keys _MUST_ be owned by the user root and group root.
 references:
   disa:
     cci:
@@ -15,9 +16,8 @@ references:
       '9':
         - RHEL-09-255120
   nist:
-    800-53r4:
+    800-53r5:
       - AC-6
-      - AC-17
       - CM-6
     cce:
       '10':
@@ -55,12 +55,10 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
     '8':
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -88,7 +86,6 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -141,12 +138,10 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
     '2204':
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -174,7 +169,6 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
         [source,bash]
         ---
         # Remediation is applicable only in certain platforms
@@ -199,10 +193,8 @@ os_specifics:
 
         ---
 tags:
-  - 800-53r4_high
-  - 800-53r4_low
-  - 800-53r4_moderate
-  - cis_lvl1
-  - cis_lvl2
+  - 800-53r5_high
+  - 800-53r5_low
+  - 800-53r5_moderate
   - client
   - server

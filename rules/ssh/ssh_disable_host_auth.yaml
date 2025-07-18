@@ -1,8 +1,9 @@
 id: ssh_disable_host_auth
 title: Disable Host-Based Authentication
 discussion: |
-  SSH trust relationships mean a compromise on one host
-  can allow an attacker to move trivially to other hosts.
+  SSH trust relationships mean a compromise on one host can allow an attacker to move trivially to other hosts.
+
+  Host based authentication _MUST_ be disabled.
 references:
   disa:
     cci:
@@ -13,11 +14,11 @@ references:
       '9':
         - RHEL-09-255080
   nist:
-    800-53r4:
+    800-53r5:
       - AC-3
       - AC-17
-      - CM-6
-      - CM-7
+      - AC-17(1)
+      - IA-2
     cce:
       '10':
         - CCE-88057-5
@@ -64,75 +65,14 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
     '8':
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        if [ -e "/etc/ssh/sshd_config" ] ; then
-
-            LC_ALL=C sed -i "/^\s*HostbasedAuthentication\s\+/Id" "/etc/ssh/sshd_config"
-        else
-            touch "/etc/ssh/sshd_config"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config"
-
-        cp "/etc/ssh/sshd_config" "/etc/ssh/sshd_config.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "HostbasedAuthentication no" > "/etc/ssh/sshd_config"
-        cat "/etc/ssh/sshd_config.bak" >> "/etc/ssh/sshd_config"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
     '9':
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        mkdir -p /etc/ssh/sshd_config.d
-        touch /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
-        chmod 0600 /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
-
-        LC_ALL=C sed -i "/^\s*HostbasedAuthentication\s\+/Id" "/etc/ssh/sshd_config"
-        LC_ALL=C sed -i "/^\s*HostbasedAuthentication\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
-        if [ -e "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" ] ; then
-
-            LC_ALL=C sed -i "/^\s*HostbasedAuthentication\s\+/Id" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        else
-            touch "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-
-        cp "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "HostbasedAuthentication no" > "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        cat "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak" >> "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
   ubuntu:
     enforcement_info:
       check: /usr/sbin/sshd -T | grep -q "hostbasedauthentication no"; echo $?
@@ -172,88 +112,17 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
     '2204':
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
-
-        mkdir -p /etc/ssh/sshd_config.d
-        touch /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
-        chmod 0600 /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
-
-        LC_ALL=C sed -i "/^\s*HostbasedAuthentication\s\+/Id" "/etc/ssh/sshd_config"
-        LC_ALL=C sed -i "/^\s*HostbasedAuthentication\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
-        if [ -e "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" ] ; then
-
-            LC_ALL=C sed -i "/^\s*HostbasedAuthentication\s\+/Id" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        else
-            touch "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-
-        cp "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "HostbasedAuthentication no" > "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        cat "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak" >> "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
     '2404':
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
-
-        mkdir -p /etc/ssh/sshd_config.d
-        touch /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
-        chmod 0600 /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
-
-        LC_ALL=C sed -i "/^\s*HostbasedAuthentication\s\+/Id" "/etc/ssh/sshd_config"
-        LC_ALL=C sed -i "/^\s*HostbasedAuthentication\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
-        if [ -e "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" ] ; then
-
-            LC_ALL=C sed -i "/^\s*HostbasedAuthentication\s\+/Id" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        else
-            touch "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-
-        cp "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "HostbasedAuthentication no" > "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        cat "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak" >> "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
 tags:
-  - 800-53r4_high
-  - 800-53r4_low
-  - 800-53r4_moderate
-  - cis_lvl1
-  - cis_lvl2
+  - 800-53r5_high
+  - 800-53r5_low
+  - 800-53r5_moderate
   - client
   - server

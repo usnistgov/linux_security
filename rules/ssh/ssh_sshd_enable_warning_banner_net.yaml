@@ -1,10 +1,11 @@
 id: ssh_sshd_enable_warning_banner_net
 title: Enable SSH Warning Banner
 discussion: |
-  The warning message reinforces policy awareness during the logon process and
-  facilitates possible legal action against attackers. Alternatively, systems
-  whose ownership should not be obvious should ensure usage of a banner that does
-  not provide easy attribution.
+  SSH _MUST_ be configured to display a policy banner.
+
+  Displaying a standardized and approved use notification before granting access to the operating system ensures that users are provided with privacy and security notification verbiage that is consistent with applicable federal laws, Executive Orders, directives, policies, regulations, standards, and guidance.
+
+  System use notifications are required only for access via login interfaces with human users and are not required when such human interfaces do not exist
 references:
   disa:
     cci:
@@ -24,10 +25,8 @@ references:
       '2204':
         - UBTU-22-255020
   nist:
-    800-53r4:
+    800-53r5:
       - AC-8
-      - AC-17
-      - CM-6
     cce:
       '10':
         - CCE-88799-2
@@ -72,79 +71,18 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-    '10':
-      severity: medium
+    '10':      
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
-    '8':
-      severity: medium
+        - name: disa_stig
+          severity: medium
+    '8':      
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        if [ -e "/etc/ssh/sshd_config" ] ; then
-
-            LC_ALL=C sed -i "/^\s*Banner\s\+/Id" "/etc/ssh/sshd_config"
-        else
-            touch "/etc/ssh/sshd_config"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config"
-
-        cp "/etc/ssh/sshd_config" "/etc/ssh/sshd_config.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "Banner /etc/issue.net" > "/etc/ssh/sshd_config"
-        cat "/etc/ssh/sshd_config.bak" >> "/etc/ssh/sshd_config"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
-    '9':
-      severity: medium
+        - name: disa_stig
+          severity: medium
+    '9':      
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        mkdir -p /etc/ssh/sshd_config.d
-        touch /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
-        chmod 0600 /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
-
-        LC_ALL=C sed -i "/^\s*Banner\s\+/Id" "/etc/ssh/sshd_config"
-        LC_ALL=C sed -i "/^\s*Banner\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
-        if [ -e "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" ] ; then
-
-            LC_ALL=C sed -i "/^\s*Banner\s\+/Id" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        else
-            touch "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-
-        cp "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "Banner /etc/issue.net" > "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        cat "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak" >> "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        - name: disa_stig
+          severity: medium
   ubuntu:
     enforcement_info:
       check: |
@@ -183,96 +121,20 @@ os_specifics:
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
     '2004':
-      severity: medium
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
-        [source,bash]
-        ---
-
-
-        ---
+        - name: disa_stig
+          severity: medium
     '2204':
-      severity: medium
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
-
-        mkdir -p /etc/ssh/sshd_config.d
-        touch /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
-        chmod 0600 /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
-
-        LC_ALL=C sed -i "/^\s*Banner\s\+/Id" "/etc/ssh/sshd_config"
-        LC_ALL=C sed -i "/^\s*Banner\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
-        if [ -e "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" ] ; then
-
-            LC_ALL=C sed -i "/^\s*Banner\s\+/Id" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        else
-            touch "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-
-        cp "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "Banner /etc/issue.net" > "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        cat "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak" >> "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        - name: disa_stig
+          severity: medium
     '2404':
-      severity: medium
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
-
-        mkdir -p /etc/ssh/sshd_config.d
-        touch /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
-        chmod 0600 /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
-
-        LC_ALL=C sed -i "/^\s*Banner\s\+/Id" "/etc/ssh/sshd_config"
-        LC_ALL=C sed -i "/^\s*Banner\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
-        if [ -e "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" ] ; then
-
-            LC_ALL=C sed -i "/^\s*Banner\s\+/Id" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        else
-            touch "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-
-        cp "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "Banner /etc/issue.net" > "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        cat "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak" >> "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        - name: disa_stig
+          severity: medium
 tags:
-  - 800-53r4_high
-  - 800-53r4_low
-  - 800-53r4_moderate
-  - cis_lvl1
-  - cis_lvl2
+  - 800-53r5_high
+  - 800-53r5_low
+  - 800-53r5_moderate
   - client
   - server

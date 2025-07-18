@@ -1,10 +1,7 @@
 id: ssh_sshd_enable_pam
 title: Enable PAM
 discussion: |
-  When UsePAM is set to yes, PAM runs through account and session types properly. This is
-  important if you want to restrict access to services based off of IP, time or other factors of
-  the account. Additionally, you can make sure users inherit certain environment variables
-  on login or disallow access to the server.
+  When UsePAM is set to yes, PAM runs through account and session types properly. This is important if you want to restrict access to services based off of IP, time or other factors of the account. Additionally, you can make sure users inherit certain environment variables on login or disallow access to the server.
 references:
   disa:
     cci:
@@ -26,6 +23,9 @@ references:
         - CCE-86721-8
       '9':
         - CCE-86722-6
+    800-53r5:
+      - CM-6
+      - IA-2
 os_specifics:
   rhel:
     enforcement_info:
@@ -62,75 +62,17 @@ os_specifics:
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
     '10':
-      severity: medium
       benchmarks:
-        - disa_stig
+        - name: disa_stig
+          severity: medium
     '8':
-      severity: medium
       benchmarks:
-        - disa_stig
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        if [ -e "/etc/ssh/sshd_config" ] ; then
-
-            LC_ALL=C sed -i "/^\s*UsePAM\s\+/Id" "/etc/ssh/sshd_config"
-        else
-            touch "/etc/ssh/sshd_config"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config"
-
-        cp "/etc/ssh/sshd_config" "/etc/ssh/sshd_config.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "UsePAM yes" > "/etc/ssh/sshd_config"
-        cat "/etc/ssh/sshd_config.bak" >> "/etc/ssh/sshd_config"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        - name: disa_stig
+          severity: medium
     '9':
-      severity: medium
       benchmarks:
-        - disa_stig
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        mkdir -p /etc/ssh/sshd_config.d
-        touch /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
-        chmod 0600 /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
-
-        LC_ALL=C sed -i "/^\s*UsePAM\s\+/Id" "/etc/ssh/sshd_config"
-        LC_ALL=C sed -i "/^\s*UsePAM\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
-        if [ -e "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" ] ; then
-
-            LC_ALL=C sed -i "/^\s*UsePAM\s\+/Id" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        else
-            touch "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-
-        cp "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "UsePAM yes" > "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        cat "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak" >> "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        - name: disa_stig
+          severity: medium
   ubuntu:
     enforcement_info:
       check: /usr/sbin/sshd -T | grep -q "usepam yes"; echo $?
@@ -167,85 +109,20 @@ os_specifics:
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
     '2004':
-      severity: medium
       benchmarks:
-        - disa_stig
+        - name: disa_stig
+          severity: medium
     '2204':
-      severity: medium
       benchmarks:
-        - disa_stig
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
-
-        mkdir -p /etc/ssh/sshd_config.d
-        touch /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
-        chmod 0600 /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
-
-        LC_ALL=C sed -i "/^\s*UsePAM\s\+/Id" "/etc/ssh/sshd_config"
-        LC_ALL=C sed -i "/^\s*UsePAM\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
-        if [ -e "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" ] ; then
-
-            LC_ALL=C sed -i "/^\s*UsePAM\s\+/Id" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        else
-            touch "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-
-        cp "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "UsePAM yes" > "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        cat "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak" >> "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        - name: disa_stig
+          severity: medium
     '2404':
-      severity: medium
       benchmarks:
-        - disa_stig
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
-
-        mkdir -p /etc/ssh/sshd_config.d
-        touch /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
-        chmod 0600 /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
-
-        LC_ALL=C sed -i "/^\s*UsePAM\s\+/Id" "/etc/ssh/sshd_config"
-        LC_ALL=C sed -i "/^\s*UsePAM\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
-        if [ -e "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" ] ; then
-
-            LC_ALL=C sed -i "/^\s*UsePAM\s\+/Id" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        else
-            touch "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-
-        cp "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "UsePAM yes" > "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        cat "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak" >> "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        - name: disa_stig
+          severity: medium
 tags:
-  - cis_lvl1
-  - cis_lvl2
+  - 800-53r5_high
+  - 800-53r5_low
+  - 800-53r5_moderate
   - client
   - server

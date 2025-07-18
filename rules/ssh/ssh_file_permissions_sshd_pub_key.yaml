@@ -1,8 +1,9 @@
 id: ssh_file_permissions_sshd_pub_key
 title: Verify Permissions on SSH Server Public *.pub Key Files
 discussion: |
-  If a public host key file is modified by an unauthorized user, the SSH service
-  may be compromised.
+  If a public host key file is modified by an unauthorized user, the SSH service may be compromised.
+
+  SSH server public keys _MUST_ be owned by the user root and group root.
 references:
   disa:
     cci:
@@ -15,9 +16,8 @@ references:
       '9':
         - RHEL-09-255125
   nist:
-    800-53r4:
+    800-53r5:
       - AC-6
-      - AC-17
       - CM-6
     cce:
       '10':
@@ -45,41 +45,14 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
     '8':
       severity: medium
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        find -L /etc/ssh/ -maxdepth 1 -perm /u+xs,g+xws,o+xwt  -type f -regextype posix-extended -regex '^.*\.pub$' -exec chmod u-xs,g-xws,o-xwt {} \;
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        - disa_stig      
     '9':
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        find -L /etc/ssh/ -maxdepth 1 -perm /u+xs,g+xws,o+xwt  -type f -regextype posix-extended -regex '^.*\.pub$' -exec chmod u-xs,g-xws,o-xwt {} \;
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
   ubuntu:
     enforcement_info:
       check: /usr/bin/find /etc/ssh -maxdepth 1 -name "*_key.pub" -type f \( ! -user root -o ! -group root \) | wc -l
@@ -99,48 +72,17 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
     '2204':
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
-
-        find -L /etc/ssh/ -maxdepth 1 -perm /u+xs,g+xws,o+xwt  -type f -regextype posix-extended -regex '^.*\.pub$' -exec chmod u-xs,g-xws,o-xwt {} \;
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
     '2404':
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
-
-        find -L /etc/ssh/ -maxdepth 1 -perm /u+xs,g+xws,o+xwt  -type f -regextype posix-extended -regex '^.*\.pub$' -exec chmod u-xs,g-xws,o-xwt {} \;
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
 tags:
-  - 800-53r4_high
-  - 800-53r4_low
-  - 800-53r4_moderate
-  - cis_lvl1
-  - cis_lvl2
+  - 800-53r5_high
+  - 800-53r5_low
+  - 800-53r5_moderate
   - client
   - server

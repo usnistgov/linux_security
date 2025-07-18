@@ -1,8 +1,7 @@
 id: ssh_sshd_disable_rhosts
 title: Disable SSH Support for .rhosts Files
 discussion: |
-  SSH trust relationships mean a compromise on one host
-  can allow an attacker to move trivially to other hosts.
+  SSH trust relationships mean a compromise on one host can allow an attacker to move trivially to other hosts.
 references:
   disa:
     cci:
@@ -13,10 +12,9 @@ references:
       '9':
         - RHEL-09-255145
   nist:
-    800-53r4:
+    800-53r5:
       - AC-17
-      - CM-6
-      - CM-7
+      - IA-5
     cce:
       '10':
         - CCE-87777-9

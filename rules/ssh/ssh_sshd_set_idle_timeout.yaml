@@ -1,9 +1,7 @@
 id: ssh_sshd_set_idle_timeout
 title: Set SSH Client Alive Interval
 discussion: |
-  Terminating an idle ssh session within a short time period reduces the window of
-  opportunity for unauthorized personnel to take control of a management session
-  enabled on the console or console port that has been let unattended.
+  Terminating an idle ssh session within a short time period reduces the window of opportunity for unauthorized personnel to take control of a management session enabled on the console or console port that has been let unattended.
 references:
   disa:
     cci:
@@ -25,12 +23,9 @@ references:
       '2204':
         - UBTU-22-255035
   nist:
-    800-53r4:
-      - AC-2
-      - AC-12
-      - AC-17
-      - CM-6
+    800-53r5:
       - SC-10
+      - AC-12  
     cce:
       '10':
         - CCE-90362-5
@@ -77,85 +72,17 @@ os_specifics:
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
     '10':
-      severity: medium
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
-    '8':
-      severity: medium
+        - name: disa_stig
+          severity: medium
+    '8':      
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        sshd_idle_timeout_value=''
-
-
-
-        if [ -e "/etc/ssh/sshd_config" ] ; then
-
-            LC_ALL=C sed -i "/^\s*ClientAliveInterval\s\+/Id" "/etc/ssh/sshd_config"
-        else
-            touch "/etc/ssh/sshd_config"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config"
-
-        cp "/etc/ssh/sshd_config" "/etc/ssh/sshd_config.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "ClientAliveInterval $sshd_idle_timeout_value" > "/etc/ssh/sshd_config"
-        cat "/etc/ssh/sshd_config.bak" >> "/etc/ssh/sshd_config"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
-    '9':
-      severity: medium
+        - name: disa_stig
+          severity: medium
+    '9':      
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        sshd_idle_timeout_value=''
-
-
-        mkdir -p /etc/ssh/sshd_config.d
-        touch /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
-        chmod 0600 /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
-
-        LC_ALL=C sed -i "/^\s*ClientAliveInterval\s\+/Id" "/etc/ssh/sshd_config"
-        LC_ALL=C sed -i "/^\s*ClientAliveInterval\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
-        if [ -e "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" ] ; then
-
-            LC_ALL=C sed -i "/^\s*ClientAliveInterval\s\+/Id" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        else
-            touch "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-
-        cp "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "ClientAliveInterval $sshd_idle_timeout_value" > "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        cat "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak" >> "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        - name: disa_stig
+          severity: medium
   ubuntu:
     enforcement_info:
       check: sshd -T | grep -q "clientaliveinterval $ODV"; echo $?
@@ -198,84 +125,10 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
-
-        sshd_idle_timeout_value=''
-
-
-        mkdir -p /etc/ssh/sshd_config.d
-        touch /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
-        chmod 0600 /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
-
-        LC_ALL=C sed -i "/^\s*ClientAliveInterval\s\+/Id" "/etc/ssh/sshd_config"
-        LC_ALL=C sed -i "/^\s*ClientAliveInterval\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
-        if [ -e "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" ] ; then
-
-            LC_ALL=C sed -i "/^\s*ClientAliveInterval\s\+/Id" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        else
-            touch "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-
-        cp "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "ClientAliveInterval $sshd_idle_timeout_value" > "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        cat "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak" >> "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
     '2204':
       severity: medium
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
-
-        sshd_idle_timeout_value=''
-
-
-        mkdir -p /etc/ssh/sshd_config.d
-        touch /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
-        chmod 0600 /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf
-
-        LC_ALL=C sed -i "/^\s*ClientAliveInterval\s\+/Id" "/etc/ssh/sshd_config"
-        LC_ALL=C sed -i "/^\s*ClientAliveInterval\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
-        if [ -e "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" ] ; then
-
-            LC_ALL=C sed -i "/^\s*ClientAliveInterval\s\+/Id" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        else
-            touch "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-
-        cp "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf" "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "ClientAliveInterval $sshd_idle_timeout_value" > "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        cat "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak" >> "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        - disa_stig        
     '2404':
       severity: medium
       benchmarks:
@@ -292,10 +145,8 @@ odv:
   cis_lvl2: 300
   stig: 600
 tags:
-  - 800-53r4_high
-  - 800-53r4_low
-  - 800-53r4_moderate
-  - cis_lvl1
-  - cis_lvl2
+  - 800-53r5_high
+  - 800-53r5_low
+  - 800-53r5_moderate
   - client
   - server
