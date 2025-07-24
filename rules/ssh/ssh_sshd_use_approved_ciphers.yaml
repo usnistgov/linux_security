@@ -78,15 +78,20 @@ os_specifics:
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
     '8':
-      severity: medium
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
+        - name: disa_stig
+        - name: nist_800-53r4
+          severity: medium
     '9':
-      severity: medium
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
+        - name: disa_stig
+        - name: nist_800-53r4
+          severity: medium
+    '10':
+      benchmarks:
+        - name: disa_stig
+        - name: nist_800-53r4
+          severity: medium
   ubuntu:
     enforcement_info:
       check: /usr/sbin/sshd -T | /bin/grep -q "ciphers $ODV"; echo $?
@@ -124,16 +129,26 @@ os_specifics:
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
     '2004':
-      severity: medium
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
+        - name: disa_stig
+        - name: nist_800-53r4
+          severity: medium
+    '2204':
+      benchmarks:
+        - name: disa_stig
+        - name: nist_800-53r4
+          severity: medium
+    '2404':
+      benchmarks:
+        - name: disa_stig
+        - name: nist_800-53r4
+          severity: medium
 odv:
   hint:
     datatype: string
     description: List of approved ciphers to use for SSH connections. Order specific.
-  recommended: "aes256-ctr,aes192-ctr,aes128-ctr"
-  stig: "aes256-ctr,aes192-ctr,aes128-ctr"
+  recommended: aes256-ctr,aes192-ctr,aes128-ctr
+  stig: aes256-ctr,aes192-ctr,aes128-ctr
 tags:
   - 800-53r4_high
   - 800-53r4_low

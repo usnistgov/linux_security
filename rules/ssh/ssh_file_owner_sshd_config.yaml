@@ -45,34 +45,10 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        chown 0 /etc/ssh/sshd_config
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
     '9':
       severity: medium
       benchmarks:
         - disa_stig
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        chown 0 /etc/ssh/sshd_config
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
   ubuntu:
     enforcement_info:
       check: /usr/bin/stat -c %g /etc/ssh/sshd_config

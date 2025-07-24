@@ -49,18 +49,6 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        chmod u-xs,g-xwrs,o-xwrt /etc/ssh/sshd_config
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
   ubuntu:
     enforcement_info:
       check: /usr/bin/stat -c %A /etc/ssh/sshd_config
@@ -88,19 +76,6 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
-
-        chmod u-xs,g-xwrs,o-xwrt /etc/ssh/sshd_config
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
 tags:
   - 800-53r5_high
   - 800-53r5_low

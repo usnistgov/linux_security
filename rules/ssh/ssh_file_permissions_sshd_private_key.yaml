@@ -59,56 +59,10 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        for keyfile in /etc/ssh/*_key; do
-            test -f "$keyfile" || continue
-            if test root:root = "$(stat -c "%U:%G" "$keyfile")"; then
-
-           chmod u-xs,g-xwrs,o-xwrt "$keyfile"
-
-            elif test root:ssh_keys = "$(stat -c "%U:%G" "$keyfile")"; then
-           chmod u-xs,g-xws,o-xwrt "$keyfile"
-            else
-                echo "Key-like file '$keyfile' is owned by an unexpected user:group combination"
-            fi
-        done
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
     '9':
       severity: medium
       benchmarks:
         - disa_stig
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        for keyfile in /etc/ssh/*_key; do
-            test -f "$keyfile" || continue
-            if test root:root = "$(stat -c "%U:%G" "$keyfile")"; then
-
-           chmod u-xs,g-xwrs,o-xwrt "$keyfile"
-
-            elif test root:ssh_keys = "$(stat -c "%U:%G" "$keyfile")"; then
-           chmod u-xs,g-xws,o-xwrt "$keyfile"
-            else
-                echo "Key-like file '$keyfile' is owned by an unexpected user:group combination"
-            fi
-        done
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
   ubuntu:
     enforcement_info:
       check: /usr/bin/find /etc/ssh -maxdepth 1 -name "*_key" -type f \( ! -user root -o ! -group root \) | wc -l
@@ -142,56 +96,10 @@ os_specifics:
       severity: medium
       benchmarks:
         - disa_stig
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
-
-        for keyfile in /etc/ssh/*_key; do
-            test -f "$keyfile" || continue
-            if test root:root = "$(stat -c "%U:%G" "$keyfile")"; then
-
-           chmod u-xs,g-xwrs,o-xwrt "$keyfile"
-
-
-            else
-                echo "Key-like file '$keyfile' is owned by an unexpected user:group combination"
-            fi
-        done
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
     '2404':
       severity: medium
       benchmarks:
         - disa_stig
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
-
-        for keyfile in /etc/ssh/*_key; do
-            test -f "$keyfile" || continue
-            if test root:root = "$(stat -c "%U:%G" "$keyfile")"; then
-
-           chmod u-xs,g-xwrs,o-xwrt "$keyfile"
-
-
-            else
-                echo "Key-like file '$keyfile' is owned by an unexpected user:group combination"
-            fi
-        done
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
 tags:
   - 800-53r5_high
   - 800-53r5_low

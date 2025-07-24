@@ -47,75 +47,14 @@ os_specifics:
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
     '10':
-      severity: medium
       benchmarks:
-        - N/A
+        severity: medium
     '8':
-      severity: medium
       benchmarks:
-        - N/A
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        sshd_strong_kex=''
-
-
-        if [ -e "/etc/ssh/sshd_config" ] ; then
-
-            LC_ALL=C sed -i "/^\s*KexAlgorithms\s\+/Id" "/etc/ssh/sshd_config"
-        else
-            touch "/etc/ssh/sshd_config"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config"
-
-        cp "/etc/ssh/sshd_config" "/etc/ssh/sshd_config.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "KexAlgorithms $sshd_strong_kex" > "/etc/ssh/sshd_config"
-        cat "/etc/ssh/sshd_config.bak" >> "/etc/ssh/sshd_config"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        severity: medium
     '9':
-      severity: medium
       benchmarks:
-        - N/A
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        sshd_strong_kex=''
-
-
-        if [ -e "/etc/ssh/sshd_config" ] ; then
-
-            LC_ALL=C sed -i "/^\s*KexAlgorithms\s\+/Id" "/etc/ssh/sshd_config"
-        else
-            touch "/etc/ssh/sshd_config"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config"
-
-        cp "/etc/ssh/sshd_config" "/etc/ssh/sshd_config.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "KexAlgorithms $sshd_strong_kex" > "/etc/ssh/sshd_config"
-        cat "/etc/ssh/sshd_config.bak" >> "/etc/ssh/sshd_config"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        severity: medium
   ubuntu:
     enforcement_info:
       check: /usr/sbin/sshd -T | /bin/grep -q "kexalgorithms $ODV"; echo $?
@@ -149,77 +88,14 @@ os_specifics:
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi 
     '2004':
-      severity: medium
       benchmarks:
-        - N/A
+        severity: medium
     '2204':
-      severity: medium
       benchmarks:
-        - N/A
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
-
-        sshd_strong_kex=''
-
-
-        if [ -e "/etc/ssh/sshd_config" ] ; then
-
-            LC_ALL=C sed -i "/^\s*KexAlgorithms\s\+/Id" "/etc/ssh/sshd_config"
-        else
-            touch "/etc/ssh/sshd_config"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config"
-
-        cp "/etc/ssh/sshd_config" "/etc/ssh/sshd_config.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "KexAlgorithms $sshd_strong_kex" > "/etc/ssh/sshd_config"
-        cat "/etc/ssh/sshd_config.bak" >> "/etc/ssh/sshd_config"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        severity: medium
     '2404':
-      severity: medium
       benchmarks:
-        - N/A
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
-
-        sshd_strong_kex=''
-
-
-        if [ -e "/etc/ssh/sshd_config" ] ; then
-
-            LC_ALL=C sed -i "/^\s*KexAlgorithms\s\+/Id" "/etc/ssh/sshd_config"
-        else
-            touch "/etc/ssh/sshd_config"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config"
-
-        cp "/etc/ssh/sshd_config" "/etc/ssh/sshd_config.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "KexAlgorithms $sshd_strong_kex" > "/etc/ssh/sshd_config"
-        cat "/etc/ssh/sshd_config.bak" >> "/etc/ssh/sshd_config"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        severity: medium
 odv:
   hint:
     datatype: string

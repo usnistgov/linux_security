@@ -64,10 +64,20 @@ os_specifics:
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
     '8':
-      severity: medium
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
+        - name: disa_stig
+        - name: nist_800-53r4
+          severity: medium
+    '9':
+      benchmarks:
+        - name: disa_stig
+        - name: nist_800-53r4
+          severity: medium
+    '10':
+      benchmarks:
+        - name: disa_stig
+        - name: nist_800-53r4
+          severity: medium
   ubuntu:
     enforcement_info:
       check: /usr/sbin/sshd -T | /bin/grep -q "macs $ODV"; echo $?
@@ -105,10 +115,20 @@ os_specifics:
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
     '2004':
-      severity: medium
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
+        - name: disa_stig
+        - name: nist_800-53r4
+          severity: medium
+    '2204':
+      benchmarks:
+        - name: disa_stig
+        - name: nist_800-53r4
+          severity: medium
+    '2404':
+      benchmarks:
+        - name: disa_stig
+        - name: nist_800-53r4
+          severity: medium
 odv:
   hint:
     datatype: string

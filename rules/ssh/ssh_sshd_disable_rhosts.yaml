@@ -62,79 +62,16 @@ os_specifics:
       benchmarks:
         - disa_stig
         - nist_800-53r4
-        [source,bash]
-        ---
-
-
-        ---
     '8':
       severity: medium
       benchmarks:
         - disa_stig
         - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        if [ -e "/etc/ssh/sshd_config" ] ; then
-
-            LC_ALL=C sed -i "/^\s*IgnoreRhosts\s\+/Id" "/etc/ssh/sshd_config"
-        else
-            touch "/etc/ssh/sshd_config"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config"
-
-        cp "/etc/ssh/sshd_config" "/etc/ssh/sshd_config.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "IgnoreRhosts yes" > "/etc/ssh/sshd_config"
-        cat "/etc/ssh/sshd_config.bak" >> "/etc/ssh/sshd_config"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
     '9':
       severity: medium
       benchmarks:
         - disa_stig
         - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        mkdir -p /etc/ssh/sshd_config.d
-        touch /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
-        chmod 0600 /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
-
-        LC_ALL=C sed -i "/^\s*IgnoreRhosts\s\+/Id" "/etc/ssh/sshd_config"
-        LC_ALL=C sed -i "/^\s*IgnoreRhosts\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
-        if [ -e "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" ] ; then
-
-            LC_ALL=C sed -i "/^\s*IgnoreRhosts\s\+/Id" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        else
-            touch "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-
-        cp "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "IgnoreRhosts yes" > "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        cat "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak" >> "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
   ubuntu:
     enforcement_info:
       check: /usr/sbin/sshd -T | grep -q "ignorerhosts yes"; echo $?
@@ -185,77 +122,11 @@ os_specifics:
       benchmarks:
         - disa_stig
         - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
-
-        mkdir -p /etc/ssh/sshd_config.d
-        touch /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
-        chmod 0600 /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
-
-        LC_ALL=C sed -i "/^\s*IgnoreRhosts\s\+/Id" "/etc/ssh/sshd_config"
-        LC_ALL=C sed -i "/^\s*IgnoreRhosts\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
-        if [ -e "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" ] ; then
-
-            LC_ALL=C sed -i "/^\s*IgnoreRhosts\s\+/Id" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        else
-            touch "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-
-        cp "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "IgnoreRhosts yes" > "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        cat "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak" >> "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
     '2404':
       severity: medium
       benchmarks:
         - disa_stig
         - nist_800-53r4
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
-
-        mkdir -p /etc/ssh/sshd_config.d
-        touch /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
-        chmod 0600 /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf
-
-        LC_ALL=C sed -i "/^\s*IgnoreRhosts\s\+/Id" "/etc/ssh/sshd_config"
-        LC_ALL=C sed -i "/^\s*IgnoreRhosts\s\+/Id" "/etc/ssh/sshd_config.d"/*.conf
-        if [ -e "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" ] ; then
-
-            LC_ALL=C sed -i "/^\s*IgnoreRhosts\s\+/Id" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        else
-            touch "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-
-        cp "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf" "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
-        # Insert at the beginning of the file
-        printf '%s\n' "IgnoreRhosts yes" > "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        cat "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak" >> "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf"
-        # Clean up after ourselves.
-        rm "/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
 tags:
   - 800-53r4_high
   - 800-53r4_low
