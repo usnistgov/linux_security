@@ -5,12 +5,12 @@ discussion: |
 references:
   nist:
     cce:
-      '10':
-        - CCE-89027-7
       '8':
         - CCE-83301-2
       '9':
         - CCE-90806-1
+      '10':
+        - CCE-89027-7
     800-53r5:
       - AC-4
       - AC-17        
@@ -91,6 +91,7 @@ os_specifics:
         fi
     '2004': {}      
     '2204': {}
+    '2404': {}
 tags:
   - 800-53r5_high
   - 800-53r5_low

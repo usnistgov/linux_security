@@ -23,12 +23,14 @@ references:
         - UBTU-20-010033
       '2204':
         - UBTU-22-612020
+      '2404':
+        - UBTU-24-400030
   nist:
     cce:
-      '10':
-        - CCE-90625-5
       '9':
         - CCE-86138-5
+      '10':
+        - CCE-90625-5
     800-53r5:
       - IA-2(1)
       - IA-2(2)
@@ -67,18 +69,12 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-    '10':
-      benchmarks:
-        - name: disa_stig
-          severity: medium
-    '8':
-      benchmarks:
-        - name: disa_stig
-          severity: medium     
+    '8': {}
     '9':
       benchmarks:
         - name: disa_stig
           severity: medium
+    '10':{}
   ubuntu:
     enforcement_info:
       check: /usr/sbin/sshd -T | grep -q "pubkeyauthentication yes"; echo $?
@@ -119,6 +115,10 @@ os_specifics:
         - name: disa_stig
           severity: medium
     '2204':
+      benchmarks:
+        - name: disa_stig
+          severity: medium
+    '2404':
       benchmarks:
         - name: disa_stig
           severity: medium

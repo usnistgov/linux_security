@@ -24,6 +24,8 @@ references:
         - UBTU-20-010042
       '2204':
         - UBTU-22-255015
+      '2404':
+        -	UBTU-24-100810
   nist:
     800-53r5:
       - IA-2(8)
@@ -31,12 +33,12 @@ references:
       - AC-17
       - SC-8
     cce:
-      '10':
-        - CCE-88621-8
       '8':
         - CCE-82426-8
       '9':
         - CCE-90822-8
+      '10':
+        - CCE-88621-8
 os_specifics:
   rhel:
     enforcement_info:
@@ -57,18 +59,15 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-    '10':
-      severity: medium
-      benchmarks:
-        - disa_stig
     '8':
-      severity: medium
       benchmarks:
-        - disa_stig
+        - name: disa_stig
+          severity: medium
     '9':
-      severity: medium
       benchmarks:
-        - disa_stig
+        - name: disa_stig
+          severity: medium
+    '10': {}
   ubuntu:
     enforcement_info:
       check: /bin/systemctl is-enabled sshd
@@ -90,14 +89,17 @@ os_specifics:
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
     '2004':
-      severity: medium
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
+        - name: disa_stig
+          severity: medium
     '2204':
-      severity: medium
       benchmarks:
-        - disa_stig
+        - name: disa_stig
+          severity: medium
+    '2404':
+      benchmarks:
+        - name: disa_stig
+          severity: medium
 tags:
   - 800-53r5_high
   - 800-53r5_low

@@ -16,12 +16,12 @@ references:
       - AC-17
       - IA-5
     cce:
-      '10':
-        - CCE-87777-9
       '8':
         - CCE-80899-8
       '9':
         - CCE-90797-2
+      '10':
+        - CCE-87777-9
 os_specifics:
   rhel:
     enforcement_info:
@@ -57,21 +57,14 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-    '10':
-      severity: medium
-      benchmarks:
-        - disa_stig
-        - nist_800-53r4
-    '8':
-      severity: medium
-      benchmarks:
-        - disa_stig
-        - nist_800-53r4
+    '8': {}
     '9':
       severity: medium
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
+        - name: disa_stig
+          severity: medium
+        - name: nist_800-53r4
+    '10': {}
   ubuntu:
     enforcement_info:
       check: /usr/sbin/sshd -T | grep -q "ignorerhosts yes"; echo $?
@@ -107,26 +100,9 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-    '2004':
-      severity: medium
-      benchmarks:
-        - disa_stig
-        - nist_800-53r4
-        [source,bash]
-        ---
-
-
-        ---
-    '2204':
-      severity: medium
-      benchmarks:
-        - disa_stig
-        - nist_800-53r4
-    '2404':
-      severity: medium
-      benchmarks:
-        - disa_stig
-        - nist_800-53r4
+    '2004': {}
+    '2204': {}
+    '2404': {}
 tags:
   - 800-53r4_high
   - 800-53r4_low

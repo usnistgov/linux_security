@@ -20,12 +20,12 @@ references:
       - AC-6
       - CM-6
     cce:
-      '10':
-        - CCE-88018-7
       '8':
         - CCE-82424-3
       '9':
         - CCE-90820-2
+      '10':
+        - CCE-88018-7
 os_specifics:
   rhel: 
     enforcement_info:
@@ -51,18 +51,15 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-    '10':
-      severity: medium
-      benchmarks:
-        - disa_stig
     '8':
-      severity: medium
       benchmarks:
-        - disa_stig
+        - name: disa_stig
+          severity: medium
     '9':
-      severity: medium
       benchmarks:
-        - disa_stig
+        - name: disa_stig
+          severity: medium
+    '10': {}
   ubuntu:
     enforcement_info:
       check: /usr/bin/find /etc/ssh -maxdepth 1 -name "*_key" -type f \( ! -user root -o ! -group root \) | wc -l
@@ -88,18 +85,9 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-    '2004':
-      severity: medium
-      benchmarks:
-        - disa_stig
-    '2204':
-      severity: medium
-      benchmarks:
-        - disa_stig
-    '2404':
-      severity: medium
-      benchmarks:
-        - disa_stig
+    '2004': {}
+    '2204': {}
+    '2404': {}
 tags:
   - 800-53r5_high
   - 800-53r5_low

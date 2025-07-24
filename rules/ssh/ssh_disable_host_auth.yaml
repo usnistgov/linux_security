@@ -20,12 +20,12 @@ references:
       - AC-17(1)
       - IA-2
     cce:
-      '10':
-        - CCE-88057-5
       '8':
         - CCE-80786-7
       '9':
         - CCE-90816-0
+      '10':
+        - CCE-88057-5
 os_specifics:
   rhel:
     enforcement_info:
@@ -61,18 +61,12 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-    '10':
-      severity: medium
-      benchmarks:
-        - disa_stig
-    '8':
-      severity: medium
-      benchmarks:
-        - disa_stig
+    '8': {}
     '9':
-      severity: medium
       benchmarks:
-        - disa_stig
+        - name: disa_stig
+          severity: medium
+    '10': {}
   ubuntu:
     enforcement_info:
       check: /usr/sbin/sshd -T | grep -q "hostbasedauthentication no"; echo $?
@@ -108,18 +102,9 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-    '2004':
-      severity: medium
-      benchmarks:
-        - disa_stig
-    '2204':
-      severity: medium
-      benchmarks:
-        - disa_stig
-    '2404':
-      severity: medium
-      benchmarks:
-        - disa_stig
+    '2004': {}
+    '2204': {}
+    '2404': {}
 tags:
   - 800-53r5_high
   - 800-53r5_low

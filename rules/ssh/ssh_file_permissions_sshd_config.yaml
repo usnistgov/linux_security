@@ -16,12 +16,12 @@ references:
       - AC-6
       - CM-6
     cce:
-      '10':
-        - CCE-86264-9
       '8':
         - CCE-82894-7
       '9':
         - CCE-90818-6
+      '10':
+        - CCE-86264-9
 os_specifics:
   rhel:
     enforcement_info:
@@ -37,18 +37,12 @@ os_specifics:
           else
               >&2 echo 'Remediation is not applicable, nothing was done'
           fi
-    '10':
-      severity: medium
-      benchmarks:
-        - disa_stig
-    '8':
-      severity: medium
-      benchmarks:
-        - disa_stig
+    '8': {}
     '9':
-      severity: medium
       benchmarks:
-        - disa_stig
+        - name: disa_stig
+          severity: medium
+    '10': {}
   ubuntu:
     enforcement_info:
       check: /usr/bin/stat -c %A /etc/ssh/sshd_config
@@ -64,18 +58,9 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-    '2004':
-      severity: medium
-      benchmarks:
-        - disa_stig
-    '2204':
-      severity: medium
-      benchmarks:
-        - disa_stig
-    '2404':
-      severity: medium
-      benchmarks:
-        - disa_stig
+    '2004': {}
+    '2204': {}
+    '2404': {}
 tags:
   - 800-53r5_high
   - 800-53r5_low

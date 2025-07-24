@@ -19,18 +19,20 @@ references:
         - UBTU-20-010047
       '2204':
         - UBTU-22-255025
+      '2404':
+        - UBTU-24-300031
   nist:
     800-53r5:
       - AC-4
       - AC-17
       - CM-7
     cce:
-      '10':
-        - CCE-87395-0
       '8':
         - CCE-80903-8
       '9':
         - CCE-90803-8
+      '10':
+        - CCE-87395-0
 os_specifics:
   rhel:
     enforcement_info:
@@ -66,10 +68,6 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-    '10':
-      benchmarks:
-        - name: disa_stig
-          severity: medium
     '8':
       benchmarks:
         - name: disa_stig
@@ -78,6 +76,7 @@ os_specifics:
       benchmarks:
         - name: disa_stig
           severity: medium
+    '10': {}
   ubuntu:
     enforcement_info:
       check: /usr/sbin/sshd -T | grep -q "permituserenvironment no"; echo $?

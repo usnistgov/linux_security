@@ -23,16 +23,18 @@ references:
         - UBTU-20-010042
       '2204':
         - UBTU-22-255010
+      '2404':
+        -	UBTU-24-100800
   nist:
     800-53r5:
       - CM-6
     cce:
-      '10':
-        - CCE-89241-4
       '8':
         - CCE-83303-8
       '9':
         - CCE-90823-6
+      '10':
+        - CCE-89241-4
 os_specifics:
   rhel:
     enforcement_info:
@@ -50,18 +52,15 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-    '10':
-      severity: medium
-      benchmarks:
-        - disa_stig
     '8':
-      severity: medium
       benchmarks:
-        - disa_stig
+        - name: disa_stig
+          severity: medium
     '9':
-      severity: medium
       benchmarks:
-        - disa_stig
+        - name: disa_stig
+          severity: medium
+    '10': {}
   ubuntu:
     enforcement_info:
       check: /usr/bin/dpkg-query -W --showformat='${db:Status-Status}' openssh-server
@@ -78,13 +77,17 @@ os_specifics:
               >&2 echo 'Remediation is not applicable, nothing was done'
           fi
     '2004':
-      severity: medium
       benchmarks:
-        - disa_stig
+        - name: disa_stig
+          severity: medium
     '2204':
-      severity: medium
       benchmarks:
-        - disa_stig
+        - name: disa_stig
+          severity: medium
+    '2404': 
+      benchmarks:
+        - name: disa_stig
+          severity: medium
 tags:
   - 800-53r5_high
   - 800-53r5_low

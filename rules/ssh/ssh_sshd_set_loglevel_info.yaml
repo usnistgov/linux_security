@@ -10,12 +10,12 @@ references:
       - AU-2
       - CM-6
     cce:
-      '10':
-        - CCE-90121-5
       '8':
         - CCE-82282-5
       '9':
         - CCE-90813-7
+      '10':
+        - CCE-90121-5
 os_specifics:
   rhel:
     enforcement_info:
@@ -51,15 +51,15 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-    '10': 
-      benchmarks:
-        - name: cis_lvl1
-        - name: cis_lvl2
     '8': 
       benchmarks:
         - name: cis_lvl1
         - name: cis_lvl2
     '9': 
+      benchmarks:
+        - name: cis_lvl1
+        - name: cis_lvl2
+    '10': 
       benchmarks:
         - name: cis_lvl1
         - name: cis_lvl2

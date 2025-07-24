@@ -16,12 +16,12 @@ references:
       - AC-6
       - CM-6
     cce:
-      '10':
-        - CCE-86992-5
       '8':
         - CCE-82901-0
       '9':
         - CCE-90817-8
+      '10':
+        - CCE-86992-5
 os_specifics:
   rhel:
     enforcement_info:
@@ -37,42 +37,12 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-    '10':
-      severity: medium
-      benchmarks:
-        - disa_stig
-    '8':
-      severity: medium
-      benchmarks:
-        - disa_stig
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        chgrp 0 /etc/ssh/sshd_config
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+    '8': {}
     '9':
-      severity: medium
       benchmarks:
-        - disa_stig
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel; then
-
-        chgrp 0 /etc/ssh/sshd_config
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        - name: disa_stig
+          severity: medium
+    '10': {}
   ubuntu:
     enforcement_info:
       check: /usr/bin/stat -c %u /etc/ssh/sshd_config
@@ -88,31 +58,9 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-    '2004':
-      severity: medium
-      benchmarks:
-        - disa_stig
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed; then
-
-        chgrp 0 /etc/ssh/sshd_config
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
-    '2204':
-      severity: medium
-      benchmarks:
-        - disa_stig
-    '2404':
-      severity: medium
-      benchmarks:
-        - disa_stig
+    '2004': {}
+    '2204': {}
+    '2404': {}
 tags:
   - 800-53r4_high
   - 800-53r4_low

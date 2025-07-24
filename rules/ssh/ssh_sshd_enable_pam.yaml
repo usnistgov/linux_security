@@ -15,14 +15,16 @@ references:
         - UBTU-20-010035
       '2204':
         - UBTU-22-255065
+      '2404':
+        - UBTU-24-500050
   nist:
     cce:
-      '10':
-        - CCE-87045-1
       '8':
         - CCE-86721-8
       '9':
         - CCE-86722-6
+      '10':
+        - CCE-87045-1
     800-53r5:
       - CM-6
       - IA-2
@@ -61,18 +63,12 @@ os_specifics:
         else
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
-    '10':
-      benchmarks:
-        - name: disa_stig
-          severity: medium
-    '8':
-      benchmarks:
-        - name: disa_stig
-          severity: medium
+    '8': {}
     '9':
       benchmarks:
         - name: disa_stig
           severity: medium
+    '10': {}
   ubuntu:
     enforcement_info:
       check: /usr/sbin/sshd -T | grep -q "usepam yes"; echo $?

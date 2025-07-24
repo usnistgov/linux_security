@@ -17,16 +17,18 @@ references:
         - UBTU-20-010048
       '2204':
         - UBTU-22-255040
+      '2404':
+        - UBTU-24-300022
   nist:
     800-53r5:
       - CM-7
     cce:
-      '10':
-        - CCE-89476-6
       '8':
         - CCE-83360-8
       '9':
         - CCE-90798-0
+      '10':
+        - CCE-89476-6
 os_specifics:
   rhel:
     enforcement_info:
@@ -63,10 +65,6 @@ os_specifics:
           else
               >&2 echo 'Remediation is not applicable, nothing was done'
           fi
-    '10':
-      benchmarks:
-        - name: disa_stig
-          severity: medium
     '8':
       benchmarks:
         - name: disa_stig
@@ -75,6 +73,7 @@ os_specifics:
       benchmarks:
         - name: disa_stig
           severity: medium
+    '10': {}
   ubuntu:
     enforcement_info:
       check: |
@@ -119,6 +118,10 @@ os_specifics:
       benchmarks:
         - name: disa_stig
           severity: medium   
+    '2404':
+      benchmarks:
+        - name: disa_stig
+          severity: medium
 tags:
   - 800-53r4_high
   - 800-53r4_low
