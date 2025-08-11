@@ -1,8 +1,7 @@
 id: ssh_sshd_use_approved_macs
 title: Use Only FIPS 140-2 Validated MACs
 discussion: |
-  DoD Information Systems are required to use FIPS-approved cryptographic hash
-  functions. The only SSHv2 hash algorithms meeting this requirement is SHA2.
+  DoD Information Systems are required to use FIPS-approved cryptographic hash functions. The only SSHv2 hash algorithms meeting this requirement is SHA2.
 references:
   disa:
     cci:
@@ -16,10 +15,8 @@ references:
       - SRG-OS-000250-GPOS-00093
       - SRG-OS-000394-GPOS-00174
   nist:
-    800-53r4:
-      - AC-17
-      - CM-6
-      - MA-4
+    800-53r5:
+      - SC-8
       - SC-12
       - SC-13
     cce:
@@ -66,17 +63,14 @@ os_specifics:
     '8':
       benchmarks:
         - name: disa_stig
-        - name: nist_800-53r4
           severity: medium
     '9':
       benchmarks:
         - name: disa_stig
-        - name: nist_800-53r4
           severity: medium
     '10':
       benchmarks:
         - name: disa_stig
-        - name: nist_800-53r4
           severity: medium
   ubuntu:
     enforcement_info:
@@ -117,17 +111,14 @@ os_specifics:
     '2004':
       benchmarks:
         - name: disa_stig
-        - name: nist_800-53r4
           severity: medium
     '2204':
       benchmarks:
         - name: disa_stig
-        - name: nist_800-53r4
           severity: medium
     '2404':
       benchmarks:
         - name: disa_stig
-        - name: nist_800-53r4
           severity: medium
 odv:
   hint:
@@ -135,6 +126,6 @@ odv:
     description: List of approved MACs to use for SSH connections. Order specific.
   recommended: hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256
 tags:
-  - 800-53r4_high
-  - 800-53r4_low
-  - 800-53r4_moderate
+  - 800-53r5_high
+  - 800-53r5_low
+  - 800-53r5_moderate

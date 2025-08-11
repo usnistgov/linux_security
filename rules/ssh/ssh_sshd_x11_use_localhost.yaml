@@ -1,12 +1,7 @@
 id: ssh_sshd_x11_use_localhost
 title: Prevent remote hosts from connecting to the proxy display
 discussion: |
-  When X11 forwarding is enabled, there may be additional exposure to the
-  server and client displays if the sshd proxy display is configured to listen
-  on the wildcard address. By default, sshd binds the forwarding server to the
-  loopback address and sets the hostname part of the DISPLAY
-  environment variable to localhost. This prevents remote hosts from
-  connecting to the proxy display.
+  When X11 forwarding is enabled, there may be additional exposure to the server and client displays if the sshd proxy display is configured to listen on the wildcard address. By default, sshd binds the forwarding server to the loopback address and sets the hostname part of the DISPLAY environment variable to localhost. This prevents remote hosts from connecting to the proxy display.
 references:
   disa:
     cci:
@@ -23,8 +18,9 @@ references:
       '2204':
         - UBTU-22-255045
   nist:
-    800-53r4:
-      - CM-6
+    800-53r5:
+      - AC-6
+      - CM-7
     cce:
       '10':
         - CCE-86528-7
@@ -70,17 +66,14 @@ os_specifics:
     '10':
       benchmarks:
         - name: disa_stig
-        - name: nist_800-53r4
           severity: medium
     '8':
       benchmarks:
         - name: disa_stig
-        - name: nist_800-53r4
           severity: medium
     '9':
       benchmarks:
         - name: disa_stig
-        - name: nist_800-53r4
           severity: medium
   ubuntu:
     enforcement_info:
@@ -120,19 +113,16 @@ os_specifics:
     '2004':
       benchmarks:
         - name: disa_stig
-        - name: nist_800-53r4
           severity: medium
     '2204':
       benchmarks:
         - name: disa_stig
-        - name: nist_800-53r4
           severity: medium
     '2404':
       benchmarks:
         - name: disa_stig
-        - name: nist_800-53r4
           severity: medium
 tags:
-  - 800-53r4_high
-  - 800-53r4_low
-  - 800-53r4_moderate
+  - 800-53r5_high
+  - 800-53r5_low
+  - 800-53r5_moderate

@@ -1,10 +1,7 @@
 id: ssh_sshd_use_strong_kex
 title: Use Only Strong Key Exchange algorithms
 discussion: |
-  Key exchange is any method in cryptography by which cryptographic keys are exchanged
-  between two parties, allowing use of a cryptographic algorithm. If the sender and receiver
-  wish to exchange encrypted messages, each must be equipped to encrypt messages to be
-  sent and decrypt messages received
+  Key exchange is any method in cryptography by which cryptographic keys are exchanged between two parties, allowing use of a cryptographic algorithm. If the sender and receiver wish to exchange encrypted messages, each must be equipped to encrypt messages to be sent and decrypt messages received
 references:
   nist:
     cce:
@@ -14,6 +11,12 @@ references:
         - CCE-86518-8
       '9':
         - CCE-86768-9
+    800-53r5:
+      - AC-17(2)
+      - AC-17(2)
+      - SC-8
+      - SC-12
+      - SC-13
 os_specifics:
   rhel:
     enforcement_info:
@@ -48,13 +51,16 @@ os_specifics:
         fi
     '10':
       benchmarks:
-        severity: medium
+        - name: cis_lvl1
+        - name: cis_lvl2
     '8':
       benchmarks:
-        severity: medium
+        - name: cis_lvl1
+        - name: cis_lvl2
     '9':
       benchmarks:
-        severity: medium
+        - name: cis_lvl1
+        - name: cis_lvl2
   ubuntu:
     enforcement_info:
       check: /usr/sbin/sshd -T | /bin/grep -q "kexalgorithms $ODV"; echo $?
@@ -89,13 +95,16 @@ os_specifics:
         fi 
     '2004':
       benchmarks:
-        severity: medium
+        - name: cis_lvl1
+        - name: cis_lvl2
     '2204':
       benchmarks:
-        severity: medium
+        - name: cis_lvl1
+        - name: cis_lvl2
     '2404':
       benchmarks:
-        severity: medium
+        - name: cis_lvl1
+        - name: cis_lvl2
 odv:
   hint:
     datatype: string
@@ -105,7 +114,8 @@ odv:
   cis_lvl2: curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256
   stig: ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512
 tags:
-  - cis_lvl1
-  - cis_lvl2
   - client
   - server
+  - 800-53r5_high
+  - 800-53r5_low
+  - 800-53r5_moderate
