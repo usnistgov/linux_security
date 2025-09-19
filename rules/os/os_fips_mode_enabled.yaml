@@ -13,9 +13,9 @@ references:
       - SRG-OS-000396-GPOS-00176
       - SRG-OS-000478-GPOS-00223
     disa_stig:
-      '2004':
+      'ubuntu_2004':
         - UBTU-20-010442
-      '2204':
+      'ubuntu_2204':
         - UBTU-22-671010
   nist:
     800-53r4:

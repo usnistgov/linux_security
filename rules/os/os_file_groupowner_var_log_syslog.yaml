@@ -10,9 +10,9 @@ references:
     srg:
       - SRG-OS-000206-GPOS-00084
     disa_stig:
-      '2004':
+      'ubuntu_2004':
         - UBTU-20-010420
-      '2204':
+      'ubuntu_2204':
         - UBTU-22-232135
 os_specifics:
   rhel:

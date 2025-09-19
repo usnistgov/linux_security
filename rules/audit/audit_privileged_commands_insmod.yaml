@@ -33,7 +33,7 @@ references:
       - AU-12.1
       - MA-4
     cce:
-      '10':
+      'rhel_10':
         - CCE-90738-6
 os_specifics:
   rhel:

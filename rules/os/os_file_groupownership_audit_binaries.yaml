@@ -18,15 +18,15 @@ references:
       - SRG-OS-000256-GPiOS-00097
       - SRG-OS-000257-GPOS-00098
     disa_stig:
-      '2004':
+      'ubuntu_2004':
         - UBTU-20-010201
   nist:
     cce:
-      '10':
+      'rhel_10':
         - CCE-87965-0
-      '8':
+      'rhel_8':
         - CCE-86455-3
-      '9':
+      'rhel_9':
         - CCE-86457-9
 os_specifics:
   rhel:

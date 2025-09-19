@@ -10,13 +10,13 @@ references:
       - CM-6
       - CM-7
     cce:
-      '8':
+      'rhel_8':
         - CCE-83302-0
   disa:
     disa_stig:
-      '2004':
+      'ubuntu_2004':
         - UBTU-20-010405
-      '2204':
+      'ubuntu_2204':
         - UBTU-22-215035
 os_specifics:
   rhel:

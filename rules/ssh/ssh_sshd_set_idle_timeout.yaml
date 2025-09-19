@@ -14,13 +14,13 @@ references:
       - SRG-OS-000279-GPOS-00109
       - SRG-OS-000395-GPOS-00175
     disa_stig:
-      '8':
+      'rhel_8':
         - RHEL-08-010201
-      '9':
+      'rhel_9':
         - RHEL-09-255100
-      '2004':
+      'ubuntu_2004':
         - UBTU-20-010037
-      '2204':
+      'ubuntu_2204':
         - UBTU-22-255035
       '2404':
         - UBTU-24-600010
@@ -29,11 +29,11 @@ references:
       - SC-10
       - AC-12  
     cce:
-      '8':
+      'rhel_8':
         - CCE-80906-1
-      '9':
+      'rhel_9':
         - CCE-90811-1
-      '10':
+      'rhel_10':
         - CCE-90362-5
 os_specifics:
   rhel:

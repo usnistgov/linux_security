@@ -8,7 +8,7 @@ references:
     800-53r4:
       - CM-6
     cce:
-      '10':
+      'rhel_10':
         - CCE-87885-0
 os_specifics:
   rhel:

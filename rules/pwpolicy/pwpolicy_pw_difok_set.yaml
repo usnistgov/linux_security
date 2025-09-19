@@ -4,7 +4,7 @@ discussion: |
   Use of a complex password helps to increase the time and resources
   required to compromise the password. Password complexity, or strength,
   is a measure of the effectiveness of a password in resisting attempts
-  at guessing and brute–force attacks.
+  at guessing and bruteï¿½force attacks.
 
 
   Password complexity is one factor of several that determines how long
@@ -23,24 +23,24 @@ references:
     srg:
       - SRG-OS-000072-GPOS-00040
     disa_stig:
-      '8':
+      'rhel_8':
         - RHEL-08-020170
-      '9':
+      'rhel_9':
         - RHEL-09-611115
-      '2004':
+      'ubuntu_2004':
         - UBTU-20-010053
-      '2204':
+      'ubuntu_2204':
         - UBTU-22-611040
   nist:
     800-53r4:
       - CM-6
       - IA-5
     cce:
-      '10':
+      'rhel_10':
         - CCE-90363-3
-      '8':
+      'rhel_8':
         - CCE-80654-7
-      '9':
+      'rhel_9':
         - CCE-83564-5
 os_specifics:
   rhel:

@@ -11,11 +11,11 @@ references:
     800-53r4:
       - SI-11
     cce:
-      '10':
+      'rhel_10':
         - CCE-88399-1
-      '8':
+      'rhel_8':
         - CCE-80912-9
-      '9':
+      'rhel_9':
         - CCE-83981-1
 os_specifics:
   rhel:

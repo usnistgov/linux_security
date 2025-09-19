@@ -11,17 +11,17 @@ references:
     srg:
       - SRG-OS-000480-GPOS-00227
     disa_stig:
-      '9':
+      'rhel_9':
         - RHEL-09-232060
   nist:
     800-53r4:
       - 'AC-6 '
     cce:
-      '10':
+      'rhel_10':
         - CCE-86579-0
-      '8':
+      'rhel_8':
         - CCE-83483-8
-      '9':
+      'rhel_9':
         - CCE-83939-9
 os_specifics:
   rhel:

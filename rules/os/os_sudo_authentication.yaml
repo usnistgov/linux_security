@@ -15,20 +15,20 @@ references:
     srg:
       - SRG-OS-000373-GPOS-00156
     disa_stig:
-      '2004':
+      'ubuntu_2004':
         - UBTU-20-010014
-      '2204':
+      'ubuntu_2204':
         - UBTU-22-432010
   nist:
     800-53r4:
       - CM-6
       - IA-11
     cce:
-      '10':
+      'rhel_10':
         - CCE-87457-8
-      '8':
+      'rhel_8':
         - CCE-82279-1
-      '9':
+      'rhel_9':
         - CCE-83543-9
 os_specifics:
   rhel:

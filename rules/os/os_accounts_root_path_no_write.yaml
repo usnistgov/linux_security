@@ -12,11 +12,11 @@ references:
     800-53r4:
       - CM-6
     cce:
-      '10':
+      'rhel_10':
         - CCE-88150-8
-      '8':
+      'rhel_8':
         - CCE-80672-9
-      '9':
+      'rhel_9':
         - CCE-83643-7
 os_specifics:
   rhel:

@@ -1,8 +1,7 @@
 id: services_chronyd_specify_remote_server
 title: A remote time server for Chrony is configured
 discussion: |
-  If chrony is in use on the system proper configuration is vital to ensuring time
-  synchronization is working properly.
+  If chrony is in use on the system proper configuration is vital to ensuring time synchronization is working properly.
 references:
   disa:
     cci:
@@ -12,208 +11,107 @@ references:
     srg:
       - SRG-OS-000355-GPOS-00143
     disa_stig:
-      '8':
+      'rhel_8':
         - RHEL-08-030740
-      '9':
+      'rhel_9':
         - RHEL-09-252020
   nist:
-    800-53r4:
+    800-53r5:
       - AU-8
-      - CM-6
+      - AU-12(1)
+      - SC-45(1)
     cce:
-      '10':
+      'rhel_10':
         - CCE-86811-7
-      '8':
+      'rhel_8':
         - CCE-82873-1
-      '9':
+      'rhel_9':
         - CCE-84218-7
 os_specifics:
   rhel:
-    check: $OS_VALUE
-    result: $OS_VALUE
-    fix: $OS_VALUE
+    enforcement_info:
+      check: ---- NEEDS CHECK ----
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if rpm --quiet -q kernel && { rpm --quiet -q chrony; }; then
+
+        var_multiple_time_servers=''
+
+
+        config_file="/etc/chrony.conf"
+
+        if ! grep -q '^[[:space:]]*\(server\|pool\)[[:space:]]\+[[:graph:]]\+' "$config_file" ; then
+          if ! grep -q '#[[:space:]]*server' "$config_file" ; then
+            for server in $(echo "$var_multiple_time_servers" | tr ',' '\n') ; do
+              printf '\nserver %s' "$server" >> "$config_file"
+            done
+          else
+            sed -i 's/#[ \t]*server/server/g' "$config_file"
+          fi
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---    
     '10':
-      severity: medium
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel && { rpm --quiet -q chrony; }; then
-
-        var_multiple_time_servers=''
-
-
-        config_file="/etc/chrony.conf"
-
-        if ! grep -q '^[[:space:]]*\(server\|pool\)[[:space:]]\+[[:graph:]]\+' "$config_file" ; then
-          if ! grep -q '#[[:space:]]*server' "$config_file" ; then
-            for server in $(echo "$var_multiple_time_servers" | tr ',' '\n') ; do
-              printf '\nserver %s' "$server" >> "$config_file"
-            done
-          else
-            sed -i 's/#[ \t]*server/server/g' "$config_file"
-          fi
-        fi
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        - name: disa_stig
+          severity: medium
     '8':
-      severity: medium
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel && { rpm --quiet -q chrony; }; then
-
-        var_multiple_time_servers=''
-
-
-        config_file="/etc/chrony.conf"
-
-        if ! grep -q '^[[:space:]]*\(server\|pool\)[[:space:]]\+[[:graph:]]\+' "$config_file" ; then
-          if ! grep -q '#[[:space:]]*server' "$config_file" ; then
-            for server in $(echo "$var_multiple_time_servers" | tr ',' '\n') ; do
-              printf '\nserver %s' "$server" >> "$config_file"
-            done
-          else
-            sed -i 's/#[ \t]*server/server/g' "$config_file"
-          fi
-        fi
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        - name: disa_stig
+          severity: medium
     '9':
-      severity: medium
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if rpm --quiet -q kernel && { rpm --quiet -q chrony; }; then
-
-        var_multiple_time_servers=''
-
-
-        config_file="/etc/chrony.conf"
-
-        if ! grep -q '^[[:space:]]*\(server\|pool\)[[:space:]]\+[[:graph:]]\+' "$config_file" ; then
-          if ! grep -q '#[[:space:]]*server' "$config_file" ; then
-            for server in $(echo "$var_multiple_time_servers" | tr ',' '\n') ; do
-              printf '\nserver %s' "$server" >> "$config_file"
-            done
-          else
-            sed -i 's/#[ \t]*server/server/g' "$config_file"
-          fi
-        fi
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        - name: disa_stig
+          severity: medium
   ubuntu:
-    check: $OS_VALUE
-    result: $OS_VALUE
-    fix: $OS_VALUE
+    enforcement_info:
+      check: --- NEEDS CHECK ----
+      result:
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+        # Remediation is applicable only in certain platforms
+        if dpkg-query --show --showformat='${db:Status-Status}
+        ' 'linux-base' 2>/dev/null | grep -q ^installed && { dpkg-query --show --showformat='${db:Status-Status}\n' 'chrony' 2>/dev/null | grep -q '^installed'; }; then
+
+        var_multiple_time_servers=''
+
+
+        config_file="/etc/chrony/chrony.conf"
+
+        if ! grep -q '^[[:space:]]*\(server\|pool\)[[:space:]]\+[[:graph:]]\+' "$config_file" ; then
+          if ! grep -q '#[[:space:]]*server' "$config_file" ; then
+            for server in $(echo "$var_multiple_time_servers" | tr ',' '\n') ; do
+              printf '\nserver %s' "$server" >> "$config_file"
+            done
+          else
+            sed -i 's/#[ \t]*server/server/g' "$config_file"
+          fi
+        fi
+
+        else
+            >&2 echo 'Remediation is not applicable, nothing was done'
+        fi
+
+        ---
     '2004':
-      severity: medium
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed && { dpkg-query --show --showformat='${db:Status-Status}\n' 'chrony' 2>/dev/null | grep -q '^installed'; }; then
-
-        var_multiple_time_servers=''
-
-
-        config_file="/etc/chrony/chrony.conf"
-
-        if ! grep -q '^[[:space:]]*\(server\|pool\)[[:space:]]\+[[:graph:]]\+' "$config_file" ; then
-          if ! grep -q '#[[:space:]]*server' "$config_file" ; then
-            for server in $(echo "$var_multiple_time_servers" | tr ',' '\n') ; do
-              printf '\nserver %s' "$server" >> "$config_file"
-            done
-          else
-            sed -i 's/#[ \t]*server/server/g' "$config_file"
-          fi
-        fi
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        - name: disa_stig
+          severity: medium
     '2204':
-      severity: medium
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed && { dpkg-query --show --showformat='${db:Status-Status}\n' 'chrony' 2>/dev/null | grep -q '^installed'; }; then
-
-        var_multiple_time_servers=''
-
-
-        config_file="/etc/chrony/chrony.conf"
-
-        if ! grep -q '^[[:space:]]*\(server\|pool\)[[:space:]]\+[[:graph:]]\+' "$config_file" ; then
-          if ! grep -q '#[[:space:]]*server' "$config_file" ; then
-            for server in $(echo "$var_multiple_time_servers" | tr ',' '\n') ; do
-              printf '\nserver %s' "$server" >> "$config_file"
-            done
-          else
-            sed -i 's/#[ \t]*server/server/g' "$config_file"
-          fi
-        fi
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
+        - name: disa_stig
+          severity: medium
 tags:
-  - 800-53r4_high
-  - 800-53r4_low
-  - 800-53r4_moderate
+  - 800-53r5_high
+  - 800-53r5_low
+  - 800-53r5_moderate

@@ -5,11 +5,11 @@ discussion: To help ensure that root-owned files are not inadvertently exposed t
 references:
   nist:
     cce:
-      '10':
+      'rhel_10':
         - CCE-90244-5
-      '8':
+      'rhel_8':
         - CCE-86297-9
-      '9':
+      'rhel_9':
         - CCE-86298-7
 os_specifics:
   rhel:

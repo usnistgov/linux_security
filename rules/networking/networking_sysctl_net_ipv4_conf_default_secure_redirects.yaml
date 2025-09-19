@@ -16,11 +16,11 @@ references:
       - SC-5
       - SC-7
     cce:
-      '10':
+      'rhel_10':
         - CCE-87878-5
-      '8':
+      'rhel_8':
         - CCE-81017-6
-      '9':
+      'rhel_9':
         - CCE-84019-9
 os_specifics:
   rhel:

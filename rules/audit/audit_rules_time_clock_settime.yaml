@@ -17,11 +17,11 @@ references:
       - AU-12
       - CM-6
     cce:
-      '10':
+      'rhel_10':
         - CCE-88533-5
-      '8':
+      'rhel_8':
         - CCE-80746-1
-      '9':
+      'rhel_9':
         - CCE-83837-5
 os_specifics:
   rhel:

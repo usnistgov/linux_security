@@ -19,24 +19,24 @@ references:
     srg:
       - SRG-OS-000266-GPOS-00101
     disa_stig:
-      '8':
+      'rhel_8':
         - RHEL-08-020280
-      '9':
+      'rhel_9':
         - RHEL-09-611100
-      '2004':
+      'ubuntu_2004':
         - UBTU-20-010055
-      '2204':
+      'ubuntu_2204':
         - UBTU-22-611025
   nist:
     800-53r4:
       - CM-6
       - IA-5
     cce:
-      '10':
+      'rhel_10':
         - CCE-89297-6
-      '8':
+      'rhel_8':
         - CCE-80663-8
-      '9':
+      'rhel_9':
         - CCE-83565-2
 os_specifics:
   rhel:

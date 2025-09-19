@@ -12,11 +12,11 @@ references:
       - SRG-OS-000480-GPOS-00227
   nist:
     cce:
-      '10':
+      'rhel_10':
         - CCE-86981-8
-      '8':
+      'rhel_8':
         - CCE-86316-7
-      '9':
+      'rhel_9':
         - CCE-87038-6
 os_specifics:
   rhel:

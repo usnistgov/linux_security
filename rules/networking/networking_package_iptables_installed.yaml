@@ -9,7 +9,7 @@ references:
     800-53r4:
       - CM-6
     cce:
-      '8':
+      'rhel_8':
         - CCE-82982-0
   disa:
     srg:

@@ -20,19 +20,19 @@ references:
       - SRG-OS-000462-GPOS-00206
       - SRG-OS-000471-GPOS-00215
     disa_stig:
-      '8':
+      'rhel_8':
         - RHEL-08-030602
-      '9':
+      'rhel_9':
         - RHEL-09-653120
   nist:
     800-53r4:
       - CM-6
     cce:
-      '10':
+      'rhel_10':
         - CCE-88192-0
-      '8':
+      'rhel_8':
         - CCE-80943-4
-      '9':
+      'rhel_9':
         - CCE-83652-8
 os_specifics:
   rhel:

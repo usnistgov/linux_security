@@ -20,7 +20,7 @@ references:
       - SC-12
       - SC-13
     cce:
-      '8':
+      'rhel_8':
         - CCE-82198-3
 os_specifics:
   rhel:

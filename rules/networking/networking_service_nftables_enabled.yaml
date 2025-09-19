@@ -7,7 +7,7 @@ discussion: |
 references:
   nist:
     cce:
-      '8':
+      'rhel_8':
         - CCE-86725-9
 os_specifics:
   rhel:

@@ -7,11 +7,11 @@ discussion: |
 references:
   nist:
     cce:
-      '8':
+      'rhel_8':
         - CCE-86551-9
-      '9':
+      'rhel_9':
         - CCE-86552-7
-      '10':
+      'rhel_10':
         - CCE-87290-3
     800-53r5:
       - SC-10        

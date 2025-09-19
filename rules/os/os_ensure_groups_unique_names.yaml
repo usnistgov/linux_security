@@ -5,9 +5,9 @@ discussion: To assure accountability and prevent unauthenticated access, groups 
 references:
   nist:
     cce:
-      '10':
+      'rhel_10':
         - CCE-88449-4
-      '8':
+      'rhel_8':
         - CCE-86328-2
 os_specifics:
   rhel:

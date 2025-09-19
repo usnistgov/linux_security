@@ -5,11 +5,11 @@ discussion: If the system does not need to act as an LDAP client, it is recommen
 references:
   nist:
     cce:
-      '10':
+      'rhel_10':
         - CCE-90641-2
-      '8':
+      'rhel_8':
         - CCE-82885-5
-      '9':
+      'rhel_9':
         - CCE-90831-9
 os_specifics:
   rhel:

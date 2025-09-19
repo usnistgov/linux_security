@@ -24,9 +24,9 @@ references:
       - SRG-OS-000028-GPOS-00009
       - SRG-OS-000030-GPOS-00011
     disa_stig:
-      '2004':
+      'ubuntu_2004':
         - UBTU-20-010005
-      '2204':
+      'ubuntu_2204':
         - UBTU-22-412025
 os_specifics:
   ubuntu:

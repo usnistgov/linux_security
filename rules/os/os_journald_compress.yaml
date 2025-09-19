@@ -6,11 +6,11 @@ discussion: Log files that are not properly compressed run the risk of growing s
 references:
   nist:
     cce:
-      '10':
+      'rhel_10':
         - CCE-87639-1
-      '8':
+      'rhel_8':
         - CCE-85930-6
-      '9':
+      'rhel_9':
         - CCE-85931-4
 os_specifics:
   rhel:

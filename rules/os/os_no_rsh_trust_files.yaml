@@ -13,9 +13,9 @@ references:
       - CM-6
       - CM-7
     cce:
-      '8':
+      'rhel_8':
         - CCE-80842-8
-      '9':
+      'rhel_9':
         - CCE-84145-2
 os_specifics:
   rhel:
