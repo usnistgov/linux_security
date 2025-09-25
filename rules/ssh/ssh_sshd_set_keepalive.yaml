@@ -20,7 +20,7 @@ references:
         - UBTU-20-010036
       'ubuntu_2204':
         - UBTU-22-255030
-      '2404':
+      'ubuntu_2404':
         - UBTU-24-600000
   nist:
     800-53r5:

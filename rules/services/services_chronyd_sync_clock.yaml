@@ -1,10 +1,7 @@
 id: services_chronyd_sync_clock
 title: Synchronize internal information system clocks
 discussion: |
-  Inaccurate time stamps make it more difficult to correlate events and
-  can lead to an inaccurate analysis. Determining the correct time a
-  particular event occurred on a system is critical when conducting
-  forensic analysis and investigating system events.
+  Inaccurate time stamps make it more difficult to correlate events and can lead to an inaccurate analysis. Determining the correct time a particular event occurred on a system is critical when conducting forensic analysis and investigating system events.
 references:
   disa:
     cci:
@@ -17,17 +14,18 @@ references:
         - UBTU-20-010436
       'ubuntu_2204':
         - UBTU-22-252015
+  nist:
+    cce:
+      'ubuntu_2004': N/A
+      'ubuntu_2204': N/A
+    800-53r5:
+      - AU-8
+      - AU-12(1)
+      - SC-45
 os_specifics:
   ubuntu:
-    check: $OS_VALUE
-    result: $OS_VALUE
-    fix: $OS_VALUE
-    '2004':
-      severity: medium
-      benchmarks:
-        - disa_stig
-      enforcement_info:
-        - N/A
+    enforcement_info:
+      check: --- NEEDS CHECK ---
       result:
         integer: 0
       fix: |
@@ -56,41 +54,16 @@ os_specifics:
             >&2 echo 'Remediation is not applicable, nothing was done'
         fi
 
-        ---
-    '2204':
-      severity: medium
+        ---        
+    '2004':
       benchmarks:
-        - disa_stig
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
-        [source,bash]
-        ---
-        # Remediation is applicable only in certain platforms
-        if dpkg-query --show --showformat='${db:Status-Status}
-        ' 'linux-base' 2>/dev/null | grep -q ^installed && { dpkg-query --show --showformat='${db:Status-Status}\n' 'chrony' 2>/dev/null | grep -q '^installed'; }; then
-
-        if [ -e "/etc/chrony/chrony.conf" ] ; then
-
-            LC_ALL=C sed -i "/^\s*makestep /Id" "/etc/chrony/chrony.conf"
-        else
-            touch "/etc/chrony/chrony.conf"
-        fi
-        # make sure file has newline at the end
-        sed -i -e '$a\' "/etc/chrony/chrony.conf"
-
-        cp "/etc/chrony/chrony.conf" "/etc/chrony/chrony.conf.bak"
-        # Insert at the end of the file
-        printf '%s\n' "makestep 1 1" >> "/etc/chrony/chrony.conf"
-        # Clean up after ourselves.
-        rm "/etc/chrony/chrony.conf.bak"
-
-        else
-            >&2 echo 'Remediation is not applicable, nothing was done'
-        fi
-
-        ---
-tags:
-  - N/A
+        - name: disa_stig
+          severity: medium
+    '2204':
+      benchmarks:
+        - name: disa_stig
+          severity: medium
+tags:          
+  - 800-53r5_high
+  - 800-53r5_low
+  - 800-53r5_moderate

@@ -1,150 +1,97 @@
 id: services_package_avahi_removed
 title: Uninstall avahi Server Package
 discussion: |
-  Automatic discovery of network services is not normally required for
-  system functionality. It is recommended to remove this package to reduce
-  the potential attack surface.
+  Automatic discovery of network services is not normally required for system functionality. It is recommended to remove this package to reduce the potential attack surface.
 references:
   disa:
     cci:
       - CCI-000366
+    disa_stig:
+      'rhel_8':
+        - ?
+      'rhel_9':
+        - ?
+      'ubuntu_2004':
+        - ?
+      'ubuntu_2204':
+        - ?
+      'ubuntu_2404':
+        - ?
   nist:
-    800-53r4:
-      - CM-6
+    800-53r5:
+      - AC-3
+      - AC-20
       - CM-7
+      - CM-7(1)
     cce:
       'rhel_8':
         - CCE-86512-1
       'rhel_9':
         - CCE-86513-9
+      'ubuntu_2004':
+        - N/A
+      'ubuntu_2204':
+        - N/A
 os_specifics:
   rhel:
-    check: $OS_VALUE
-    result: $OS_VALUE
-    fix: $OS_VALUE
+    enforcement_info:
+      check: -- needs check ---
+      result: 
+        integer: 0
+      fix: |
+          [source,bash]
+          ---
+
+          # CAUTION: This remediation script will remove avahi
+          #      from the system, and may remove any packages
+          #      that depend on avahi. Execute this
+          #      remediation AFTER testing on a non-production
+          #      system!
+
+          if rpm -q --quiet "avahi" ; then
+          yum remove -y "avahi"
+          fi
+
+          ---      
     '8':
-      severity: medium
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
-        [source,bash]
-        ---
-
-        # CAUTION: This remediation script will remove avahi
-        #      from the system, and may remove any packages
-        #      that depend on avahi. Execute this
-        #      remediation AFTER testing on a non-production
-        #      system!
-
-        if rpm -q --quiet "avahi" ; then
-        yum remove -y "avahi"
-        fi
-
-        ---
+        - name: disa_stig
+          severity: medium
     '9':
-      severity: medium
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
-        [source,bash]
-        ---
-
-        # CAUTION: This remediation script will remove avahi
-        #      from the system, and may remove any packages
-        #      that depend on avahi. Execute this
-        #      remediation AFTER testing on a non-production
-        #      system!
-
-        if rpm -q --quiet "avahi" ; then
-        dnf remove -y --noautoremove "avahi"
-        fi
-
-        ---
+        - name: disa_stig
+          severity: medium
   ubuntu:
-    check: $OS_VALUE
-    result: $OS_VALUE
-    fix: $OS_VALUE
+    enforcement_info:
+      check: -- needs check ---
+      result: 
+        integer: 0
+      fix: |
+        [source,bash]
+        ---
+
+        # CAUTION: This remediation script will remove avahi-daemon
+        #      from the system, and may remove any packages
+        #      that depend on avahi-daemon. Execute this
+        #      remediation AFTER testing on a non-production
+        #      system!
+
+        DEBIAN_FRONTEND=noninteractive apt-get remove -y "avahi-daemon"
+
+        ---        
     '2004':
-      severity: medium
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
-        [source,bash]
-        ---
-
-        # CAUTION: This remediation script will remove avahi-daemon
-        #      from the system, and may remove any packages
-        #      that depend on avahi-daemon. Execute this
-        #      remediation AFTER testing on a non-production
-        #      system!
-
-        DEBIAN_FRONTEND=noninteractive apt-get remove -y "avahi-daemon"
-
-        ---
+        - name: disa_stig
+          severity: medium
     '2204':
-      severity: medium
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
-        [source,bash]
-        ---
-
-        # CAUTION: This remediation script will remove avahi-daemon
-        #      from the system, and may remove any packages
-        #      that depend on avahi-daemon. Execute this
-        #      remediation AFTER testing on a non-production
-        #      system!
-
-        DEBIAN_FRONTEND=noninteractive apt-get remove -y "avahi-daemon"
-
-        ---
+        - name: disa_stig
+          severity: medium
     '2404':
-      severity: medium
       benchmarks:
-        - disa_stig
-        - nist_800-53r4
-      enforcement_info:
-        - N/A
-      result:
-        integer: 0
-      fix: |
-        [source,bash]
-        ---
-
-        # CAUTION: This remediation script will remove avahi-daemon
-        #      from the system, and may remove any packages
-        #      that depend on avahi-daemon. Execute this
-        #      remediation AFTER testing on a non-production
-        #      system!
-
-        DEBIAN_FRONTEND=noninteractive apt-get remove -y "avahi-daemon"
-
-        ---
+        - name: disa_stig
+          severity: medium
 tags:
-  - 800-53r4_high
-  - 800-53r4_low
-  - 800-53r4_moderate
-  - cis_lvl1
-  - cis_lvl2
-  - client
-  - server
+  - 800-53r5_high
+  - 800-53r5_low
+  - 800-53r5_moderate
