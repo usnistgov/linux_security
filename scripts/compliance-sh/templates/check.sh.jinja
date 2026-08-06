@@ -1,0 +1,34 @@
+#####################################################################
+#
+#    Rule ID: {{ rule.rule_id }}
+#    Tags: {{ rule.tags | join(", ") }}
+#
+#    Addresses the following NIST 800-53 controls:
+#    - {{ rule.nist_80053_controls | join(", ") }}
+#
+#####################################################################
+
+local rule_id="{{ rule.rule_id }}"
+local expected_result="{{ rule.expected_result | string }}"
+local result_status="passed"
+local result_value
+local status_code
+
+if $using_whiptail; then
+    local percent_complete=$(echo "scale=2; ($rule_count / $total_checks) * 100" | bc | xargs printf "%.0f")
+    echo "XXX"; echo "$percent_complete"; echo "Checking $rule_id..."; echo "XXX"
+fi
+((rule_count++))
+
+result_value=$({{ rule.check }})
+status_code=$?
+
+
+if [[ "$status_code" != "$expected_result" && "$result_value" != "$expected_result" ]]; then
+    result_status="failed"
+fi
+
+log_message "[CHECK] $rule_id $result_status"
+log_csv "$rule_id" "$result_status" "$result_value" "$status_code" "$expected_result"
+
+sleep 0.1
