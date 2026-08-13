@@ -1,0 +1,35 @@
+id: os_syscmd_dirs_grp_root
+title: Ubuntu 22.04 LTS must have directories that contain system commands group-owned
+  by "root".
+discussion: "Protecting audit information requires securing the tools used to view\
+  \ and manipulate logs, as unauthorized access could compromise audit data. Operating\
+  \ systems enforce this by using user permissions and roles to control access to\
+  \ audit tools, which include vendor\u2011provided, open\u2011source, custom queries,\
+  \ and report generators."
+references:
+  nist:
+    800-53r5:
+    - AU-9 a
+  disa:
+    cci:
+    - CCI-001495
+    srg:
+    - SRG-OS-000258-GPOS-00099
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-232045
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin
+        ! -group root -type d -exec stat -c "%n %G" '{}' \;
+      expected_output: 0
+    fix:
+      shell: sudo find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin
+        ! -group root -type d -exec chgrp root '{}' \;
+tags:
+- testing

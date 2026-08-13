@@ -1,0 +1,49 @@
+id: auth_gui_logon_banner
+title: Ubuntu 22.04 LTS must enable the graphical user logon banner to display the
+  Standard Mandatory DOD Notice and Consent Banner before granting local access to
+  the system via a graphical user logon.
+discussion: Ubuntu 22.04 LTS must display a standardized use notification before granting
+  access, consistent with federal laws and DOD policy, for human logon interfaces
+  only; the full banner text is required when space allows, otherwise a shortened
+  version may be used.
+references:
+  nist:
+    800-53r5:
+    - AC-8 a
+  disa:
+    cci:
+    - CCI-000048
+    srg:
+    - SRG-OS-000023-GPOS-00006
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-271010
+      ubuntu_2404:
+      - UBTU-24-200650
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: grep -i banner-message-enable /etc/gdm3/greeter.dconf-defaults
+      expected_output: banner-message-enable=true
+    fix:
+      shell: 'sudo dconf update
+
+        sudo systemctl restart gdm3'
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: grep -q '^banner-message-enable=true' /etc/gdm3/greeter.dconf-defaults
+      expected_output: 0
+    fix:
+      shell: 'sudo dconf update
+
+        sudo systemctl restart gdm3'
+tags:
+- testing

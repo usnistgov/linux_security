@@ -1,0 +1,46 @@
+id: ssh_fips_keyexchange_algorithms
+title: Ubuntu SSH server must be configured to use only FIPS-validated key
+  exchange algorithms.
+discussion: Without FIPS-validated cryptographic integrity protections, data can be
+  read or altered undetected; ordering algorithms from strongest to weakest ensures
+  the system selects the strongest available for SSH.
+references:
+  nist:
+    800-53r5:
+    - AC-17 (2)
+  disa:
+    cci:
+    - CCI-000068
+    srg:
+    - SRG-OS-000033-GPOS-00014
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-255060
+      ubuntu_2404:
+      - UBTU-24-100840
+enforcement_info:
+  enforcement_type: full
+  check:
+    shell: sshd -T | grep -q "^kexalgorithms $FIPS_KEYS"
+    status_code: 0
+  fix:
+    shell: echo "KexAlgorithms $FIPS_KEYS" >> /etc/ssh/sshd_config
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: vars
+    vars:
+      FIPS_KEYS: ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: vars
+    vars:
+      FIPS_KEYS: ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group14-sha256
+tags:
+- testing

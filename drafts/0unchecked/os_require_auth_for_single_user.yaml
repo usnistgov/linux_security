@@ -1,0 +1,32 @@
+id: os_require_auth_for_single_user
+title: Ubuntu 22.04 LTS, when booted, must require authentication upon booting into
+  single-user and maintenance modes.
+discussion: "DOD systems must be configured so that possessing a DOD\u2011approved\
+  \ PKI certificate alone does not grant access; after authentication, entities must\
+  \ be authorized through identity\u2011, role\u2011, or attribute\u2011based access\
+  \ controls enforced by mechanisms such as access control lists, matrices, or cryptography."
+references:
+  nist:
+    800-53r5:
+    - AC-3
+  disa:
+    cci:
+    - CCI-000213
+    srg:
+    - SRG-OS-000080-GPOS-00048
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-212010
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: high
+  enforcement_info:
+    check:
+      shell: sudo grep -q '^password_pbkdf2' /boot/grub/grub.cfg
+      expected_output: 0
+    fix:
+      shell: sudo sed -i '$i set superusers=\"root\"\npassword_pbkdf2 root ' /etc/grub.d/40_custom
+tags:
+- testing

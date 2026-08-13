@@ -1,0 +1,33 @@
+id: os_library_dirs_owned_root
+title: Ubuntu 22.04 LTS library directories must be owned by "root".
+discussion: "Allowing any user to modify software libraries could bypass required\
+  \ testing and approval, weakening change\u2011management controls. Only qualified,\
+  \ authorized individuals should be permitted to access and alter these components,\
+  \ including privileged programs."
+references:
+  nist:
+    800-53r5:
+    - CM-5 (6)
+  disa:
+    cci:
+    - CCI-001499
+    srg:
+    - SRG-OS-000259-GPOS-00100
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-232060
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo find /lib /usr/lib /lib64 ! -user root -type d -print -quit | wc
+        -l
+      expected_output: 0
+    fix:
+      shell: sudo find /lib /usr/lib /lib64 ! -user root -type d -exec chown root
+        '{}' \;
+tags:
+- testing

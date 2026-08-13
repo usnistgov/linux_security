@@ -1,0 +1,35 @@
+id: os_system_command_mode_755
+title: Ubuntu 22.04 LTS must have system commands set to a mode of "755" or less permissive.
+discussion: "Allowing any user to modify software libraries in Ubuntu 22.04 LTS could\
+  \ lead to untested changes that bypass proper change\u2011management testing and\
+  \ approvals. Only qualified, authorized individuals should be permitted to access\
+  \ and modify these components, including privileged programs and interpreted\u2011\
+  language libraries."
+references:
+  nist:
+    800-53r5:
+    - CM-5 (6)
+  disa:
+    cci:
+    - CCI-001499
+    srg:
+    - SRG-OS-000259-GPOS-00100
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-232015
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin
+        -perm /022 -type f -exec stat -c "%n %a" '{}' \; | grep -q . && exit 1 ||
+        exit 0
+      expected_output: 0
+    fix:
+      shell: sudo find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin
+        -perm /022 -type f -exec chmod 755 '{}' \;
+tags:
+- testing

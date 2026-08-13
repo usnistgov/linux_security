@@ -1,0 +1,39 @@
+id: audit_storage_75pct_notify_admin
+title: Ubuntu 24.04 LTS must immediately notify the system administrator (SA) and
+  information system security officer (ISSO) (at a minimum) when allocated audit record
+  storage volume reaches 75 percent of the repository maximum audit record storage
+  capacity.
+discussion: Security personnel must be alerted when storage reaches 75% utilization
+  to plan for audit record capacity expansion.
+references:
+  nist:
+    800-53r5:
+    - AU-5 (1)
+  disa:
+    cci:
+    - CCI-001855
+    srg:
+    - SRG-OS-000343-GPOS-00134
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-900960
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: low
+  enforcement_info:
+    check:
+      shell: 'sudo awk ''$1=="space_left_action" && $2=="email"{found=1} $1=="action_mail_acct"
+        && $2!=""{acct=$2} END{exit (found && acct!="" ? 0 : 1)}'' /etc/audit/auditd.conf'
+      expected_output: 0
+    fix:
+      shell: 'sudo sed -i ''s/^#*space_left_action.*/space_left_action = email/''
+        /etc/audit/auditd.conf
+
+        sudo sed -i ''s/^#*action_mail_acct.*/action_mail_acct = sa@example.com, isso@example.com/''
+        /etc/audit/auditd.conf
+
+        sudo sed -i ''s/^#*space_left.*/space_left = 25%'' /etc/audit/auditd.conf'
+tags:
+- testing

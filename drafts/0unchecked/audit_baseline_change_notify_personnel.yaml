@@ -1,0 +1,37 @@
+id: audit_baseline_change_notify_personnel
+title: Ubuntu 24.04 LTS must notify designated personnel if baseline configurations
+  are changed in an unauthorized manner. The file integrity tool must notify the system
+  administrator (SA) when changes to the baseline configuration or anomalies in the
+  operation of any security functions are discovered.
+discussion: Unauthorized changes to Ubuntu 24.04 LTS baseline configurations can introduce
+  vulnerabilities and unintended side effects, compromising system security. Automated
+  detection and email or monitoring alerts to the ISSO and SAs are required to mitigate
+  these risks.
+references:
+  nist:
+    800-53r5:
+    - CM-3 (5)
+    - SI-6 d
+  disa:
+    cci:
+    - CCI-001744
+    - CCI-002702
+    srg:
+    - SRG-OS-000447-GPOS-00201
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-100130
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: grep -E '^\s*SILENTREPORTS\s*=\s*no' /etc/default/aide
+      expected_output: 0
+    fix:
+      shell: grep -q '^SILENTREPORTS=' /etc/default/aide || echo 'SILENTREPORTS=no'
+        >> /etc/default/aide
+tags:
+- testing

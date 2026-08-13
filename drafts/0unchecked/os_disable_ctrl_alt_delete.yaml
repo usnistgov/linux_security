@@ -1,0 +1,49 @@
+id: os_disable_ctrl_alt_delete
+title: Ubuntu 22.04 LTS must disable the x86 Ctrl-Alt-Delete key sequence.
+discussion: "Pressing Ctrl\u2011Alt\u2011Delete at the console can reboot the system,\
+  \ and an accidental press may cause unintended loss of availability."
+references:
+  nist:
+    800-53r5:
+    - CM-6 b
+  disa:
+    cci:
+    - CCI-000366
+    srg:
+    - SRG-OS-000480-GPOS-00227
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-211015
+      ubuntu_2404:
+      - UBTU-24-300026
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: high
+  enforcement_info:
+    check:
+      shell: systemctl show ctrl-alt-del.target -p LoadState --value | grep -q masked
+      expected_output: 0
+    fix:
+      shell: 'sudo systemctl disable ctrl-alt-del.target
+
+        sudo systemctl mask ctrl-alt-del.target
+
+        sudo systemctl daemon-reload'
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: high
+  enforcement_info:
+    check:
+      shell: '[ "$(systemctl is-enabled ctrl-alt-del.target)" = "masked" ]'
+      expected_output: 0
+    fix:
+      shell: 'sudo systemctl disable ctrl-alt-del.target
+
+        sudo systemctl mask ctrl-alt-del.target
+
+        sudo systemctl daemon-reload'
+tags:
+- testing

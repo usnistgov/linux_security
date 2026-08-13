@@ -1,0 +1,31 @@
+id: services_ensure_telnet_not_installed
+title: Ubuntu 22.04 LTS must not have the "telnet" package installed.
+discussion: "Unnecessary default services expand the attack surface, and Telnet\u2014\
+  an unencrypted remote access protocol\u2014can expose passwords and session data\
+  \ if enabled. Removing the telnetd package lowers the risk of accidental or intentional\
+  \ Telnet activation."
+references:
+  nist:
+    800-53r5:
+    - IA-5 (1) (c)
+  disa:
+    cci:
+    - CCI-000197
+    srg:
+    - SRG-OS-000074-GPOS-00042
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-215035
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: high
+  enforcement_info:
+    check:
+      shell: dpkg -l | grep -q telnetd
+      expected_output: 1
+    fix:
+      shell: sudo apt-get remove telnetd
+tags:
+- testing

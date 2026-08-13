@@ -1,0 +1,33 @@
+id: auth_limit_sudo_to_authorized
+title: Ubuntu 24.04 LTS must restrict privilege elevation to authorized personnel.
+discussion: An incorrectly configured sudoers file allows any system user to perform
+  privileged actions.
+references:
+  nist:
+    800-53r5:
+    - IA-11
+    - SC-11 b
+  disa:
+    cci:
+    - CCI-002038
+    - CCI-004895
+    srg:
+    - SRG-OS-000373-GPOS-00156
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-300019
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo grep -iwR 'ALL' /etc/sudoers /etc/sudoers.d/ | grep -v '#' | grep
+        -cE '^\s*ALL\s+ALL=\(ALL\)\s+ALL$|^\s*ALL\s+ALL=\(ALL:ALL\)\s+ALL$'
+      expected_output: 0
+    fix:
+      shell: sudo sed -i -E '/^\s*ALL\s+ALL=\(ALL\)\s+ALL\s*$/d; /^\s*ALL\s+ALL=\(ALL:ALL\)\s+ALL\s*$/d'
+        /etc/sudoers /etc/sudoers.d/*
+tags:
+- testing

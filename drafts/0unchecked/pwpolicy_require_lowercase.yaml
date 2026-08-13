@@ -1,0 +1,32 @@
+id: pwpolicy_require_lowercase
+title: Ubuntu 22.04 LTS must enforce password complexity by requiring at least one
+  lowercase character be used.
+discussion: "A complex password increases the time and resources needed to crack it\
+  \ by raising the number of possible combinations. Password complexity thus measures\
+  \ resistance to guessing and brute\u2011force attacks."
+references:
+  nist:
+    800-53r5:
+    - IA-5 (1) (h)
+  disa:
+    cci:
+    - CCI-004066
+    - CCI-000193
+    srg:
+    - SRG-OS-000070-GPOS-00038
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-611015
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: grep -qE '^\s*lcredit\s*=\s*-1\s*(#.*)?$' /etc/security/pwquality.conf
+      expected_output: 0
+    fix:
+      shell: sudo sh -c 'echo "lcredit = -1" >> /etc/security/pwquality.conf'
+tags:
+- testing

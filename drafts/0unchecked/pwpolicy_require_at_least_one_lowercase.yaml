@@ -1,0 +1,33 @@
+id: pwpolicy_require_at_least_one_lowercase
+title: Ubuntu 24.04 LTS must enforce password complexity by requiring that at least
+  one lowercase character be used.
+discussion: "A complex password increases the time and resources required to compromise\
+  \ it by expanding the number of possible combinations, thereby resisting guessing\
+  \ and brute\u2011force attacks."
+references:
+  nist:
+    800-53r5:
+    - IA-5 (1) (g)
+    - IA-5 (1) (h)
+  disa:
+    cci:
+    - CCI-004065
+    - CCI-004066
+    srg:
+    - SRG-OS-000070-GPOS-00038
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-400270
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: grep -E '^\s*lcredit\s*=\s*-1\s*(#.*)?$' /etc/security/pwquality.conf
+      expected_output: 0
+    fix:
+      shell: echo "lcredit=-1" >> /etc/security/pwquality.conf
+tags:
+- testing

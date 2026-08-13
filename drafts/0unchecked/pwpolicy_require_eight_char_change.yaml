@@ -1,0 +1,49 @@
+id: pwpolicy_require_eight_char_change
+title: Ubuntu 22.04 LTS must require the change of at least eight characters when
+  passwords are changed.
+discussion: "If the operating system allows users to reuse large portions of a password,\
+  \ it increases the window for guessing and brute\u2011force attacks, raising the\
+  \ risk of compromise. The policy mandates a minimum number of changed characters\u2014\
+  rounded up for odd\u2011length passwords\u2014to ensure sufficient change between\
+  \ successive passwords."
+references:
+  nist:
+    800-53r5:
+    - IA-5 (1) (h)
+  disa:
+    cci:
+    - CCI-004066
+    - CCI-000195
+    srg:
+    - SRG-OS-000072-GPOS-00040
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-611040
+      ubuntu_2404:
+      - UBTU-24-400290
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: value=$(grep -i '^\s*difok\s*=' /etc/security/pwquality.conf | awk -F=
+        '{gsub(/[[:space:]]/,"",$2); print $2}'); [[ -n "$value" && "$value" -ge 8
+        ]] && exit 0 || exit 1
+      expected_output: 0
+    fix:
+      shell: sudo sh -c 'grep -q "^difok" /etc/security/pwquality.conf && sed -i "s/^difok.*/difok
+        = 8/" /etc/security/pwquality.conf || echo "difok = 8" >> /etc/security/pwquality.conf'
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: grep -i "difok" /etc/security/pwquality.conf
+      expected_output: difok=8
+    fix:
+      shell: echo "difok=8" >> /etc/security/pwquality.conf
+tags:
+- testing

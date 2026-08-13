@@ -1,0 +1,50 @@
+id: audit_utmp_file_access_monitoring
+title: Ubuntu must generate audit records for the /var/run/utmp file.
+discussion: Without audit records tailored to the organization's security and mission
+  needs, it is difficult to establish, correlate, investigate incidents, or identify
+  responsible parties. Audit records can be generated from various system components,
+  such as modules or policy filters.
+references:
+  nist:
+    800-53r5:
+    - AU-12 c
+  disa:
+    cci:
+    - CCI-000172
+    srg:
+    - SRG-OS-000472-GPOS-00217
+    disa_stig:
+      ubuntu_2004:
+        - UBTU-20-010278
+      ubuntu_2204:
+        - UBTU-22-654205
+      ubuntu_2404:
+        - UBTU-24-900600
+enforcement_info:
+  enforcement_type: full
+  check:
+    shell: auditctl -l | grep -q "\-w /var/run/utmp -p wa"
+    status_code: 0
+  fix:
+    shell: echo "-w /var/run/utmp -p wa -k logins" >> /etc/audit/rules.d/stig.rules && augenrules --load
+platforms:
+- name: ubuntu_2004
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+tags:
+- testing

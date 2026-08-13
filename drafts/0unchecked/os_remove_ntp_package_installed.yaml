@@ -1,0 +1,42 @@
+id: os_remove_ntp_package_installed
+title: Ubuntu 22.04 LTS must not have the "ntp" package installed.
+discussion: Inaccurate timestamps hinder event correlation and forensic analysis,
+  especially when sources drift beyond allowed limits. Organizations must account
+  for endpoints lacking regular access to authoritative time servers.
+references:
+  nist:
+    800-53r5:
+    - CM-6 b
+  disa:
+    cci:
+    - CCI-000366
+    srg:
+    - SRG-OS-000480-GPOS-00227
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-215025
+      ubuntu_2404:
+      - UBTU-24-100020
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: low
+  enforcement_info:
+    check:
+      shell: dpkg -s ntp 2>/dev/null
+      expected_output: 1
+    fix:
+      shell: sudo dpkg -P --force-all ntp
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: low
+  enforcement_info:
+    check:
+      shell: '! dpkg -l | grep -q ntp'
+      expected_output: 0
+    fix:
+      shell: sudo apt remove ntp
+tags:
+- testing

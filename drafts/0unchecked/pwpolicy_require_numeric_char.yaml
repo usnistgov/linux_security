@@ -1,0 +1,46 @@
+id: pwpolicy_require_numeric_char
+title: Ubuntu 22.04 LTS must enforce password complexity by requiring that at least
+  one numeric character be used.
+discussion: "A complex password increases the time and resources needed to crack it\
+  \ by raising the number of possible combinations. Password complexity thus measures\
+  \ resistance to guessing and brute\u2011force attacks."
+references:
+  nist:
+    800-53r5:
+    - IA-5 (1) (h)
+  disa:
+    cci:
+    - CCI-004066
+    - CCI-000194
+    srg:
+    - SRG-OS-000071-GPOS-00039
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-611020
+      ubuntu_2404:
+      - UBTU-24-400280
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: grep -E '^\s*dcredit\s*=\s*-1' /etc/security/pwquality.conf
+      expected_output: 0
+    fix:
+      shell: sudo sh -c 'echo "dcredit = -1" >> /etc/security/pwquality.conf'
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: value=$(grep -E '^\s*dcredit\s*=' /etc/security/pwquality.conf | cut
+        -d'=' -f2 | tr -d ' ') && [ -n "$value" ] && [ "$value" -le -1 ] && exit 0
+        || exit 1
+      expected_output: 0
+    fix:
+      shell: echo "dcredit=-1" >> /etc/security/pwquality.conf
+tags:
+- testing

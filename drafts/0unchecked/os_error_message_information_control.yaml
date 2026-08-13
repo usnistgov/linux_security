@@ -1,0 +1,50 @@
+id: os_error_message_information_control
+title: Ubuntu 22.04 LTS must generate error messages that provide information necessary
+  for corrective actions without revealing information that could be exploited by
+  adversaries.
+discussion: "Excessive detail in error messages can reveal sensitive information,\
+  \ so organizations must restrict what is disclosed according to policy. The /var/log/btmp,\
+  \ /var/log/wtmp, and /var/log/lastlog files require group\u2011write and world\u2011\
+  read permissions for lastlog to function; tighter permissions will break dependent\
+  \ services."
+references:
+  nist:
+    800-53r5:
+    - SI-11 a
+  disa:
+    cci:
+    - CCI-001312
+    srg:
+    - SRG-OS-000205-GPOS-00083
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-232026
+      ubuntu_2404:
+      - UBTU-24-700010
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo find /var/log -perm /137 ! -name '*[bw]tmp' ! -name '*lastlog' -type
+        f -exec stat -c "%n %a" {} \; | grep -q . && exit 1 || exit 0
+      expected_output: 0
+    fix:
+      shell: sudo find /var/log -perm /137 ! -name '*[bw]tmp' ! -name '*lastlog' -type
+        f -exec chmod 640 '{}' \;
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo find /var/log -perm /137 ! -name '*[bw]tmp' ! -name '*lastlog' -type
+        f -exec stat -c "%n %a" {} \;
+      expected_output: No output (empty stdout indicates compliance)
+    fix:
+      shell: sudo find /var/log -perm /137 ! -name '*[bw]tmp' ! -name '*lastlog' -type
+        f -exec chmod 640 '{}' \;
+tags:
+- testing

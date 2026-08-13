@@ -1,0 +1,34 @@
+id: os_system_cmd_dir_perm
+title: Ubuntu 24.04 LTS must have directories that contain system commands set to
+  a mode of "0755" or less permissive.
+discussion: "Protecting audit information requires securing the tools used to view\
+  \ and manipulate logs to prevent unauthorized actions. Operating systems enforce\
+  \ this by using user permissions and roles to control access to audit tools, which\
+  \ include vendor\u2011provided, open\u2011source, and custom query or report generators."
+references:
+  nist:
+    800-53r5:
+    - AU-9 a
+  disa:
+    cci:
+    - CCI-001495
+    srg:
+    - SRG-OS-000258-GPOS-00099
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-901260
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -perm
+        /022 -type d -exec stat -c "%n %a" '{}' \; | grep -q . && exit 1 || exit 0
+      expected_output: 0
+    fix:
+      shell: sudo find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin
+        -perm /022 -type d -exec chmod -R 755 '{}' \;
+tags:
+- testing

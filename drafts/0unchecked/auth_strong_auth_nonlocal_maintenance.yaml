@@ -1,0 +1,47 @@
+id: auth_strong_auth_nonlocal_maintenance
+title: Ubuntu 22.04 LTS must use strong authenticators in establishing nonlocal maintenance
+  and diagnostic sessions.
+discussion: "Nonlocal maintenance is performed via external or internal networks,\
+  \ while local maintenance is done on\u2011site without network communication. Strong\
+  \ authentication uses replay\u2011resistant multifactor authenticators, such as\
+  \ PKI certificates on a password\u2011protected token."
+references:
+  nist:
+    800-53r5:
+    - MA-4 c
+  disa:
+    cci:
+    - CCI-000877
+    srg:
+    - SRG-OS-000125-GPOS-00065
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-255065
+      ubuntu_2404:
+      - UBTU-24-500050
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo grep -i 'usepam' /etc/ssh/sshd_config | grep -q 'UsePAM yes' ; echo
+        $?
+      expected_output: 0
+    fix:
+      shell: 'echo "UsePAM yes" >> /etc/ssh/sshd_config
+
+        sudo systemctl restart ssh'
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo sshd -T | grep -q '^usepam yes$'
+      expected_output: 0
+    fix:
+      shell: UsePAM yes
+tags:
+- testing

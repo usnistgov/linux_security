@@ -1,0 +1,47 @@
+id: auth_failed_login_delay_four_seconds
+title: Ubuntu 22.04 LTS must enforce a delay of at least four seconds between logon
+  prompts following a failed logon attempt.
+discussion: Limiting logon attempts within a set time interval reduces the risk of
+  unauthorized account access.
+references:
+  nist:
+    800-53r5:
+    - CM-6 b
+  disa:
+    cci:
+    - CCI-000366
+    srg:
+    - SRG-OS-000480-GPOS-00226
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-412010
+      ubuntu_2404:
+      - UBTU-24-300017
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: low
+  enforcement_info:
+    check:
+      shell: awk '$0 !~ /^#/ && /pam_faildelay/ {for(i=1;i<=NF;i++) if($i ~ /^delay=/)
+        {split($i,a,"="); if(a[2] >= 4000000) exit 0; else exit 1}} END {exit 1}'
+        /etc/pam.d/common-auth
+      expected_output: 0
+    fix:
+      shell: sudo sh -c 'echo "auth     required     pam_faildelay.so     delay=4000000"
+        >> /etc/pam.d/common-auth'
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: low
+  enforcement_info:
+    check:
+      shell: grep -q 'pam_faildelay' /etc/pam.d/common-auth && grep -o 'delay=[0-9]*'
+        /etc/pam.d/common-auth | cut -d= -f2 | awk '{if ($1 >= 4000000) exit 0; else
+        exit 1}'
+      expected_output: 0
+    fix:
+      shell: auth required pam_faildelay.so delay=4000000
+tags:
+- testing

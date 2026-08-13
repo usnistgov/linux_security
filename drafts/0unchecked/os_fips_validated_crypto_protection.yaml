@@ -1,0 +1,50 @@
+id: os_fips_validated_crypto_protection
+title: 'Ubuntu 22.04 LTS must implement NIST FIPS-validated cryptography to protect
+  classified information and for the following: To provision digital signatures, to
+  generate cryptographic hashes, and to protect unclassified information requiring
+  confidentiality and cryptographic protection in accordance with applicable federal
+  laws, Executive Orders, directives, policies, regulations, and standards.'
+discussion: "Using weak or untested encryption algorithms undermines data protection;\
+  \ the operating system must employ government\u2011approved cryptographic modules\
+  \ that have been tested and validated."
+references:
+  nist:
+    800-53r5:
+    - SC-13 b
+  disa:
+    cci:
+    - CCI-002450
+    srg:
+    - SRG-OS-000396-GPOS-00176
+    - - SRG-OS-000478-GPOS-00223
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-671010
+      ubuntu_2404:
+      - UBTU-24-600030
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: high
+  enforcement_info:
+    check:
+      shell: grep -i 1 /proc/sys/crypto/fips_enabled
+      expected_output: 1
+    fix:
+      shell: sudo sed -i 's/^GRUB_CMDLINE_LINUX=""/&fips=1/' /etc/default/grub &&
+        sudo update-grub
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: high
+  enforcement_info:
+    check:
+      shell: grep -i 1 /proc/sys/crypto/fips_enabled
+      expected_output: 1
+    fix:
+      shell: 'sudo pro attach
+
+        sudo pro enable fips-updates'
+tags:
+- testing

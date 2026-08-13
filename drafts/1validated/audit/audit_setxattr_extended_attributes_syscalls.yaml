@@ -1,0 +1,52 @@
+id: audit_setxattr_extended_attributes_syscalls
+title: Ubuntu must generate audit records for any use of the setxattr, fsetxattr,
+  lsetxattr, removexattr, fremovexattr, and lremovexattr system calls.
+discussion: >
+  Generating organization-specific audit records is essential for
+  incident investigation and accountability, and they can be produced from various
+  system components. System call rules should be used sparingly and combined when
+  possible to minimize performance impact.
+references:
+  nist:
+    800-53r5:
+    - AU-12 c
+  disa:
+    cci:
+    - CCI-000172
+    srg:
+    - SRG-OS-000064-GPOS-00033
+    disa_stig:
+      ubuntu_2004:
+        - UBTU-20-010142
+      ubuntu_2204:
+        - UBTU-22-654180
+      ubuntu_2404:
+        - UBTU-24-900130
+enforcement_info:
+  enforcement_type: full
+  check:
+    shell: auditctl -l | grep -E "\-a always,exit -F arch=\S* -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid(>=1000|=0) (-F auid!=-1 -F|-k)" | wc -l
+    standard_output: "4"
+  fix:
+    shell: echo -e "-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>=1000 -F auid!=unset -k perm_mod\n-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 -k perm_mod\n-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>=1000 -F auid!=unset -k perm_mod\n-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 -k perm_mod" >> /etc/audit/rules.d/stig.rules && augenrules --load
+platforms:
+- name: ubuntu_2004
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+tags:
+- testing

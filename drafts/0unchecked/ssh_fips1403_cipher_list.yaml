@@ -1,0 +1,32 @@
+id: ssh_fips1403_cipher_list
+title: Ubuntu 24.04 LTS must configure the SSH client to use FIPS 140-3 approved ciphers
+  to prevent the unauthorized disclosure of information and/or detect changes to information
+  during transmission.
+discussion: Without cryptographic integrity protections, unauthorized users can alter
+  information without detection; encrypting transmission and configuring cipher lists
+  from strongest to weakest (e.g., for SSH) helps prevent disclosure and modification.
+references:
+  nist:
+    800-53r5:
+    - AC-17 (2)
+  disa:
+    cci:
+    - CCI-001453
+    srg:
+    - SRG-OS-000250-GPOS-00093
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-100850
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo grep -r 'Ciphers' /etc/ssh/ssh_config*
+      expected_output: Ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes128-ctr
+    fix:
+      shell: sudo systemctl restart ssh
+tags:
+- testing

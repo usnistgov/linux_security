@@ -1,0 +1,31 @@
+id: os_var_log_directory_root_owned
+title: Ubuntu 22.04 LTS must configure the "/var/log" directory to be owned by "root".
+discussion: Only authorized personnel should see error details, as messages can reveal
+  an organization's operational state, OS/platform, PII, or other sensitive information.
+  Error message content must be carefully designed according to organizational policy
+  to prevent unauthorized disclosure.
+references:
+  nist:
+    800-53r5:
+    - SI-11 b
+  disa:
+    cci:
+    - CCI-001314
+    srg:
+    - SRG-OS-000206-GPOS-00084
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-232120
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: stat -c '%U' /var/log | grep -q '^root$'
+      expected_output: 0
+    fix:
+      shell: sudo chown root /var/log
+tags:
+- testing

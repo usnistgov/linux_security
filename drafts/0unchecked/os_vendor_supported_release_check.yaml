@@ -1,0 +1,46 @@
+id: os_vendor_supported_release_check
+title: Ubuntu 22.04 LTS must be a vendor-supported release.
+discussion: "An OS release is considered supported only while the vendor provides\
+  \ security patches; unsupported releases cannot receive fixes for discovered vulnerabilities.\
+  \ For Ubuntu\u202F22.04, standard support ends April\u202F2027, and Extended Security\
+  \ Maintenance (available via an Ubuntu Pro subscription) extends support to April\u202F\
+  2032."
+references:
+  nist:
+    800-53r5:
+    - CM-6 b
+  disa:
+    cci:
+    - CCI-000366
+    srg:
+    - SRG-OS-000480-GPOS-00227
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-211000
+      ubuntu_2404:
+      - UBTU-24-700400
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: high
+  enforcement_info:
+    check:
+      shell: grep -q 'DISTRIB_DESCRIPTION.*Ubuntu 22.04' /etc/lsb-release && pro status
+        2>/dev/null | grep -q 'SUBSCRIPTION STATUS.*Entitled'
+      expected_output: 0
+    fix:
+      shell: sudo do-release-upgrade
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: high
+  enforcement_info:
+    check:
+      shell: grep -q 'Ubuntu 24.04' /etc/lsb-release && pro status 2>/dev/null | grep
+        -q 'Entitled'
+      expected_output: 0
+    fix:
+      shell: sudo do-release-upgrade
+tags:
+- testing

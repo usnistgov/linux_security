@@ -1,0 +1,55 @@
+id: audit_privileged_nonlocal_maintenance_diagnostic
+title: Ubuntu must generate audit records for privileged activities, nonlocal
+  maintenance, diagnostic sessions, and other system-level access.
+discussion: >
+  Failure to log events from nonlocal administrative access or diagnostic
+  sessions removes a critical audit capability for detecting and investigating attacks.
+  This requirement mandates logging of such activities for external or internal
+  network-based maintenance tools, excluding built-in system utilities
+  like ping, ls, ipconfig, or Ethernet switch monitoring ports.
+references:
+  nist:
+    800-53r5:
+    - MA-4 (1) (a)
+    - AU-12 c
+  disa:
+    cci:
+    - CCI-000172
+    - CCI-002884
+    srg:
+    - SRG-OS-000392-GPOS-00172
+    disa_stig:
+      ubuntu_2004:
+        - UBTU-20-010244
+      ubuntu_2204:
+        - UBTU-22-654235
+      ubuntu_2404:
+        - UBTU-24-500010
+enforcement_info:
+  enforcement_type: full
+  check:
+    shell: auditctl -l | grep -q "\-w /var/log/sudo.log -p wa"
+    status_code: 0
+  fix:
+    shell: echo "-w /var/log/sudo.log -p wa -k maintenance" >> /etc/audit/rules.d/stig.rules && augenrules --load
+platforms:
+- name: ubuntu_2004
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+tags:
+- testing

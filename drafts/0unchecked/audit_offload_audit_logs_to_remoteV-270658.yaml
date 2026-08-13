@@ -1,0 +1,34 @@
+id: audit_offload_audit_logs_to_remoteV-270658
+title: Ubuntu 24.04 LTS audit event multiplexor must be configured to offload audit
+  logs onto a different system or storage media from the system being audited.
+discussion: Storing information in a single location makes it susceptible to accidental
+  or incidental deletion or alteration, so offloading is commonly used in systems
+  with limited audit storage capacity to satisfy SRG-OS-000342-GPOS-00133 and SRG-OS-000479-GPOS-00224.
+references:
+  nist:
+    800-53r5:
+    - AU-4 (1)
+  disa:
+    cci:
+    - CCI-001851
+    srg:
+    - SRG-OS-000342-GPOS-00133
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-100450
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: low
+  enforcement_info:
+    check:
+      shell: dpkg -s audispd-plugins >/dev/null 2>&1 && grep -i '^active' /etc/audit/plugins.d/au-remote.conf
+        | grep -q 'yes' && REMOTE=$(grep -i '^remote_server' /etc/audit/audisp-remote.conf
+        | cut -d'=' -f2 | tr -d ' ') && [ -n "$REMOTE" ] && [ "$REMOTE" != "127.0.0.1"
+        ] && [ "$REMOTE" != "localhost" ] && [ "$REMOTE" != "::1" ]
+      expected_output: 0
+    fix:
+      shell: sudo sed -i -E 's/(remote_server\s*=).*/\1 /' /etc/audit/audisp-remote.conf
+tags:
+- testing

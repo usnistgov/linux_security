@@ -1,0 +1,34 @@
+id: os_restrict_unused_ports_services
+title: Ubuntu 22.04 LTS must be configured to prohibit or restrict the use of functions,
+  ports, protocols, and/or services, as defined in the PPSM CAL and vulnerability
+  assessments.
+discussion: To prevent unauthorized device connections, data transfers, or tunneling,
+  organizations must disable or restrict unused or unnecessary physical and logical
+  ports and protocols. The operating system should provide only essential capabilities,
+  limiting ports, protocols, and services to those required, authorized, and approved
+  for official business.
+references:
+  nist:
+    800-53r5:
+    - CM-7 b
+  disa:
+    cci:
+    - CCI-000382
+    srg:
+    - SRG-OS-000096-GPOS-00050
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-251030
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo ufw show raw
+      expected_output: 0
+    fix:
+      shell: sudo ufw allow
+tags:
+- testing

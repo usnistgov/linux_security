@@ -1,0 +1,52 @@
+id: audit_monitor_file_removal_syscalls
+title: Ubuntu must generate audit records for any successful/unsuccessful
+  use of unlink, unlinkat, rename, renameat, and rmdir system calls.
+discussion: >
+  Generating audit records tailored to the organization's security
+  and mission needs is essential for establishing, correlating, and investigating
+  incidents and identifying responsible parties. System call rules should be used
+  only when necessary and combined whenever possible to reduce performance impact.
+references:
+  nist:
+    800-53r5:
+    - AU-12 c
+  disa:
+    cci:
+    - CCI-000172
+    srg:
+    - SRG-OS-000468-GPOS-00212
+    disa_stig:
+      ubuntu_2004:
+        - UBTU-20-010267
+      ubuntu_2204:
+        - UBTU-22-654185
+      ubuntu_2404:
+        - UBTU-24-900540
+enforcement_info:
+  enforcement_type: full
+  check:
+    shell: auditctl -l | grep -q "\-a always,exit -F arch=b\S* -S unlink,unlinkat,rename,renameat,rmdir -F auid>=1000 -F auid!=-1"
+    status_code: 0
+  fix:
+    shell: echo -e "-a always,exit -F arch=b32 -S unlink,unlinkat,rename,renameat,rmdir -F auid>=1000 -F auid!=unset -k delete\n-a always,exit -F arch=b64 -S unlink,unlinkat,rename,renameat,rmdir -F auid>=1000 -F auid!=unset -k delete" >> /etc/audit/rules.d/stig.rules && augenrules --load
+platforms:
+- name: ubuntu_2004
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+tags:
+- testing

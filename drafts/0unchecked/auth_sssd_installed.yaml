@@ -1,0 +1,58 @@
+id: auth_sssd_installed
+title: Ubuntu 22.04 LTS must have the "SSSD" package installed.
+discussion: "Without multifactor authentication, privileged accounts are more easily\
+  \ accessed over a network, greatly increasing the risk of unauthorized use. MFA\
+  \ requires two or more factors\u2014something you know, have, and are\u2014such\
+  \ as a DOD CAC with approved PKI\u2014to verify identity."
+references:
+  nist:
+    800-53r5:
+    - IA-2 (6) (b)
+    - IA-2 (2)
+    - IA-2 (6) (a)
+    - IA-2 (1)
+  disa:
+    cci:
+    - CCI-004046
+    - CCI-000766
+    - CCI-004047
+    - CCI-000765
+    srg:
+    - SRG-OS-000396-GPOS-00176
+    - - SRG-OS-000705-GPOS-00150
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-254010
+      ubuntu_2404:
+      - UBTU-24-100650
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: dpkg -s sssd libpam-sss libnss-sss >/dev/null 2>&1
+      expected_output: 0
+    fix:
+      shell: 'sudo apt install sssd
+
+        sudo apt install libpam-sss
+
+        sudo apt install libnss-sss'
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: dpkg -s sssd libpam-sss libnss-sss >/dev/null 2>&1; echo $?
+      expected_output: 0
+    fix:
+      shell: 'sudo apt install -y sssd
+
+        sudo apt install -y libpam-sss
+
+        sudo apt install -y libnss-sss'
+tags:
+- testing

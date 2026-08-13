@@ -1,0 +1,78 @@
+id: audit_auditd_installed
+title: Ubuntu must have the "auditd" package installed.
+discussion: >
+  Audit records must include sufficient detail, such as timestamps,
+  source/destination addresses, user/process IDs, event descriptions, success/failure
+  indicators, filenames, and applied rules to enable correlation, investigation,
+  and forensic analysis of incidents. Without this information, establishing the
+  cause of outages or attacks and responding effectively is impaired.
+references:
+  nist:
+    800-53r5:
+    - CM-5 (1) (b)
+    - AU-3 e
+    - AU-3 c
+    - AU-3 b
+    - AU-7 b
+    - AU-6 (4)
+    - AU-3 (1)
+    - AU-12 c
+    - AU-7 a
+    - AU-7 (1)
+    - AU-12 a
+    - AU-3 d
+    - AU-12 (3)
+    - AU-3 a
+  disa:
+    cci:
+    - CCI-000154
+    - CCI-000135
+    - CCI-003938
+    - CCI-001879
+    - CCI-000130
+    - CCI-000133
+    - CCI-000172
+    - CCI-001876
+    - CCI-001881
+    - CCI-000134
+    - CCI-001880
+    - CCI-001882
+    - CCI-000169
+    - CCI-001875
+    - CCI-001814
+    - CCI-001914
+    - CCI-000158
+    - CCI-000131
+    - CCI-000132
+    - CCI-001877
+    - CCI-001878
+    srg:
+    - SRG-OS-000037-GPOS-00015
+    - SRG-OS-000365-GPOS-00152
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-653010
+      ubuntu_2404:
+      - UBTU-24-100400
+enforcement_info:
+  enforcement_type: full
+  check:
+    shell: dpkg -l | grep -q auditd
+    status_code: 0
+  fix:
+    shell: apt install -y auditd
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+tags:
+- testing

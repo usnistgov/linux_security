@@ -1,0 +1,49 @@
+id: audit_init_module_finit_module
+title: Ubuntu must generate audit records for successful/unsuccessful uses
+  of the init_module and finit_module syscalls.
+discussion: Generating audit records tailored to the organization's security and mission
+  needs is essential for establishing, correlating, and investigating incidents and
+  identifying responsible parties. System call rules should be used only when necessary
+  and combined whenever possible to minimize performance impact.
+references:
+  nist:
+    800-53r5:
+    - AU-12 c
+  disa:
+    cci:
+    - CCI-000172
+    srg:
+    - SRG-OS-000064-GPOS-00033
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-654175
+      ubuntu_2404:
+      - UBTU-24-900340
+enforcement_info:
+  enforcement_type: full
+  check:
+    shell: auditctl -l | grep "\-a always,exit -F arch=b\S* -S init_module,finit_module -F auid>=1000 -F auid!=-1" | wc -l
+    standard_output: "2"
+  fix:
+    shell: echo -e "-a always,exit -F arch=b32 -S init_module,finit_module -F auid>=1000 -F auid!=unset -k module_chng\n-a always,exit -F arch=b64 -S init_module,finit_module -F auid>=1000 -F auid!=unset -k module_chng" >> /etc/audit/rules.d/stig.rules && augenrules --load
+platforms:
+- name: ubuntu_2004
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+tags:
+- testing

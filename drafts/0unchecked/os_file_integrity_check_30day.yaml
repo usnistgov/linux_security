@@ -1,0 +1,38 @@
+id: os_file_integrity_check_30day
+title: Ubuntu 22.04 LTS must be configured so that the script that runs each 30 days
+  or less to check file integrity is the default.
+discussion: "Without verification, security functions\u2014hardware, software, or\
+  \ firmware that enforce the system\u2019s security policy and isolate code and data\u2014\
+  may fail silently, compromising account management, access controls, auditing, intrusion\
+  \ detection, and related notifications. This requirement applies to Ubuntu\u202F\
+  22.04\u202FLTS and any system needing such security\u2011function verification/testing."
+references:
+  nist:
+    800-53r5:
+    - SI-6 b
+  disa:
+    cci:
+    - CCI-002699
+    srg:
+    - SRG-OS-000446-GPOS-00200
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-651025
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: cd /tmp && apt download aide-common >/dev/null 2>&1 && ORIG_HASH=$(dpkg-deb
+        --fsys-tarfile aide-common_*.deb | tar -xO ./usr/share/aide/config/cron.daily/aide
+        2>/dev/null | sha1sum | awk '{print $1}') && FOUND=0 && for f in /etc/cron.{daily,monthly}/aide;
+        do if [ -f "$f" ]; then FOUND=1; if [ "$(sha1sum "$f" | awk '{print $1}')"
+        != "$ORIG_HASH" ]; then exit 1; fi; fi; done; [ $FOUND -eq 1 ] && exit 0 ||
+        exit 1
+      expected_output: 0
+    fix:
+      shell: sudo cp -f /usr/share/aide/config/cron.daily/aide /etc/cron.daily/aide
+tags:
+- testing

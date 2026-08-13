@@ -1,0 +1,42 @@
+id: audit_monitor_remote_access
+title: Ubuntu 22.04 LTS must monitor remote access methods.
+discussion: Remote access services lacking automated monitoring increase risk and
+  hinder effective access management. Automated monitoring of remote sessions enables
+  detection of cyberattacks and ensures compliance by auditing connection activities.
+references:
+  nist:
+    800-53r5:
+    - AC-17 (1)
+  disa:
+    cci:
+    - CCI-000067
+    srg:
+    - SRG-OS-000032-GPOS-00013
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-652015
+      ubuntu_2404:
+      - UBTU-24-200090
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: grep -qE '^(auth\.\*|authpriv\.\*|daemon\.\*)' /etc/rsyslog.*
+      expected_output: 0
+    fix:
+      shell: sudo systemctl restart rsyslog.service
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: grep -E -r '^\s*(auth|authpriv|daemon)\.\*' /etc/rsyslog.*
+      expected_output: 0
+    fix:
+      shell: sudo systemctl restart rsyslog.service
+tags:
+- testing

@@ -1,0 +1,34 @@
+id: os_file_integrity_check_default
+title: Ubuntu 24.04 LTS must be configured so that the script which runs each 30 days
+  or less to check file integrity is the default one.
+discussion: "Without verification, security functions\u2014hardware, software, or\
+  \ firmware that enforce policy, manage accounts, access, auditing, intrusion detection,\
+  \ and provide alerts\u2014may fail unnoticed. This requirement applies to Ubuntu\
+  \ 24.04 LTS and any system needing security\u2011function verification/testing."
+references:
+  nist:
+    800-53r5:
+    - SI-6 b
+  disa:
+    cci:
+    - CCI-002699
+    srg:
+    - SRG-OS-000446-GPOS-00200
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-100120
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: cd /tmp && apt download aide-common >/dev/null 2>&1 && sudo dpkg-deb
+        --fsys-tarfile aide-common_*.deb | tar -xO ./usr/share/aide/config/aide/aide.conf
+        2>/dev/null | sha256sum | diff - <(sudo sha256sum /etc/aide/aide.conf) >/dev/null
+      expected_output: 0
+    fix:
+      shell: sudo cp -f /usr/share/aide/config/cron.daily/aide /etc/cron.daily/dailyaidecheck*
+tags:
+- testing

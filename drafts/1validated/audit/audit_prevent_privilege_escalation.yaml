@@ -1,0 +1,54 @@
+id: audt_prevent_privilege_escalation
+title: Ubuntu must prevent all software from executing at higher privilege
+  levels than users executing the software and the audit system must be configured
+  to audit the execution of privileged functions.
+discussion: Some software requires elevated privileges to function; if those privileges
+  exceed users' assigned rights, users gain unintended higher access. Therefore, such
+  programs should be reviewed and excluded from the organization's approved software
+  list.
+references:
+  nist:
+    800-53r5:
+    - AC-6 (9)
+    - AC-6 (8)
+  disa:
+    cci:
+    - CCI-002234
+    - CCI-002233
+    srg:
+    - SRG-OS-000326-GPOS-00126
+    disa_stig:
+      ubuntu_2004:
+        - UBTU-20-010211
+      ubuntu_2204:
+        - UBTU-22-654230
+      ubuntu_2404:
+        - UBTU-24-200580
+enforcement_info:
+  enforcement_type: full
+  check:
+    shell: auditctl -l | grep "\-a always,exit -F arch=b\S* -S execve -C uid!=euid -F euid=0" | wc -l
+    standard_output: "2"
+  fix:
+    shell: echo -e "-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -k execpriv\n-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -k execpriv" >> /etc/audit/rules.d/stig.rules && augenrules --load
+platforms:
+- name: ubuntu_2004
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+tags:
+- testing

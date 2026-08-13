@@ -1,0 +1,41 @@
+id: os_data_at_rest_encryption
+title: Ubuntu 24.04 LTS handling data requiring "data at rest" protections must employ
+  cryptographic mechanisms to prevent unauthorized disclosure and modification of
+  the information at rest.
+discussion: "Information at rest is data stored on secondary storage devices (e.g.,\
+  \ disks, tapes) within an operating system, including user\u2011generated and OS\
+  \ configuration data. Organizations must protect its confidentiality and integrity\
+  \ using appropriate mechanisms based on the information\u2019s security category\
+  \ or classification."
+references:
+  nist:
+    800-53r5:
+    - SC-28 (1)
+    - SC-28
+    - SC-28 (3)
+  disa:
+    cci:
+    - CCI-002475
+    - CCI-004910
+    - CCI-002476
+    - CCI-001199
+    srg:
+    - SRG-OS-000185-GPOS-00079
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-600090
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: bash -c 'if [ -z "$(comm -23 <(lsblk -o NAME -n | grep -vE '\''^(vda1|loop|ram)$'\''
+        | sort) <(awk '\''{print $1}'\'' /etc/crypttab | sed '\''s|^/dev/||'\'' |
+        sort))" ]; then exit 0; else exit 1; fi'
+      expected_output: 0
+    fix:
+      shell: cryptsetup luksFormat /dev/sda1
+tags:
+- testing

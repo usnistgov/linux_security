@@ -1,0 +1,35 @@
+id: auth_limit_concurrent_account_sessions
+title: Ubuntu 22.04 LTS must limit the number of concurrent sessions to ten for all
+  accounts and/or account types.
+discussion: "Ubuntu 22.04 LTS allows administrators to limit the number of users and\
+  \ concurrent sessions per user to mitigate denial\u2011of\u2011service risks. The\
+  \ maximum concurrent sessions for information system accounts should be set according\
+  \ to mission requirements and the operational environment, without restricting multiple\
+  \ accounts used by a single user."
+references:
+  nist:
+    800-53r5:
+    - AC-10
+  disa:
+    cci:
+    - CCI-000054
+    srg:
+    - SRG-OS-000027-GPOS-00008
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-412020
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: low
+  enforcement_info:
+    check:
+      shell: sudo grep -r -s '^[^#].*maxlogins' /etc/security/limits.conf /etc/security/limits.d/*.conf
+        | awk '{found=1; for(i=1;i<=NF;i++) if($i=="maxlogins"){if($(i+1)+0 <= 10)
+        exit 0; else exit 1}} END{if(!found) exit 1}'
+      expected_output: 0
+    fix:
+      shell: sudo sed -i '1i* hard maxlogins 10' /etc/security/limits.conf
+tags:
+- testing

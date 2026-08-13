@@ -1,0 +1,31 @@
+id: audit_record_time_stamp_utcV-270820
+title: Ubuntu 24.04 LTS must record time stamps for audit records that can be mapped
+  to Coordinated Universal Time (UTC) or Greenwich Mean Time (GMT).
+discussion: "Without consistent timestamps and a common time reference, forensic analysis\
+  \ is difficult. Ubuntu\u202F24.04\u202FLTS timestamps include date and time, typically\
+  \ expressed in UTC (or local time with a UTC offset)."
+references:
+  nist:
+    800-53r5:
+    - AU-8 b
+  disa:
+    cci:
+    - CCI-001890
+    srg:
+    - SRG-OS-000359-GPOS-00146
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-901220
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: low
+  enforcement_info:
+    check:
+      shell: timedatectl show --property=Timezone --value | grep -E '^(UTC|GMT)$'
+      expected_output: 0
+    fix:
+      shell: sudo timedatectl set-timezone [ZONE]
+tags:
+- testing

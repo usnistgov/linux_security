@@ -1,0 +1,43 @@
+id: ssh_disable_unattended_login
+title: Ubuntu 22.04 LTS must not allow unattended or automatic login via SSH.
+discussion: Not restricting system access to authenticated users weakens Ubuntu 22.04
+  LTS security.
+references:
+  nist:
+    800-53r5:
+    - CM-6 b
+  disa:
+    cci:
+    - CCI-000366
+    srg:
+    - SRG-OS-000480-GPOS-00229
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-255025
+      ubuntu_2404:
+      - UBTU-24-300031
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: high
+  enforcement_info:
+    check:
+      shell: sudo grep -q -iE '^\s*PermitEmptyPasswords\s+no' /etc/ssh/sshd_config
+        && sudo grep -q -iE '^\s*PermitUserEnvironment\s+no' /etc/ssh/sshd_config
+      expected_output: 0
+    fix:
+      shell: sudo systemctl restart ssh
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: high
+  enforcement_info:
+    check:
+      shell: grep -E '^PermitEmptyPasswords\s+no|^PermitUserEnvironment\s+no' /etc/ssh/sshd_config
+        | wc -l
+      expected_output: 2
+    fix:
+      shell: sudo systemctl restart ssh
+tags:
+- testing

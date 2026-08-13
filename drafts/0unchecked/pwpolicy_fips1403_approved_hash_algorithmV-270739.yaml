@@ -1,0 +1,31 @@
+id: pwpolicy_fips1403_approved_hash_algorithmV-270739
+title: Ubuntu 24.04 LTS must encrypt all stored passwords with a FIPS 140-3 approved
+  cryptographic hashing algorithm.
+discussion: Passwords must be protected at all times, and encryption is the standard
+  method to safeguard them. Unencrypted passwords are stored in clear text and can
+  be easily compromised.
+references:
+  nist:
+    800-53r5:
+    - IA-7
+  disa:
+    cci:
+    - CCI-000803
+    srg:
+    - SRG-OS-000120-GPOS-00061
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-400400
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: grep -iq '^ENCRYPT_METHOD[[:space:]]*SHA512' /etc/login.defs
+      expected_output: 0
+    fix:
+      shell: sudo sed -i 's/^#*ENCRYPT_METHOD.*/ENCRYPT_METHOD SHA512/' /etc/login.defs
+tags:
+- testing

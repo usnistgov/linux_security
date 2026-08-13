@@ -1,0 +1,35 @@
+id: os_prevent_gui_autorun_override
+title: Ubuntu 24.04 LTS must prevent a user from overriding the disabling of the graphical
+  user interface autorun function.
+discussion: "Addressing this involves using nonce\u2011based or challenge\u2011response\
+  \ protocols (e.g., TLS, WS\u2011Security) and time\u2011synchronous or challenge\u2011\
+  response one\u2011time authenticators."
+references:
+  nist:
+    800-53r5:
+    - IA-3
+  disa:
+    cci:
+    - CCI-000778
+    - CCI-001958
+    srg:
+    - SRG-OS-000114-GPOS-00059
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-200041
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: gsettings writable org.gnome.desktop.media-handling autorun-never | grep
+        -q '^false$'
+      expected_output: 0
+    fix:
+      shell: 'echo ''/org/gnome/desktop/media-handling/autorun-never'' >> /etc/dconf/db/local.d/locks/00-security-settings-lock
+
+        sudo dconf update'
+tags:
+- testing

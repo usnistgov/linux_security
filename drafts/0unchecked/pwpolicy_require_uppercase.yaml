@@ -1,0 +1,32 @@
+id: pwpolicy_require_uppercase
+title: Ubuntu 22.04 LTS must enforce password complexity by requiring at least one
+  uppercase character be used.
+discussion: "A complex password increases the time and resources needed to crack it\
+  \ by raising the number of possible combinations. Password complexity thus enhances\
+  \ resistance to guessing and brute\u2011force attacks."
+references:
+  nist:
+    800-53r5:
+    - IA-5 (1) (h)
+  disa:
+    cci:
+    - CCI-000192
+    - CCI-004066
+    srg:
+    - SRG-OS-000069-GPOS-00037
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-611010
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: grep -E '^\s*ucredit\s*=\s*-1\s*$' /etc/security/pwquality.conf
+      expected_output: 0
+    fix:
+      shell: echo "ucredit = -1" | sudo tee -a /etc/security/pwquality.conf > /dev/null
+tags:
+- testing

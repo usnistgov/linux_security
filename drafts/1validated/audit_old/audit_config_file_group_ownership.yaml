@@ -1,0 +1,42 @@
+id: audit_config_file_group_ownership
+title: Ubuntu must permit only authorized groups to own the audit configuration
+  files.
+discussion: Without the ability to restrict which roles and individuals can select
+  audited events, unauthorized personnel could block critical audit logging, and misconfigured
+  audits may overwhelm the log and impede incident correlation and investigation.
+references:
+  nist:
+    800-53r5:
+    - AU-12 b
+  disa:
+    cci:
+    - CCI-000171
+    srg:
+    - SRG-OS-000063-GPOS-00032
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-653075
+      ubuntu_2404:
+      - UBTU-24-900060
+enforcement_info:
+  enforcement_type: full
+  check:
+    shell: ls -l /etc/audit/audit.rules /etc/audit/auditd.conf /etc/audit/rules.d/* | awk '{print $4}' | grep -q -v "root"
+    status_code: 1
+  fix:
+    shell: chown -R :root /etc/audit/audit.rules /etc/audit/auditd.conf /etc/audit/rules.d/*
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+tags:
+- testing

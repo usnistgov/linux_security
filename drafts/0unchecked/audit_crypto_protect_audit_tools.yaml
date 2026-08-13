@@ -1,0 +1,67 @@
+id: audit_crypto_protect_audit_tools
+title: Ubuntu 22.04 LTS must use cryptographic mechanisms to protect the integrity
+  of audit tools.
+discussion: Protecting audit tool integrity is essential to ensure audit information
+  remains trustworthy, as attackers may replace or tamper with tools to hide or erase
+  system activity. Therefore, audit tools must be cryptographically signed (e.g.,
+  via checksum hashes) to detect any modifications, manipulation, or replacement.
+references:
+  nist:
+    800-53r5:
+    - AU-9 (3)
+  disa:
+    cci:
+    - CCI-001496
+    srg:
+    - SRG-OS-000278-GPOS-00108
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-651030
+      ubuntu_2404:
+      - UBTU-24-909890
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: diff -u <(grep -E '(\/sbin\/(audit|au))' /etc/aide/aide.conf) <(echo
+        -e "/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/ausearch
+        p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/autrace
+        p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512")
+      expected_output: 0
+    fix:
+      shell: 'sudo tee -a /etc/aide/aide.conf > /dev/null <<''EOF''
+
+        # Audit Tools
+
+        /sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512
+
+        /sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512
+
+        /sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512
+
+        /sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512
+
+        /sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512
+
+        /sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512
+
+        EOF'
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: '[ "$(egrep ''(\/sbin\/(audit|au))'' /etc/aide/aide.conf | wc -l)" -eq
+        7 ]'
+      expected_output: 0
+    fix:
+      shell: echo -e "# Audit Tools\n/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/auditd
+        p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/aureport
+        p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/augenrules
+        p+i+n+u+g+s+b+acl+xattrs+sha512" >> /etc/aide/aide.conf
+tags:
+- testing

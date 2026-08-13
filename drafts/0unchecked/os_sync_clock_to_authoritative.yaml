@@ -1,0 +1,51 @@
+id: os_sync_clock_to_authoritative
+title: Ubuntu 22.04 LTS must synchronize internal information system clocks to the
+  authoritative time source when the time difference is greater than one second.
+discussion: "Accurate timestamps are essential for correlating events and conducting\
+  \ reliable forensic analysis. Synchronizing internal system clocks\u2014including\
+  \ endpoints with intermittent access to the authoritative time server\u2014ensures\
+  \ uniform time stamps across networked systems."
+references:
+  nist:
+    800-53r5:
+    - SC-45 (1) (b)
+  disa:
+    cci:
+    - CCI-002046
+    - CCI-004926
+    srg:
+    - SRG-OS-000356-GPOS-00144
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-252015
+      ubuntu_2404:
+      - UBTU-24-600180
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: low
+  enforcement_info:
+    check:
+      shell: 'grep -ir "^makestep" /etc/chrony* | grep -q "makestep 1 -1" && timedatectl
+        | grep -qE "System clock synchronized: yes" && timedatectl | grep -qE "NTP
+        service: active" && exit 0 || exit 1'
+      expected_output: 0
+    fix:
+      shell: 'echo "makestep 1 -1" >> /etc/chrony/chrony.conf
+
+        sudo systemctl restart chrony.service'
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: low
+  enforcement_info:
+    check:
+      shell: grep -E '^makestep[[:space:]]+1[[:space:]]+-1' /etc/chrony/chrony.conf
+      expected_output: 0
+    fix:
+      shell: 'sudo sh -c ''echo "makestep 1 -1" >> /etc/chrony/chrony.conf''
+
+        sudo systemctl restart chrony.service'
+tags:
+- testing

@@ -1,0 +1,58 @@
+id: audit_account_etc_opasswd_events
+title: Ubuntu must generate audit records for all account creations, modifications,
+  disabling, and termination events that affect /etc/opasswd.
+discussion: >
+  Attackers often create accounts to maintain persistent access, and auditing
+  these account-creation events provides essential forensic logs. Integrating
+  the OS with enterprise-level authentication, access, and auditing mechanisms
+  helps meet or exceed access-control policy requirements.
+references:
+  nist:
+    800-53r5:
+    - AC-2 (4)
+    - AU-12 c
+  disa:
+    cci:
+    - CCI-001403
+    - CCI-000172
+    - CCI-000018
+    - CCI-002130
+    - CCI-001404
+    - CCI-001405
+    srg:
+    - SRG-OS-000004-GPOS-00004
+    disa_stig:
+      ubuntu_2004:
+        - UBTU-20-010104
+      ubuntu_2204:
+        - UBTU-22-654140
+      ubuntu_2404:
+        - UBTU-24-200320
+enforcement_info:
+  enforcement_type: full
+  check:
+    shell: auditctl -l | grep -q "\-w /etc/security/opasswd -p wa"
+    status_code: 0
+  fix:
+    shell: echo "-w /etc/security/opasswd -p wa -k usergroup_modification" >> /etc/audit/rules.d/stig.rules && augenrules --load
+platforms:
+- name: ubuntu_2004
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+tags:
+- testing

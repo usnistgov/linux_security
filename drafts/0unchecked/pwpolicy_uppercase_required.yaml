@@ -1,0 +1,33 @@
+id: pwpolicy_uppercase_required
+title: Ubuntu 24.04 LTS must enforce password complexity by requiring that at least
+  one uppercase character be used.
+discussion: "Complex passwords increase the time and resources needed to crack them\
+  \ by raising the number of possible combinations. This enhances resistance to guessing\
+  \ and brute\u2011force attacks."
+references:
+  nist:
+    800-53r5:
+    - IA-5 (1) (g)
+    - IA-5 (1) (h)
+  disa:
+    cci:
+    - CCI-004065
+    - CCI-004066
+    srg:
+    - SRG-OS-000069-GPOS-00037
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-400260
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: grep -q '^\s*ucredit\s*=\s*-1\s*(#.*)?$' /etc/security/pwquality.conf
+      expected_output: 0
+    fix:
+      shell: echo "ucredit=-1" >> /etc/security/pwquality.conf
+tags:
+- testing

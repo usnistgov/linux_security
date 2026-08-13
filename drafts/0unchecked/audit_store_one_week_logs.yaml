@@ -1,0 +1,32 @@
+id: audit_store_one_week_logs
+title: Ubuntu 22.04 LTS must allocate audit record storage capacity to store at least
+  one weeks' worth of audit records, when audit records are not immediately sent to
+  a central audit record storage facility.
+discussion: Operating systems must allocate sufficient storage for audit logs, a task
+  typically performed during initial installation.
+references:
+  nist:
+    800-53r5:
+    - AU-4
+  disa:
+    cci:
+    - CCI-001849
+    srg:
+    - SRG-OS-000341-GPOS-00132
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-653035
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: low
+  enforcement_info:
+    check:
+      shell: log_file=$(sudo grep -i log_file /etc/audit/auditd.conf | awk -F'=' '{print
+        $2}' | xargs); sudo df -h "$log_file" | awk 'NR==2 {print $4}'
+      expected_output: <available_space>
+    fix:
+      shell: sudo sed -i -E 's@^(log_file\s*=\s*).*@\1 /audit.log@' /etc/audit/auditd.conf
+tags:
+- testing

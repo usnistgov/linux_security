@@ -1,0 +1,36 @@
+id: ssh_idle_timeout_10min
+title: Ubuntu 24.04 LTS must immediately terminate all network connections associated
+  with SSH traffic at the end of the session or after 10 minutes of inactivity.
+discussion: Terminating idle sessions quickly limits the window for unauthorized access
+  and frees up resources. It ends only the inactive session, releasing associated
+  TCP/IP ports and application-level allocations without affecting other sessions
+  or network access.
+references:
+  nist:
+    800-53r5:
+    - SC-10
+  disa:
+    cci:
+    - CCI-001133
+    srg:
+    - SRG-OS-000163-GPOS-00072
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-600010
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: awk '!/^\s*#/ && /ClientAliveInterval/ {c++; v=$2} END {if(c==1 && v<=600)
+        exit 0; else exit 1}' /etc/ssh/sshd_config
+      expected_output: 0
+    fix:
+      shell: 'sudo sed -i ''s/^#*ClientAliveInterval.*/ClientAliveInterval 600/''
+        /etc/ssh/sshd_config
+
+        sudo systemctl restart ssh'
+tags:
+- testing

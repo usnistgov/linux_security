@@ -1,0 +1,45 @@
+id: ssh_ensure_installed
+title: Ubuntu 22.04 LTS must have SSH installed.
+discussion: Without protection, transmitted information can be intercepted and altered,
+  compromising confidentiality and integrity. This applies to all internal and external
+  network communications and can be safeguarded by physical or cryptographic means.
+references:
+  nist:
+    800-53r5:
+    - SC-8 (2)
+    - SC-8
+  disa:
+    cci:
+    - CCI-002418
+    - CCI-002422
+    - CCI-002420
+    srg:
+    - SRG-OS-000423-GPOS-00187
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-255010
+      ubuntu_2404:
+      - UBTU-24-100800
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: high
+  enforcement_info:
+    check:
+      shell: dpkg -l | grep -q '^ii\s*openssh-server'
+      expected_output: 0
+    fix:
+      shell: sudo apt install ssh
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: high
+  enforcement_info:
+    check:
+      shell: dpkg -l | grep -q '^ii.*openssh-server'
+      expected_output: 0
+    fix:
+      shell: sudo apt install -y ssh
+tags:
+- testing

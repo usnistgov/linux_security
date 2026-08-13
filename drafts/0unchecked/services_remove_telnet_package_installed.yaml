@@ -1,0 +1,32 @@
+id: services_remove_telnet_package_installed
+title: Ubuntu 24.04 LTS must not have the telnet package installed.
+discussion: "Remote access services lacking automated controls increase risk and complicate\
+  \ management; Ubuntu\u202F24.04\u202FLTS (e.g., RDP) must enforce actions when audits\
+  \ reveal unauthorized activity. Automated control of remote access sessions ensures\
+  \ ongoing compliance by enforcing connection rules across servers, workstations,\
+  \ notebooks, smartphones, and tablets."
+references:
+  nist:
+    800-53r5:
+    - IA-5 (1) (c)
+  disa:
+    cci:
+    - CCI-000197
+    srg:
+    - SRG-OS-000074-GPOS-00042
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-100030
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: high
+  enforcement_info:
+    check:
+      shell: dpkg -s telnetd >/dev/null 2>&1; [ $? -ne 0 ]
+      expected_output: 0
+    fix:
+      shell: sudo apt remove telnetd
+tags:
+- testing

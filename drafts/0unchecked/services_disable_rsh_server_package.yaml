@@ -1,0 +1,30 @@
+id: services_disable_rsh_server_package
+title: Ubuntu 24.04 LTS must not have the rsh-server package installed.
+discussion: Operating systems should not install unnecessary default functionality,
+  as unneeded services increase the attack surface and risk. Examples include games,
+  demo software, and extra tools that cannot be disabled.
+references:
+  nist:
+    800-53r5:
+    - CM-7 a
+  disa:
+    cci:
+    - CCI-000381
+    srg:
+    - SRG-OS-000095-GPOS-00049
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-100040
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: high
+  enforcement_info:
+    check:
+      shell: dpkg -l | grep -q rsh-server
+      expected_output: 0
+    fix:
+      shell: sudo apt remove rsh-server
+tags:
+- testing

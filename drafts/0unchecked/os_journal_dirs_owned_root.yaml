@@ -1,0 +1,55 @@
+id: os_journal_dirs_owned_root
+title: Ubuntu 22.04 LTS must configure the directories used by the system journal
+  to be owned by "root".
+discussion: Only authorized personnel should see error details, as error messages
+  can reveal system state, OS, PII, or operational information. Organizations must
+  design error messages according to policy to prevent exposing sensitive data to
+  unauthorized users.
+references:
+  nist:
+    800-53r5:
+    - SI-11 b
+  disa:
+    cci:
+    - CCI-001314
+    srg:
+    - SRG-OS-000206-GPOS-00084
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-232080
+      ubuntu_2404:
+      - UBTU-24-700080
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo find /run/log/journal /var/log/journal -type d ! -user root -print
+        | wc -l
+      expected_output: 0
+    fix:
+      shell: 'sudo touch /etc/tmpfiles.d/zzz-systemd-stig.conf
+
+        sudo sh -c ''echo "z /run/log/journal 2750 root systemd-journal - -" >> /etc/tmpfiles.d/zzz-systemd-stig.conf''
+
+        sudo sh -c ''echo "z /var/log/journal 2750 root systemd-journal - -" >> /etc/tmpfiles.d/zzz-systemd-stig.conf''
+
+        sudo sh -c ''echo "z /var/log/journal/%m 2750 root systemd-journal - -" >>
+        /etc/tmpfiles.d/zzz-systemd-stig.conf''
+
+        sudo reboot'
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo find /run/log/journal /var/log/journal -type d ! -user root -print
+        | grep -q . && echo "non-root owned" || echo "all root owned"
+      expected_output: all root owned
+    fix:
+      shell: sudo vi /etc/tmpfiles.d/zzz-systemd-stig.conf
+tags:
+- testing

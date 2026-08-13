@@ -1,0 +1,34 @@
+id: ssh_smartcard_mfa_enforcement_policy
+title: Ubuntu 24.04 LTS must implement smart card logins for multifactor authentication
+  for local and network access to privileged and nonprivileged accounts over SSH.
+discussion: "Without multifactor authentication, privileged accounts are far easier\
+  \ to compromise; MFA requires two or more factors\u2014something you know, have,\
+  \ or are\u2014and is exemplified by the DOD CAC with PKI."
+references:
+  nist:
+    800-53r5:
+    - IA-2 (2)
+    - IA-2 (1)
+  disa:
+    cci:
+    - CCI-000766
+    - CCI-000765
+    srg:
+    - SRG-OS-000105-GPOS-00052
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-400030
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo grep -q -r '^PubkeyAuthentication\s\+yes' /etc/ssh/sshd_config*
+        2>/dev/null
+      expected_output: 0
+    fix:
+      shell: sudo sh -c 'echo "PubkeyAuthentication yes" >> /etc/ssh/sshd_config'
+tags:
+- testing

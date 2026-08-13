@@ -1,0 +1,31 @@
+id: os_var_log_directory_permissions
+title: Ubuntu 24.04 LTS must configure the /var/log directory to have mode "0755"
+  or less permissive.
+discussion: Only authorized personnel should receive error details, as messages can
+  reveal the operating system, PII, or operational state. Error message content must
+  be carefully designed per organizational policy to prevent unauthorized disclosure.
+references:
+  nist:
+    800-53r5:
+    - SI-11 b
+  disa:
+    cci:
+    - CCI-001314
+    srg:
+    - SRG-OS-000206-GPOS-00084
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-700120
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: stat -c "%a" /var/log | { read mode; [ "$mode" -le 755 ]; }
+      expected_output: 0
+    fix:
+      shell: sudo chmod 0755 /var/log
+tags:
+- testing

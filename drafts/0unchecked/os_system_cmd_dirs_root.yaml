@@ -1,0 +1,35 @@
+id: os_system_cmd_dirs_root
+title: Ubuntu 24.04 LTS must have directories that contain system commands owned by
+  root.
+discussion: "Protecting audit information requires securing the tools used to view\
+  \ and manipulate logs, as unauthorized access could alter audit data. Operating\
+  \ systems enforce user permissions and roles to control who can access these audit\
+  \ tools, which include vendor\u2011provided, open\u2011source, and custom query\
+  \ or report generators."
+references:
+  nist:
+    800-53r5:
+    - AU-9 a
+  disa:
+    cci:
+    - CCI-001495
+    srg:
+    - SRG-OS-000258-GPOS-00099
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-901270
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin
+        ! -user root -type d -exec stat -c "%n %U" '{}' \;
+      expected_output: (no output)
+    fix:
+      shell: sudo find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin
+        ! -user root -type d -exec chown root '{}' \;
+tags:
+- testing

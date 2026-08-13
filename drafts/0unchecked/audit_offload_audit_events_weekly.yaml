@@ -1,0 +1,76 @@
+id: audit_offload_audit_events_weekly
+title: Ubuntu 22.04 LTS must have a crontab script running weekly to offload audit
+  events of standalone systems.
+discussion: Storing information in a single location makes it susceptible to accidental
+  or incidental deletion or alteration, especially when offloading is used to manage
+  limited audit storage capacity.
+references:
+  nist:
+    800-53r5:
+    - AU-4 (1)
+  disa:
+    cci:
+    - CCI-001851
+    srg:
+    - SRG-OS-000479-GPOS-00224
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-651035
+      ubuntu_2404:
+      - UBTU-24-900950
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: low
+  enforcement_info:
+    check:
+      shell: find /etc/cron.weekly -type f -exec grep -l -i -E 'audit.*offload|offload.*audit|audit.*external|external.*audit'
+        {} + 2>/dev/null | grep -q .
+      expected_output: 0
+    fix:
+      shell: 'cat <<''EOF'' > /etc/cron.weekly/offload_audit_logs.sh
+
+        #!/bin/bash
+
+        # Offload audit logs to external media
+
+        # Example: copy audit logs to external mount point
+
+        cp -a /var/log/audit/* /mnt/backup/audit-logs/$(date +\%Y\%m\%d_\%H\%M\%S)/
+
+        EOF
+
+        chmod +x /etc/cron.weekly/offload_audit_logs.sh'
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: low
+  enforcement_info:
+    check:
+      shell: '[ -x /etc/cron.weekly/audit-offload ] && grep -q "audit" /etc/cron.weekly/audit-offload
+        && grep -q "external" /etc/cron.weekly/audit-offload'
+      expected_output: 0
+    fix:
+      shell: 'cat > /etc/cron.weekly/offload_audit.sh <<''EOF''
+
+        #!/bin/bash
+
+        # Offload audit logs to external media
+
+        EXTERNAL_MEDIA="/mnt/backup"
+
+        AUDIT_LOG_DIR="/var/log/audit"
+
+        TIMESTAMP=$(date +%Y%m%d%H%M%S)
+
+        mkdir -p "$EXTERNAL_MEDIA"
+
+        tar -czf "$EXTERNAL_MEDIA/audit_logs_$TIMESTAMP.tar.gz" -C "$AUDIT_LOG_DIR"
+        .
+
+        EOF
+
+        chmod +x /etc/cron.weekly/offload_audit.sh'
+tags:
+- testing

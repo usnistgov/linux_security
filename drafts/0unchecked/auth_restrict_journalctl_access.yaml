@@ -1,0 +1,45 @@
+id: auth_restrict_journalctl_access
+title: Ubuntu 22.04 LTS must be configured so that the "journalctl" command is not
+  accessible by unauthorized users.
+discussion: "Operating systems that disclose excessive information in error messages\
+  \ risk exposing sensitive data, so organizations must carefully control error\u2011\
+  message content according to policy. This includes avoiding the release of credentials,\
+  \ personal identifiers, or mission\u2011critical details that adversaries could\
+  \ exploit."
+references:
+  nist:
+    800-53r5:
+    - SI-11 a
+  disa:
+    cci:
+    - CCI-001312
+    srg:
+    - SRG-OS-000205-GPOS-00083
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-232140
+      ubuntu_2404:
+      - UBTU-24-700030
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo stat -c "%a" /usr/bin/journalctl | grep -q '^740$'
+      expected_output: 0
+    fix:
+      shell: sudo chmod 740 /usr/bin/journalctl
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: stat -c "%n %a" /usr/bin/journalctl
+      expected_output: /usr/bin/journalctl 740
+    fix:
+      shell: sudo chmod 740 /usr/bin/journalctl
+tags:
+- testing

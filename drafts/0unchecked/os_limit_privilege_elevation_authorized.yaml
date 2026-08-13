@@ -1,0 +1,36 @@
+id: os_limit_privilege_elevation_authorized
+title: The operating system must restrict privilege elevation to authorized personnel.
+discussion: An incorrectly configured sudoers file allows any system user to perform
+  privileged actions.
+references:
+  nist:
+    800-53r5:
+    - IA-11
+    - SC-11 b
+  disa:
+    cci:
+    - CCI-002038
+    - CCI-004895
+    srg:
+    - SRG-OS-000396-GPOS-00176
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-654224
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo grep -E '^ALL\s+ALL=\(ALL\)\s+ALL$|^ALL\s+ALL=\(ALL:ALL\)\s+ALL$'
+        /etc/sudoers /etc/sudoers.d/ 2>/dev/null
+      expected_output: 1
+    fix:
+      shell: sudo sed -i '/^ALL[[:space:]]\+ALL[[:space:]]*=(ALL)[[:space:]]*ALL$/d'
+        /etc/sudoers; sudo sed -i '/^ALL[[:space:]]\+ALL[[:space:]]*=(ALL:ALL)[[:space:]]*ALL$/d'
+        /etc/sudoers; sudo find /etc/sudoers.d -type f -exec sed -i '/^ALL[[:space:]]\+ALL[[:space:]]*=(ALL)[[:space:]]*ALL$/d'
+        {} +; sudo find /etc/sudoers.d -type f -exec sed -i '/^ALL[[:space:]]\+ALL[[:space:]]*=(ALL:ALL)[[:space:]]*ALL$/d'
+        {} +
+tags:
+- testing

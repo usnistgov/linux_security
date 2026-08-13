@@ -1,0 +1,36 @@
+id: os_configure_aide_file_integrity
+title: Ubuntu 24.04 LTS must configure AIDE to perform file integrity checking on
+  the file system if installed.
+discussion: "Without verification, security functions\u2014hardware, software, or\
+  \ firmware that enforce security policy and isolate code and data\u2014may fail\
+  \ unnoticed. This requirement applies to Ubuntu\u202F24.04\u202FLTS and any system\
+  \ needing such security\u2011function verification/testing."
+references:
+  nist:
+    800-53r5:
+    - SI-6 a
+  disa:
+    cci:
+    - CCI-002696
+    srg:
+    - SRG-OS-000445-GPOS-00199
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-100110
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo aide -c /etc/aide/aide.conf --check
+      expected_output: 0
+    fix:
+      shell: 'sudo aideinit
+
+        sudo cp -p /var/lib/aide/aide.db.new /var/lib/aide/aide.db
+
+        sudo aide -c /etc/aide/aide.conf --check'
+tags:
+- testing

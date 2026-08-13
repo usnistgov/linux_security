@@ -1,0 +1,32 @@
+id: audit_shutdown_on_audit_failure
+title: Ubuntu 22.04 LTS must shut down by default upon audit failure.
+discussion: If the OS risks failing to process audit logs, it must mitigate failures
+  by overwriting the oldest records when storage is full and queuing records locally
+  when a central server is unreachable, then synchronizing once the connection is
+  restored.
+references:
+  nist:
+    800-53r5:
+    - AU-5 b
+  disa:
+    cci:
+    - CCI-000140
+    srg:
+    - SRG-OS-000047-GPOS-00023
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-653030
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo grep -i '^\s*disk_full_action' /etc/audit/auditd.conf | awk -F=
+        '{gsub(/^[ \t]+|[ \t]+$/,"",$2); print $2}'
+      expected_output: HALT
+    fix:
+      shell: sudo systemctl restart auditd.service
+tags:
+- testing

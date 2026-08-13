@@ -1,0 +1,33 @@
+id: os_system_command_mode_0755
+title: Ubuntu 24.04 LTS must have system commands set to a mode of 0755 or less permissive.
+discussion: "Allowing any user to modify software libraries in Ubuntu 24.04 LTS could\
+  \ lead to untested changes that bypass proper change\u2011management testing and\
+  \ approvals. Only qualified, authorized individuals should be permitted to access\
+  \ and modify these components."
+references:
+  nist:
+    800-53r5:
+    - CM-5 (6)
+  disa:
+    cci:
+    - CCI-001499
+    srg:
+    - SRG-OS-000259-GPOS-00100
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-300011
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin
+        -perm /022 -type f -exec stat -c "%n %a" '{}' \;
+      expected_output: no output
+    fix:
+      shell: sudo find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin
+        -perm /022 -type f -exec chmod 755 '{}' \;
+tags:
+- testing

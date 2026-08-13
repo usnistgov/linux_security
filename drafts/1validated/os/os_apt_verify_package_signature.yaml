@@ -1,0 +1,46 @@
+id: os_apt_verify_package_signature
+title: Ubuntu must be configured so that the Advance Package Tool (APT)
+  prevents the installation of patches, service packs, device drivers, or operating
+  system components without verification they have been digitally signed using a certificate
+  that is recognized and approved by the organization.
+discussion: >
+  Software components must be signed with an organization-approved
+  certificate to confirm they are untampered and from a trusted vendor;
+  self-signed certificates are not permitted.
+references:
+  nist:
+    800-53r5:
+    - CM-14
+  disa:
+    cci:
+    - CCI-001749
+    - CCI-003992
+    srg:
+    - SRG-OS-000366-GPOS-00153
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-214010
+      ubuntu_2404:
+      - UBTU-24-300001
+enforcement_info:
+  enforcement_type: full
+  check:
+    shell: apt-config dump | grep -q "APT::Get::AllowUnauthenticated \"false\";"
+    status_code: 0
+  fix:
+    shell: echo "APT::Get::AllowUnauthenticated \"false\";" >> /etc/apt/apt.conf.d/99stig-rules
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: low
+  enforcement_info:
+    enforcement_type: inherit
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: low
+  enforcement_info:
+    enforcement_type: inherit
+tags:
+- testing

@@ -1,0 +1,33 @@
+id: audit_ensure_tool_mode_0755
+title: Ubuntu 24.04 LTS must configure audit tools with a mode of "0755" or less permissive.
+discussion: "Protecting audit information requires securing the tools used to view\
+  \ and manipulate logs, ensuring only authorized users can access them via permissions\
+  \ and roles. Audit tools include vendor\u2011provided, open\u2011source, custom\
+  \ queries, and report generators."
+references:
+  nist:
+    800-53r5:
+    - AU-9 a
+  disa:
+    cci:
+    - CCI-001494
+    - CCI-001493
+    srg:
+    - SRG-OS-000257-GPOS-00098
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-901230
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: stat -c "%n %a" /sbin/auditctl /sbin/aureport /sbin/ausearch /sbin/autrace
+        /sbin/auditd /sbin/audispd* /sbin/augenrules | awk '$2 > 755 {exit 1}'
+      expected_output: 0
+    fix:
+      shell: sudo chmod 0755 /usr/sbin/auditd
+tags:
+- testing

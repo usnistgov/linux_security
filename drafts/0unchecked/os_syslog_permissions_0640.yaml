@@ -1,0 +1,32 @@
+id: os_syslog_permissions_0640
+title: Ubuntu 24.04 LTS must configure /var/log/syslog file with mode "0640" or less
+  permissive.
+discussion: Only authorized personnel should see error details, as error messages
+  can reveal the operating system, platform, or PII. Organizations must design error
+  messages according to policy to avoid exposing sensitive or operational information
+  to unauthorized users.
+references:
+  nist:
+    800-53r5:
+    - SI-11 b
+  disa:
+    cci:
+    - CCI-001314
+    srg:
+    - SRG-OS-000206-GPOS-00084
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-700150
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: '[ "$(stat -c "%a" /var/log/syslog)" -le 640 ]'
+      expected_output: 0
+    fix:
+      shell: sudo chmod 0640 /var/log/syslog
+tags:
+- testing

@@ -1,0 +1,42 @@
+id: ssh_enforce_fips1403_approved_macs
+title: Ubuntu 22.04 LTS must configure the SSH daemon to use Message Authentication
+  Codes (MACs) employing FIPS 140-3-approved cryptographic hashes to prevent the unauthorized
+  disclosure of information and/or detect changes to information during transmission.
+discussion: Without cryptographic integrity protections, information can be altered
+  by unauthorized users without detection, particularly during remote access, nonlocal
+  or local maintenance, and transmission. Encrypting data and using cryptographic
+  mechanisms such as hash functions (for digital signatures, checksums, and MACs)
+  safeguards against unauthorized disclosure and modification.
+references:
+  nist:
+    800-53r5:
+    - AC-17 (2)
+    - MA-4 (6)
+    - SC-8 (1)
+  disa:
+    cci:
+    - CCI-002890
+    - CCI-001453
+    - CCI-002421
+    srg:
+    - SRG-OS-000250-GPOS-00093
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-255055
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\r'
+        | tr '\n' ' ' | xargs sudo grep -iH 'macs'
+      expected_output: /etc/ssh/sshd_config:MACs hmac-sha2-512,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha2-256-etm@openssh.com
+    fix:
+      shell: 'sudo sed -i ''/^MACs /c\MACs hmac-sha2-512,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha2-256-etm@openssh.com''
+        /etc/ssh/sshd_config
+
+        sudo systemctl reload sshd.service'
+tags:
+- testing

@@ -1,0 +1,51 @@
+id: os_disable_usb_auto_mount
+title: Ubuntu 22.04 LTS must disable automatic mounting of Universal Serial Bus (USB)
+  mass storage driver.
+discussion: Without device authentication, unknown peripherals such as flash drives,
+  external storage, and printers can be introduced, enabling malicious activity.
+references:
+  nist:
+    800-53r5:
+    - CM-7 (9) (b)
+    - IA-3
+  disa:
+    cci:
+    - CCI-003959
+    - CCI-001958
+    srg:
+    - SRG-OS-000378-GPOS-00163
+    - - SRG-OS-000690-GPOS-00140
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-291010
+      ubuntu_2404:
+      - UBTU-24-300039
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: grep -R '^[^#]*install usb-storage /bin/false' /etc/modprobe.d/ >/dev/null
+        && grep -R '^[^#]*blacklist usb-storage' /etc/modprobe.d/ >/dev/null; echo
+        $?
+      expected_output: 0
+    fix:
+      shell: 'sudo su -c "echo install usb-storage /bin/false >> /etc/modprobe.d/stig.conf"
+
+        sudo su -c "echo blacklist usb-storage >> /etc/modprobe.d/stig.conf"'
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo grep -qE '^[^#]*usb-storage.*/(bin/false|blacklist)' /etc/modprobe.d/*
+      expected_output: 0
+    fix:
+      shell: 'sudo su -c "echo install usb-storage /bin/false >> /etc/modprobe.d/DISASTIG.conf"
+
+        sudo su -c "echo blacklist usb-storage >> /etc/modprobe.d/DISASTIG.conf"'
+tags:
+- testing

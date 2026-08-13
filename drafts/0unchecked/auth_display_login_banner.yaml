@@ -1,0 +1,67 @@
+id: auth_display_login_banner
+title: Ubuntu 22.04 LTS must display the Standard Mandatory DOD Notice and Consent
+  Banner before granting any local or remote connection to the system.
+discussion: "A standardized use notification must be displayed before granting access\
+  \ to a publicly accessible operating system, with wording consistent with applicable\
+  \ federal laws, Executive Orders, and DOD policy, and is required only for human\
+  \ logon interfaces. Full or abbreviated banners are used depending on character\
+  \ limits, satisfying SRG\u2011OS\u2011000023\u2011GPOS\u201100006 and SRG\u2011\
+  OS\u2011000228\u2011GPOS\u201100088."
+references:
+  nist:
+    800-53r5:
+    - AC-8 a
+    - AC-8 c 1
+    - AC-8 c 3
+    - AC-8 c 2
+  disa:
+    cci:
+    - CCI-001388
+    - CCI-001384
+    - CCI-000048
+    - CCI-001387
+    - CCI-001385
+    - CCI-001386
+    srg:
+    - SRG-OS-000023-GPOS-00006
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-255020
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: "sudo bash -c '\n  banner_file=$(grep -i \"^Banner\" /etc/ssh/sshd_config\
+        \ | awk '\\''{print $2}'\\'');\n  if [ -z \"$banner_file\" ] || [ ! -f \"\
+        $banner_file\" ]; then exit 1; fi\n  expected=$(cat <<'\"'EOF'\"'\nYou are\
+        \ accessing a U.S. Government (USG) Information System (IS) that is provided\
+        \ for USG-authorized use only.\n\nBy using this IS (which includes any device\
+        \ attached to this IS), you consent to the following conditions:\n\n-The USG\
+        \ routinely intercepts and monitors communications on this IS for purposes\
+        \ including, but not limited to, penetration testing, COMSEC monitoring, network\
+        \ operations and defense, personnel misconduct (PM), law enforcement (LE),\
+        \ and counterintelligence (CI) investigations.\n\n-At any time, the USG may\
+        \ inspect and seize data stored on this IS.\n\n-Communications using, or data\
+        \ stored on, this IS are not private, are subject to routine monitoring, interception,\
+        \ and search, and may be disclosed or used for any USG-authorized purpose.\n\
+        \n-This IS includes security measures (e.g., authentication and access controls)\
+        \ to protect USG interests--not for your personal benefit or privacy.\n\n\
+        -Notwithstanding the above, using this IS does not constitute consent to PM,\
+        \ LE or CI investigative searching or monitoring of the content of privileged\
+        \ communications, or work product, related to personal representation or services\
+        \ by attorneys, psychotherapists, or clergy, and their assistants.  Such communications\
+        \ and work product are private and confidential.  See User Agreement for details.\n\
+        EOF\n  )\n  if diff -q \"$banner_file\" <(echo \"$expected\") >/dev/null 2>&1;\
+        \ then exit 0; else exit 1; fi\n'"
+      expected_output: 0
+    fix:
+      shell: 'sudo sed -i ''/^Banner/d'' /etc/ssh/sshd_config
+
+        sudo sed -i ''$aBanner /etc/issue.net'' /etc/ssh/sshd_config
+
+        sudo systemctl -s SIGHUP kill sshd'
+tags:
+- testing

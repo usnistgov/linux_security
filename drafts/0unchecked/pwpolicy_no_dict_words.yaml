@@ -1,0 +1,42 @@
+id: pwpolicy_no_dict_words
+title: Ubuntu 22.04 LTS must prevent the use of dictionary words for passwords.
+discussion: "Allowing dictionary-based passwords in Ubuntu 22.04 LTS raises the risk\
+  \ of compromise by making passwords easier to guess or brute\u2011force."
+references:
+  nist:
+    800-53r5:
+    - CM-6 b
+  disa:
+    cci:
+    - CCI-000366
+    srg:
+    - SRG-OS-000480-GPOS-00225
+    - - SRG-OS-000710-GPOS-00160
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-611030
+      ubuntu_2404:
+      - UBTU-24-300014
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: grep -qE '^\s*dictcheck\s*=\s*1' /etc/security/pwquality.conf
+      expected_output: 0
+    fix:
+      shell: echo "dictcheck = 1" | sudo tee -a /etc/security/pwquality.conf
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: grep -q '^\s*dictcheck\s*=\s*1' /etc/security/pwquality.conf
+      expected_output: 0
+    fix:
+      shell: sudo sed -i 's/^#*dictcheck=.*/dictcheck=1/' /etc/security/pwquality.conf
+tags:
+- testing

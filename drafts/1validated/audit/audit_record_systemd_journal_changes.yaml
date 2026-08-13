@@ -1,0 +1,44 @@
+id: audit_record_systemd_journal_changes
+title: Ubuntu must generate audit records for all events that affect the
+  systemd journal files.
+discussion: >
+  Attackers often maintain persistence by modifying system binaries; auditing
+  systemd journal files logs these changes for forensic analysis. Integrating the
+  OS with enterprise-level authentication, access, and auditing mechanisms
+  helps meet access control policy requirements.
+references:
+  nist:
+    800-53r5:
+    - CM-6 b
+  disa:
+    cci:
+    - CCI-000366
+    srg:
+    - SRG-OS-000480-GPOS-00227
+    disa_stig:
+      ubuntu_2204:
+        - UBTU-22-654190
+      ubuntu_2404:
+        - UBTU-24-300029
+enforcement_info:
+  enforcement_type: full
+  check:
+    shell: auditctl -l | grep -q "\-w /var/log/journal -p wa"
+    status_code: 0
+  fix:
+    shell: echo "-w /var/log/journal -p wa -k systemd_journal" >> /etc/audit/rules.d/stig.rules && augenrules --load
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+tags:
+- testing

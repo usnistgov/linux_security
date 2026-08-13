@@ -1,0 +1,50 @@
+id: auth_local_revocation_cache
+title: Ubuntu 22.04 LTS for PKI-based authentication, must implement a local cache
+  of revocation data in case of the inability to access revocation information via
+  the network.
+discussion: Failing to configure a local revocation cache may permit access by users
+  whose certificates have been revoked.
+references:
+  nist:
+    800-53r5:
+    - IA-5 (2) (b) (2)
+  disa:
+    cci:
+    - CCI-004068
+    - CCI-001991
+    srg:
+    - SRG-OS-000384-GPOS-00167
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-612035
+      ubuntu_2404:
+      - UBTU-24-400380
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: grep -E '^\s*cert_policy\s*=' /etc/pam_pkcs11/pam_pkcs11.conf | grep
+        -qE 'crl_auto|crl_offline'
+      expected_output: 0
+    fix:
+      shell: mkdir -p /etc/pam_pkcs11 && [ ! -f /etc/pam_pkcs11/pam_pkcs11.conf ]
+        && zcat /usr/share/doc/libpam-pkcs11/examples/pam_pkcs11.conf.example.gz >
+        /etc/pam_pkcs11/pam_pkcs11.conf && grep -q 'crl_auto' /etc/pam_pkcs11/pam_pkcs11.conf
+        || sed -i '/^cert_policy/ s/$/, crl_auto;/' /etc/pam_pkcs11/pam_pkcs11.conf
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: grep -qE 'cert_policy.*(crl_auto|crl_offline)' /etc/pam_pkcs11/pam_pkcs11.conf
+      expected_output: 0
+    fix:
+      shell: mkdir -p /etc/pam_pkcs11 && zcat /usr/share/doc/libpam-pkcs11/examples/pam_pkcs11.conf.example.gz
+        > /etc/pam_pkcs11/pam_pkcs11.conf && sed -i 's/^\(cert_policy\s*=\s*\).*/\1ca,signature,ocsp_on,
+        crl_auto;/' /etc/pam_pkcs11/pam_pkcs11.conf
+tags:
+- testing

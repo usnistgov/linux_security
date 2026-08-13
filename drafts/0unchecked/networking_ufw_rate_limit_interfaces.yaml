@@ -1,0 +1,36 @@
+id: networking_ufw_rate_limit_interfaces
+title: Ubuntu 22.04 LTS must configure the Uncomplicated Firewall (ufw) to rate-limit
+  impacted network interfaces.
+discussion: Denial of service (DoS) makes resources unavailable to legitimate users,
+  impairing mission capability. This requirement mandates configuring the OS to mitigate
+  ongoing or past DoS attacks by identifying threats and applying solutions such as
+  process limits, memory partitions, increased capacity, bandwidth, and service redundancy.
+references:
+  nist:
+    800-53r5:
+    - SC-5 a
+  disa:
+    cci:
+    - CCI-002385
+    srg:
+    - SRG-OS-000420-GPOS-00186
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-251025
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: missing=$(ss -l46utn | awk 'NR>1 {gsub(/[][]/,"",$5); split($5,a,":");
+        port=a[length(a)]; print $1"/"port}' | while read proto_port; do if ! sudo
+        ufw status | grep -qE "^${proto_port}( \(v6\))?[[:space:]]+(LIMIT|DENY)";
+        then echo "$proto_port"; fi; done); if [ -n "$missing" ]; then echo "Missing
+        LIMIT/DENY on:"; echo "$missing"; exit 1; else exit 0; fi
+      expected_output: 0
+    fix:
+      shell: sudo ufw limit in on ens160
+tags:
+- testing

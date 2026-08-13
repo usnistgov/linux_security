@@ -1,0 +1,45 @@
+id: ssh_prevent_remote_proxy_display
+title: Ubuntu 22.04 LTS SSH daemon must prevent remote hosts from connecting to the
+  proxy display.
+discussion: Enabling X11 forwarding can expose displays if sshd listens on the wildcard
+  address; by default it binds to the loopback address and sets DISPLAY to localhost,
+  preventing remote connections.
+references:
+  nist:
+    800-53r5:
+    - CM-6 b
+  disa:
+    cci:
+    - CCI-000366
+    srg:
+    - SRG-OS-000480-GPOS-00227
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-255045
+      ubuntu_2404:
+      - UBTU-24-300023
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: grep -i '^X11UseLocalhost\s*yes' /etc/ssh/sshd_config >/dev/null
+      expected_output: 0
+    fix:
+      shell: 'echo "X11UseLocalhost yes" >> /etc/ssh/sshd_config
+
+        sudo systemctl restart ssh'
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo grep -iq '^X11UseLocalhost yes' /etc/ssh/sshd_config*
+      expected_output: 0
+    fix:
+      shell: sudo systemctl restart ssh
+tags:
+- testing

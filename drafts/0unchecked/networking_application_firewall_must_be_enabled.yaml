@@ -1,0 +1,30 @@
+id: networking_application_firewall_must_be_enabled
+title: Ubuntu 22.04 LTS must have an application firewall enabled.
+discussion: Firewalls block or limit access to open network ports to protect computers
+  from network attacks, while application firewalls further restrict which applications
+  may communicate over the network.
+references:
+  nist:
+    800-53r5:
+    - CM-6 b
+  disa:
+    cci:
+    - CCI-000366
+    srg:
+    - SRG-OS-000480-GPOS-00232
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-251020
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: 'sudo ufw status | grep -q ''Status: active'''
+      expected_output: 0
+    fix:
+      shell: sudo ufw enable
+tags:
+- testing

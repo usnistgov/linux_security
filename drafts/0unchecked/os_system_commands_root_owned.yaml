@@ -1,0 +1,33 @@
+id: os_system_commands_root_owned
+title: Ubuntu 24.04 LTS must have system commands owned by root or a system account.
+discussion: "Allowing any user to modify software libraries in Ubuntu 24.04 LTS could\
+  \ lead to untested changes that bypass proper change\u2011management testing and\
+  \ approvals. Only qualified, authorized individuals should be permitted to access\
+  \ and modify these components, including privileged programs and interpreted\u2011\
+  language libraries."
+references:
+  nist:
+    800-53r5:
+    - CM-5 (6)
+  disa:
+    cci:
+    - CCI-001499
+    srg:
+    - SRG-OS-000259-GPOS-00100
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-300012
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: '[ -z "$(sudo find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin
+        ! -user root -type f -printf ''%p %u\n'')" ]'
+      expected_output: 0
+    fix:
+      shell: sudo chown root [FILE]
+tags:
+- testing

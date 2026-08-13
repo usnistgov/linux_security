@@ -1,0 +1,54 @@
+id: auth_configure_sssd_for_mfa
+title: Ubuntu 22.04 LTS must use the "SSSD" package for multifactor authentication
+  services.
+discussion: "Without multifactor authentication, privileged accounts are more easily\
+  \ accessed, increasing security risk. MFA requires two or more factors\u2014something\
+  \ you know, have, or are\u2014and is exemplified by the DOD CAC with PKI."
+references:
+  nist:
+    800-53r5:
+    - IA-2 (6) (b)
+    - IA-2 (2)
+    - IA-2 (6) (a)
+    - IA-2 (1)
+  disa:
+    cci:
+    - CCI-004046
+    - CCI-000766
+    - CCI-004047
+    - CCI-000765
+    srg:
+    - SRG-OS-000396-GPOS-00176
+    - - SRG-OS-000705-GPOS-00150
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-254015
+      ubuntu_2404:
+      - UBTU-24-100660
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo systemctl is-enabled sssd && sudo systemctl is-active sssd
+      expected_output: 0
+    fix:
+      shell: 'sudo systemctl enable sssd.service
+
+        sudo systemctl start sssd.service'
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: systemctl is-enabled sssd && systemctl is-active sssd
+      expected_output: 0
+    fix:
+      shell: 'sudo systemctl enable sssd.service
+
+        sudo systemctl start sssd.service'
+tags:
+- testing

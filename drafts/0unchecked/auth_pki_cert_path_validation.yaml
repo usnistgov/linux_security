@@ -1,0 +1,42 @@
+id: auth_pki_cert_path_validation
+title: Ubuntu 22.04 LTS, for PKI-based authentication, must validate certificates
+  by constructing a certification path (which includes status information) to an accepted
+  trust anchor.
+discussion: This requirement ensures that certificate validation uses a certification
+  path to an accepted trust anchor and includes status information (such as CRL or
+  OCSP), allowing the relying party to make an informed trust decision for certificates
+  not already explicitly trusted.
+references:
+  nist:
+    800-53r5:
+    - SC-17 b
+    - IA-5 (2) (b) (1)
+  disa:
+    cci:
+    - CCI-004909
+    - CCI-000185
+    srg:
+    - SRG-OS-000066-GPOS-00034
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-612030
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo bash -c 'module=$(awk -F"=" '\''/use_pkcs11_module/ {gsub(/[ \t]+$/,"",$2);
+        gsub(/^[ \t]+/,"",$2); print $2}'\'' /etc/pam_pkcs11/pam_pkcs11.conf); awk
+        -v mod="$module" '\''$0 ~ "^pkcs11_module" mod " {" {found=1; next} found
+        && /^}/ {exit} found && /cert_policy/ {if ($0 ~ /ca/) {exit 0} else {exit
+        1}}'\'' /etc/pam_pkcs11/pam_pkcs11.conf'
+      expected_output: 0
+    fix:
+      shell: mkdir -p /etc/pam_pkcs11 && [ -f /etc/pam_pkcs11/pam_pkcs11.conf ] ||
+        gunzip -c /usr/share/doc/libpam-pkcs11/examples/pam_pkcs11.conf.example.gz
+        > /etc/pam_pkcs11/pam_pkcs11.conf && sed -i 's/^\s*cert_policy\s*=.*/cert_policy
+        = ca,signature,ocsp_on;/' /etc/pam_pkcs11/pam_pkcs11.conf
+tags:
+- testing

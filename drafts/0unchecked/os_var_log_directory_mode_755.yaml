@@ -1,0 +1,32 @@
+id: os_var_log_directory_mode_755
+title: Ubuntu 22.04 LTS must configure the "/var/log" directory to have mode "755"
+  or less permissive.
+discussion: Only authorized personnel should see error details, as messages can reveal
+  operational state, OS/platform, PII, or other sensitive information. Error message
+  content must be carefully designed per organizational policy to prevent unauthorized
+  disclosure.
+references:
+  nist:
+    800-53r5:
+    - SI-11 b
+  disa:
+    cci:
+    - CCI-001314
+    srg:
+    - SRG-OS-000206-GPOS-00084
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-232025
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: '[ "$(stat -c "%a" /var/log)" -le 755 ] && echo "PASS" || echo "FAIL"'
+      expected_output: PASS
+    fix:
+      shell: sudo chmod 0755 /var/log
+tags:
+- testing

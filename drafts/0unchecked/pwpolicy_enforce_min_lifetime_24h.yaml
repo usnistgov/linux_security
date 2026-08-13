@@ -1,0 +1,33 @@
+id: pwpolicy_enforce_min_lifetime_24h
+title: Ubuntu 22.04 LTS must enforce 24 hours/one day as the minimum password lifetime.
+  Passwords for new users must have a 24 hours/one day minimum password lifetime restriction.
+discussion: Enforcing a minimum password lifetime prevents users from changing passwords
+  too frequently to bypass reuse or history policies. It stops rapid successive changes
+  that could defeat password reuse controls.
+references:
+  nist:
+    800-53r5:
+    - IA-5 (1) (h)
+  disa:
+    cci:
+    - CCI-000198
+    - CCI-004066
+    srg:
+    - SRG-OS-000075-GPOS-00043
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-411025
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: awk '/^\s*PASS_MIN_DAYS\s+[0-9]+/ {found=1; if ($2 >= 1) exit 0; else
+        exit 1} END {if (!found) exit 1}' /etc/login.defs
+      expected_output: 0
+    fix:
+      shell: echo "PASS_MIN_DAYS    1" | sudo tee -a /etc/login.defs
+tags:
+- testing

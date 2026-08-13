@@ -1,0 +1,50 @@
+id: audit_group_ownership_log_files
+title: Ubuntu 22.04 LTS must permit only authorized groups ownership of the audit
+  log files.
+discussion: "Unauthorized disclosure of audit records can expose system and configuration\
+  \ data to attackers, compromising confidentiality. Audit information\u2014including\
+  \ records, settings, and reports\u2014is required to audit operating system activity."
+references:
+  nist:
+    800-53r5:
+    - AU-9 a
+  disa:
+    cci:
+    - CCI-000163
+    - CCI-000162
+    - CCI-000164
+    srg:
+    - SRG-OS-000057-GPOS-00027
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-653055
+      ubuntu_2404:
+      - UBTU-24-901350
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo grep -Eq '^\s*log_group\s*=\s*root' /etc/audit/auditd.conf
+      expected_output: 0
+    fix:
+      shell: sudo systemctl kill auditd -s SIGHUP
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo grep -iq '^\s*log_group\s*=\s*root' /etc/audit/auditd.conf && sudo
+        stat -c '%G' /var/log/audit/* | sudo uniq | grep -qx 'root'
+      expected_output: 0
+    fix:
+      shell: 'sudo sed -i ''/^log_group/D'' /etc/audit/auditd.conf
+
+        sudo sed -i /^log_file/a''log_group = root'' /etc/audit/auditd.conf
+
+        sudo systemctl kill auditd -s SIGHUP'
+tags:
+- testing

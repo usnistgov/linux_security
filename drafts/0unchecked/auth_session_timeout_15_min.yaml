@@ -1,0 +1,33 @@
+id: auth_session_timeout_15_min
+title: Ubuntu 22.04 LTS must automatically exit interactive command shell user sessions
+  after 15 minutes of inactivity.
+discussion: Ending idle interactive shell sessions quickly limits the time unauthorized
+  users could hijack an unattended terminal or console.
+references:
+  nist:
+    800-53r5:
+    - AC-12
+  disa:
+    cci:
+    - CCI-002361
+    srg:
+    - SRG-OS-000279-GPOS-00109
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-412030
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo grep -h -E '^\s*TMOUT=[1-9][0-9]*\s*$' /etc/bash.bashrc /etc/profile.d/*
+        | awk -F= '$2 <= 900 {exit 0} END {exit 1}'
+      expected_output: 0
+    fix:
+      shell: 'sudo su -c "echo TMOUT=900 >> /etc/profile.d/99-terminal_tmout.sh"
+
+        export TMOUT=900'
+tags:
+- testing

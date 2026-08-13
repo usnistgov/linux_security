@@ -1,0 +1,42 @@
+id: audit_alert_on_audit_failure
+title: Ubuntu must alert the information system security officer (ISSO)
+  and system administrator (SA) in the event of an audit processing failure.
+discussion: Personnel must be notified when audit processing may fail due to software/hardware
+  errors, capture mechanism failures, or storage capacity limits, to prevent unawareness
+  of impending audit capability loss. This requirement applies to each audit data
+  storage repository, the organization's centralized audit storage, or both.
+references:
+  nist:
+    800-53r5:
+    - AU-5 a
+  disa:
+    cci:
+    - CCI-000139
+    srg:
+    - SRG-OS-000046-GPOS-00022
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-653025
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-900980
+enforcement_info:
+  enforcement_type: full
+  check:
+    shell: grep "^action_mail_acct = " /etc/audit/auditd.conf | awk -F" = " '{ if ($2) print "pass" }'
+    standard_output: "pass"
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: low
+  enforcement_info:
+    enforcement_type: inherit
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: low
+  enforcement_info:
+    enforcement_type: inherit
+tags:
+- testing

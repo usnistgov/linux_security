@@ -1,0 +1,33 @@
+id: networking_restrict_ports_protocols_services
+title: "Ubuntu 24.04 LTS must be configured to prohibit or restrict the use of functions,\
+  \ ports, protocols, and/or services, as defined in the Ports, Protocols, and Services\
+  \ Management\xC2\_Category Assurance List (PPSM CAL) and vulnerability assessments."
+discussion: To prevent unauthorized device connections, data transfers, or tunneling,
+  Ubuntu 24.04 LTS must disable or restrict unused physical and logical ports/protocols,
+  providing only essential services and limiting functionality to authorized, required
+  capabilities.
+references:
+  nist:
+    800-53r5:
+    - CM-7 b
+  disa:
+    cci:
+    - CCI-000382
+    srg:
+    - SRG-OS-000096-GPOS-00050
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-300041
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo ufw show raw | diff -u /path/to/expected_ufw_raw -
+      expected_output: 0
+    fix:
+      shell: sudo ufw allow
+tags:
+- testing

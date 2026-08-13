@@ -1,0 +1,31 @@
+id: auth_disable_root_login
+title: Ubuntu 24.04 LTS must prevent direct login to the root account.
+discussion: Organizational users must be individually identified and authenticated
+  before using any group authenticator (e.g., root, Administrator, sa, helpdesk) to
+  ensure accountability and traceability. Exceptions are only those accesses explicitly
+  documented by the organization as not requiring identification or authentication.
+references:
+  nist:
+    800-53r5:
+    - IA-2 (5)
+  disa:
+    cci:
+    - CCI-004045
+    srg:
+    - SRG-OS-000109-GPOS-00056
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-400110
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo passwd -S root | awk '{print $2}' | grep -xq L
+      expected_output: 0
+    fix:
+      shell: sudo passwd -l root
+tags:
+- testing

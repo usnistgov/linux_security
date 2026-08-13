@@ -1,0 +1,55 @@
+id: os_use_apparmor
+title: Ubuntu 22.04 LTS must be configured to use AppArmor.
+discussion: Control of program execution prevents unauthorized programs from running,
+  particularly when default OS functions exceed mission requirements or cannot be
+  removed. Compliance is achieved by restricting execution based on environments,
+  privileges, subnets, sandboxing, or roles.
+references:
+  nist:
+    800-53r5:
+    - CM-7 (2)
+    - CM-7 (5) (b)
+    - AC-6 (10)
+  disa:
+    cci:
+    - CCI-002235
+    - CCI-001764
+    - CCI-001774
+    srg:
+    - SRG-OS-000368-GPOS-00154
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-431015
+      ubuntu_2404:
+      - UBTU-24-100510
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: systemctl is-enabled apparmor.service | grep -q ^enabled$ && systemctl
+        is-active apparmor.service | grep -q ^active$ && sudo apparmor_status | awk
+        '/profiles are loaded/ {if ($1>0) loaded=1} /profiles are in enforce mode/
+        {if ($1>0) enforce=1} END {exit !(loaded && enforce)}'
+      expected_output: 0
+    fix:
+      shell: sudo systemctl enable apparmor.service --now
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: 'systemctl is-active apparmor.service
+
+
+        systemctl is-enabled apparmor.service'
+      expected_output: active
+    fix:
+      shell: 'sudo systemctl enable apparmor.service
+
+        sudo systemctl start apparmor.service'
+tags:
+- testing

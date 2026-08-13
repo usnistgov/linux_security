@@ -1,0 +1,46 @@
+id: os_journal_file_group_ownership
+title: Ubuntu 22.04 LTS must configure the files used by the system journal to be
+  group-owned by "systemd-journal".
+discussion: Error messages should be limited to authorized personnel only, avoiding
+  disclosure of PII, operational details, or system identifiers. Their design and
+  handling must follow organizational policy and operational requirements.
+references:
+  nist:
+    800-53r5:
+    - SI-11 b
+  disa:
+    cci:
+    - CCI-001314
+    srg:
+    - SRG-OS-000206-GPOS-00084
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-232095
+      ubuntu_2404:
+      - UBTU-24-700070
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo find /run/log/journal /var/log/journal -type f ! -group systemd-journal
+        -print | wc -l
+      expected_output: 0
+    fix:
+      shell: sudo sh -c 'echo "z /var/log/journal/%m/system.journal 0640 root systemd-journal
+        - -" > /etc/tmpfiles.d/zzz-systemd-stig.conf' && sudo reboot
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: sudo find /run/log/journal /var/log/journal -type f ! -group systemd-journal
+        -print -quit | grep -q . && exit 1 || exit 0
+      expected_output: 0
+    fix:
+      shell: sudo vi /etc/tmpfiles.d/zzz-systemd-stig.conf
+tags:
+- testing

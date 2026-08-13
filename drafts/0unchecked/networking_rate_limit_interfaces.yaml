@@ -1,0 +1,36 @@
+id: networking_rate_limit_interfaces
+title: Ubuntu 24.04 LTS must configure the uncomplicated firewall to rate-limit impacted
+  network interfaces.
+discussion: Denial of service (DoS) makes resources unavailable to legitimate users,
+  impairing the organization's mission or forcing degraded operations. This requirement
+  directs the configuration of Ubuntu 24.04 LTS to identify and mitigate known and
+  potential DoS attacks through measures such as process limits, memory partitioning,
+  increased capacity and bandwidth, and service redundancy.
+references:
+  nist:
+    800-53r5:
+    - SC-5 a
+  disa:
+    cci:
+    - CCI-002385
+    srg:
+    - SRG-OS-000420-GPOS-00186
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-600200
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: 'if sudo ufw status | grep -q ''Status: active''; then missing=$(comm
+        -23 <(ss -l46utn | awk ''/LISTEN/ {split($5,a,":"); print a[length(a)]}''
+        | sort -u) <(sudo ufw status | awk ''$2=="LIMIT" || $2=="DENY" {match($1,/([0-9]+)\/(tcp|udp)/,a);
+        print a[1]}'' | sort -u)); [ -z "$missing" ]; else false; fi'
+      expected_output: 0
+    fix:
+      shell: sudo ufw limit in on eth0
+tags:
+- testing

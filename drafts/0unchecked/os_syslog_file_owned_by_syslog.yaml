@@ -1,0 +1,31 @@
+id: os_syslog_file_owned_by_syslog
+title: Ubuntu 22.04 LTS must configure "/var/log/syslog" file to be owned by "syslog".
+discussion: Only authorized personnel should see error details, as messages can reveal
+  an organization's operational state, OS/platform, PII, or other sensitive information.
+  Error message content must be designed according to organizational policy to limit
+  disclosure and ensure proper handling.
+references:
+  nist:
+    800-53r5:
+    - SI-11 b
+  disa:
+    cci:
+    - CCI-001314
+    srg:
+    - SRG-OS-000206-GPOS-00084
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-232130
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: stat -c "%U" /var/log/syslog | grep -qx syslog
+      expected_output: 0
+    fix:
+      shell: sudo chown syslog /var/log/syslog
+tags:
+- testing

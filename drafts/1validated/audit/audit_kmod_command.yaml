@@ -1,0 +1,52 @@
+id: audit_kmod_command
+title: Ubuntu must generate audit records for successful/unsuccessful attempts
+  to use the kmod command.
+discussion: >
+  Without organization-specific audit records, it is difficult to
+  establish, correlate, investigate incidents, or identify responsible parties.
+  Audit records can be generated from various system components, such as modules
+  or policy filters.
+references:
+  nist:
+    800-53r5:
+    - AU-12 c
+  disa:
+    cci:
+    - CCI-000172
+    srg:
+    - SRG-OS-000477-GPOS-00222
+    disa_stig:
+      ubuntu_2004:
+        - UBTU-20-010297
+      ubuntu_2204:
+        - UBTU-22-654055
+      ubuntu_2404:
+        - UBTU-24-900740
+enforcement_info:
+  enforcement_type: full
+  check:
+    shell: auditctl -l | grep -q "\-w /bin/kmod -p x"
+    status_code: 0
+  fix:
+    shell: echo "-w /bin/kmod -p x -k module" >> /etc/audit/rules.d/stig.rules && augenrules --load
+platforms:
+- name: ubuntu_2004
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    enforcement_type: inherit
+tags:
+- testing

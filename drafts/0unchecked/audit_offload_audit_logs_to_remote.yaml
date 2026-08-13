@@ -1,0 +1,43 @@
+id: audit_offload_audit_logs_to_remote
+title: Ubuntu 22.04 LTS audit event multiplexor must be configured to offload audit
+  logs onto a different system from the system being audited.
+discussion: "Storing audit data in one location risks accidental deletion or alteration;\
+  \ offloading to a remote server mitigates this risk. Although auditd cannot send\
+  \ records directly, it can use an audit event multiplexor plug\u2011in to forward\
+  \ logs to a centralized server (SRG\u2011OS\u2011000342\u2011GPS\u201100133, SRG\u2011\
+  OS\u2011000479\u2011GPS\u201100224)."
+references:
+  nist:
+    800-53r5:
+    - AU-4 (1)
+  disa:
+    cci:
+    - CCI-001851
+    srg:
+    - SRG-OS-000342-GPOS-00133
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-653020
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: low
+  enforcement_info:
+    check:
+      shell: sh -c "dpkg -s audispd-plugins >/dev/null 2>&1 && grep -iq '^\s*active\s*=\s*yes'
+        /etc/audit/plugins.d/au-remote.conf && grep -iq '^\s*remote_server\s*=' /etc/audit/audisp-remote.conf
+        && remote=$(grep -i '^\s*remote_server\s*=' /etc/audit/audisp-remote.conf
+        | sed -e 's/[^=]*=//' -e 's/[[:space:]]//g') && [[ ! \"$remote\" =~ ^(127\\.|10\\.|172\\.(1[6-9]|2[0-9]|3[0-1])\\.|192\\.168\\.|::1$|^localhost$)
+        ]]"
+      expected_output: 0
+    fix:
+      shell: 'sudo apt-get install audispd-plugins
+
+        sudo sed -i -E ''s/active\s*=\s*no/active = yes/'' /etc/audit/plugins.d/au-remote.conf
+
+        sudo sed -i -E ''s/(remote_server\s*=).*/\1 /'' /etc/audit/audisp-remote.conf
+
+        sudo systemctl restart auditd.service'
+tags:
+- testing

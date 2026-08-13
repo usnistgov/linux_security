@@ -1,0 +1,32 @@
+id: os_disable_kernel_core_dumpsV-270746
+title: Ubuntu 24.04 LTS must disable kernel core dumps.
+discussion: Kernel core dumps can capture the entire system memory at crash, potentially
+  consuming large amounts of disk space and causing denial of service by exhausting
+  the file system partition.
+references:
+  nist:
+    800-53r5:
+    - SC-24
+  disa:
+    cci:
+    - CCI-001190
+    srg:
+    - SRG-OS-000184-GPOS-00078
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-600070
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: systemctl is-enabled kdump-tools.service 2>/dev/null | grep -q '^masked$'
+        && exit 0 || { systemctl is-enabled kdump-tools.service 2>&1 | grep -q 'Unit
+        kdump-tools.service not found' && exit 0; exit 1; }
+      expected_output: 0
+    fix:
+      shell: sudo systemctl disable kdump-tools.service
+tags:
+- testing

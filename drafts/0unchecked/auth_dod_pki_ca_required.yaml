@@ -1,0 +1,32 @@
+id: auth_dod_pki_ca_required
+title: Ubuntu 22.04 LTS must use DOD PKI-established certificate authorities for verification
+  of the establishment of protected sessions.
+discussion: "Untrusted CAs may issue certificates that could compromise DoD systems,\
+  \ so only certificates from DoD\u2011approved CAs are trusted for secure sessions\
+  \ such as SSL/TLS."
+references:
+  nist:
+    800-53r5:
+    - SC-23 (5)
+  disa:
+    cci:
+    - CCI-002470
+    srg:
+    - SRG-OS-000403-GPOS-00182
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-631010
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: find /etc/ssl/certs -type f \( -name "*.pem" -o -name "*.crt" \) -exec
+        openssl x509 -noout -subject -in {} \; 2>/dev/null | grep -iq "DOD ROOT CA"
+      expected_output: 0
+    fix:
+      shell: sudo dpkg-reconfigure ca-certificates
+tags:
+- testing

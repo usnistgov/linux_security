@@ -1,0 +1,31 @@
+id: os_syslog_file_group_adm
+title: Ubuntu 24.04 LTS must configure the /var/log/syslog file to be group-owned
+  by adm.
+discussion: Only authorized personnel should receive error details, as messages can
+  reveal the operating system, platform, or PII. Error message content must be carefully
+  designed per organizational policy to avoid exposing sensitive or operational information.
+references:
+  nist:
+    800-53r5:
+    - SI-11 b
+  disa:
+    cci:
+    - CCI-001314
+    srg:
+    - SRG-OS-000206-GPOS-00084
+    disa_stig:
+      ubuntu_2404:
+      - UBTU-24-700130
+platforms:
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: stat -c "%G" /var/log/syslog | grep -qx adm
+      expected_output: 0
+    fix:
+      shell: sudo chgrp adm /var/log/syslog
+tags:
+- testing

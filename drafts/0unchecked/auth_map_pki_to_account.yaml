@@ -1,0 +1,55 @@
+id: auth_map_pki_to_account
+title: Ubuntu 22.04 LTS must map the authenticated identity to the user or group account
+  for PKI-based authentication.
+discussion: If the authentication certificate isn't mapped to a user account, forensic
+  analysis cannot identify the user or group.
+references:
+  nist:
+    800-53r5:
+    - IA-5 (2) (a) (2)
+  disa:
+    cci:
+    - CCI-000187
+    srg:
+    - SRG-OS-000068-GPOS-00036
+    - - SRG-OS-000396-GPOS-00176
+    disa_stig:
+      ubuntu_2204:
+      - UBTU-22-254030
+      ubuntu_2404:
+      - UBTU-24-400370
+platforms:
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: high
+  enforcement_info:
+    check:
+      shell: grep -q '^\s*[^#]*use_mappers\s*=\s*pwent' /etc/pam_pkcs11/pam_pkcs11.conf
+      expected_output: 0
+    fix:
+      shell: mkdir -p /etc/pam_pkcs11 && [ -f /etc/pam_pkcs11/pam_pkcs11.conf ] ||
+        zcat /usr/share/doc/libpam-pkcs11/examples/pam_pkcs11.conf.example.gz > /etc/pam_pkcs11/pam_pkcs11.conf
+        && sed -i '/^use_mappers/ s/=.*/=pwent/' /etc/pam_pkcs11/pam_pkcs11.conf
+- name: ubuntu_2204
+  benchmarks:
+  - name: disa_stig
+    severity: medium
+  enforcement_info:
+    check:
+      shell: grep -iq 'ldap_user_certificate=userCertificate;binary' /etc/sssd/sssd.conf
+      expected_output: 0
+    fix:
+      shell: echo "ldap_user_certificate=userCertificate;binary" >> /etc/sssd/sssd.conf
+- name: ubuntu_2404
+  benchmarks:
+  - name: disa_stig
+    severity: high
+  enforcement_info:
+    check:
+      shell: grep -i ldap_user_certificate /etc/sssd/sssd.conf
+      expected_output: ldap_user_certificate=userCertificate;binary
+    fix:
+      shell: echo 'ldap_user_certificate=userCertificate;binary' >> /etc/sssd/sssd.conf
+tags:
+- testing
