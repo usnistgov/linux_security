@@ -1,4 +1,4 @@
-id: audt_prevent_privilege_escalation
+id: audit_prevent_privilege_escalation
 title: Ubuntu must prevent all software from executing at higher privilege
   levels than users executing the software and the audit system must be configured
   to audit the execution of privileged functions.

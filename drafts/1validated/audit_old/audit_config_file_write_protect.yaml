@@ -21,7 +21,7 @@ references:
 enforcement_info:
   enforcement_type: full
   check:
-    shell: stat -c '%a' /etc/audit/audit.rules /etc/audit/auditd.conf /etc/audit/rules.d/* | gawk '{mode=strtonum("0"$1); if (and(mode, compl(0640)) != 0) print $1 }' | wc -l"
+    shell: stat -c '%a' /etc/audit/audit.rules /etc/audit/auditd.conf /etc/audit/rules.d/* | gawk '{mode=strtonum("0"$1); if (and(mode, compl(0640)) != 0) print $1 }' | wc -l
     standard_output: "0"
   fix:
     shell: chmod -R 640 /etc/audit/audit.rules /etc/audit/auditd.conf /etc/audit/rules.d/*
