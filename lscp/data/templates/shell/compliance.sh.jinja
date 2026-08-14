@@ -1,0 +1,263 @@
+#!/usr/bin/env bash
+
+#######################################################################################
+#
+#    THIS SCRIPT IS PROVIDED BY THE LINUX SECURITY COMPLIANCE PROJECT (LSCP) "AS IS".
+#    IN NO EVENT SHALL LSCP BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, LOSS OF USE,
+#    DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+#    OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SCRIPT, EVEN IF ADVISED
+#    OF THE POSSIBILITY OF SUCH DAMAGE.
+#    
+#######################################################################################
+
+LOG_PATH="/var/log/lscp"
+LOG_REF="$(hostname)_$(date -I)"
+LAST_RUN="$LOG_PATH/lastrun.csv"
+
+audit_log="$LOG_PATH/$LOG_REF.log"
+audit_csv="$LOG_PATH/$LOG_REF.csv"
+
+verbosity=0
+using_whiptail=false
+
+root_check(){
+    if [[ $EUID -ne 0 ]]; then
+        if $using_whiptail; then
+            whiptail --title "Privilege Error" --msgbox "Root is required to perform this action." 10 40;
+        else
+            echo "Root is required to perform this action."
+        fi
+        exit 1
+    fi
+}
+
+define_logs(){
+    if [[ -e "$LOG_PATH/$LOG_REF.csv" ]]; then
+        counter=1
+        new_log_file="$LOG_PATH/$LOG_REF.$counter.csv"
+        while [[ -e $new_log_file ]]; do
+            ((counter++))
+            new_log_file="$LOG_PATH/$LOG_REF.$counter.csv"
+        done
+        audit_csv="$new_log_file"
+        audit_log="$LOG_PATH/$LOG_REF.$counter.log"
+    fi
+}
+
+log_message(){
+    mkdir -p "/var/log/lscp"
+
+    local level="${2:-INFO}"
+    local timestamp=$(date -Iseconds)
+
+    local log_entry="[$level] [$timestamp] $1"
+    echo "$log_entry" >> "$audit_log"
+
+    if [[ $level == "ERROR" || $level == "WARN" ]]; then
+        printf "$log_entry\n"
+    elif [[ $level == "INFO" ]]; then
+        if [[ verbosity -gt 0 ]]; then
+            printf "$log_entry\n"
+        fi
+    elif [[ $level == "DEBUG" ]]; then
+        if [[ verbosity -gt 1 ]]; then
+            printf "$log_entry\n"
+        fi
+    fi
+}
+
+log_csv(){
+    mkdir -p "/var/log/lscp"
+
+    local rule_name="$1"
+    local result_status="$2"
+    local result="$3"
+    local status_code="$4"
+    local expected_standard_out="$5"
+    local expected_status_code="$6"
+
+    if [[ ! -f "$audit_csv" ]]; then
+        echo "Rule,Status,Result,Status Code,Expected Output,Expected Status Code" > "$audit_csv"
+    fi
+
+    echo "$rule_name,$result_status,$result,$status_code,$expected_standard_out,$expected_status_code" >> "$audit_csv"
+}
+
+clear_logs(){
+    rm -rf /var/log/lscp/*
+    log_message "Logs cleared" "WARN"
+}
+
+compliance_count(){
+    if [[ ! -h $LAST_RUN ]]; then
+        # Because some scripts can (currently) be run as root, it's possible to hit this line without permission to write log files, thus this cannot be logged there.
+        echo "ERROR: No prior run exists"
+        return 127
+    fi
+
+    local total_rules=$(tail -n +2 $LAST_RUN)
+    local compliant_count=$(echo "$total_rules" | awk -F"," '{if ($2 == "passed") print $1}' | wc -l)
+    local non_compliant_count=$(($(echo "$total_rules" | wc -l) - $compliant_count))
+
+    if [[ $1 == "compliant" ]]; then
+        echo $compliant_count
+    elif [[ $1 == "non-compliant" ]]; then
+        echo $non_compliant_count
+    else
+        array=($compliant_count $non_compliant_count)
+        echo ${array[@]}
+    fi
+}
+
+generate_report(){
+    local count=($(compliance_count))
+    if [[ "$count" == "ERROR"* ]]; then
+        echo "No previous scan on record in /var/log/lscp"
+    else
+        local compliant=${count[0]}
+        local non_compliant=${count[1]}
+
+        local total=$(($non_compliant + $compliant))
+        local percentage=$(echo "scale=2; ($compliant / $total) * 100" | bc)
+
+        echo -e "Number of tests passed: $compliant\nNumber of tests FAILED: $non_compliant\nSystem is $percentage% percent compliant!"
+    fi
+}
+
+run_scan(){
+    define_logs
+    log_message "Beginning new compliance scan" "WARN"
+
+    local total_checks="{{ rules | length }}"
+    local rule_count=0
+
+    if $using_whiptail; then
+        echo "XXX"; echo "0"; echo "Starting Scan..."; echo "XXX"
+    fi
+
+{% for rule in rules %}
+{% include "check.sh.jinja" %}
+{% endfor %}
+
+    if [[ -h $LAST_RUN ]]; then
+        unlink $LAST_RUN > /dev/null
+    fi
+    ln -s $audit_csv $LAST_RUN > /dev/null
+} 2> /dev/null
+
+usage="Usage: ./compliance.sh [--check] [--stats] [--compliant] [--non_compliant] [--clear] [--help] [-v[v]]
+
+Optional parameters:
+--check            : Run compliance checks without interaction
+--stats            : Display the statistics from last compliance check
+--compliant        : Reports the number of compliant checks from last compliance check
+--non_compliant    : Reports the number of non-compliant checks from last compliance check
+--clear            : Clears all logs from /var/log/lscp
+--help             : Show this help and exit
+-v[v], --verbose   : Increase verbosity (0 ERROR+WARN 1 INFO 2 DEBUG)"
+
+will_check=false
+will_clear=false
+print_stats=false
+compliant_count_opt=false
+non_compliant_count_opt=false
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --help)
+            echo "$usage"
+            exit 0
+            ;;
+        -v|--verbose)
+            ((verbosity++))
+            shift
+            ;;
+        -vv)
+            ((verbosity+=2))
+            shift
+            ;;
+        --check)
+            will_check=true
+            shift
+            ;;
+        --stats)
+            print_stats=true
+            shift
+            ;;
+        --compliant)
+            compliant_count_opt=true
+            shift
+            ;;
+        --non_compliant)
+            non_compliant_count_opt=true
+            shift
+            ;;
+        --clear)
+            will_clear=true
+            shift
+            ;;
+        --)
+            shift
+            break
+            ;;
+        -*)
+            echo "Error: Invalid option $1" >&2
+            echo "$usage"
+            exit 1
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
+if $will_clear; then root_check; clear_logs; fi
+if $will_check; then root_check; run_scan; fi
+if $print_stats; then generate_report
+elif $compliant_count_opt; then compliance_count "compliant"
+elif $non_compliant_count_opt; then compliance_count "non-compliant"
+elif ! $will_clear && ! $will_check; then
+    if [[ ! $(which whiptail) ]]; then
+        echo "You can't use interactive mode without 'whiptail' installed. Use flags to navigate non-interactively."
+        echo "$usage"
+        exit 1
+    fi
+    using_whiptail=true
+    verbosity=0 # TODO Make this better. It's all in a log file, so it's not inexcusable, but ideally logs can be written to standard out while whiptail is running.
+
+    while true; do
+        choice=$(whiptail --title "Linux Security Compliance Project" \
+                            --menu "Target System: {{ platform }}\nBenchmark:" \
+                            15 60 4 \
+                            "1" "Run compliance check" \
+                            "2" "Display statistics from last scan" \
+                            "3" "Clear logs" \
+                            "4" "Exit" 4>&1 1>&2 2>&4)
+        if [[ $? -ne 0 ]]; then
+            exit 0
+        fi
+
+        case $choice in
+            1)
+                root_check
+                run_scan | whiptail --gauge "Scan Completion" 7 60 0
+                whiptail --title "Results" --msgbox "$(generate_report)" 10 40
+                ;;
+            2)
+                whiptail --title "Last Scan Statistics" --msgbox "$(generate_report)" 10 40
+                ;;
+            3)
+                root_check
+                clear_logs
+                whiptail --title "Logs Cleared" --msgbox "Logs have been cleared." 10 40;
+                ;;
+            4)
+                exit 0
+                ;;
+        esac
+    done
+fi
+
+exit 0
