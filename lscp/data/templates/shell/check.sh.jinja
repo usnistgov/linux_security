@@ -1,0 +1,42 @@
+#####################################################################
+#
+#    Rule ID: {{ rule.id }}
+#    Tags: {{ rule.tags | join(", ") }}
+#
+#    Addresses the following NIST 800-53 controls:
+#    - {{ rule.references.nist["800-53r5"] | join(", ") }}
+#
+#####################################################################
+
+local rule_id="{{ rule.id }}"
+local result_status="passed"
+local standard_out
+local status_code
+local expected_standard_out
+local expected_status_code
+
+if $using_whiptail; then
+    local percent_complete=$(echo "scale=2; ($rule_count / $total_checks) * 100" | bc | xargs printf "%.0f")
+    echo "XXX"; echo "$percent_complete"; echo "Checking $rule_id..."; echo "XXX"
+fi
+((rule_count++))
+
+result_value=$({{ rule.enforcement_info.check.shell }})
+status_code=$?
+
+{% if rule.enforcement_info.check.status_code is not none %}
+expected_status_code="{{ rule.enforcement_info.check.status_code }}"
+if [[ "$status_code" != "$expected_status_code" ]]; then
+    result_status="failed"
+fi
+{% elif rule.enforcement_info.check.standard_output is not none %}
+expected_standard_out="{{ rule.enforcement_info.check.standard_output }}"
+if [[ "$result_value" != "$expected_standard_out" ]]; then
+    result_status="failed"
+fi
+{% endif %}
+
+log_message "[CHECK] $rule_id $result_status"
+log_csv "$rule_id" "$result_status" "$result_value" "$status_code" "$expected_standard_out" "$expected_status_code"
+
+sleep 0.1
