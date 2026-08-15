@@ -1,28 +1,26 @@
 id: audit_auditd_installed
-title: Ubuntu must have the "auditd" package installed.
-discussion: >
-  Audit records must include sufficient detail, such as timestamps,
-  source/destination addresses, user/process IDs, event descriptions, success/failure
-  indicators, filenames, and applied rules to enable correlation, investigation,
-  and forensic analysis of incidents. Without this information, establishing the
-  cause of outages or attacks and responding effectively is impaired.
+title: Auditd Package Must Be Installed
+discussion: |
+  The system must have the "auditd" package installed.
+  
+  Audit records must include sufficient detail, such as timestamps, source/destination addresses, user/process IDs, event descriptions, success/failure indicators, filenames, and applied rules to enable correlation, investigation, and forensic analysis of incidents. Without this information, establishing the cause of outages or attacks and responding effectively is impaired.
 references:
   nist:
     800-53r5:
-    - CM-5 (1) (b)
-    - AU-3 e
-    - AU-3 c
-    - AU-3 b
-    - AU-7 b
+    - CM-5 (1)
+    - AU-3
+    - AU-3
+    - AU-3
+    - AU-7
     - AU-6 (4)
     - AU-3 (1)
-    - AU-12 c
-    - AU-7 a
+    - AU-12
+    - AU-7
     - AU-7 (1)
-    - AU-12 a
-    - AU-3 d
+    - AU-12
+    - AU-3
     - AU-12 (3)
-    - AU-3 a
+    - AU-3
   disa:
     cci:
     - CCI-000154

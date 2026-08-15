@@ -1,15 +1,13 @@
 id: audit_kmod_command
-title: Ubuntu must generate audit records for successful/unsuccessful attempts
-  to use the kmod command.
-discussion: >
-  Without organization-specific audit records, it is difficult to
-  establish, correlate, investigate incidents, or identify responsible parties.
-  Audit records can be generated from various system components, such as modules
-  or policy filters.
+title: Audit Records for kmod Command Usage
+discussion: |
+  The system must generate audit records for successful/unsuccessful attempts to use the kmod command.
+
+  Without organization-specific audit records, it is difficult to establish, correlate, investigate incidents, or identify responsible parties. Audit records can be generated from various system components, such as modules or policy filters.
 references:
   nist:
     800-53r5:
-    - AU-12 c
+    - AU-12
   disa:
     cci:
     - CCI-000172

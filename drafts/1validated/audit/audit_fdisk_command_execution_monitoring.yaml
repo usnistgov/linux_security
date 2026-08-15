@@ -1,11 +1,9 @@
 id: audit_fdisk_command_execution_monitoring
-title: Ubuntu must generate audit records for successful/unsuccessful attempts
-  to use the fdisk command.
-discussion: >
-  Without organization-specific audit records, it is difficult to
-  trace, correlate, and investigate incidents or identify responsible parties. Audit
-  records can be generated from various system components, such as modules or policy
-  filters.
+title: 
+discussion: |
+  The system must generate audit records for successful/unsuccessful attempts to use the fdisk command.
+
+  Without organization-specific audit records, it is difficult to trace, correlate, and investigate incidents or identify responsible parties. Audit records can be generated from various system components, such as modules or policy filters.
 references:
   nist:
     800-53r5:

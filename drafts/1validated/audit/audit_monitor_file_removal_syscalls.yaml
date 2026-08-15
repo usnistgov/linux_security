@@ -1,15 +1,13 @@
 id: audit_monitor_file_removal_syscalls
-title: Ubuntu must generate audit records for any successful/unsuccessful
-  use of unlink, unlinkat, rename, renameat, and rmdir system calls.
-discussion: >
-  Generating audit records tailored to the organization's security
-  and mission needs is essential for establishing, correlating, and investigating
-  incidents and identifying responsible parties. System call rules should be used
-  only when necessary and combined whenever possible to reduce performance impact.
+title: Audit Records for File Removal System Calls
+discussion: |
+  Ubuntu must generate audit records for any successful/unsuccessful use of unlink, unlinkat, rename, renameat, and rmdir system calls.
+
+  Generating audit records tailored to the organization's security and mission needs is essential for establishing, correlating, and investigating incidents and identifying responsible parties. System call rules should be used only when necessary and combined whenever possible to reduce performance impact.
 references:
   nist:
     800-53r5:
-    - AU-12 c
+    - AU-12
   disa:
     cci:
     - CCI-000172

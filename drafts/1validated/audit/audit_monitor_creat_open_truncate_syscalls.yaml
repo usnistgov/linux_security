@@ -1,16 +1,13 @@
 id: audit_monitor_creat_open_truncate_syscalls
-title: Ubuntu must generate audit records for successful/unsuccessful uses
-  of the creat, open, openat, open_by_handle_at, truncate, and ftruncate system calls.
-discussion: >
-  Audit records tailored to organizational security and mission needs are
-  essential for incident investigation and attribution, and can be produced from
-  various system components such as modules or policy filters. Because system-
-  call rules affect performance, they should be used only when necessary and combined
-  whenever possible to minimize the performance impact.
+title: Audit Records for creat, open, openat, open_by_handle_at, truncate, and ftruncate System Calls
+discussion: |
+  TThe system must generate audit records for successful/unsuccessful uses of the creat, open, openat, open_by_handle_at, truncate, and ftruncate system calls.
+
+  Audit records tailored to organizational security and mission needs are essential for incident investigation and attribution, and can be produced from various system components such as modules or policy filters. Because system call rules affect performance, they should be used only when necessary and combined whenever possible to minimize the performance impact.
 references:
   nist:
     800-53r5:
-    - AU-12 c
+    - AU-12
   disa:
     cci:
     - CCI-000172

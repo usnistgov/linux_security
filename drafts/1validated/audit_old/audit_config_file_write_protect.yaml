@@ -1,13 +1,13 @@
 id: audit_config_file_write_protect
-title: Ubuntu must be configured so that audit configuration files are not
-  write-accessible by unauthorized users.
-discussion: Without restricting who can select audited events, unauthorized users
-  could block critical event logging, and misconfigured audits could overload logs
-  and hinder incident investigation.
+title: Audit Configuration Files Must Not Be Write-Accessible by Unauthorized Users
+discussion: |
+  The system must be configured so that audit configuration files are not write-accessible by unauthorized users.
+  
+  Without restricting who can select audited events, unauthorized users could block critical event logging, and misconfigured audits could overload logs and hinder incident investigation.
 references:
   nist:
     800-53r5:
-    - AU-12 b
+    - AU-12
   disa:
     cci:
     - CCI-000171

@@ -1,12 +1,9 @@
 id: os_apt_verify_package_signature
-title: Ubuntu must be configured so that the Advance Package Tool (APT)
-  prevents the installation of patches, service packs, device drivers, or operating
-  system components without verification they have been digitally signed using a certificate
-  that is recognized and approved by the organization.
-discussion: >
-  Software components must be signed with an organization-approved
-  certificate to confirm they are untampered and from a trusted vendor;
-  self-signed certificates are not permitted.
+title: Apt Must Verify Package Signatures
+discussion: |
+  The system must be configured so that the Advance Package Tool (APT) prevents the installation of patches, service packs, device drivers, or operating system components without verification they have been digitally signed using a certificate that is recognized and approved by the organization.
+
+  Software components must be signed with an organization-approved certificate to confirm they are untampered and from a trusted vendor;self-signed certificates are not permitted.
 references:
   nist:
     800-53r5:

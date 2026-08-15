@@ -1,15 +1,13 @@
 id: audit_faillog_file_use_modification
-title: Ubuntu must generate audit records for the use and modification of
-  faillog file.
-discussion: Generating audit records that meet the organization's security and mission
-  requirements is necessary to establish, correlate, and investigate incidents and
-  identify those responsible. These records can be produced by various system components
-  (e.g., modules or policy filters) and satisfy SRG-OS-000064-GPOS-00033, SRG-OS-000470-GPOS-00214,
-  and SRG-OS-000473-GPOS-00218.
+title: Authorized Faillog File Use and Modification Events
+discussion: |
+  The system must generate audit records for the use and modification of faillog file.
+
+  Generating audit records that meet the organization's security and mission requirements is necessary to establish, correlate, and investigate incidents and identify those responsible. These records can be produced by various system components (e.g., modules or policy filters) and satisfy SRG-OS-000064-GPOS-00033, SRG-OS-000470-GPOS-00214, and SRG-OS-000473-GPOS-00218.
 references:
   nist:
     800-53r5:
-    - AU-12 c
+    - AU-12
   disa:
     cci:
     - CCI-000172

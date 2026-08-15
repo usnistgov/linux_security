@@ -1,16 +1,14 @@
 id: audit_group_account_events
-title: Ubuntu must generate audit records for all account creations, modifications,
-  disabling, and termination events that affect /etc/group.
-discussion: >
-  Attackers often create accounts to maintain persistent access; auditing
-  these creations provides forensic logs. Integrating the OS with enterprise-
-  level authentication, access, and auditing mechanisms helps meet or exceed access
-  control policy requirements.
+title: Audit Records for Group Account Events
+discussion: |
+  Ubuntu must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/group.
+
+  Attackers often create accounts to maintain persistent access; auditing these creations provides forensic logs. Integrating the OS with enterprise-level authentication, access, and auditing mechanisms helps meet or exceed access control policy requirements.
 references:
   nist:
     800-53r5:
     - AC-2 (4)
-    - AU-12 c
+    - AU-12
   disa:
     cci:
     - CCI-001403

@@ -1,9 +1,9 @@
 id: audit_ownership_of_config_files
-title: Ubuntu must permit only authorized accounts to own the audit configuration
-  files.
-discussion: Without restricting who can select audited events, unauthorized users
-  could block critical event logging, and misconfigured audits could overload logs
-  and hinder incident investigation.
+title: Authorized Ownership of Audit Configuration Files
+discussion: |
+  The system must permit only authorized accounts to own the audit configuration files.
+
+  Without restricting who can select audited events, unauthorized users could block critical event logging, and misconfigured audits could overload logs and hinder incident investigation.
 references:
   nist:
     800-53r5:
