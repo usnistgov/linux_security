@@ -1,0 +1,21 @@
+#####################################################################
+#
+#    Rule ID: {{ rule.id }}
+#    Tags: {{ rule.tags | join(", ") }}
+#
+#    Addresses the following NIST 800-53 controls:
+#    - {{ rule.references.nist["800-53r5"] | join(", ") }}
+#
+#####################################################################
+
+local rule_id="{{ rule.id }}"
+
+if $using_whiptail; then
+    local percent_complete=$(echo "scale=2; ($rule_count / $total_fixes) * 100" | bc | xargs printf "%.0f")
+    echo "XXX"; echo "$percent_complete"; echo "Fixing $rule_id..."; echo "XXX"
+fi
+((rule_count++))
+
+rule_fix "$rule_id" '{{ rule.enforcement_info.fix.shell }}'
+
+sleep 0.1
