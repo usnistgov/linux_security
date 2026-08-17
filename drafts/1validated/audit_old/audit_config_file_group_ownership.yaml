@@ -1,13 +1,13 @@
 id: audit_config_file_group_ownership
-title: Ubuntu must permit only authorized groups to own the audit configuration
-  files.
-discussion: Without the ability to restrict which roles and individuals can select
-  audited events, unauthorized personnel could block critical audit logging, and misconfigured
-  audits may overwhelm the log and impede incident correlation and investigation.
+title: Authorized Group Ownership of Audit Configuration Files
+discussion: |
+  The system must be configured to permit only authorized groups to own the audit configuration files.
+
+  Without the ability to restrict which roles and individuals can select audited events, unauthorized personnel could block critical audit logging, and misconfigured audits may overwhelm the log and impede incident correlation and investigation.
 references:
   nist:
     800-53r5:
-    - AU-12 b
+    - AU-12
   disa:
     cci:
     - CCI-000171

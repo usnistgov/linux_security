@@ -1,14 +1,13 @@
 id: audit_gpasswd_cmd
-title: Ubuntu must generate audit records for successful/unsuccessful uses
-  of the gpasswd command.
-discussion: Without audit records tailored to the organization's security and mission
-  needs, it is difficult to establish, correlate, investigate incidents, or identify
-  responsible parties. These records can be generated from various system components,
-  such as modules or policy filters.
+title: Audit Records for gpasswd Command Execution
+discussion: |
+  The system must generate audit records for successful/unsuccessful uses of the gpasswd command.
+  
+  Without audit records tailored to the organization's security and mission needs, it is difficult to establish, correlate, investigate incidents, or identify responsible parties. These records can be generated from various system components, such as modules or policy filters.
 references:
   nist:
     800-53r5:
-    - AU-12 c
+    - AU-12
   disa:
     cci:
     - CCI-000172

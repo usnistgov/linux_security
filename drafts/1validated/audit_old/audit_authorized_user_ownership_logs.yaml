@@ -1,10 +1,9 @@
 id: audit_authorized_user_ownership_logs
-title: Ubuntu must be configured to permit only authorized users ownership
-  of the audit log files.
-discussion: >
-  Unauthorized disclosure of audit records can expose system and configuration
-  data to attackers, compromising confidentiality. Audit information, including
-  records, settings, and reports, is required to audit operating system activity.
+title: Authorized User Ownership of Audit Logs
+discussion: |
+  The system must be configured to permit only authorized users ownership of the audit log files.
+
+  Unauthorized disclosure of audit records can expose system and configuration data to attackers, compromising confidentiality. Audit information, including records, settings, and reports, is required to audit operating system activity.
 references:
   nist:
     800-53r5:

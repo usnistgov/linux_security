@@ -1,15 +1,13 @@
 id: audit_chown_fchown_lchown_syscall_audit
-title: Ubuntu must generate audit records for successful/unsuccessful uses
-  of the chown, fchown, fchownat, and lchown system calls.
-discussion: Audit records tailored to organizational security and mission needs are
-  essential for establishing, correlating, and investigating incidents; they can be
-  generated from various system components, including syscall rules. Because syscall
-  rules impact performance, they should be used only when necessary and combined whenever
-  possible to minimize overhead.
+title: Authorized chown, fchown, and lchown System Call Execution Events
+discussion: |
+  The system must generate audit records for successful/unsuccessful uses of the chown, fchown, fchownat, and lchown system calls.
+
+  Audit records tailored to organizational security and mission needs are essential for establishing, correlating, and investigating incidents; they can be generated from various system components, including syscall rules. Because syscall rules impact performance, they should be used only when necessary and combined whenever possible to minimize overhead.
 references:
   nist:
     800-53r5:
-    - AU-12 c
+    - AU-12
   disa:
     cci:
     - CCI-000172

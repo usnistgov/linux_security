@@ -1,13 +1,13 @@
 id: audit_audit_tools_owned_by_root
-title: Ubuntu must configure audit tools to be owned by root.
-discussion: >
-  Protecting audit information requires securing the tools used to view
-  and manipulate logs, ensuring only authorized users with appropriate permissions
-  can access them.
+title: Configure Audit Tools to be Owned by Root
+discussion: |
+  The system must configure audit tools to be owned by root.
+
+  Protecting audit information requires securing the tools used to view and manipulate logs, ensuring only authorized users with appropriate permissions can access them.
 references:
   nist:
     800-53r5:
-    - AU-9 a
+    - AU-9
   disa:
     cci:
     - CCI-001494

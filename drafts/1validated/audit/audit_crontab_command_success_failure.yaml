@@ -1,15 +1,13 @@
 id: audit_crontab_command_success_failure
-title: Ubuntu must generate audit records for successful/unsuccessful uses
-  of the crontab command.
-discussion: >
-  Without organization-specific audit records, it is difficult to
-  establish, correlate, investigate incidents or identify responsible parties. Audit
-  records can be generated from various system components, such as modules or policy
-  filters.
+title: Authorized Crontab Command Execution Events
+discussion: |
+  Ubuntu must generate audit records for successful/unsuccessful uses of the crontab command.
+
+  Without organization-specific audit records, it is difficult to establish, correlate, investigate incidents or identify responsible parties. Audit records can be generated from various system components, such as modules or policy filters.
 references:
   nist:
     800-53r5:
-    - AU-12 c
+    - AU-12
   disa:
     cci:
     - CCI-000172

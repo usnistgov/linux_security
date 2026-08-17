@@ -1,16 +1,14 @@
 id: audit_account_modifications_events_passwd
-title: Ubuntu must generate audit records for all account creations, modifications,
-  disabling, and termination events that affect /etc/passwd.
-discussion: >
-  Attackers often create accounts to maintain persistent access after compromising
-  a system; auditing these account-creation events provides essential forensic
-  logs. Operating systems can be linked to enterprise authentication, access, and
-  auditing solutions that satisfy or exceed access-control policy requirements.
+title: Authorized Account Management Events
+discussion: |
+  The system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/passwd.
+
+  Attackers often create accounts to maintain persistent access after compromising a system; auditing these account-creation events provides essential forensic logs. Operating systems can be linked to enterprise authentication, access, and auditing solutions that satisfy or exceed access-control policy requirements.
 references:
   nist:
     800-53r5:
     - AC-2 (4)
-    - AU-12 c
+    - AU-12
   disa:
     cci:
     - CCI-001403

@@ -1,11 +1,9 @@
 id: audit_modprobe_usage
-title: Ubuntu must generate audit records for successful/unsuccessful attempts
-  to use modprobe command.
-discussion: >
-  Without organization-specific audit records, it is difficult to
-  trace, correlate, and investigate incidents or identify responsible parties. Audit
-  records can be generated from various system components, such as modules or policy
-  filters.
+title: Audit Records for modprobe Command Usage
+discussion: |
+  The system must generate audit records for successful/unsuccessful attempts to use modprobe command.
+
+  Without organization-specific audit records, it is difficult to trace, correlate, and investigate incidents or identify responsible parties. Audit records can be generated from various system components, such as modules or policy filters.
 references:
   nist:
     800-53r5:

@@ -1,14 +1,13 @@
 id: audit_init_module_finit_module
-title: Ubuntu must generate audit records for successful/unsuccessful uses
-  of the init_module and finit_module syscalls.
-discussion: Generating audit records tailored to the organization's security and mission
-  needs is essential for establishing, correlating, and investigating incidents and
-  identifying responsible parties. System call rules should be used only when necessary
-  and combined whenever possible to minimize performance impact.
+title: Audit Records for init_module and finit_module Syscall Execution
+discussion: |
+  The system must generate audit records for successful/unsuccessful uses of the init_module and finit_module syscalls.
+
+  Generating audit records tailored to the organization's security and mission needs is essential for establishing, correlating, and investigating incidents and identifying responsible parties. System call rules should be used only when necessary and combined whenever possible to minimize performance impact.
 references:
   nist:
     800-53r5:
-    - AU-12 c
+    - AU-12
   disa:
     cci:
     - CCI-000172

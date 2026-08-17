@@ -1,10 +1,9 @@
 id: audit_cron_script_executable_privileged
-title: Ubuntu must audit any script or executable called by cron as root
-  or by any privileged user.
-discussion: >
-  Scripts or executables run by cron as root or any privileged user must
-  be owned by that user, have permissions 755 or stricter, and must not grant
-  non-privileged users the ability to modify them.
+title: Authorized Cron Script and Executable Execution Events
+discussion: |
+  The system must audit any script or executable called by cron as root or by any privileged user.
+
+  Scripts or executables run by cron as root or any privileged user must be owned by that user, have permissions 755 or stricter, and must not grant non-privileged users the ability to modify them.
 references:
   nist:
     800-53r5:

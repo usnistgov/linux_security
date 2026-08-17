@@ -1,15 +1,13 @@
 id: audit_lastlog_file_use_modify
-title: Ubuntu must generate audit records for the use and modification of
-  the lastlog file.
-discussion: >
-  Generating audit records specific to the organization's security and
-  mission needs is necessary to establish, correlate, and investigate incidents and
-  identify responsible parties; these records can be produced by various system components
-  (e.g., modules or policy filters). 
+title: Audit Records for Lastlog File Use and Modification
+discussion: |
+  The system must generate audit records for the use and modification of the lastlog file.
+
+  Generating audit records specific to the organization's security and mission needs is necessary to establish, correlate, and investigate incidents and identify responsible parties; these records can be produced by various system components (e.g., modules or policy filters). 
 references:
   nist:
     800-53r5:
-    - AU-12 c
+    - AU-12
   disa:
     cci:
     - CCI-000172

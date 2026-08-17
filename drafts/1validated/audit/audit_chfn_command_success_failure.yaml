@@ -1,10 +1,10 @@
 id: audit_chfn_command_success_failure
-title: Ubuntu must generate audit records for successful/unsuccessful uses
-  of the chfn command.
-discussion: Without audit records tailored to the organization's security and mission
-  needs, it is difficult to establish, correlate, and investigate incidents or identify
-  responsible parties. Audit records can be generated from various system components
-  such as modules or policy filters.
+title: Authorized chfn Command Execution Events
+discussion: |
+  Ubuntu must generate audit records for successful/unsuccessful uses of the chfn command.
+
+  Without audit records tailored to the organization's security and mission needs, it is difficult to establish, correlate, and investigate incidents or identify
+  responsible parties. Audit records can be generated from various system components such as modules or policy filters.
 references:
   nist:
     800-53r5:

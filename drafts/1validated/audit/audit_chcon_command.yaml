@@ -1,10 +1,9 @@
 id: audit_chcon_command
-title: Ubuntu must generate audit records for successful/unsuccessful uses
-  of the chcon command.
-discussion: Without audit records tailored to the organization's security and mission
-  needs, it is difficult to establish, correlate, investigate incidents, or identify
-  responsible parties. These records can be generated from various system components,
-  such as modules or policy filters.
+title: Authorized chcon Command Execution Events
+discussion: 
+  The system must generate audit records for successful/unsuccessful uses of the chcon command.
+
+  Without audit records tailored to the organization's security and mission needs, it is difficult to establish, correlate, investigate incidents, or identify responsible parties. These records can be generated from various system components, such as modules or policy filters.
 references:
   nist:
     800-53r5:
