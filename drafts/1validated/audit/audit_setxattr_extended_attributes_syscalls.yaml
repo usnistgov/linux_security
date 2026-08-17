@@ -25,7 +25,7 @@ references:
 enforcement_info:
   enforcement_type: full
   check:
-    shell: auditctl -l | grep -E "\-a always,exit -F arch=\S* -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid(>=1000|=0) (-F auid!=-1 -F|-k)" | wc -l
+    shell: auditctl -l | grep -F "setxattr" | grep -F "fsetxattr" | grep -F "lsetxattr" | grep -F "removexattr" | grep -F "fremovexattr" | grep -F "lremovexattr" | grep -E "\-a always,exit -F arch=\S* -S .* -F auid(>=1000|=0) (-F auid!=-1 -F|-k)" | wc -l
     standard_output: "4"
   fix:
     shell: echo -e "-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>=1000 -F auid!=unset -k perm_mod\n-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 -k perm_mod\n-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>=1000 -F auid!=unset -k perm_mod\n-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 -k perm_mod" >> /etc/audit/rules.d/stig.rules && augenrules --load

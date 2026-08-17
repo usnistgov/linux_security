@@ -25,8 +25,8 @@ references:
 enforcement_info:
   enforcement_type: full
   check:
-    shell: auditctl -l | grep -q "\-a always,exit -F arch=b\S* -S unlink,unlinkat,rename,renameat,rmdir -F auid>=1000 -F auid!=-1"
-    status_code: 0
+    shell: auditctl -l | grep -F "unlink" | grep -F "unlinkat" | grep -F "rename" | grep -F "renameat" | grep -F "rmdir" | grep "^-a always,exit -F arch=\S* -S .* -F auid>=1000 -F auid!=-1 -F key" | wc -l
+    standard_out: "2"
   fix:
     shell: echo -e "-a always,exit -F arch=b32 -S unlink,unlinkat,rename,renameat,rmdir -F auid>=1000 -F auid!=unset -k delete\n-a always,exit -F arch=b64 -S unlink,unlinkat,rename,renameat,rmdir -F auid>=1000 -F auid!=unset -k delete" >> /etc/audit/rules.d/stig.rules && augenrules --load
 platforms:

@@ -24,10 +24,10 @@ references:
 enforcement_info:
   enforcement_type: full
   check:
-    shell: auditctl -l | grep -q "\-a always,exit -S all -F path=/bin/su -F perm=x -F auid>=1000 -F auid!=-1"
+    shell: auditctl -l | grep -q "\-a always,exit -S all -F path=/usr/bin/su -F perm=x -F auid>=1000 -F auid!=-1"
     status_code: 0
   fix:
-    shell: echo "-a always,exit -F path=/bin/su -F perm=x -F auid>=1000 -F auid!=unset -k privileged-priv_change" >> /etc/audit/rules.d/stig.rules && augenrules --load
+    shell: echo "-a always,exit -F path=/usr/bin/su -F perm=x -F auid>=1000 -F auid!=unset -k privileged-priv_change" >> /etc/audit/rules.d/stig.rules && augenrules --load
 platforms:
 - name: ubuntu_2004
   benchmarks:
