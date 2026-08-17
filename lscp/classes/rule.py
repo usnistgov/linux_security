@@ -41,7 +41,7 @@ class EnforcementInfo(BaseModel):
     enforcement_type: EnforcementType
     check: CheckInfo | None = None
     fix: FixInfo | None = None
-    vars: dict[str, Any] | None = None
+    vars: dict[str, str] | None = None
 
     @model_validator(mode="after")
     def enforce_check(self) -> Self:

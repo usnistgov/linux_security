@@ -25,6 +25,17 @@ class ShellGenerator(BaseGenerator):
 
         for rule in rules:
             enforcement_block = get_enforcement_block(rule, platform)
+            if enforcement_block.vars:
+                for key, value in enforcement_block.vars.items():
+                    if enforcement_block.check:
+                        enforcement_block.check.shell = (
+                            enforcement_block.check.shell.replace(f"${key}", value)
+                        )
+                    if enforcement_block.fix:
+                        enforcement_block.fix.shell = (
+                            enforcement_block.fix.shell.replace(f"${key}", value)
+                        )
+
             new_rule = rule.model_copy()
             new_rule.enforcement_info = enforcement_block
             rule_lst.append(new_rule)

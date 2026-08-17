@@ -21,7 +21,7 @@ references:
 enforcement_info:
   enforcement_type: full
   check:
-    shell: auditctl -l | grep "\-a always,exit -F arch=b\S* -S init_module,finit_module -F auid>=1000 -F auid!=-1" | wc -l
+    shell: auditctl -l | grep -F "init_module" | grep -F "finit_module" | grep "\-a always,exit -F arch=\S* -S .* -F auid>=1000 -F auid!=-1" | wc -l
     standard_output: "2"
   fix:
     shell: echo -e "-a always,exit -F arch=b32 -S init_module,finit_module -F auid>=1000 -F auid!=unset -k module_chng\n-a always,exit -F arch=b64 -S init_module,finit_module -F auid>=1000 -F auid!=unset -k module_chng" >> /etc/audit/rules.d/stig.rules && augenrules --load

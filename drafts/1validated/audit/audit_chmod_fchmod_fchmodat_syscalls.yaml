@@ -22,7 +22,7 @@ references:
 enforcement_info:
   enforcement_type: full
   check:
-    shell: auditctl -l | grep "\-a always,exit -F arch=b.* -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1 -F key" | wc -l
+    shell: auditctl -l | grep -F "chmod" | grep -F "fchmod" | grep -F "fchmodat" | grep "\-a always,exit -F arch=\S* -S .* -F auid>=1000 -F auid!=-1 -F key" | wc -l
     standard_output: "2"
   fix:
     shell: echo -e "-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=unset -k perm_chng\n-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=unset -k perm_chng" >> /etc/audit/rules.d/stig.rules && augenrules --load

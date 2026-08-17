@@ -21,6 +21,7 @@ audit_csv="$LOG_PATH/$LOG_REF.csv"
 
 verbosity=0
 using_whiptail=false
+dry_run=false
 
 root_check(){
     if [[ $EUID -ne 0 ]]; then
@@ -43,6 +44,17 @@ define_logs(){
         done
         audit_csv="$new_log_file"
         audit_log="$LOG_PATH/$LOG_REF.$counter.log"
+    fi
+}
+
+log_check(){
+    if [[ ! -h $LAST_RUN ]]; then
+        if $using_whiptail; then
+            whiptail --title "File Error" --msgbox "No prior run exists, cannot continue." 10 40;
+        else
+            echo "No prior run exists, cannot continue."
+        fi
+        exit 1
     fi
 }
 
@@ -126,6 +138,20 @@ generate_report(){
     fi
 }
 
+rule_fix() {
+    local pass_fail=$(tail -n +2 $LAST_RUN  | awk -F"," -v rule_id=$1 '{if ($1 == rule_id) print $2}')
+    if [[ $pass_fail == "failed" ]]; then
+        log_message "Running the command to configure the settings for: $1 ..."
+        if $dry_run; then
+            log_message "This command would have been run, if not configured for dry-run: $2" "DEBUG"
+        else
+            eval $2
+        fi
+    elif [[ $pass_fail == "passed" ]]; then
+        log_message "Settings for $1 already configured, continuing..."
+    fi
+}
+
 run_scan(){
     define_logs
     log_message "Beginning new compliance scan" "WARN"
@@ -147,10 +173,28 @@ run_scan(){
     ln -s $audit_csv $LAST_RUN > /dev/null
 } 2> /dev/null
 
+run_fix(){
+    log_message "Beginning remediation" "WARN"
+
+    local total_fixes="{{ rules | length }}"
+    local rule_count=0
+
+    if $using_whiptail; then
+        echo "XXX"; echo "0"; echo "Beginning Remediation..."; echo "XXX"
+    fi
+
+{% for rule in rules %}
+{% include "fix.sh.jinja" %}
+{% endfor %}
+} 2> /dev/null
+
 usage="Usage: ./compliance.sh [--check] [--stats] [--compliant] [--non_compliant] [--clear] [--help] [-v[v]]
 
 Optional parameters:
 --check            : Run compliance checks without interaction
+--fix              : Fix compliance checks without interaction
+--cfc              : Equivalent to --check, --fix, --check
+--dry-run          : Configures the script to not run any 'fix' commands
 --stats            : Display the statistics from last compliance check
 --compliant        : Reports the number of compliant checks from last compliance check
 --non_compliant    : Reports the number of non-compliant checks from last compliance check
@@ -159,6 +203,8 @@ Optional parameters:
 -v[v], --verbose   : Increase verbosity (0 ERROR+WARN 1 INFO 2 DEBUG)"
 
 will_check=false
+will_fix=false
+will_cfc=false
 will_clear=false
 print_stats=false
 compliant_count_opt=false
@@ -182,6 +228,14 @@ while [[ $# -gt 0 ]]; do
             will_check=true
             shift
             ;;
+        --fix)
+            will_fix=true
+            shift
+            ;;
+        --cfc)
+            will_cfc=true
+            shift
+            ;;
         --stats)
             print_stats=true
             shift
@@ -196,6 +250,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         --clear)
             will_clear=true
+            shift
+            ;;
+        --dry-run)
+            dry_run=true
             shift
             ;;
         --)
@@ -215,10 +273,12 @@ done
 
 if $will_clear; then root_check; clear_logs; fi
 if $will_check; then root_check; run_scan; fi
+if $will_fix; then root_check; log_check; run_fix; fi
+if $will_cfc; then root_check; run_scan; run_fix; run_scan; fi
 if $print_stats; then generate_report
 elif $compliant_count_opt; then compliance_count "compliant"
 elif $non_compliant_count_opt; then compliance_count "non-compliant"
-elif ! $will_clear && ! $will_check; then
+elif ! $will_clear && ! $will_check && ! $will_fix && ! $will_cfc; then
     if [[ ! $(which whiptail) ]]; then
         echo "You can't use interactive mode without 'whiptail' installed. Use flags to navigate non-interactively."
         echo "$usage"
@@ -230,11 +290,13 @@ elif ! $will_clear && ! $will_check; then
     while true; do
         choice=$(whiptail --title "Linux Security Compliance Project" \
                             --menu "Target System: {{ platform }}\nBenchmark:" \
-                            15 60 4 \
+                            15 60 6 \
                             "1" "Run compliance check" \
                             "2" "Display statistics from last scan" \
-                            "3" "Clear logs" \
-                            "4" "Exit" 4>&1 1>&2 2>&4)
+                            "3" "Run remediation fix" \
+                            "4" "CFC: Check, Fix, Check" \
+                            "5" "Clear logs" \
+                            "6" "Exit" 4>&1 1>&2 2>&4)
         if [[ $? -ne 0 ]]; then
             exit 0
         fi
@@ -250,10 +312,27 @@ elif ! $will_clear && ! $will_check; then
                 ;;
             3)
                 root_check
+                log_check
+                if ! whiptail --title "WARNING" --yes-button "No" --no-button "Yes" --yesno "THE LSCP PROJECT IS NOT RESPONSIBLE FOR DAMAGES TO THE SYSTEM. Proceed?" 10 40; then
+                    run_fix | whiptail --gauge "Fix Completion" 7 60 0
+                    whiptail -- title "Remediation Complete" --msgbox "Remediation fixes have been completed." 10 40
+                fi
+                ;;
+            4)
+                root_check
+                if ! whiptail --title "WARNING" --yes-button "No" --no-button "Yes" --yesno "THE LSCP PROJECT IS NOT RESPONSIBLE FOR DAMAGES TO THE SYSTEM. Proceed?" 10 40; then
+                    run_scan | whiptail --gauge "Scan Completion" 7 60 0
+                    run_fix | whiptail --gauge "Fix Completion" 7 60 0
+                    run_scan | whiptail --gauge "Scan Completion" 7 60 0
+                    whiptail --title "Results" --msgbox "$(generate_report)" 10 40
+                fi
+                ;;
+            5)
+                root_check
                 clear_logs
                 whiptail --title "Logs Cleared" --msgbox "Logs have been cleared." 10 40;
                 ;;
-            4)
+            6)
                 exit 0
                 ;;
         esac
