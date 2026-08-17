@@ -24,7 +24,7 @@ enforcement_info:
     shell: sshd -T | grep -q "^kexalgorithms $FIPS_KEYS"
     status_code: 0
   fix:
-    shell: echo "KexAlgorithms $FIPS_KEYS" >> /etc/ssh/sshd_config
+    shell: echo "KexAlgorithms $FIPS_KEYS" >> /etc/ssh/sshd_config && systemctl restart ssh
 platforms:
 - name: ubuntu_2204
   benchmarks:
