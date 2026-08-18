@@ -10,7 +10,7 @@ discussion: "Excessive detail in error messages can reveal sensitive information
 references:
   nist:
     800-53r5:
-    - SI-11 a
+    - SI-11
   disa:
     cci:
     - CCI-001312
@@ -47,4 +47,5 @@ platforms:
       shell: sudo find /var/log -perm /137 ! -name '*[bw]tmp' ! -name '*lastlog' -type
         f -exec chmod 640 '{}' \;
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

@@ -7,8 +7,8 @@ discussion: "Limiting failed logon attempts reduces the risk of brute\u2011force
 references:
   nist:
     800-53r5:
-    - AC-7 b
-    - AC-7 a
+    - AC-07
+    - AC-07
   disa:
     cci:
     - CCI-002238
@@ -83,4 +83,6 @@ platforms:
         echo -e "audit\nsilent\ndeny = 3\nfail_interval = 900\nunlock_time = 0" >>
         /etc/security/faillock.conf'
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

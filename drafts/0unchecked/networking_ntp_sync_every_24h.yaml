@@ -10,7 +10,7 @@ discussion: Inaccurate timestamps hinder event correlation and forensic analysis
 references:
   nist:
     800-53r5:
-    - SC-45 (1) (a)
+    - SC-45(01)
   disa:
     cci:
     - CCI-004923

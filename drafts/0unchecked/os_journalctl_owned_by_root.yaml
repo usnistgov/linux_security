@@ -8,7 +8,7 @@ discussion: Only authorized personnel should see error details, as messages can 
 references:
   nist:
     800-53r5:
-    - SI-11 b
+    - SI-11
   disa:
     cci:
     - CCI-001314
@@ -41,4 +41,5 @@ platforms:
     fix:
       shell: sudo chown root /usr/bin/journalctl
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

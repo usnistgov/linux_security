@@ -7,7 +7,7 @@ discussion: X11 forwarding can expose the client's display to attack, allowing u
 references:
   nist:
     800-53r5:
-    - CM-6 b
+    - CM-06
   disa:
     cci:
     - CCI-000366
@@ -41,4 +41,6 @@ platforms:
     fix:
       shell: sudo systemctl restart ssh
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

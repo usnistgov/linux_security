@@ -6,7 +6,7 @@ discussion: If the authentication certificate isn't mapped to a user account, fo
 references:
   nist:
     800-53r5:
-    - IA-5 (2) (a) (2)
+    - IA-05(02)
   disa:
     cci:
     - CCI-000187
@@ -52,4 +52,5 @@ platforms:
     fix:
       shell: echo 'ldap_user_certificate=userCertificate;binary' >> /etc/sssd/sssd.conf
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

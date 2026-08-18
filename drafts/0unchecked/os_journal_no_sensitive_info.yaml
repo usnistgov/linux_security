@@ -8,7 +8,7 @@ discussion: "Operating systems that disclose excessive information in error mess
 references:
   nist:
     800-53r5:
-    - SI-11 a
+    - SI-11
   disa:
     cci:
     - CCI-001312
@@ -61,4 +61,5 @@ platforms:
     fix:
       shell: sudo vi /etc/tmpfiles.d/zzz-systemd-stig.conf
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

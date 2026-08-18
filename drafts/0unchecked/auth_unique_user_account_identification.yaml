@@ -6,8 +6,8 @@ discussion: Organizational users must be uniquely identified and authenticated f
 references:
   nist:
     800-53r5:
-    - IA-2
-    - IA-8
+    - IA-02
+    - IA-08
   disa:
     cci:
     - CCI-000764
@@ -43,4 +43,6 @@ platforms:
     fix:
       shell: vipw
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

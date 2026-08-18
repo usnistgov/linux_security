@@ -7,8 +7,8 @@ discussion: Enforcing a minimum password lifetime prevents users from changing p
 references:
   nist:
     800-53r5:
-    - IA-5 (1) (g)
-    - IA-5 (1) (h)
+    - IA-05(01)
+    - IA-05(01)
   disa:
     cci:
     - CCI-004065
@@ -30,4 +30,6 @@ platforms:
     fix:
       shell: sed -i 's/^PASS_MIN_DAYS.*/PASS_MIN_DAYS    1/' /etc/login.defs
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

@@ -8,7 +8,7 @@ references:
   nist:
     800-53r5:
     - IA-11
-    - SC-11 b
+    - SC-11
   disa:
     cci:
     - CCI-002038
@@ -46,4 +46,6 @@ platforms:
       shell: sed -i '/!authenticate/d' /etc/sudoers; find /etc/sudoers.d -type f -exec
         sed -i '/!authenticate/d' {} +
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

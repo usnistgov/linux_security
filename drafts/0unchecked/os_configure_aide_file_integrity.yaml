@@ -8,7 +8,7 @@ discussion: "Without verification, security functions\u2014hardware, software, o
 references:
   nist:
     800-53r5:
-    - SI-6 a
+    - SI-06
   disa:
     cci:
     - CCI-002696
@@ -33,4 +33,4 @@ platforms:
 
         sudo aide -c /etc/aide/aide.conf --check'
 tags:
-- testing
+- 800-53r5_high

@@ -7,7 +7,7 @@ discussion: Passwords must be protected at all times, and encryption is the stan
 references:
   nist:
     800-53r5:
-    - IA-7
+    - IA-07
   disa:
     cci:
     - CCI-000803
@@ -28,4 +28,6 @@ platforms:
     fix:
       shell: sudo sed -i 's/^#*ENCRYPT_METHOD.*/ENCRYPT_METHOD SHA512/' /etc/login.defs
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

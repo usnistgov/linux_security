@@ -43,4 +43,5 @@ platforms:
     fix:
       shell: sudo sysctl --system
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

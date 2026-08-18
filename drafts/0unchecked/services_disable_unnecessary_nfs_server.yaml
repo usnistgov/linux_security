@@ -6,7 +6,7 @@ discussion: Operating systems should not install unnecessary default functionali
 references:
   nist:
     800-53r5:
-    - CM-7 a
+    - CM-07
   disa:
     cci:
     - CCI-000381
@@ -44,4 +44,6 @@ platforms:
     fix:
       shell: sudo apt purge --yes nfs-common nfs-kernel-server
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

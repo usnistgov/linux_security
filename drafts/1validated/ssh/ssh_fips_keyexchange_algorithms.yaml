@@ -7,7 +7,7 @@ discussion: Without FIPS-validated cryptographic integrity protections, data can
 references:
   nist:
     800-53r5:
-    - AC-17 (2)
+    - AC-17(02)
   disa:
     cci:
     - CCI-000068
@@ -43,4 +43,5 @@ platforms:
     vars:
       FIPS_KEYS: ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group14-sha256
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

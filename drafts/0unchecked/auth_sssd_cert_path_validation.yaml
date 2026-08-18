@@ -7,8 +7,8 @@ discussion: "Path validation ensures a relying party can verify a certificate\u2
 references:
   nist:
     800-53r5:
-    - SC-17 b
-    - IA-5 (2) (b) (1)
+    - SC-17
+    - IA-05(02)
   disa:
     cci:
     - CCI-004909
@@ -38,4 +38,5 @@ platforms:
     fix:
       shell: sudo vi /etc/sssd/sssd.conf
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

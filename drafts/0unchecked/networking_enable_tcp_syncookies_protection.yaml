@@ -7,7 +7,7 @@ discussion: "A denial-of-service condition makes resources unavailable to legiti
 references:
   nist:
     800-53r5:
-    - SC-5 (2)
+    - SC-05(02)
   disa:
     cci:
     - CCI-001095

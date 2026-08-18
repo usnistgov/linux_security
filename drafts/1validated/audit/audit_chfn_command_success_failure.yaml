@@ -16,11 +16,11 @@ references:
     - SRG-OS-000064-GPOS-00033
     disa_stig:
       ubuntu_2004:
-        - UBTU-20-010165
+      - UBTU-20-010165
       ubuntu_2204:
-        - UBTU-22-654030
+      - UBTU-22-654030
       ubuntu_2404:
-        - UBTU-24-900080
+      - UBTU-24-900080
 enforcement_info:
   enforcement_type: full
   check:
@@ -48,4 +48,6 @@ platforms:
   enforcement_info:
     enforcement_type: inherit
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

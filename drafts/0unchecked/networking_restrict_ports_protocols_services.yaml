@@ -9,7 +9,7 @@ discussion: To prevent unauthorized device connections, data transfers, or tunne
 references:
   nist:
     800-53r5:
-    - CM-7 b
+    - CM-07
   disa:
     cci:
     - CCI-000382
@@ -30,4 +30,6 @@ platforms:
     fix:
       shell: sudo ufw allow
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

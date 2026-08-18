@@ -9,7 +9,7 @@ discussion: "Remote access services lacking automated controls increase risk and
 references:
   nist:
     800-53r5:
-    - AC-17 (1)
+    - AC-17(01)
   disa:
     cci:
     - CCI-002314
@@ -42,4 +42,5 @@ platforms:
     fix:
       shell: sudo apt install -y ufw
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

@@ -8,7 +8,7 @@ discussion: "A session lock is a temporary action taken when a user steps away f
 references:
   nist:
     800-53r5:
-    - AC-11 b
+    - AC-11
   disa:
     cci:
     - CCI-000056
@@ -30,4 +30,5 @@ platforms:
       shell: sudo sh -c 'printf "[org/gnome/desktop/screensaver]\nlock-enabled=true\n"
         > /etc/dconf/db/local.d/00-screensaver'
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

@@ -9,7 +9,7 @@ discussion: "Storing audit data in one location risks accidental deletion or alt
 references:
   nist:
     800-53r5:
-    - AU-4 (1)
+    - AU-04(01)
   disa:
     cci:
     - CCI-001851

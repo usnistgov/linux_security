@@ -9,7 +9,7 @@ discussion: Denial of service (DoS) makes resources unavailable to legitimate us
 references:
   nist:
     800-53r5:
-    - SC-5 a
+    - SC-05
   disa:
     cci:
     - CCI-002385
@@ -33,4 +33,6 @@ platforms:
     fix:
       shell: sudo ufw limit in on eth0
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

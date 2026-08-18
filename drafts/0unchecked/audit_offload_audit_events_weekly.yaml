@@ -7,7 +7,7 @@ discussion: Storing information in a single location makes it susceptible to acc
 references:
   nist:
     800-53r5:
-    - AU-4 (1)
+    - AU-04(01)
   disa:
     cci:
     - CCI-001851

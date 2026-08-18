@@ -30,4 +30,5 @@ platforms:
       shell: sudo bash -c 'grep -qxF "TMOUT=600" /etc/profile.d/99-terminal_tmout.sh
         || echo "TMOUT=600" >> /etc/profile.d/99-terminal_tmout.sh'
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

@@ -50,4 +50,4 @@ platforms:
 
         sudo systemctl enable --now rsyslog'
 tags:
-- testing
+- 800-53r5_high

@@ -8,7 +8,7 @@ discussion: "Allowing any user to modify software libraries in Ubuntu\u202F22.04
 references:
   nist:
     800-53r5:
-    - CM-5 (6)
+    - CM-05(06)
   disa:
     cci:
     - CCI-001499

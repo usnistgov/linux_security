@@ -7,7 +7,7 @@ discussion: "Complex passwords increase the time and resources needed to crack t
 references:
   nist:
     800-53r5:
-    - CM-6 b
+    - CM-06
   disa:
     cci:
     - CCI-000366
@@ -50,4 +50,6 @@ platforms:
 
         echo "password requisite pam_pwquality.so retry=3" >> /etc/pam.d/common-password'
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

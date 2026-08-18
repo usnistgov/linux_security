@@ -7,7 +7,7 @@ discussion: "Without protection, wireless peripheral communications can be inter
 references:
   nist:
     800-53r5:
-    - SC-8
+    - SC-08
   disa:
     cci:
     - CCI-002418
@@ -43,4 +43,5 @@ platforms:
     fix:
       shell: sudo modprobe -r
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

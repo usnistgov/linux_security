@@ -9,7 +9,7 @@ discussion: "Protecting audit information requires securing the tools used to vi
 references:
   nist:
     800-53r5:
-    - AU-9 a
+    - AU-09
   disa:
     cci:
     - CCI-001495
@@ -32,4 +32,6 @@ platforms:
       shell: sudo find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin
         ! -user root -type d -exec chown root '{}' \;
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

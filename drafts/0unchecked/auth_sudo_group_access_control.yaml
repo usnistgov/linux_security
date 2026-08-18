@@ -10,7 +10,7 @@ discussion: "An isolation boundary enforces access control to protect the integr
 references:
   nist:
     800-53r5:
-    - SC-3
+    - SC-03
   disa:
     cci:
     - CCI-001084
@@ -43,4 +43,4 @@ platforms:
     fix:
       shell: sudo gpasswd -d sudo
 tags:
-- testing
+- 800-53r5_high

@@ -6,7 +6,7 @@ discussion: Enabling auditing after startup may miss the actions of early proces
 references:
   nist:
     800-53r5:
-    - AU-14 (1)
+    - AU-14(01)
   disa:
     cci:
     - CCI-001464

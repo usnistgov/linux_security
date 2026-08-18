@@ -7,9 +7,9 @@ discussion: Control of program execution prevents unauthorized programs from run
 references:
   nist:
     800-53r5:
-    - AC-3 (4)
-    - CM-7 (2)
-    - CM-7 (5) (b)
+    - AC-03(04)
+    - CM-07(02)
+    - CM-07(05)
   disa:
     cci:
     - CCI-002165
@@ -32,4 +32,5 @@ platforms:
     fix:
       shell: sudo apt-get install apparmor
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

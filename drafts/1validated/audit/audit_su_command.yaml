@@ -8,7 +8,7 @@ discussion: Without audit records tailored to the organization's security and mi
 references:
   nist:
     800-53r5:
-    - AU-12 c
+    - AU-12
   disa:
     cci:
     - CCI-000172
@@ -16,11 +16,11 @@ references:
     - SRG-OS-000064-GPOS-00033
     disa_stig:
       ubuntu_2004:
-        - UBTU-20-010136
+      - UBTU-20-010136
       ubuntu_2204:
-        - UBTU-22-654100
+      - UBTU-22-654100
       ubuntu_2404:
-        - UBTU-24-900070
+      - UBTU-24-900070
 enforcement_info:
   enforcement_type: full
   check:
@@ -48,4 +48,6 @@ platforms:
   enforcement_info:
     enforcement_type: inherit
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

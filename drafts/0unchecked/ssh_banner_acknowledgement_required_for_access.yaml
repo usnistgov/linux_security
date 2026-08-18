@@ -8,7 +8,7 @@ discussion: "Ubuntu 24.04 LTS must require the user to acknowledge the consent b
 references:
   nist:
     800-53r5:
-    - AC-8 b
+    - AC-08
   disa:
     cci:
     - CCI-000050
@@ -30,4 +30,6 @@ platforms:
     fix:
       shell: sudo vi /etc/profile.d/ssh_confirm.sh
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

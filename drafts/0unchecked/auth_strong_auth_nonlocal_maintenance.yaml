@@ -8,7 +8,7 @@ discussion: "Nonlocal maintenance is performed via external or internal networks
 references:
   nist:
     800-53r5:
-    - MA-4 c
+    - MA-04
   disa:
     cci:
     - CCI-000877
@@ -44,4 +44,6 @@ platforms:
     fix:
       shell: UsePAM yes
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

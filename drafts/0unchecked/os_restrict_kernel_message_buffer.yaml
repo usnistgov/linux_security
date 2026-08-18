@@ -5,7 +5,7 @@ discussion: "Restricting kernel message buffer access to root prevents non\u2011
 references:
   nist:
     800-53r5:
-    - SC-4
+    - SC-04
   disa:
     cci:
     - CCI-001090
@@ -41,4 +41,5 @@ platforms:
     fix:
       shell: sudo sysctl --system
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

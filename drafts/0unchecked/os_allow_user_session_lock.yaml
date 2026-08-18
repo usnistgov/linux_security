@@ -7,8 +7,8 @@ discussion: A session lock temporarily secures a user's session when they step a
 references:
   nist:
     800-53r5:
-    - AC-11 a
-    - AC-11 (1)
+    - AC-11
+    - AC-11(01)
   disa:
     cci:
     - CCI-000057
@@ -44,4 +44,5 @@ platforms:
     fix:
       shell: sudo apt install -y vlock
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

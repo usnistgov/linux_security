@@ -6,7 +6,7 @@ discussion: Limiting logon attempts within a set time interval reduces the risk 
 references:
   nist:
     800-53r5:
-    - CM-6 b
+    - CM-06
   disa:
     cci:
     - CCI-000366
@@ -44,4 +44,6 @@ platforms:
     fix:
       shell: auth required pam_faildelay.so delay=4000000
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

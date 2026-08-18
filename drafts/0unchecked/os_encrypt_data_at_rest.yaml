@@ -9,7 +9,7 @@ discussion: "Operating systems must use cryptographic mechanisms to protect data
 references:
   nist:
     800-53r5:
-    - SC-28 (1)
+    - SC-28(01)
     - SC-28
   disa:
     cci:
@@ -39,4 +39,5 @@ platforms:
 
         (No command provided in the description)'
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

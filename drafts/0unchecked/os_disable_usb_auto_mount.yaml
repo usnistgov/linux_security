@@ -6,8 +6,8 @@ discussion: Without device authentication, unknown peripherals such as flash dri
 references:
   nist:
     800-53r5:
-    - CM-7 (9) (b)
-    - IA-3
+    - CM-07(09)
+    - IA-03
   disa:
     cci:
     - CCI-003959
@@ -48,4 +48,5 @@ platforms:
 
         sudo su -c "echo blacklist usb-storage >> /etc/modprobe.d/DISASTIG.conf"'
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

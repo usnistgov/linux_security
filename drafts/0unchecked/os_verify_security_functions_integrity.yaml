@@ -9,7 +9,7 @@ discussion: "Without verification, security functions may fail unnoticed; they e
 references:
   nist:
     800-53r5:
-    - SI-6 a
+    - SI-06
   disa:
     cci:
     - CCI-002696
@@ -42,4 +42,4 @@ platforms:
     fix:
       shell: sudo apt install -y aide
 tags:
-- testing
+- 800-53r5_high

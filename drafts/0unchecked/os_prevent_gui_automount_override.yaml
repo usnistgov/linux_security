@@ -6,7 +6,7 @@ discussion: "A nonprivileged account is an operating system account that has onl
 references:
   nist:
     800-53r5:
-    - AC-11 b
+    - AC-11
   disa:
     cci:
     - CCI-000056
@@ -29,4 +29,5 @@ platforms:
 
         sudo dconf update'
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

@@ -9,10 +9,10 @@ discussion: "A standardized, approved use notification must be displayed before 
 references:
   nist:
     800-53r5:
-    - AC-8 a
-    - AC-8 c 1
-    - AC-8 c 3
-    - AC-8 c 2
+    - AC-08
+    - AC-08
+    - AC-08
+    - AC-08
   disa:
     cci:
     - CCI-001388
@@ -61,4 +61,6 @@ platforms:
 
         sudo systemctl -s SIGHUP kill sshd'
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

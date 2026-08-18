@@ -6,7 +6,7 @@ references:
   nist:
     800-53r5:
     - IA-11
-    - SC-11 b
+    - SC-11
   disa:
     cci:
     - CCI-002038
@@ -30,4 +30,6 @@ platforms:
       shell: sudo sed -i -E '/^\s*ALL\s+ALL=\(ALL\)\s+ALL\s*$/d; /^\s*ALL\s+ALL=\(ALL:ALL\)\s+ALL\s*$/d'
         /etc/sudoers /etc/sudoers.d/*
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

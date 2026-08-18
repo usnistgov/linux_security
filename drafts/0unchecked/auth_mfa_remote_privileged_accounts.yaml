@@ -10,10 +10,10 @@ discussion: Using a separate authentication device (e.g., CAC or token) safeguar
 references:
   nist:
     800-53r5:
-    - IA-2 (6) (b)
-    - IA-2 (2)
-    - IA-2 (6) (a)
-    - IA-2 (1)
+    - IA-02(06)
+    - IA-02(02)
+    - IA-02(06)
+    - IA-02(01)
   disa:
     cci:
     - CCI-000766
@@ -40,4 +40,6 @@ platforms:
     fix:
       shell: sudo apt-get install libpam-pkcs11
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

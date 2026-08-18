@@ -9,8 +9,8 @@ discussion: Unauthorized changes to the baseline OS configuration can introduce 
 references:
   nist:
     800-53r5:
-    - CM-3 (5)
-    - SI-6 d
+    - CM-03(05)
+    - SI-06
   disa:
     cci:
     - CCI-001744
@@ -32,4 +32,4 @@ platforms:
     fix:
       shell: sudo sed -i 's/^SILENTREPORTS=.*/SILENTREPORTS=no/' /etc/default/aide
 tags:
-- testing
+- 800-53r5_high

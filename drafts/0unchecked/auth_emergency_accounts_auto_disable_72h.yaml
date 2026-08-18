@@ -10,7 +10,7 @@ discussion: "Temporary accounts are set up for urgent situations and must be dis
 references:
   nist:
     800-53r5:
-    - AC-2 (2)
+    - AC-02(02)
   disa:
     cci:
     - CCI-000016
@@ -37,4 +37,5 @@ platforms:
     fix:
       shell: sudo chage -E $(date -d +3days +%Y-%m-%d)
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

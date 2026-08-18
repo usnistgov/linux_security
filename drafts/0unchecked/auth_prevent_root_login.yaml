@@ -8,7 +8,7 @@ discussion: Organizational users must be individually identified and authenticat
 references:
   nist:
     800-53r5:
-    - IA-2 (5)
+    - IA-02(05)
   disa:
     cci:
     - CCI-000770
@@ -30,4 +30,4 @@ platforms:
     fix:
       shell: sudo passwd -l root
 tags:
-- testing
+- 800-53r5_high

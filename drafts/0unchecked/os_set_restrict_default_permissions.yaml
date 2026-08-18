@@ -6,7 +6,7 @@ discussion: Setting the most restrictive default permissions prevents new accoun
 references:
   nist:
     800-53r5:
-    - CM-6 b
+    - CM-06
   disa:
     cci:
     - CCI-000366
@@ -39,4 +39,6 @@ platforms:
     fix:
       shell: sed -i 's/^UMASK.*/UMASK 077/' /etc/login.defs
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

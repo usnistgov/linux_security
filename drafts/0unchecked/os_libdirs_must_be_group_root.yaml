@@ -7,7 +7,7 @@ discussion: "Allowing any user to modify software libraries could lead to untest
 references:
   nist:
     800-53r5:
-    - CM-5 (6)
+    - CM-05(06)
   disa:
     cci:
     - CCI-001499

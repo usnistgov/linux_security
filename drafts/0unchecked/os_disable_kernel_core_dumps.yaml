@@ -30,4 +30,4 @@ platforms:
     fix:
       shell: sudo systemctl mask kdump-tools --now
 tags:
-- testing
+- 800-53r5_high

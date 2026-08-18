@@ -11,20 +11,20 @@ discussion: "Without detailed audit records\u2014including timestamps, source/de
 references:
   nist:
     800-53r5:
-    - CM-5 (1) (b)
-    - AU-3 e
-    - AU-3 c
-    - AU-3 b
-    - AU-7 b
-    - AU-6 (4)
-    - AU-3 (1)
-    - AU-12 c
-    - AU-7 a
-    - AU-7 (1)
-    - AU-12 a
-    - AU-3 d
-    - AU-12 (3)
-    - AU-3 a
+    - CM-05(01)
+    - AU-03
+    - AU-03
+    - AU-03
+    - AU-07
+    - AU-06(04)
+    - AU-03(01)
+    - AU-12
+    - AU-07
+    - AU-07(01)
+    - AU-12
+    - AU-03
+    - AU-12(03)
+    - AU-03
   disa:
     cci:
     - CCI-000154
@@ -83,4 +83,6 @@ platforms:
 
         sudo augenrules --load'
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

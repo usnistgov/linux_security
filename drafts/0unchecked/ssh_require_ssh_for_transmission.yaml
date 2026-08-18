@@ -7,8 +7,8 @@ discussion: Without protection, transmitted information can be intercepted and a
 references:
   nist:
     800-53r5:
-    - SC-8 (2)
-    - SC-8
+    - SC-08(02)
+    - SC-08
   disa:
     cci:
     - CCI-002418
@@ -46,4 +46,5 @@ platforms:
 
         sudo systemctl start ssh.service'
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

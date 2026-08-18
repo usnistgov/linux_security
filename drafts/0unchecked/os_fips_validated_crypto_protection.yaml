@@ -10,7 +10,7 @@ discussion: "Using weak or untested encryption algorithms undermines data protec
 references:
   nist:
     800-53r5:
-    - SC-13 b
+    - SC-13
   disa:
     cci:
     - CCI-002450
@@ -47,4 +47,6 @@ platforms:
 
         sudo pro enable fips-updates'
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

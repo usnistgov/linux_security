@@ -9,8 +9,8 @@ discussion: Some software requires elevated privileges to function; if those pri
 references:
   nist:
     800-53r5:
-    - AC-6 (9)
-    - AC-6 (8)
+    - AC-06(09)
+    - AC-06(08)
   disa:
     cci:
     - CCI-002234
@@ -19,11 +19,11 @@ references:
     - SRG-OS-000326-GPOS-00126
     disa_stig:
       ubuntu_2004:
-        - UBTU-20-010211
+      - UBTU-20-010211
       ubuntu_2204:
-        - UBTU-22-654230
+      - UBTU-22-654230
       ubuntu_2404:
-        - UBTU-24-200580
+      - UBTU-24-200580
 enforcement_info:
   enforcement_type: full
   check:
@@ -51,4 +51,5 @@ platforms:
   enforcement_info:
     enforcement_type: inherit
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

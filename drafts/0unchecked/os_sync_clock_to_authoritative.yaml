@@ -8,7 +8,7 @@ discussion: "Accurate timestamps are essential for correlating events and conduc
 references:
   nist:
     800-53r5:
-    - SC-45 (1) (b)
+    - SC-45(01)
   disa:
     cci:
     - CCI-002046

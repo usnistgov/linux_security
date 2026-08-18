@@ -5,7 +5,7 @@ discussion: "Out\u2011of\u2011date cached authentication information may be inva
 references:
   nist:
     800-53r5:
-    - IA-5 (13)
+    - IA-05(13)
   disa:
     cci:
     - CCI-002007

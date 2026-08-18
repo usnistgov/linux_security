@@ -10,8 +10,8 @@ discussion: Unauthorized changes to Ubuntu 24.04 LTS baseline configurations can
 references:
   nist:
     800-53r5:
-    - CM-3 (5)
-    - SI-6 d
+    - CM-03(05)
+    - SI-06
   disa:
     cci:
     - CCI-001744
@@ -34,4 +34,4 @@ platforms:
       shell: grep -q '^SILENTREPORTS=' /etc/default/aide || echo 'SILENTREPORTS=no'
         >> /etc/default/aide
 tags:
-- testing
+- 800-53r5_high

@@ -7,7 +7,7 @@ discussion: |
 references:
   nist:
     800-53r5:
-    - AC-2 (4)
+    - AC-02(04)
     - AU-12
   disa:
     cci:
@@ -21,11 +21,11 @@ references:
     - SRG-OS-000004-GPOS-00004
     disa_stig:
       ubuntu_2004:
-        - UBTU-20-010101
+      - UBTU-20-010101
       ubuntu_2204:
-        - UBTU-22-654130
+      - UBTU-22-654130
       ubuntu_2404:
-        - UBTU-24-200290
+      - UBTU-24-200290
 enforcement_info:
   enforcement_type: full
   check:
@@ -53,4 +53,6 @@ platforms:
   enforcement_info:
     enforcement_type: inherit
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

@@ -29,4 +29,4 @@ platforms:
     fix:
       shell: sudo systemctl disable kdump-tools.service
 tags:
-- testing
+- 800-53r5_high

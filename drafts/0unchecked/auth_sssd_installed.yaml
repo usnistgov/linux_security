@@ -7,10 +7,10 @@ discussion: "Without multifactor authentication, privileged accounts are more ea
 references:
   nist:
     800-53r5:
-    - IA-2 (6) (b)
-    - IA-2 (2)
-    - IA-2 (6) (a)
-    - IA-2 (1)
+    - IA-02(06)
+    - IA-02(02)
+    - IA-02(06)
+    - IA-02(01)
   disa:
     cci:
     - CCI-004046
@@ -55,4 +55,6 @@ platforms:
 
         sudo apt install -y libnss-sss'
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

@@ -10,7 +10,7 @@ discussion: "Preventing unauthorized information transfers ensures that data\u20
 references:
   nist:
     800-53r5:
-    - SC-4
+    - SC-04
   disa:
     cci:
     - CCI-001090
@@ -43,4 +43,5 @@ platforms:
     fix:
       shell: sudo chmod +t [Public Directory]
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

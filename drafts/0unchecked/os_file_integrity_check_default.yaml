@@ -8,7 +8,7 @@ discussion: "Without verification, security functions\u2014hardware, software, o
 references:
   nist:
     800-53r5:
-    - SI-6 b
+    - SI-06
   disa:
     cci:
     - CCI-002699
@@ -31,4 +31,4 @@ platforms:
     fix:
       shell: sudo cp -f /usr/share/aide/config/cron.daily/aide /etc/cron.daily/dailyaidecheck*
 tags:
-- testing
+- 800-53r5_high

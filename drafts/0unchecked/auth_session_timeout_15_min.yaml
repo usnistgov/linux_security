@@ -30,4 +30,5 @@ platforms:
 
         export TMOUT=900'
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

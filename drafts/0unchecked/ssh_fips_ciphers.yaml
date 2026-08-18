@@ -9,9 +9,9 @@ discussion: Without cryptographic integrity protections, information can be alte
 references:
   nist:
     800-53r5:
-    - AC-17 (2)
-    - MA-4 (6)
-    - SC-8 (1)
+    - AC-17(02)
+    - MA-04(06)
+    - SC-08(01)
   disa:
     cci:
     - CCI-000068
@@ -38,4 +38,5 @@ platforms:
 
         sudo systemctl restart sshd'
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

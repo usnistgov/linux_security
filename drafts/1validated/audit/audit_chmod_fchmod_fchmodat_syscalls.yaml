@@ -1,6 +1,6 @@
 id: audit_chmod_fchmod_fchmodat_syscalls
 title: Authorized chmod, fchmod, and fchmodat System Call Execution Events
-discussion: >
+discussion: |
   The system must generate audit records for successful/unsuccessful uses of the chmod, fchmod, and fchmodat system calls.
 
   Audit records tailored to organizational security and mission needs are essential for establishing, correlating, and investigating incidents; they can
@@ -40,4 +40,6 @@ platforms:
   enforcement_info:
     enforcement_type: inherit
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

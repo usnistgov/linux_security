@@ -10,9 +10,9 @@ discussion: "Information at rest is data stored on secondary storage devices (e.
 references:
   nist:
     800-53r5:
-    - SC-28 (1)
+    - SC-28(01)
     - SC-28
-    - SC-28 (3)
+    - SC-28(03)
   disa:
     cci:
     - CCI-002475
@@ -38,4 +38,5 @@ platforms:
     fix:
       shell: cryptsetup luksFormat /dev/sda1
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

@@ -7,7 +7,7 @@ discussion: Error messages should be limited to authorized personnel only, avoid
 references:
   nist:
     800-53r5:
-    - SI-11 b
+    - SI-11
   disa:
     cci:
     - CCI-001314
@@ -43,4 +43,5 @@ platforms:
     fix:
       shell: sudo vi /etc/tmpfiles.d/zzz-systemd-stig.conf
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

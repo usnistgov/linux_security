@@ -7,7 +7,7 @@ discussion: |
 references:
   nist:
     800-53r5:
-    - AU-5
+    - AU-05
   disa:
     cci:
     - CCI-000139
@@ -16,7 +16,6 @@ references:
     disa_stig:
       ubuntu_2204:
       - UBTU-22-653025
-    disa_stig:
       ubuntu_2404:
       - UBTU-24-900980
 enforcement_info:
@@ -38,4 +37,6 @@ platforms:
   enforcement_info:
     enforcement_type: inherit
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

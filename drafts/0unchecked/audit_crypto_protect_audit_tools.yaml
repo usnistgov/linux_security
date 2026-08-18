@@ -8,7 +8,7 @@ discussion: Protecting audit tool integrity is essential to ensure audit informa
 references:
   nist:
     800-53r5:
-    - AU-9 (3)
+    - AU-09(03)
   disa:
     cci:
     - CCI-001496
@@ -64,4 +64,4 @@ platforms:
         p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/augenrules
         p+i+n+u+g+s+b+acl+xattrs+sha512" >> /etc/aide/aide.conf
 tags:
-- testing
+- 800-53r5_high

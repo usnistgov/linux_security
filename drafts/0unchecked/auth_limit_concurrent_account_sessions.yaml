@@ -32,4 +32,4 @@ platforms:
     fix:
       shell: sudo sed -i '1i* hard maxlogins 10' /etc/security/limits.conf
 tags:
-- testing
+- 800-53r5_high

@@ -7,8 +7,8 @@ discussion: Inactive identifiers can be exploited for undetected access, and own
 references:
   nist:
     800-53r5:
-    - AC-2 (3) (b)
-    - AC-2 (3) (a)
+    - AC-02(03)
+    - AC-02(03)
   disa:
     cci:
     - CCI-003627
@@ -44,4 +44,5 @@ platforms:
     fix:
       shell: sudo useradd -D -f 35
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

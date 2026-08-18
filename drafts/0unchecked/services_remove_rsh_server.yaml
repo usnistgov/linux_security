@@ -7,7 +7,7 @@ discussion: Unnecessary services increase the attack surface; RSH provides unenc
 references:
   nist:
     800-53r5:
-    - CM-7 a
+    - CM-07
   disa:
     cci:
     - CCI-000381
@@ -28,4 +28,6 @@ platforms:
     fix:
       shell: sudo apt-get remove rsh-server
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

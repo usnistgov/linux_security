@@ -8,7 +8,7 @@ discussion: Security personnel must be alerted when storage reaches 75% utilizat
 references:
   nist:
     800-53r5:
-    - AU-5 (1)
+    - AU-05(01)
   disa:
     cci:
     - CCI-001855
@@ -36,4 +36,4 @@ platforms:
 
         sudo sed -i ''s/^#*space_left.*/space_left = 25%'' /etc/audit/auditd.conf'
 tags:
-- testing
+- 800-53r5_high

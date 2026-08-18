@@ -8,7 +8,7 @@ discussion: "Unauthorized disclosure of audit records can expose system and conf
 references:
   nist:
     800-53r5:
-    - AU-9 a
+    - AU-09
   disa:
     cci:
     - CCI-000163
@@ -30,4 +30,6 @@ platforms:
     fix:
       shell: sudo chmod 0600 /var/log/audit/*
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

@@ -7,8 +7,8 @@ discussion: "Complex passwords increase the time and resources needed to crack t
 references:
   nist:
     800-53r5:
-    - IA-5 (1) (g)
-    - IA-5 (1) (h)
+    - IA-05(01)
+    - IA-05(01)
   disa:
     cci:
     - CCI-004065
@@ -30,4 +30,6 @@ platforms:
     fix:
       shell: echo "ucredit=-1" >> /etc/security/pwquality.conf
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

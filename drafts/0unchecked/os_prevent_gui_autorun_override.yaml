@@ -7,7 +7,7 @@ discussion: "Addressing this involves using nonce\u2011based or challenge\u2011r
 references:
   nist:
     800-53r5:
-    - IA-3
+    - IA-03
   disa:
     cci:
     - CCI-000778
@@ -32,4 +32,5 @@ platforms:
 
         sudo dconf update'
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

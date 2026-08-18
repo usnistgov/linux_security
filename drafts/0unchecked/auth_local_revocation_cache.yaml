@@ -7,7 +7,7 @@ discussion: Failing to configure a local revocation cache may permit access by u
 references:
   nist:
     800-53r5:
-    - IA-5 (2) (b) (2)
+    - IA-05(02)
   disa:
     cci:
     - CCI-004068
@@ -47,4 +47,5 @@ platforms:
         > /etc/pam_pkcs11/pam_pkcs11.conf && sed -i 's/^\(cert_policy\s*=\s*\).*/\1ca,signature,ocsp_on,
         crl_auto;/' /etc/pam_pkcs11/pam_pkcs11.conf
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

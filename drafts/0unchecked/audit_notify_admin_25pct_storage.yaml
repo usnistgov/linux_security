@@ -7,7 +7,7 @@ discussion: Security personnel must be alerted when storage drops to 25% remaini
 references:
   nist:
     800-53r5:
-    - AU-5 (1)
+    - AU-05(01)
   disa:
     cci:
     - CCI-001855
@@ -31,4 +31,4 @@ platforms:
     fix:
       shell: sudo systemctl restart auditd.service
 tags:
-- testing
+- 800-53r5_high

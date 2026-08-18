@@ -8,7 +8,7 @@ discussion: Without cryptographic integrity protections, unauthorized users can 
 references:
   nist:
     800-53r5:
-    - AC-17 (2)
+    - AC-17(02)
   disa:
     cci:
     - CCI-001453
@@ -29,4 +29,5 @@ platforms:
     fix:
       shell: sudo systemctl restart ssh
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

@@ -7,7 +7,7 @@ discussion: "Untrusted CAs may issue certificates that could compromise DoD syst
 references:
   nist:
     800-53r5:
-    - SC-23 (5)
+    - SC-23(05)
   disa:
     cci:
     - CCI-002470

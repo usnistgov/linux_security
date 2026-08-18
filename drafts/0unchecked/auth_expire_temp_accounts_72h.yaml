@@ -7,7 +7,7 @@ discussion: "Temporary accounts, created for urgent needs, must be removed or au
 references:
   nist:
     800-53r5:
-    - AC-2 (2)
+    - AC-02(02)
   disa:
     cci:
     - CCI-000016
@@ -32,4 +32,5 @@ platforms:
     fix:
       shell: sudo chage -E $(date -d +3days +%Y-%m-%d)
 tags:
-- testing
+- 800-53r5_moderate
+- 800-53r5_high

@@ -9,7 +9,7 @@ discussion: "If the operating system allows users to reuse large portions of a p
 references:
   nist:
     800-53r5:
-    - IA-5 (1) (h)
+    - IA-05(01)
   disa:
     cci:
     - CCI-004066
@@ -46,4 +46,6 @@ platforms:
     fix:
       shell: echo "difok=8" >> /etc/security/pwquality.conf
 tags:
-- testing
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high
