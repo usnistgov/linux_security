@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Literal, Type
 
-from classes import Baseline, Rule
+from classes.baseline import Baseline
 
 
 class BaseGenerator(ABC):
@@ -12,7 +12,7 @@ class BaseGenerator(ABC):
 
     @abstractmethod
     def generate(
-        self, baseline: Baseline, rules: List[Rule], output_dir: str | None = None
+        self, baseline: Baseline, output_dir: str | None = None
     ) -> None:
         pass
 
@@ -29,7 +29,6 @@ class GeneratorEngine:
         self,
         generation_type: List[str],
         baseline: Baseline,
-        rules: List[Rule],
         output_dir: str | None = None,
     ) -> None:
         for gen_type in generation_type:
@@ -42,4 +41,4 @@ class GeneratorEngine:
                 raise ValueError(f"No formatter found for {gen_type}")
 
             for generator in generator_lst:
-                generator.generate(baseline, rules, output_dir=output_dir)
+                generator.generate(baseline, output_dir=output_dir)

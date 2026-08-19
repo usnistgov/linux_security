@@ -1,6 +1,6 @@
 #####################################################################
 #
-#    Rule ID: {{ rule.id }}
+#    Rule ID: {{ rule.rule_id }}
 #    Tags: {{ rule.tags | join(", ") }}
 #
 #    Addresses the following NIST 800-53 controls:
@@ -8,7 +8,7 @@
 #
 #####################################################################
 
-local rule_id="{{ rule.id }}"
+local rule_id="{{ rule.rule_id }}"
 local result_status="passed"
 local standard_out=""
 local status_code=""
@@ -21,16 +21,16 @@ if $using_whiptail; then
 fi
 ((rule_count++))
 
-result_value=$({{ rule.enforcement_info.check.shell }})
+result_value=$({{ rule.check }})
 status_code=$?
 
-{% if rule.enforcement_info.check.status_code is not none %}
-expected_status_code="{{ rule.enforcement_info.check.status_code }}"
+{% if rule.exit_code is not none %}
+expected_status_code="{{ rule.exit_code }}"
 if [[ "$status_code" != "$expected_status_code" ]]; then
     result_status="failed"
 fi
-{% elif rule.enforcement_info.check.standard_output is not none %}
-expected_standard_out="{{ rule.enforcement_info.check.standard_output }}"
+{% elif rule.result_value is not none %}
+expected_standard_out="{{ rule.result_value }}"
 if [[ "$result_value" != "$expected_standard_out" ]]; then
     result_status="failed"
 fi

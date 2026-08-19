@@ -156,15 +156,21 @@ run_scan(){
     define_logs
     log_message "Beginning new compliance scan" "WARN"
 
-    local total_checks="{{ rules | length }}"
+    local total_checks="{{ rule_count }}"
     local rule_count=0
 
     if $using_whiptail; then
         echo "XXX"; echo "0"; echo "Starting Scan..."; echo "XXX"
     fi
 
-{% for rule in rules %}
+{% for profile in baseline.profile %}
+{% for rule in profile.rules %}
+{% if "manual" not in rule.tags and "Excluded" not in rule.section %}
+
 {% include "check.sh.jinja" %}
+
+{% endif %}
+{% endfor %}
 {% endfor %}
 
     if [[ -h $LAST_RUN ]]; then
@@ -176,15 +182,21 @@ run_scan(){
 run_fix(){
     log_message "Beginning remediation" "WARN"
 
-    local total_fixes="{{ rules | length }}"
+    local total_fixes="{{ rule_count }}"
     local rule_count=0
 
     if $using_whiptail; then
         echo "XXX"; echo "0"; echo "Beginning Remediation..."; echo "XXX"
     fi
 
-{% for rule in rules %}
+{% for profile in baseline.profile %}
+{% for rule in profile.rules %}
+{% if "manual" not in rule.tags and "Excluded" not in rule.section %}
+
 {% include "fix.sh.jinja" %}
+
+{% endif %}
+{% endfor %}
 {% endfor %}
 } 2> /dev/null
 
@@ -289,7 +301,7 @@ elif ! $will_clear && ! $will_check && ! $will_fix && ! $will_cfc; then
 
     while true; do
         choice=$(whiptail --title "Linux Security Compliance Project" \
-                            --menu "Target System: {{ platform }}\nBenchmark:" \
+                            --menu "Target System: {{ baseline.platform.os }} - {{ baseline.platform.version }}\nBenchmark: {{ baseline_name }}" \
                             15 60 6 \
                             "1" "Run compliance check" \
                             "2" "Display statistics from last scan" \
