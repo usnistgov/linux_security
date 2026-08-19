@@ -7,6 +7,9 @@ discussion: "A session lock is a temporary action taken when a user steps away f
   \ able to unlock it."
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
     800-53r5:
     - AC-11
   disa:
@@ -15,20 +18,22 @@ references:
     srg:
     - SRG-OS-000028-GPOS-00009
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-271020
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: sudo gsettings get org.gnome.desktop.screensaver lock-enabled
-      expected_output: 'true'
-    fix:
-      shell: sudo sh -c 'printf "[org/gnome/desktop/screensaver]\nlock-enabled=true\n"
-        > /etc/dconf/db/local.d/00-screensaver'
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sudo gsettings get org.gnome.desktop.screensaver lock-enabled
+          result:
+            string: 'true'
+        fix:
+          shell: sudo sh -c 'printf "[org/gnome/desktop/screensaver]\nlock-enabled=true\n"
+            > /etc/dconf/db/local.d/00-screensaver'
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

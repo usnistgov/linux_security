@@ -6,6 +6,11 @@ discussion: |
   Unremoved old software versions after updates can be exploited by adversaries; some IT products automatically delete them.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - SI-02(06)
   disa:
@@ -14,29 +19,26 @@ references:
     srg:
     - SRG-OS-000437-GPOS-00194
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-214015
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-700320
-enforcement_info:
-  enforcement_type: full
-  check:
-    shell: apt-config dump | grep -e "Unattended-Upgrade::Remove-Unused-Dependencies" -e "Unattended-Upgrade::Remove-Unused-Kernel-Packages" | grep "true" | wc -l
-    standard_output: "2"
-  fix:
-    shell: echo -e "Unattended-Upgrade::Remove-Unused-Kernel-Packages \"true\";\nUnattended-Upgrade::Remove-Unused-Dependencies \"true\";" >> /etc/apt/apt.conf.d/50unattended-upgrades
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    enforcement_type: inherit
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    enforcement_type: inherit
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: apt-config dump | grep -e "Unattended-Upgrade::Remove-Unused-Dependencies" -e "Unattended-Upgrade::Remove-Unused-Kernel-Packages" | grep "true" | wc -l
+        result:
+          integer: 2
+      fix:
+        shell: echo -e "Unattended-Upgrade::Remove-Unused-Kernel-Packages \"true\";\nUnattended-Upgrade::Remove-Unused-Dependencies \"true\";" >> /etc/apt/apt.conf.d/50unattended-upgrades
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
 tags:
 - testing

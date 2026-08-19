@@ -6,6 +6,11 @@ discussion: |
   Audit records must include sufficient detail, such as timestamps, source/destination addresses, user/process IDs, event descriptions, success/failure indicators, filenames, and applied rules to enable correlation, investigation, and forensic analysis of incidents. Without this information, establishing the cause of outages or attacks and responding effectively is impaired.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - CM-05(01)
     - AU-03
@@ -48,30 +53,27 @@ references:
     - SRG-OS-000037-GPOS-00015
     - SRG-OS-000365-GPOS-00152
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-653010
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-100400
-enforcement_info:
-  enforcement_type: full
-  check:
-    shell: dpkg -l | grep -q auditd
-    status_code: 0
-  fix:
-    shell: apt install -y auditd
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    enforcement_type: inherit
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    enforcement_type: inherit
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: dpkg -l | grep -q auditd
+        result:
+          exit_code: 0
+      fix:
+        shell: apt install -y auditd
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
 tags:
 - 800-53r5_low
 - 800-53r5_moderate

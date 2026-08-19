@@ -5,6 +5,11 @@ discussion: Inaccurate timestamps hinder event correlation and forensic analysis
   for endpoints lacking regular access to authoritative time servers.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - CM-06
   disa:
@@ -13,31 +18,34 @@ references:
     srg:
     - SRG-OS-000480-GPOS-00227
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-215015
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-100700
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: low
-  enforcement_info:
-    check:
-      shell: dpkg -s chrony >/dev/null 2>&1
-      expected_output: 0
-    fix:
-      shell: sudo apt-get install chrony
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: low
-  enforcement_info:
-    check:
-      shell: dpkg -l | grep -q '^ii.*chrony'
-      expected_output: 0
-    fix:
-      shell: sudo apt install -y chrony
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+      enforcement_info:
+        check:
+          shell: dpkg -s chrony >/dev/null 2>&1
+          result:
+            integer: 0
+        fix:
+          shell: sudo apt-get install chrony
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+      enforcement_info:
+        check:
+          shell: dpkg -l | grep -q '^ii.*chrony'
+          result:
+            integer: 0
+        fix:
+          shell: sudo apt install -y chrony
 tags:
 - 800-53r5_low
 - 800-53r5_moderate

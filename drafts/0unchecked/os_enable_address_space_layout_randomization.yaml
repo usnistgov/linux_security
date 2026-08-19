@@ -7,6 +7,11 @@ discussion: "Adversaries may attempt to execute code in non\u2011executable or r
   \ randomization help mitigate these threats."
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - SI-16
   disa:
@@ -15,33 +20,36 @@ references:
     srg:
     - SRG-OS-000433-GPOS-00193
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-213020
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-700310
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: sysctl -n kernel.randomize_va_space | grep -qx '2' && ! grep -ER '^kernel.randomize_va_space=[^2]'
-        /etc/sysctl.conf /etc/sysctl.d
-      expected_output: 0
-    fix:
-      shell: sudo sysctl --system
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: sysctl -n kernel.randomize_va_space | grep -qx '2' && ! sudo egrep -R
-        "^kernel.randomize_va_space=[^2]" /etc/sysctl.conf /etc/sysctl.d
-      expected_output: 0
-    fix:
-      shell: sudo sysctl --system
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sysctl -n kernel.randomize_va_space | grep -qx '2' && ! grep -ER
+            '^kernel.randomize_va_space=[^2]' /etc/sysctl.conf /etc/sysctl.d
+          result:
+            integer: 0
+        fix:
+          shell: sudo sysctl --system
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sysctl -n kernel.randomize_va_space | grep -qx '2' && ! sudo egrep
+            -R "^kernel.randomize_va_space=[^2]" /etc/sysctl.conf /etc/sysctl.d
+          result:
+            integer: 0
+        fix:
+          shell: sudo sysctl --system
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

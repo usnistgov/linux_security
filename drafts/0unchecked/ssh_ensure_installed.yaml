@@ -5,6 +5,11 @@ discussion: Without protection, transmitted information can be intercepted and a
   network communications and can be safeguarded by physical or cryptographic means.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - SC-08(02)
     - SC-08
@@ -16,31 +21,34 @@ references:
     srg:
     - SRG-OS-000423-GPOS-00187
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-255010
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-100800
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: high
-  enforcement_info:
-    check:
-      shell: dpkg -l | grep -q '^ii\s*openssh-server'
-      expected_output: 0
-    fix:
-      shell: sudo apt install ssh
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: high
-  enforcement_info:
-    check:
-      shell: dpkg -l | grep -q '^ii.*openssh-server'
-      expected_output: 0
-    fix:
-      shell: sudo apt install -y ssh
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: high
+      enforcement_info:
+        check:
+          shell: dpkg -l | grep -q '^ii\s*openssh-server'
+          result:
+            integer: 0
+        fix:
+          shell: sudo apt install ssh
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: high
+      enforcement_info:
+        check:
+          shell: dpkg -l | grep -q '^ii.*openssh-server'
+          result:
+            integer: 0
+        fix:
+          shell: sudo apt install -y ssh
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

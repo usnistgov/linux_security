@@ -8,6 +8,9 @@ discussion: "Without verification, security functions\u2014hardware, software, o
   22.04\u202FLTS and any system needing such security\u2011function verification/testing."
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
     800-53r5:
     - SI-06
   disa:
@@ -16,23 +19,25 @@ references:
     srg:
     - SRG-OS-000446-GPOS-00200
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-651025
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: cd /tmp && apt download aide-common >/dev/null 2>&1 && ORIG_HASH=$(dpkg-deb
-        --fsys-tarfile aide-common_*.deb | tar -xO ./usr/share/aide/config/cron.daily/aide
-        2>/dev/null | sha1sum | awk '{print $1}') && FOUND=0 && for f in /etc/cron.{daily,monthly}/aide;
-        do if [ -f "$f" ]; then FOUND=1; if [ "$(sha1sum "$f" | awk '{print $1}')"
-        != "$ORIG_HASH" ]; then exit 1; fi; fi; done; [ $FOUND -eq 1 ] && exit 0 ||
-        exit 1
-      expected_output: 0
-    fix:
-      shell: sudo cp -f /usr/share/aide/config/cron.daily/aide /etc/cron.daily/aide
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: cd /tmp && apt download aide-common >/dev/null 2>&1 && ORIG_HASH=$(dpkg-deb
+            --fsys-tarfile aide-common_*.deb | tar -xO ./usr/share/aide/config/cron.daily/aide
+            2>/dev/null | sha1sum | awk '{print $1}') && FOUND=0 && for f in /etc/cron.{daily,monthly}/aide;
+            do if [ -f "$f" ]; then FOUND=1; if [ "$(sha1sum "$f" | awk '{print $1}')"
+            != "$ORIG_HASH" ]; then exit 1; fi; fi; done; [ $FOUND -eq 1 ] && exit
+            0 || exit 1
+          result:
+            integer: 0
+        fix:
+          shell: sudo cp -f /usr/share/aide/config/cron.daily/aide /etc/cron.daily/aide
 tags:
 - 800-53r5_high

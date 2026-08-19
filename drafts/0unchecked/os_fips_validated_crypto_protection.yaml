@@ -9,6 +9,11 @@ discussion: "Using weak or untested encryption algorithms undermines data protec
   \ that have been tested and validated."
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - SC-13
   disa:
@@ -16,36 +21,39 @@ references:
     - CCI-002450
     srg:
     - SRG-OS-000396-GPOS-00176
-    - - SRG-OS-000478-GPOS-00223
+    - SRG-OS-000478-GPOS-00223
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-671010
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-600030
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: high
-  enforcement_info:
-    check:
-      shell: grep -i 1 /proc/sys/crypto/fips_enabled
-      expected_output: 1
-    fix:
-      shell: sudo sed -i 's/^GRUB_CMDLINE_LINUX=""/&fips=1/' /etc/default/grub &&
-        sudo update-grub
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: high
-  enforcement_info:
-    check:
-      shell: grep -i 1 /proc/sys/crypto/fips_enabled
-      expected_output: 1
-    fix:
-      shell: 'sudo pro attach
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: high
+      enforcement_info:
+        check:
+          shell: grep -i 1 /proc/sys/crypto/fips_enabled
+          result:
+            integer: 1
+        fix:
+          shell: sudo sed -i 's/^GRUB_CMDLINE_LINUX=""/&fips=1/' /etc/default/grub
+            && sudo update-grub
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: high
+      enforcement_info:
+        check:
+          shell: grep -i 1 /proc/sys/crypto/fips_enabled
+          result:
+            integer: 1
+        fix:
+          shell: 'sudo pro attach
 
-        sudo pro enable fips-updates'
+            sudo pro enable fips-updates'
 tags:
 - 800-53r5_low
 - 800-53r5_moderate

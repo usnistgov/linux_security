@@ -7,6 +7,9 @@ discussion: Without cryptographic integrity protections, unauthorized users can 
   strongest to weakest ensures SSH connections use the strongest available cipher.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
     800-53r5:
     - AC-17(02)
     - MA-04(06)
@@ -19,21 +22,23 @@ references:
     srg:
     - SRG-OS-000033-GPOS-00014
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-255050
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: 'sudo grep -i ''^ciphers'' /etc/ssh/sshd_config | awk -F'': '' ''{print
-        $2}'' | tr -d '' '' | grep -x ''aes256-ctr,aes256-gcm@openssh.com,aes128-ctr,aes128-gcm@openssh.com''
-        >/dev/null; echo $?'
-      expected_output: 0
-    fix:
-      shell: sudo systemctl restart ssh
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: 'sudo grep -i ''^ciphers'' /etc/ssh/sshd_config | awk -F'': '' ''{print
+            $2}'' | tr -d '' '' | grep -x ''aes256-ctr,aes256-gcm@openssh.com,aes128-ctr,aes128-gcm@openssh.com''
+            >/dev/null; echo $?'
+          result:
+            integer: 0
+        fix:
+          shell: sudo systemctl restart ssh
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

@@ -5,6 +5,9 @@ discussion: Allowing any user to modify software libraries could bypass required
   should have access to modify these libraries, including privileged programs.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
     800-53r5:
     - CM-05(06)
   disa:
@@ -13,20 +16,22 @@ references:
     srg:
     - SRG-OS-000259-GPOS-00100
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-232020
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: '[ -z "$(sudo find /lib /lib64 /usr/lib /usr/lib64 -type f -name ''*.so*''
-        -perm /022 2>/dev/null)" ]'
-      expected_output: 0
-    fix:
-      shell: sudo find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' -perm
-        /022 -exec chmod go-w {} +
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: '[ -z "$(sudo find /lib /lib64 /usr/lib /usr/lib64 -type f -name
+            ''*.so*'' -perm /022 2>/dev/null)" ]'
+          result:
+            integer: 0
+        fix:
+          shell: sudo find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' -perm
+            /022 -exec chmod go-w {} +
 tags:
 - testing

@@ -7,6 +7,11 @@ discussion: Only authorized personnel should see error details, as error message
   unauthorized users.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - SI-11
   disa:
@@ -15,42 +20,47 @@ references:
     srg:
     - SRG-OS-000206-GPOS-00084
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-232080
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-700080
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: sudo find /run/log/journal /var/log/journal -type d ! -user root -print
-        | wc -l
-      expected_output: 0
-    fix:
-      shell: 'sudo touch /etc/tmpfiles.d/zzz-systemd-stig.conf
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sudo find /run/log/journal /var/log/journal -type d ! -user root
+            -print | wc -l
+          result:
+            integer: 0
+        fix:
+          shell: 'sudo touch /etc/tmpfiles.d/zzz-systemd-stig.conf
 
-        sudo sh -c ''echo "z /run/log/journal 2750 root systemd-journal - -" >> /etc/tmpfiles.d/zzz-systemd-stig.conf''
+            sudo sh -c ''echo "z /run/log/journal 2750 root systemd-journal - -" >>
+            /etc/tmpfiles.d/zzz-systemd-stig.conf''
 
-        sudo sh -c ''echo "z /var/log/journal 2750 root systemd-journal - -" >> /etc/tmpfiles.d/zzz-systemd-stig.conf''
+            sudo sh -c ''echo "z /var/log/journal 2750 root systemd-journal - -" >>
+            /etc/tmpfiles.d/zzz-systemd-stig.conf''
 
-        sudo sh -c ''echo "z /var/log/journal/%m 2750 root systemd-journal - -" >>
-        /etc/tmpfiles.d/zzz-systemd-stig.conf''
+            sudo sh -c ''echo "z /var/log/journal/%m 2750 root systemd-journal - -"
+            >> /etc/tmpfiles.d/zzz-systemd-stig.conf''
 
-        sudo reboot'
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: sudo find /run/log/journal /var/log/journal -type d ! -user root -print
-        | grep -q . && echo "non-root owned" || echo "all root owned"
-      expected_output: all root owned
-    fix:
-      shell: sudo vi /etc/tmpfiles.d/zzz-systemd-stig.conf
+            sudo reboot'
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sudo find /run/log/journal /var/log/journal -type d ! -user root
+            -print | grep -q . && echo "non-root owned" || echo "all root owned"
+          result:
+            string: all root owned
+        fix:
+          shell: sudo vi /etc/tmpfiles.d/zzz-systemd-stig.conf
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

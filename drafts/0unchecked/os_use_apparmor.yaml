@@ -6,6 +6,11 @@ discussion: Control of program execution prevents unauthorized programs from run
   privileges, subnets, sandboxing, or roles.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - CM-07(02)
     - CM-07(05)
@@ -18,39 +23,42 @@ references:
     srg:
     - SRG-OS-000368-GPOS-00154
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-431015
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-100510
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: systemctl is-enabled apparmor.service | grep -q ^enabled$ && systemctl
-        is-active apparmor.service | grep -q ^active$ && sudo apparmor_status | awk
-        '/profiles are loaded/ {if ($1>0) loaded=1} /profiles are in enforce mode/
-        {if ($1>0) enforce=1} END {exit !(loaded && enforce)}'
-      expected_output: 0
-    fix:
-      shell: sudo systemctl enable apparmor.service --now
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: 'systemctl is-active apparmor.service
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: systemctl is-enabled apparmor.service | grep -q ^enabled$ && systemctl
+            is-active apparmor.service | grep -q ^active$ && sudo apparmor_status
+            | awk '/profiles are loaded/ {if ($1>0) loaded=1} /profiles are in enforce
+            mode/ {if ($1>0) enforce=1} END {exit !(loaded && enforce)}'
+          result:
+            integer: 0
+        fix:
+          shell: sudo systemctl enable apparmor.service --now
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: 'systemctl is-active apparmor.service
 
 
-        systemctl is-enabled apparmor.service'
-      expected_output: active
-    fix:
-      shell: 'sudo systemctl enable apparmor.service
+            systemctl is-enabled apparmor.service'
+          result:
+            string: active
+        fix:
+          shell: 'sudo systemctl enable apparmor.service
 
-        sudo systemctl start apparmor.service'
+            sudo systemctl start apparmor.service'
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

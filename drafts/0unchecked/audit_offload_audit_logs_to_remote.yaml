@@ -8,6 +8,9 @@ discussion: "Storing audit data in one location risks accidental deletion or alt
   OS\u2011000479\u2011GPS\u201100224)."
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
     800-53r5:
     - AU-04(01)
   disa:
@@ -16,28 +19,31 @@ references:
     srg:
     - SRG-OS-000342-GPOS-00133
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-653020
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: low
-  enforcement_info:
-    check:
-      shell: sh -c "dpkg -s audispd-plugins >/dev/null 2>&1 && grep -iq '^\s*active\s*=\s*yes'
-        /etc/audit/plugins.d/au-remote.conf && grep -iq '^\s*remote_server\s*=' /etc/audit/audisp-remote.conf
-        && remote=$(grep -i '^\s*remote_server\s*=' /etc/audit/audisp-remote.conf
-        | sed -e 's/[^=]*=//' -e 's/[[:space:]]//g') && [[ ! \"$remote\" =~ ^(127\\.|10\\.|172\\.(1[6-9]|2[0-9]|3[0-1])\\.|192\\.168\\.|::1$|^localhost$)
-        ]]"
-      expected_output: 0
-    fix:
-      shell: 'sudo apt-get install audispd-plugins
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+      enforcement_info:
+        check:
+          shell: sh -c "dpkg -s audispd-plugins >/dev/null 2>&1 && grep -iq '^\s*active\s*=\s*yes'
+            /etc/audit/plugins.d/au-remote.conf && grep -iq '^\s*remote_server\s*='
+            /etc/audit/audisp-remote.conf && remote=$(grep -i '^\s*remote_server\s*='
+            /etc/audit/audisp-remote.conf | sed -e 's/[^=]*=//' -e 's/[[:space:]]//g')
+            && [[ ! \"$remote\" =~ ^(127\\.|10\\.|172\\.(1[6-9]|2[0-9]|3[0-1])\\.|192\\.168\\.|::1$|^localhost$)
+            ]]"
+          result:
+            integer: 0
+        fix:
+          shell: 'sudo apt-get install audispd-plugins
 
-        sudo sed -i -E ''s/active\s*=\s*no/active = yes/'' /etc/audit/plugins.d/au-remote.conf
+            sudo sed -i -E ''s/active\s*=\s*no/active = yes/'' /etc/audit/plugins.d/au-remote.conf
 
-        sudo sed -i -E ''s/(remote_server\s*=).*/\1 /'' /etc/audit/audisp-remote.conf
+            sudo sed -i -E ''s/(remote_server\s*=).*/\1 /'' /etc/audit/audisp-remote.conf
 
-        sudo systemctl restart auditd.service'
+            sudo systemctl restart auditd.service'
 tags:
 - testing

@@ -7,6 +7,9 @@ discussion: Without cryptographic integrity protections, unauthorized users can 
   from strongest to weakest (e.g., for SSH) helps prevent disclosure and modification.
 references:
   nist:
+    cce:
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - AC-17(02)
   disa:
@@ -15,19 +18,21 @@ references:
     srg:
     - SRG-OS-000250-GPOS-00093
     disa_stig:
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-100850
 platforms:
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: sudo grep -r 'Ciphers' /etc/ssh/ssh_config*
-      expected_output: Ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes128-ctr
-    fix:
-      shell: sudo systemctl restart ssh
+  ubuntu:
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sudo grep -r 'Ciphers' /etc/ssh/ssh_config*
+          result:
+            string: Ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes128-ctr
+        fix:
+          shell: sudo systemctl restart ssh
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

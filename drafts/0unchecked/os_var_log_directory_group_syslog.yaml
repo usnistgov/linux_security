@@ -6,6 +6,9 @@ discussion: Only authorized personnel should see error details, as messages can 
   design must align with organizational policy and operational requirements.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
     800-53r5:
     - SI-11
   disa:
@@ -14,19 +17,21 @@ references:
     srg:
     - SRG-OS-000206-GPOS-00084
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-232125
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: stat -c '%G' /var/log | grep -qx syslog
-      expected_output: 0
-    fix:
-      shell: sudo chgrp syslog /var/log
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: stat -c '%G' /var/log | grep -qx syslog
+          result:
+            integer: 0
+        fix:
+          shell: sudo chgrp syslog /var/log
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

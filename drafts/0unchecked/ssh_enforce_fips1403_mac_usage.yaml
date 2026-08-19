@@ -11,6 +11,9 @@ discussion: "Without cryptographic integrity protections, information can be alt
   00188."
 references:
   nist:
+    cce:
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - AC-17(02)
     - MA-04(06)
@@ -23,25 +26,27 @@ references:
     srg:
     - SRG-OS-000250-GPOS-00093
     disa_stig:
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-100830
 platforms:
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: line=$(grep -E '^\s*MACs\s+' /etc/ssh/sshd_config* | grep -v '^\s*#'
-        | head -n1); [ -n "$line" ] && [ "$(echo "$line" | sed -e 's/^[[:space:]]*//'
-        -e 's/[[:space:]]*$//')" = "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256"
-        ] && exit 0 || exit 1
-      expected_output: 0
-    fix:
-      shell: 'sudo sh -c ''echo "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256"
-        >> /etc/ssh/sshd_config''
+  ubuntu:
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: line=$(grep -E '^\s*MACs\s+' /etc/ssh/sshd_config* | grep -v '^\s*#'
+            | head -n1); [ -n "$line" ] && [ "$(echo "$line" | sed -e 's/^[[:space:]]*//'
+            -e 's/[[:space:]]*$//')" = "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256"
+            ] && exit 0 || exit 1
+          result:
+            integer: 0
+        fix:
+          shell: 'sudo sh -c ''echo "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256"
+            >> /etc/ssh/sshd_config''
 
-        sudo systemctl restart sshd'
+            sudo systemctl restart sshd'
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

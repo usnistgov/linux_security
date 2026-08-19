@@ -7,6 +7,9 @@ discussion: "Allowing any user to modify software libraries in Ubuntu 22.04 LTS 
   language libraries."
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
     800-53r5:
     - CM-05(06)
   disa:
@@ -15,21 +18,23 @@ references:
     srg:
     - SRG-OS-000259-GPOS-00100
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-232015
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: sudo find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin
-        -perm /022 -type f -exec stat -c "%n %a" '{}' \; | grep -q . && exit 1 ||
-        exit 0
-      expected_output: 0
-    fix:
-      shell: sudo find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin
-        -perm /022 -type f -exec chmod 755 '{}' \;
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sudo find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin
+            -perm /022 -type f -exec stat -c "%n %a" '{}' \; | grep -q . && exit 1
+            || exit 0
+          result:
+            integer: 0
+        fix:
+          shell: sudo find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin
+            -perm /022 -type f -exec chmod 755 '{}' \;
 tags:
 - testing

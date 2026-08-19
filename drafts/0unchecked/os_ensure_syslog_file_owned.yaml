@@ -5,6 +5,9 @@ discussion: Only authorized personnel should receive error details, and error me
   messages must align with organizational policies and operational requirements.
 references:
   nist:
+    cce:
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - SI-11
   disa:
@@ -13,19 +16,21 @@ references:
     srg:
     - SRG-OS-000206-GPOS-00084
     disa_stig:
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-700140
 platforms:
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: stat -c "%U" /var/log/syslog | grep -q syslog
-      expected_output: 0
-    fix:
-      shell: sudo chown syslog /var/log/syslog
+  ubuntu:
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: stat -c "%U" /var/log/syslog | grep -q syslog
+          result:
+            integer: 0
+        fix:
+          shell: sudo chown syslog /var/log/syslog
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

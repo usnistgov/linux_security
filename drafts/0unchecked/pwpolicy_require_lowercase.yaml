@@ -6,6 +6,9 @@ discussion: "A complex password increases the time and resources needed to crack
   \ resistance to guessing and brute\u2011force attacks."
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
     800-53r5:
     - IA-05(01)
   disa:
@@ -15,19 +18,21 @@ references:
     srg:
     - SRG-OS-000070-GPOS-00038
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-611015
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: grep -qE '^\s*lcredit\s*=\s*-1\s*(#.*)?$' /etc/security/pwquality.conf
-      expected_output: 0
-    fix:
-      shell: sudo sh -c 'echo "lcredit = -1" >> /etc/security/pwquality.conf'
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: grep -qE '^\s*lcredit\s*=\s*-1\s*(#.*)?$' /etc/security/pwquality.conf
+          result:
+            integer: 0
+        fix:
+          shell: sudo sh -c 'echo "lcredit = -1" >> /etc/security/pwquality.conf'
 tags:
 - 800-53r5_low
 - 800-53r5_moderate

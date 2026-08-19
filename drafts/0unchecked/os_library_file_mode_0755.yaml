@@ -6,6 +6,9 @@ discussion: "Allowing any user to modify software libraries in Ubuntu 24.04 LTS 
   \ and modify these components, including privileged programs."
 references:
   nist:
+    cce:
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - CM-05(06)
   disa:
@@ -14,20 +17,22 @@ references:
     srg:
     - SRG-OS-000259-GPOS-00100
     disa_stig:
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-300006
 platforms:
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: sudo find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' -perm
-        /022 -exec stat -c "%n %a" {} +
-      expected_output: no output
-    fix:
-      shell: sudo find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' -perm
-        /022 -exec chmod go-w {} +
+  ubuntu:
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sudo find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' -perm
+            /022 -exec stat -c "%n %a" {} +
+          result:
+            string: no output
+        fix:
+          shell: sudo find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' -perm
+            /022 -exec chmod go-w {} +
 tags:
 - testing

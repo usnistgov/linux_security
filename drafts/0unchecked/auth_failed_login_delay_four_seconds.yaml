@@ -5,6 +5,11 @@ discussion: Limiting logon attempts within a set time interval reduces the risk 
   unauthorized account access.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - CM-06
   disa:
@@ -13,36 +18,39 @@ references:
     srg:
     - SRG-OS-000480-GPOS-00226
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-412010
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-300017
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: low
-  enforcement_info:
-    check:
-      shell: awk '$0 !~ /^#/ && /pam_faildelay/ {for(i=1;i<=NF;i++) if($i ~ /^delay=/)
-        {split($i,a,"="); if(a[2] >= 4000000) exit 0; else exit 1}} END {exit 1}'
-        /etc/pam.d/common-auth
-      expected_output: 0
-    fix:
-      shell: sudo sh -c 'echo "auth     required     pam_faildelay.so     delay=4000000"
-        >> /etc/pam.d/common-auth'
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: low
-  enforcement_info:
-    check:
-      shell: grep -q 'pam_faildelay' /etc/pam.d/common-auth && grep -o 'delay=[0-9]*'
-        /etc/pam.d/common-auth | cut -d= -f2 | awk '{if ($1 >= 4000000) exit 0; else
-        exit 1}'
-      expected_output: 0
-    fix:
-      shell: auth required pam_faildelay.so delay=4000000
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+      enforcement_info:
+        check:
+          shell: awk '$0 !~ /^#/ && /pam_faildelay/ {for(i=1;i<=NF;i++) if($i ~ /^delay=/)
+            {split($i,a,"="); if(a[2] >= 4000000) exit 0; else exit 1}} END {exit
+            1}' /etc/pam.d/common-auth
+          result:
+            integer: 0
+        fix:
+          shell: sudo sh -c 'echo "auth     required     pam_faildelay.so     delay=4000000"
+            >> /etc/pam.d/common-auth'
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+      enforcement_info:
+        check:
+          shell: grep -q 'pam_faildelay' /etc/pam.d/common-auth && grep -o 'delay=[0-9]*'
+            /etc/pam.d/common-auth | cut -d= -f2 | awk '{if ($1 >= 4000000) exit 0;
+            else exit 1}'
+          result:
+            integer: 0
+        fix:
+          shell: auth required pam_faildelay.so delay=4000000
 tags:
 - 800-53r5_low
 - 800-53r5_moderate

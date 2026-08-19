@@ -6,6 +6,9 @@ discussion: "Path validation ensures a relying party can verify a certificate\u2
   \ decision for any certificate not explicitly trusted."
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
     800-53r5:
     - SC-17
     - IA-05(02)
@@ -16,27 +19,29 @@ references:
     srg:
     - SRG-OS-000396-GPOS-00176
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-254020
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: 'sudo grep -A 1 ''^\[sssd\]'' /etc/sssd/sssd.conf | grep -q pam
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: 'sudo grep -A 1 ''^\[sssd\]'' /etc/sssd/sssd.conf | grep -q pam
 
 
-        sudo grep -A 1 ''^\[pam\]'' /etc/sssd/sssd.conf | grep -q ''pam_cert_auth
-        = True''
+            sudo grep -A 1 ''^\[pam\]'' /etc/sssd/sssd.conf | grep -q ''pam_cert_auth
+            = True''
 
 
-        sudo grep -E ''^\s*certificate_verification\s*='' /etc/sssd/sssd.conf | grep
-        -q ''\bca\b'''
-      expected_output: 0
-    fix:
-      shell: sudo vi /etc/sssd/sssd.conf
+            sudo grep -E ''^\s*certificate_verification\s*='' /etc/sssd/sssd.conf
+            | grep -q ''\bca\b'''
+          result:
+            integer: 0
+        fix:
+          shell: sudo vi /etc/sssd/sssd.conf
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

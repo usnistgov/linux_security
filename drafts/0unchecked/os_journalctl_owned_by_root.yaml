@@ -7,6 +7,11 @@ discussion: Only authorized personnel should see error details, as messages can 
   and ensure proper error handling.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - SI-11
   disa:
@@ -15,31 +20,34 @@ references:
     srg:
     - SRG-OS-000206-GPOS-00084
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-232100
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-700040
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: '[ "$(stat -c ''%U'' /usr/bin/journalctl)" = "root" ]'
-      expected_output: 0
-    fix:
-      shell: sudo chown root /usr/bin/journalctl
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: stat -c "%U" /usr/bin/journalctl
-      expected_output: root
-    fix:
-      shell: sudo chown root /usr/bin/journalctl
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: '[ "$(stat -c ''%U'' /usr/bin/journalctl)" = "root" ]'
+          result:
+            integer: 0
+        fix:
+          shell: sudo chown root /usr/bin/journalctl
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: stat -c "%U" /usr/bin/journalctl
+          result:
+            string: root
+        fix:
+          shell: sudo chown root /usr/bin/journalctl
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

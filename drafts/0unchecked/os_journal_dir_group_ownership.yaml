@@ -7,6 +7,11 @@ discussion: Only authorized personnel should see error details, as messages can 
   disclosure.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - SI-11
   disa:
@@ -15,43 +20,46 @@ references:
     srg:
     - SRG-OS-000206-GPOS-00084
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-232085
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-700060
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: '[ -z "$(sudo find /run/log/journal /var/log/journal -type d ! -group
-        systemd-journal -print)" ]'
-      expected_output: 0
-    fix:
-      shell: 'sudo tee /etc/tmpfiles.d/zzz-systemd-stig.conf > /dev/null <<''EOF''
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: '[ -z "$(sudo find /run/log/journal /var/log/journal -type d ! -group
+            systemd-journal -print)" ]'
+          result:
+            integer: 0
+        fix:
+          shell: 'sudo tee /etc/tmpfiles.d/zzz-systemd-stig.conf > /dev/null <<''EOF''
 
-        z /run/log/journal 2750 root systemd-journal - -
+            z /run/log/journal 2750 root systemd-journal - -
 
-        z /var/log/journal 2750 root systemd-journal - -
+            z /var/log/journal 2750 root systemd-journal - -
 
-        z /var/log/journal/%m 2750 root systemd-journal - -
+            z /var/log/journal/%m 2750 root systemd-journal - -
 
-        EOF
+            EOF
 
-        sudo reboot'
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: sudo find /run/log/journal /var/log/journal -type d ! -group systemd-journal
-        -quit -print | grep -q . && echo "FAIL" || echo "PASS"
-      expected_output: PASS
-    fix:
-      shell: sudo vi /etc/tmpfiles.d/zzz-systemd-stig.conf
+            sudo reboot'
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sudo find /run/log/journal /var/log/journal -type d ! -group systemd-journal
+            -quit -print | grep -q . && echo "FAIL" || echo "PASS"
+          result:
+            string: PASS
+        fix:
+          shell: sudo vi /etc/tmpfiles.d/zzz-systemd-stig.conf
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

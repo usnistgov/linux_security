@@ -8,6 +8,11 @@ discussion: "Operating systems that disclose excessive information in error mess
   \ exploit."
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - SI-11
   disa:
@@ -16,31 +21,34 @@ references:
     srg:
     - SRG-OS-000205-GPOS-00083
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-232140
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-700030
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: sudo stat -c "%a" /usr/bin/journalctl | grep -q '^740$'
-      expected_output: 0
-    fix:
-      shell: sudo chmod 740 /usr/bin/journalctl
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: stat -c "%n %a" /usr/bin/journalctl
-      expected_output: /usr/bin/journalctl 740
-    fix:
-      shell: sudo chmod 740 /usr/bin/journalctl
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sudo stat -c "%a" /usr/bin/journalctl | grep -q '^740$'
+          result:
+            integer: 0
+        fix:
+          shell: sudo chmod 740 /usr/bin/journalctl
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: stat -c "%n %a" /usr/bin/journalctl
+          result:
+            string: /usr/bin/journalctl 740
+        fix:
+          shell: sudo chmod 740 /usr/bin/journalctl
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

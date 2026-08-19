@@ -6,6 +6,11 @@ discussion: Without FIPS-validated cryptographic integrity protections, data can
   the system selects the strongest available for SSH.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - AC-17(02)
   disa:
@@ -14,34 +19,34 @@ references:
     srg:
     - SRG-OS-000033-GPOS-00014
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-255060
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-100840
-enforcement_info:
-  enforcement_type: full
-  check:
-    shell: sshd -T | grep -q "^kexalgorithms $FIPS_KEYS"
-    status_code: 0
-  fix:
-    shell: echo "KexAlgorithms $FIPS_KEYS" >> /etc/ssh/sshd_config && systemctl restart ssh
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    enforcement_type: vars
-    vars:
-      FIPS_KEYS: ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    enforcement_type: vars
-    vars:
-      FIPS_KEYS: ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group14-sha256
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sshd -T | grep -q "^kexalgorithms ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256"
+          result:
+            exit_code: 0
+        fix:
+          shell: echo "KexAlgorithms ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256" >> /etc/ssh/sshd_config && systemctl restart ssh
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sshd -T | grep -q "^kexalgorithms ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group14-sha256"
+          result:
+            exit_code: 0
+        fix:
+          shell: echo "KexAlgorithms ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group14-sha256" >> /etc/ssh/sshd_config && systemctl restart ssh
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

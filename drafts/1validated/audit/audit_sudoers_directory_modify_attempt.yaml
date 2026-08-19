@@ -7,6 +7,11 @@ discussion: Without audit records tailored to the organization's security and mi
   such as modules or policy filters.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - AU-12
   disa:
@@ -15,30 +20,27 @@ references:
     srg:
     - SRG-OS-000466-GPOS-00210
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-654225
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-900520
-enforcement_info:
-  enforcement_type: full
-  check:
-    shell: auditctl -l | grep -q "\-w /etc/sudoers.d -p wa"
-    status_code: 0
-  fix:
-    shell: echo "-w /etc/sudoers.d -p wa -k privilege_modification" >> /etc/audit/rules.d/stig.rules && augenrules --load
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    enforcement_type: inherit
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    enforcement_type: inherit
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: auditctl -l | grep -q "\-w /etc/sudoers.d -p wa"
+        result:
+          exit_code: 0
+      fix:
+        shell: echo "-w /etc/sudoers.d -p wa -k privilege_modification" >> /etc/audit/rules.d/stig.rules && augenrules --load
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
 tags:
 - 800-53r5_low
 - 800-53r5_moderate

@@ -9,6 +9,11 @@ discussion: "Preventing unauthorized information transfers ensures that data\u20
   \ and can be validated through acceptance/verification processes."
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - SC-04
   disa:
@@ -17,31 +22,34 @@ references:
     srg:
     - SRG-OS-000138-GPOS-00069
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-232145
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-600150
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: '! sudo find / -type d -perm -002 ! -perm -1000 | grep -q .'
-      expected_output: 0
-    fix:
-      shell: sudo chmod +t <directory>
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: sudo find / -type d -perm -002 ! -perm -1000 -print | grep -q .
-      expected_output: $?
-    fix:
-      shell: sudo chmod +t [Public Directory]
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: '! sudo find / -type d -perm -002 ! -perm -1000 | grep -q .'
+          result:
+            integer: 0
+        fix:
+          shell: sudo chmod +t <directory>
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sudo find / -type d -perm -002 ! -perm -1000 -print | grep -q .
+          result:
+            string: $?
+        fix:
+          shell: sudo chmod +t [Public Directory]
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

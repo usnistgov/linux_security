@@ -6,6 +6,11 @@ discussion: "Limiting failed logon attempts reduces the risk of brute\u2011force
   \ by locking accounts after too many failures."
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - AC-07
     - AC-07
@@ -16,72 +21,76 @@ references:
     srg:
     - SRG-OS-000021-GPOS-00005
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-411045
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-200610
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: low
-  enforcement_info:
-    check:
-      shell: 'grep -q pam_faillock.so /etc/pam.d/common-auth && \
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+      enforcement_info:
+        check:
+          shell: 'grep -q pam_faillock.so /etc/pam.d/common-auth && \
 
-        grep -Eq ''^\s*audit\s*$'' /etc/security/faillock.conf && \
+            grep -Eq ''^\s*audit\s*$'' /etc/security/faillock.conf && \
 
-        grep -Eq ''^\s*silent\s*$'' /etc/security/faillock.conf && \
+            grep -Eq ''^\s*silent\s*$'' /etc/security/faillock.conf && \
 
-        grep -Eq ''^\s*deny\s*=\s*3\s*(#.*)?$'' /etc/security/faillock.conf && \
+            grep -Eq ''^\s*deny\s*=\s*3\s*(#.*)?$'' /etc/security/faillock.conf &&
+            \
 
-        grep -Eq ''^\s*fail_interval\s*=\s*900\s*(#.*)?$'' /etc/security/faillock.conf
-        && \
+            grep -Eq ''^\s*fail_interval\s*=\s*900\s*(#.*)?$'' /etc/security/faillock.conf
+            && \
 
-        grep -Eq ''^\s*unlock_time\s*=\s*0\s*(#.*)?$'' /etc/security/faillock.conf'
-      expected_output: 0
-    fix:
-      shell: 'sudo sed -i ''/pam_unix.so/a auth     [default=die]  pam_faillock.so
-        authfail\nauth     sufficient          pam_faillock.so authsucc'' /etc/pam.d/common-auth
+            grep -Eq ''^\s*unlock_time\s*=\s*0\s*(#.*)?$'' /etc/security/faillock.conf'
+          result:
+            integer: 0
+        fix:
+          shell: 'sudo sed -i ''/pam_unix.so/a auth     [default=die]  pam_faillock.so
+            authfail\nauth     sufficient          pam_faillock.so authsucc'' /etc/pam.d/common-auth
 
-        sudo tee /etc/security/faillock.conf > /dev/null <<EOF
+            sudo tee /etc/security/faillock.conf > /dev/null <<EOF
 
-        audit
+            audit
 
-        silent
+            silent
 
-        deny = 3
+            deny = 3
 
-        fail_interval = 900
+            fail_interval = 900
 
-        unlock_time = 0
+            unlock_time = 0
 
-        EOF'
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: low
-  enforcement_info:
-    check:
-      shell: 'grep -q pam_faillock.so /etc/pam.d/common-auth && \
+            EOF'
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+      enforcement_info:
+        check:
+          shell: 'grep -q pam_faillock.so /etc/pam.d/common-auth && \
 
-        grep -q ''^\s*audit\s*$'' /etc/security/faillock.conf && \
+            grep -q ''^\s*audit\s*$'' /etc/security/faillock.conf && \
 
-        grep -q ''^\s*silent\s*$'' /etc/security/faillock.conf && \
+            grep -q ''^\s*silent\s*$'' /etc/security/faillock.conf && \
 
-        grep -q ''^\s*deny\s*=\s*3\s*$'' /etc/security/faillock.conf && \
+            grep -q ''^\s*deny\s*=\s*3\s*$'' /etc/security/faillock.conf && \
 
-        grep -q ''^\s*fail_interval\s*=\s*900\s*$'' /etc/security/faillock.conf &&
-        \
+            grep -q ''^\s*fail_interval\s*=\s*900\s*$'' /etc/security/faillock.conf
+            && \
 
-        grep -q ''^\s*unlock_time\s*=\s*0\s*$'' /etc/security/faillock.conf'
-      expected_output: 0
-    fix:
-      shell: 'sed -i ''/pam_unix.so/a auth     [default=die]  pam_faillock.so authfail\nauth     sufficient     pam_faillock.so
-        authsucc'' /etc/pam.d/common-auth
+            grep -q ''^\s*unlock_time\s*=\s*0\s*$'' /etc/security/faillock.conf'
+          result:
+            integer: 0
+        fix:
+          shell: 'sed -i ''/pam_unix.so/a auth     [default=die]  pam_faillock.so
+            authfail\nauth     sufficient     pam_faillock.so authsucc'' /etc/pam.d/common-auth
 
-        echo -e "audit\nsilent\ndeny = 3\nfail_interval = 900\nunlock_time = 0" >>
-        /etc/security/faillock.conf'
+            echo -e "audit\nsilent\ndeny = 3\nfail_interval = 900\nunlock_time = 0"
+            >> /etc/security/faillock.conf'
 tags:
 - 800-53r5_low
 - 800-53r5_moderate

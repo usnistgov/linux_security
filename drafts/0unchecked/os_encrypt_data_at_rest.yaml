@@ -8,6 +8,9 @@ discussion: "Operating systems must use cryptographic mechanisms to protect data
   00183, and SRG\u2011OS\u2011000405\u2011GPOS\u201100184."
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
     800-53r5:
     - SC-28(01)
     - SC-28
@@ -19,25 +22,27 @@ references:
     srg:
     - SRG-OS-000185-GPOS-00079
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-231010
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: sudo fdisk -l | awk '$6=="Linux"{print $1}' | grep -vE '^/dev/sda1$'
-        | while read dev; do if ! grep -q "^$dev[[:space:]]" /etc/crypttab; then echo
-        "Missing $dev"; exit 1; fi; done; exit 0
-      expected_output: 0
-    fix:
-      shell: '</think>
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sudo fdisk -l | awk '$6=="Linux"{print $1}' | grep -vE '^/dev/sda1$'
+            | while read dev; do if ! grep -q "^$dev[[:space:]]" /etc/crypttab; then
+            echo "Missing $dev"; exit 1; fi; done; exit 0
+          result:
+            integer: 0
+        fix:
+          shell: '</think>
 
-        </think>
+            </think>
 
-        (No command provided in the description)'
+            (No command provided in the description)'
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

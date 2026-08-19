@@ -8,6 +8,11 @@ discussion: "Remote access services lacking automated controls increase risk and
   \ and tablets."
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - AC-17(01)
   disa:
@@ -16,31 +21,34 @@ references:
     srg:
     - SRG-OS-000297-GPOS-00115
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-251010
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-100300
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: dpkg -s ufw >/dev/null 2>&1
-      expected_output: 0
-    fix:
-      shell: sudo apt-get install ufw
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: dpkg -l | grep -q '^ii.*ufw'
-      expected_output: 0
-    fix:
-      shell: sudo apt install -y ufw
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: dpkg -s ufw >/dev/null 2>&1
+          result:
+            integer: 0
+        fix:
+          shell: sudo apt-get install ufw
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: dpkg -l | grep -q '^ii.*ufw'
+          result:
+            integer: 0
+        fix:
+          shell: sudo apt install -y ufw
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

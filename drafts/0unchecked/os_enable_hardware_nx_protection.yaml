@@ -7,6 +7,11 @@ discussion: "Adversaries may try to run code in non\u2011executable or protected
   \ help block such exploits."
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - SI-16
   disa:
@@ -15,34 +20,37 @@ references:
     srg:
     - SRG-OS-000433-GPOS-00192
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-213025
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-700300
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: 'sudo dmesg | grep -iq "execute disable.*protection: active" || grep
-        -q nx /proc/cpuinfo'
-      expected_output: 0
-    fix:
-      shell: grep -i nx /proc/cpuinfo
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: sudo dmesg | grep -qi "execute disable" && exit 0 || { grep -w nx /proc/cpuinfo
-        && exit 0 || exit 1; }
-      expected_output: 0
-    fix:
-      shell: sudo sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="\(.*\)"/GRUB_CMDLINE_LINUX_DEFAULT="\1
-        nx"/' /etc/default/grub && sudo update-grub
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: 'sudo dmesg | grep -iq "execute disable.*protection: active" || grep
+            -q nx /proc/cpuinfo'
+          result:
+            integer: 0
+        fix:
+          shell: grep -i nx /proc/cpuinfo
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sudo dmesg | grep -qi "execute disable" && exit 0 || { grep -w nx
+            /proc/cpuinfo && exit 0 || exit 1; }
+          result:
+            integer: 0
+        fix:
+          shell: sudo sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="\(.*\)"/GRUB_CMDLINE_LINUX_DEFAULT="\1
+            nx"/' /etc/default/grub && sudo update-grub
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

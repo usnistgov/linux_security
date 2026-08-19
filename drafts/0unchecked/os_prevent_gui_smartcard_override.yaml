@@ -6,6 +6,9 @@ discussion: A session lock temporarily secures a user's session when they step a
   lock at any time to secure their session when needed.
 references:
   nist:
+    cce:
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - AC-11
     - AC-11
@@ -17,23 +20,25 @@ references:
     srg:
     - SRG-OS-000028-GPOS-00009
     disa_stig:
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-200042
 platforms:
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: test "$(gsettings writable org.gnome.settings-daemon.peripherals.smartcard
-        removal-action)" = "false"
-      expected_output: 0
-    fix:
-      shell: 'echo ''/org/gnome/settings-daemon/peripherals/smartcard/removal-action''
-        >> /etc/dconf/db/local.d/locks/00-security-settings-lock
+  ubuntu:
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: test "$(gsettings writable org.gnome.settings-daemon.peripherals.smartcard
+            removal-action)" = "false"
+          result:
+            integer: 0
+        fix:
+          shell: 'echo ''/org/gnome/settings-daemon/peripherals/smartcard/removal-action''
+            >> /etc/dconf/db/local.d/locks/00-security-settings-lock
 
-        sudo dconf update'
+            sudo dconf update'
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

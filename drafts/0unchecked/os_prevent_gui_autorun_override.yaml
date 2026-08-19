@@ -6,6 +6,9 @@ discussion: "Addressing this involves using nonce\u2011based or challenge\u2011r
   response one\u2011time authenticators."
 references:
   nist:
+    cce:
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - IA-03
   disa:
@@ -15,22 +18,24 @@ references:
     srg:
     - SRG-OS-000114-GPOS-00059
     disa_stig:
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-200041
 platforms:
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: gsettings writable org.gnome.desktop.media-handling autorun-never | grep
-        -q '^false$'
-      expected_output: 0
-    fix:
-      shell: 'echo ''/org/gnome/desktop/media-handling/autorun-never'' >> /etc/dconf/db/local.d/locks/00-security-settings-lock
+  ubuntu:
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: gsettings writable org.gnome.desktop.media-handling autorun-never
+            | grep -q '^false$'
+          result:
+            integer: 0
+        fix:
+          shell: 'echo ''/org/gnome/desktop/media-handling/autorun-never'' >> /etc/dconf/db/local.d/locks/00-security-settings-lock
 
-        sudo dconf update'
+            sudo dconf update'
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

@@ -5,6 +5,9 @@ discussion: Allowing any user to modify software libraries could bypass required
   access and change these components, including privileged programs.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
     800-53r5:
     - CM-05(06)
   disa:
@@ -13,20 +16,22 @@ references:
     srg:
     - SRG-OS-000259-GPOS-00100
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-232070
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: sudo find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' ! -user
-        root -exec stat -c "%n %U" {} + | grep -q . && exit 1 || exit 0
-      expected_output: 0
-    fix:
-      shell: sudo find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' ! -user
-        root -exec chown root {} +
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sudo find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' !
+            -user root -exec stat -c "%n %U" {} + | grep -q . && exit 1 || exit 0
+          result:
+            integer: 0
+        fix:
+          shell: sudo find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' !
+            -user root -exec chown root {} +
 tags:
 - testing

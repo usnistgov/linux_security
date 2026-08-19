@@ -8,6 +8,13 @@ discussion: |
   such as modules or policy filters.
 references:
   nist:
+    cce:
+      ubuntu_20:
+      - CCE-XXXXX-X
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - AU-12
   disa:
@@ -16,38 +23,33 @@ references:
     srg:
     - SRG-OS-000064-GPOS-00033
     disa_stig:
-      ubuntu_2004:
+      ubuntu_20:
       - UBTU-20-010175
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-654020
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-900300
-enforcement_info:
-  enforcement_type: full
-  check:
-    shell: auditctl -l | grep -q "\-a always,exit -S all -F path=/usr/bin/chage -F perm=x -F auid>=1000 -F auid!=-1"
-    status_code: 0
-  fix:
-    shell: echo "-a always,exit -F path=/usr/bin/chage -F perm=x -F auid>=1000 -F auid!=unset -k privileged-chage" >> /etc/audit/rules.d/stig.rules && augenrules --load
 platforms:
-- name: ubuntu_2004
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    enforcement_type: inherit
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    enforcement_type: inherit
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    enforcement_type: inherit
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: auditctl -l | grep -q "\-a always,exit -S all -F path=/usr/bin/chage -F perm=x -F auid>=1000 -F auid!=-1"
+        result:
+          exit_code: 0
+      fix:
+        shell: echo "-a always,exit -F path=/usr/bin/chage -F perm=x -F auid>=1000 -F auid!=unset -k privileged-chage" >> /etc/audit/rules.d/stig.rules && augenrules --load
+    '20.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
 tags:
 - 800-53r5_low
 - 800-53r5_moderate

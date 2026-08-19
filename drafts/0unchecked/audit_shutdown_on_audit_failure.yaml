@@ -6,6 +6,9 @@ discussion: If the OS risks failing to process audit logs, it must mitigate fail
   restored.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
     800-53r5:
     - AU-05
   disa:
@@ -14,20 +17,22 @@ references:
     srg:
     - SRG-OS-000047-GPOS-00023
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-653030
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: sudo grep -i '^\s*disk_full_action' /etc/audit/auditd.conf | awk -F=
-        '{gsub(/^[ \t]+|[ \t]+$/,"",$2); print $2}'
-      expected_output: HALT
-    fix:
-      shell: sudo systemctl restart auditd.service
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sudo grep -i '^\s*disk_full_action' /etc/audit/auditd.conf | awk
+            -F= '{gsub(/^[ \t]+|[ \t]+$/,"",$2); print $2}'
+          result:
+            string: HALT
+        fix:
+          shell: sudo systemctl restart auditd.service
 tags:
 - 800-53r5_low
 - 800-53r5_moderate

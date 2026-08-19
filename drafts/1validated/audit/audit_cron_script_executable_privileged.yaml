@@ -6,6 +6,13 @@ discussion: |
   Scripts or executables run by cron as root or any privileged user must be owned by that user, have permissions 755 or stricter, and must not grant non-privileged users the ability to modify them.
 references:
   nist:
+    cce:
+      ubuntu_20:
+      - CCE-XXXXX-X
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - AU-12
   disa:
@@ -15,38 +22,33 @@ references:
     - SRG-OS-000396-GPOS-00176
     - SRG-OS-000471-GPOS-00215
     disa_stig:
-      ubuntu_2004:
+      ubuntu_20:
       - UBTU-20-010105
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-654041
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-200270
-enforcement_info:
-  enforcement_type: full
-  check:
-    shell: auditctl -l | grep -e "\-w /etc/cron.d -p wa" -e "\-w /var/spool/cron -p wa" | wc -l
-    standard_output: "2"
-  fix:
-    shell: echo -e "-w /etc/cron.d/ -p wa -k cronjobs\n-w /var/spool/cron/ -p wa -k cronjobs" >> /etc/audit/rules.d/stig.rules && augenrules --load
 platforms:
-- name: ubuntu_2004
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    enforcement_type: inherit
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    enforcement_type: inherit
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    enforcement_type: inherit
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: auditctl -l | grep -e "\-w /etc/cron.d -p wa" -e "\-w /var/spool/cron -p wa" | wc -l
+        result:
+          integer: 2
+      fix:
+        shell: echo -e "-w /etc/cron.d/ -p wa -k cronjobs\n-w /var/spool/cron/ -p wa -k cronjobs" >> /etc/audit/rules.d/stig.rules && augenrules --load
+    '20.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
 tags:
 - 800-53r5_low
 - 800-53r5_moderate

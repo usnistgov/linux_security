@@ -7,6 +7,9 @@ discussion: Only authorized personnel should see error details, as messages can 
   disclosure.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
     800-53r5:
     - SI-11
   disa:
@@ -15,19 +18,21 @@ references:
     srg:
     - SRG-OS-000206-GPOS-00084
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-232025
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: '[ "$(stat -c "%a" /var/log)" -le 755 ] && echo "PASS" || echo "FAIL"'
-      expected_output: PASS
-    fix:
-      shell: sudo chmod 0755 /var/log
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: '[ "$(stat -c "%a" /var/log)" -le 755 ] && echo "PASS" || echo "FAIL"'
+          result:
+            string: PASS
+        fix:
+          shell: sudo chmod 0755 /var/log
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

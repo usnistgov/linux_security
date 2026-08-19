@@ -5,6 +5,11 @@ discussion: Enabling auditing after startup may miss the actions of early proces
   before a process is created.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - AU-14(01)
   disa:
@@ -13,34 +18,38 @@ references:
     srg:
     - SRG-OS-000254-GPOS-00095
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-212015
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-102010
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: sudo grep -q 'GRUB_CMDLINE_LINUX.*audit=1' /etc/default/grub && sudo
-        grep -q 'GRUB_CMDLINE_LINUX_DEFAULT.*audit=1' /etc/default/grub && [ -z "$(sudo
-        grep '^\s*linux' /boot/grub/grub.cfg | sudo grep -v 'audit=1')" ]
-      expected_output: 0
-    fix:
-      shell: sudo update-grub
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: sudo bash -c 'grep -q "GRUB_CMDLINE_LINUX_DEFAULT.*audit=1" /etc/default/grub
-        && grep -q "GRUB_CMDLINE_LINUX.*audit=1" /etc/default/grub && grep "^\s*linux"
-        /boot/grub/grub.cfg | grep -q audit=1'
-      expected_output: 0
-    fix:
-      shell: sudo update-grub
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sudo grep -q 'GRUB_CMDLINE_LINUX.*audit=1' /etc/default/grub && sudo
+            grep -q 'GRUB_CMDLINE_LINUX_DEFAULT.*audit=1' /etc/default/grub && [ -z
+            "$(sudo grep '^\s*linux' /boot/grub/grub.cfg | sudo grep -v 'audit=1')"
+            ]
+          result:
+            integer: 0
+        fix:
+          shell: sudo update-grub
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sudo bash -c 'grep -q "GRUB_CMDLINE_LINUX_DEFAULT.*audit=1" /etc/default/grub
+            && grep -q "GRUB_CMDLINE_LINUX.*audit=1" /etc/default/grub && grep "^\s*linux"
+            /boot/grub/grub.cfg | grep -q audit=1'
+          result:
+            integer: 0
+        fix:
+          shell: sudo update-grub
 tags:
 - testing

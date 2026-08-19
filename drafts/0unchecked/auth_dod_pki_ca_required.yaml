@@ -6,6 +6,9 @@ discussion: "Untrusted CAs may issue certificates that could compromise DoD syst
   \ such as SSL/TLS."
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
     800-53r5:
     - SC-23(05)
   disa:
@@ -14,19 +17,22 @@ references:
     srg:
     - SRG-OS-000403-GPOS-00182
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-631010
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: find /etc/ssl/certs -type f \( -name "*.pem" -o -name "*.crt" \) -exec
-        openssl x509 -noout -subject -in {} \; 2>/dev/null | grep -iq "DOD ROOT CA"
-      expected_output: 0
-    fix:
-      shell: sudo dpkg-reconfigure ca-certificates
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: find /etc/ssl/certs -type f \( -name "*.pem" -o -name "*.crt" \)
+            -exec openssl x509 -noout -subject -in {} \; 2>/dev/null | grep -iq "DOD
+            ROOT CA"
+          result:
+            integer: 0
+        fix:
+          shell: sudo dpkg-reconfigure ca-certificates
 tags:
 - testing

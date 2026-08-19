@@ -8,6 +8,9 @@ discussion: "Control of program execution prevents unauthorized programs from ru
   GPOS\u201100155."
 references:
   nist:
+    cce:
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - AC-03(04)
     - CM-07(02)
@@ -20,19 +23,21 @@ references:
     srg:
     - SRG-OS-000312-GPOS-00124
     disa_stig:
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-100500
 platforms:
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: dpkg -l | grep -q '^ii\s*apparmor'
-      expected_output: 0
-    fix:
-      shell: sudo apt install apparmor
+  ubuntu:
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: dpkg -l | grep -q '^ii\s*apparmor'
+          result:
+            integer: 0
+        fix:
+          shell: sudo apt install apparmor
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

@@ -4,6 +4,11 @@ title: Ubuntu 22.04 LTS must be configured such that Pluggable Authentication Mo
 discussion: "Out\u2011of\u2011date cached authentication information may be invalid."
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - IA-05(13)
   disa:
@@ -12,32 +17,35 @@ references:
     srg:
     - SRG-OS-000383-GPOS-00166
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-631015
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-400340
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: low
-  enforcement_info:
-    check:
-      shell: sudo grep -hE '^\s*offline_credentials_expiration\s*=\s*1' /etc/sssd/sssd.conf
-        /etc/sssd/conf.d/*.conf >/dev/null 2>&1
-      expected_output: 0
-    fix:
-      shell: sudo sed -i '/^\[pam\]/a offline_credentials_expiration = 1' /etc/sssd/sssd.conf
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: low
-  enforcement_info:
-    check:
-      shell: sudo grep -h '^\s*offline_credentials_expiration\s*=\s*1\s*$' /etc/sssd/sssd.conf
-        /etc/sssd/conf.d/*.conf
-      expected_output: 0
-    fix:
-      shell: sed -i '/^\[pam\]$/a offline_credentials_expiration = 1' /etc/sssd/sssd.conf
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+      enforcement_info:
+        check:
+          shell: sudo grep -hE '^\s*offline_credentials_expiration\s*=\s*1' /etc/sssd/sssd.conf
+            /etc/sssd/conf.d/*.conf >/dev/null 2>&1
+          result:
+            integer: 0
+        fix:
+          shell: sudo sed -i '/^\[pam\]/a offline_credentials_expiration = 1' /etc/sssd/sssd.conf
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+      enforcement_info:
+        check:
+          shell: sudo grep -h '^\s*offline_credentials_expiration\s*=\s*1\s*$' /etc/sssd/sssd.conf
+            /etc/sssd/conf.d/*.conf
+          result:
+            integer: 0
+        fix:
+          shell: sed -i '/^\[pam\]$/a offline_credentials_expiration = 1' /etc/sssd/sssd.conf
 tags:
 - testing

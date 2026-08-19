@@ -7,6 +7,9 @@ discussion: "Automatic session termination ends a user's logical session\u2014in
   day restrictions."
 references:
   nist:
+    cce:
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - AC-12
   disa:
@@ -15,20 +18,22 @@ references:
     srg:
     - SRG-OS-000279-GPOS-00109
     disa_stig:
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-200060
 platforms:
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: sudo grep -hE '^[^#]*TMOUT=[1-9][0-9]*' /etc/bash.bashrc /etc/profile.d/*
-      expected_output: 0
-    fix:
-      shell: sudo bash -c 'grep -qxF "TMOUT=600" /etc/profile.d/99-terminal_tmout.sh
-        || echo "TMOUT=600" >> /etc/profile.d/99-terminal_tmout.sh'
+  ubuntu:
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sudo grep -hE '^[^#]*TMOUT=[1-9][0-9]*' /etc/bash.bashrc /etc/profile.d/*
+          result:
+            integer: 0
+        fix:
+          shell: sudo bash -c 'grep -qxF "TMOUT=600" /etc/profile.d/99-terminal_tmout.sh
+            || echo "TMOUT=600" >> /etc/profile.d/99-terminal_tmout.sh'
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

@@ -8,6 +8,9 @@ discussion: "Allowing any user to modify software libraries in Ubuntu 22.04 LTS 
   \ libraries."
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
     800-53r5:
     - CM-05(06)
   disa:
@@ -16,19 +19,22 @@ references:
     srg:
     - SRG-OS-000259-GPOS-00100
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-232055
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: sudo find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin
-        ! -group root -type f ! -perm /2000 -exec stat -c "%n %G" '{}' \; | wc -l
-      expected_output: 0
-    fix:
-      shell: sudo chgrp root
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sudo find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin
+            ! -group root -type f ! -perm /2000 -exec stat -c "%n %G" '{}' \; | wc
+            -l
+          result:
+            integer: 0
+        fix:
+          shell: sudo chgrp root
 tags:
 - testing

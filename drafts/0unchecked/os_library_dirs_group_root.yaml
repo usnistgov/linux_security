@@ -6,6 +6,9 @@ discussion: "Allowing any user to modify software libraries could bypass require
   \ upgrades, or modifications."
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
     800-53r5:
     - CM-05(06)
   disa:
@@ -14,20 +17,22 @@ references:
     srg:
     - SRG-OS-000259-GPOS-00100
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-232065
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: sudo find /lib /usr/lib /lib64 ! -group root -type d -exec stat -c "%n
-        %G" '{}' \; | grep -q .
-      expected_output: $?
-    fix:
-      shell: sudo find /lib /usr/lib /lib64 ! -group root -type d -exec chgrp root
-        '{}' \;
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sudo find /lib /usr/lib /lib64 ! -group root -type d -exec stat -c
+            "%n %G" '{}' \; | grep -q .
+          result:
+            string: $?
+        fix:
+          shell: sudo find /lib /usr/lib /lib64 ! -group root -type d -exec chgrp
+            root '{}' \;
 tags:
 - testing

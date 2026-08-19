@@ -7,6 +7,11 @@ discussion: "Pressing Ctrl\u2011Alt\u2011Delete at the console can reboot the sy
   \ reboot."
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - CM-06
   disa:
@@ -15,47 +20,50 @@ references:
     srg:
     - SRG-OS-000480-GPOS-00227
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-271030
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-300025
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: high
-  enforcement_info:
-    check:
-      shell: gsettings get org.gnome.settings-daemon.plugins.media-keys logout | grep
-        -q '^@as \[\]$'
-      expected_output: 0
-    fix:
-      shell: 'sudo sh -c ''cat > /etc/dconf/db/local.d/00-mediakeys <<EOF
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: high
+      enforcement_info:
+        check:
+          shell: gsettings get org.gnome.settings-daemon.plugins.media-keys logout
+            | grep -q '^@as \[\]$'
+          result:
+            integer: 0
+        fix:
+          shell: 'sudo sh -c ''cat > /etc/dconf/db/local.d/00-mediakeys <<EOF
 
-        [org/gnome/settings-daemon/plugins/media-keys]
+            [org/gnome/settings-daemon/plugins/media-keys]
 
-        logout=@as []
+            logout=@as []
 
-        EOF'' && sudo dconf update'
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: high
-  enforcement_info:
-    check:
-      shell: gsettings get org.gnome.settings-daemon.plugins.media-keys logout | grep
-        -qxF "@as []"
-      expected_output: 0
-    fix:
-      shell: 'sudo tee /etc/dconf/db/local.d/00-mediakeys > /dev/null <<EOF
+            EOF'' && sudo dconf update'
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: high
+      enforcement_info:
+        check:
+          shell: gsettings get org.gnome.settings-daemon.plugins.media-keys logout
+            | grep -qxF "@as []"
+          result:
+            integer: 0
+        fix:
+          shell: 'sudo tee /etc/dconf/db/local.d/00-mediakeys > /dev/null <<EOF
 
-        [org/gnome/settings-daemon/plugins/media-keys]
+            [org/gnome/settings-daemon/plugins/media-keys]
 
-        logout=@as []
+            logout=@as []
 
-        EOF
+            EOF
 
-        sudo dconf update'
+            sudo dconf update'
 tags:
 - 800-53r5_low
 - 800-53r5_moderate

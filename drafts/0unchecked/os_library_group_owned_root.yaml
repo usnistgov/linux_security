@@ -5,6 +5,9 @@ discussion: "Allowing any user to modify software libraries could introduce unte
   \ should be permitted to access and alter libraries, including privileged programs."
 references:
   nist:
+    cce:
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - CM-05(06)
   disa:
@@ -13,20 +16,22 @@ references:
     srg:
     - SRG-OS-000259-GPOS-00100
     disa_stig:
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-300009
 platforms:
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: sudo find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' ! -group
-        root -exec stat -c "%n %G" {} + | grep -q . && false || true
-      expected_output: 0
-    fix:
-      shell: sudo find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' ! -group
-        root -exec chown :root {} +
+  ubuntu:
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sudo find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' !
+            -group root -exec stat -c "%n %G" {} + | grep -q . && false || true
+          result:
+            integer: 0
+        fix:
+          shell: sudo find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' !
+            -group root -exec chown :root {} +
 tags:
 - testing

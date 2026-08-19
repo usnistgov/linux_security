@@ -7,6 +7,9 @@ discussion: Accurate time stamps are essential for correlating events and conduc
   particularly for endpoints that lack regular access to an authoritative time server.
 references:
   nist:
+    cce:
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - SC-45
     - SC-45(01)
@@ -17,20 +20,22 @@ references:
     srg:
     - SRG-OS-000785-GPOS-00250
     disa_stig:
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-600160
 platforms:
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: low
-  enforcement_info:
-    check:
-      shell: sudo grep -ir 'maxpoll' /etc/chrony* | grep -v '^\s*#' | awk '$0 ~ /maxpoll/
-        {for(i=1;i<=NF;i++) if($i=="maxpoll") {val=$(i+1); if(val+0 <= 16) exit 0}}
-        END {exit 1}'
-      expected_output: 0
-    fix:
-      shell: sudo systemctl restart chrony.service
+  ubuntu:
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+      enforcement_info:
+        check:
+          shell: sudo grep -ir 'maxpoll' /etc/chrony* | grep -v '^\s*#' | awk '$0
+            ~ /maxpoll/ {for(i=1;i<=NF;i++) if($i=="maxpoll") {val=$(i+1); if(val+0
+            <= 16) exit 0}} END {exit 1}'
+          result:
+            integer: 0
+        fix:
+          shell: sudo systemctl restart chrony.service
 tags:
 - testing

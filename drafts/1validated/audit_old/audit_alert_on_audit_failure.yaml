@@ -6,6 +6,11 @@ discussion: |
   Personnel must be notified when audit processing may fail due to software/hardware errors, capture mechanism failures, or storage capacity limits, to prevent unawareness of impending audit capability loss. This requirement applies to each audit data storage repository, the organization's centralized audit storage, or both.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - AU-05
   disa:
@@ -14,28 +19,25 @@ references:
     srg:
     - SRG-OS-000046-GPOS-00022
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-653025
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-900980
-enforcement_info:
-  enforcement_type: full
-  check:
-    shell: grep "^action_mail_acct = " /etc/audit/auditd.conf | awk -F" = " '{ if ($2) print "pass" }'
-    standard_output: "pass"
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: low
-  enforcement_info:
-    enforcement_type: inherit
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: low
-  enforcement_info:
-    enforcement_type: inherit
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: grep "^action_mail_acct = " /etc/audit/auditd.conf | awk -F" = " '{ if ($2) print "pass" }'
+        result:
+          string: pass
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
 tags:
 - 800-53r5_low
 - 800-53r5_moderate

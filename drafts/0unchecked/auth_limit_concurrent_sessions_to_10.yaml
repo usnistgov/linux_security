@@ -7,6 +7,9 @@ discussion: "Ubuntu 24.04 LTS allows limiting the number of users and concurrent
   \ environment."
 references:
   nist:
+    cce:
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - AC-10
   disa:
@@ -15,19 +18,21 @@ references:
     srg:
     - SRG-OS-000027-GPOS-00008
     disa_stig:
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-200000
 platforms:
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: low
-  enforcement_info:
-    check:
-      shell: awk '/^[[:space:]]*[^#]*maxlogins/ {val=$NF; if(val+0 <= 10) {found=1;
-        exit}} END {exit (found?0:1)}' /etc/security/limits.conf /etc/security/limits.d/*.conf
-      expected_output: 0
-    fix:
-      shell: echo '* hard maxlogins 10' >> /etc/security/limits.conf
+  ubuntu:
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+      enforcement_info:
+        check:
+          shell: awk '/^[[:space:]]*[^#]*maxlogins/ {val=$NF; if(val+0 <= 10) {found=1;
+            exit}} END {exit (found?0:1)}' /etc/security/limits.conf /etc/security/limits.d/*.conf
+          result:
+            integer: 0
+        fix:
+          shell: echo '* hard maxlogins 10' >> /etc/security/limits.conf
 tags:
 - 800-53r5_high

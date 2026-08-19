@@ -6,6 +6,11 @@ discussion: Failing to configure a local revocation cache may permit access by u
   whose certificates have been revoked.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - IA-05(02)
   disa:
@@ -15,37 +20,40 @@ references:
     srg:
     - SRG-OS-000384-GPOS-00167
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-612035
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-400380
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: grep -E '^\s*cert_policy\s*=' /etc/pam_pkcs11/pam_pkcs11.conf | grep
-        -qE 'crl_auto|crl_offline'
-      expected_output: 0
-    fix:
-      shell: mkdir -p /etc/pam_pkcs11 && [ ! -f /etc/pam_pkcs11/pam_pkcs11.conf ]
-        && zcat /usr/share/doc/libpam-pkcs11/examples/pam_pkcs11.conf.example.gz >
-        /etc/pam_pkcs11/pam_pkcs11.conf && grep -q 'crl_auto' /etc/pam_pkcs11/pam_pkcs11.conf
-        || sed -i '/^cert_policy/ s/$/, crl_auto;/' /etc/pam_pkcs11/pam_pkcs11.conf
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: grep -qE 'cert_policy.*(crl_auto|crl_offline)' /etc/pam_pkcs11/pam_pkcs11.conf
-      expected_output: 0
-    fix:
-      shell: mkdir -p /etc/pam_pkcs11 && zcat /usr/share/doc/libpam-pkcs11/examples/pam_pkcs11.conf.example.gz
-        > /etc/pam_pkcs11/pam_pkcs11.conf && sed -i 's/^\(cert_policy\s*=\s*\).*/\1ca,signature,ocsp_on,
-        crl_auto;/' /etc/pam_pkcs11/pam_pkcs11.conf
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: grep -E '^\s*cert_policy\s*=' /etc/pam_pkcs11/pam_pkcs11.conf | grep
+            -qE 'crl_auto|crl_offline'
+          result:
+            integer: 0
+        fix:
+          shell: mkdir -p /etc/pam_pkcs11 && [ ! -f /etc/pam_pkcs11/pam_pkcs11.conf
+            ] && zcat /usr/share/doc/libpam-pkcs11/examples/pam_pkcs11.conf.example.gz
+            > /etc/pam_pkcs11/pam_pkcs11.conf && grep -q 'crl_auto' /etc/pam_pkcs11/pam_pkcs11.conf
+            || sed -i '/^cert_policy/ s/$/, crl_auto;/' /etc/pam_pkcs11/pam_pkcs11.conf
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: grep -qE 'cert_policy.*(crl_auto|crl_offline)' /etc/pam_pkcs11/pam_pkcs11.conf
+          result:
+            integer: 0
+        fix:
+          shell: mkdir -p /etc/pam_pkcs11 && zcat /usr/share/doc/libpam-pkcs11/examples/pam_pkcs11.conf.example.gz
+            > /etc/pam_pkcs11/pam_pkcs11.conf && sed -i 's/^\(cert_policy\s*=\s*\).*/\1ca,signature,ocsp_on,
+            crl_auto;/' /etc/pam_pkcs11/pam_pkcs11.conf
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

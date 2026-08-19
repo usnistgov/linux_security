@@ -6,6 +6,9 @@ discussion: "Without consistent timestamps and a common time reference, forensic
   \ expressed in UTC (or local time with a UTC offset)."
 references:
   nist:
+    cce:
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - AU-08
   disa:
@@ -14,19 +17,21 @@ references:
     srg:
     - SRG-OS-000359-GPOS-00146
     disa_stig:
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-901220
 platforms:
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: low
-  enforcement_info:
-    check:
-      shell: timedatectl show --property=Timezone --value | grep -E '^(UTC|GMT)$'
-      expected_output: 0
-    fix:
-      shell: sudo timedatectl set-timezone [ZONE]
+  ubuntu:
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+      enforcement_info:
+        check:
+          shell: timedatectl show --property=Timezone --value | grep -E '^(UTC|GMT)$'
+          result:
+            integer: 0
+        fix:
+          shell: sudo timedatectl set-timezone [ZONE]
 tags:
 - 800-53r5_low
 - 800-53r5_moderate

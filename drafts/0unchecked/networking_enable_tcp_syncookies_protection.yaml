@@ -6,6 +6,11 @@ discussion: "A denial-of-service condition makes resources unavailable to legiti
   \ quotas, or partitioning\u2014helps mitigate such attacks."
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - SC-05(02)
   disa:
@@ -14,40 +19,45 @@ references:
     srg:
     - SRG-OS-000142-GPOS-00071
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-253010
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-600190
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: sysctl -n net.ipv4.tcp_syncookies | grep -qx 1 && sudo grep -h -E '^\s*net\.ipv4\.tcp_syncookies\s*='
-        /etc/sysctl.d/*.conf /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf /usr/lib/sysctl.d/*.conf
-        /lib/sysctl.d/*.conf /etc/sysctl.conf 2>/dev/null | awk -F'=' '{gsub(/[[:space:]]#.*/,"",$2);
-        gsub(/^[[:space:]]+|[[:space:]]+$/,"",$2); if ($2=="1") {count++} else {bad=1}}
-        END {if (count>0 && bad==0) exit 0; else exit 1}'
-      expected_output: 0
-    fix:
-      shell: 'sudo sysctl -w net.ipv4.tcp_syncookies=1
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sysctl -n net.ipv4.tcp_syncookies | grep -qx 1 && sudo grep -h -E
+            '^\s*net\.ipv4\.tcp_syncookies\s*=' /etc/sysctl.d/*.conf /run/sysctl.d/*.conf
+            /usr/local/lib/sysctl.d/*.conf /usr/lib/sysctl.d/*.conf /lib/sysctl.d/*.conf
+            /etc/sysctl.conf 2>/dev/null | awk -F'=' '{gsub(/[[:space:]]#.*/,"",$2);
+            gsub(/^[[:space:]]+|[[:space:]]+$/,"",$2); if ($2=="1") {count++} else
+            {bad=1}} END {if (count>0 && bad==0) exit 0; else exit 1}'
+          result:
+            integer: 0
+        fix:
+          shell: 'sudo sysctl -w net.ipv4.tcp_syncookies=1
 
-        echo "net.ipv4.tcp_syncookies = 1" >> /etc/sysctl.conf'
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: '[ "$(sysctl -n net.ipv4.tcp_syncookies)" = "1" ] && sudo grep -qEr ''^\s*net\.ipv4\.tcp_syncookies\s*=\s*1''
-        /etc/sysctl.d/*.conf /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf /usr/lib/sysctl.d/*.conf
-        /lib/sysctl.d/*.conf /etc/sysctl.conf 2>/dev/null && exit 0 || exit 1'
-      expected_output: 0
-    fix:
-      shell: 'sudo sysctl -w net.ipv4.tcp_syncookies=1
+            echo "net.ipv4.tcp_syncookies = 1" >> /etc/sysctl.conf'
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: '[ "$(sysctl -n net.ipv4.tcp_syncookies)" = "1" ] && sudo grep -qEr
+            ''^\s*net\.ipv4\.tcp_syncookies\s*=\s*1'' /etc/sysctl.d/*.conf /run/sysctl.d/*.conf
+            /usr/local/lib/sysctl.d/*.conf /usr/lib/sysctl.d/*.conf /lib/sysctl.d/*.conf
+            /etc/sysctl.conf 2>/dev/null && exit 0 || exit 1'
+          result:
+            integer: 0
+        fix:
+          shell: 'sudo sysctl -w net.ipv4.tcp_syncookies=1
 
-        sudo sh -c ''echo "net.ipv4.tcp_syncookies = 1" >> /etc/sysctl.conf'''
+            sudo sh -c ''echo "net.ipv4.tcp_syncookies = 1" >> /etc/sysctl.conf'''
 tags:
 - testing

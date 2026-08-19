@@ -6,6 +6,9 @@ discussion: Passwords must be protected at all times, and encryption is the stan
   can be easily compromised.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
     800-53r5:
     - IA-07
   disa:
@@ -14,19 +17,21 @@ references:
     srg:
     - SRG-OS-000120-GPOS-00061
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-611070
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: grep -E '^\s*[^#]' /etc/login.defs | grep -iq '^\s*encrypt_method\s*[=:]\s*sha512\s*$'
-      expected_output: 0
-    fix:
-      shell: sudo sed -i 's/^#*ENCRYPT_METHOD.*/ENCRYPT_METHOD SHA512/' /etc/login.defs
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: grep -E '^\s*[^#]' /etc/login.defs | grep -iq '^\s*encrypt_method\s*[=:]\s*sha512\s*$'
+          result:
+            integer: 0
+        fix:
+          shell: sudo sed -i 's/^#*ENCRYPT_METHOD.*/ENCRYPT_METHOD SHA512/' /etc/login.defs
 tags:
 - 800-53r5_low
 - 800-53r5_moderate

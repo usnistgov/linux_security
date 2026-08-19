@@ -7,6 +7,9 @@ discussion: Organizational users must be individually identified and authenticat
   to assuming any shared or privileged account.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
     800-53r5:
     - IA-02(05)
   disa:
@@ -16,18 +19,20 @@ references:
     srg:
     - SRG-OS-000109-GPOS-00056
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-411010
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: sudo passwd -S root | grep -q '^root L'
-      expected_output: 0
-    fix:
-      shell: sudo passwd -l root
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sudo passwd -S root | grep -q '^root L'
+          result:
+            integer: 0
+        fix:
+          shell: sudo passwd -l root
 tags:
 - 800-53r5_high

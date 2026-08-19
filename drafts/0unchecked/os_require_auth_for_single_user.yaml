@@ -7,6 +7,9 @@ discussion: "DOD systems must be configured so that possessing a DOD\u2011approv
   \ controls enforced by mechanisms such as access control lists, matrices, or cryptography."
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
     800-53r5:
     - AC-03
   disa:
@@ -15,19 +18,21 @@ references:
     srg:
     - SRG-OS-000080-GPOS-00048
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-212010
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: high
-  enforcement_info:
-    check:
-      shell: sudo grep -q '^password_pbkdf2' /boot/grub/grub.cfg
-      expected_output: 0
-    fix:
-      shell: sudo sed -i '$i set superusers=\"root\"\npassword_pbkdf2 root ' /etc/grub.d/40_custom
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: high
+      enforcement_info:
+        check:
+          shell: sudo grep -q '^password_pbkdf2' /boot/grub/grub.cfg
+          result:
+            integer: 0
+        fix:
+          shell: sudo sed -i '$i set superusers=\"root\"\npassword_pbkdf2 root ' /etc/grub.d/40_custom
 tags:
 - 800-53r5_low
 - 800-53r5_moderate

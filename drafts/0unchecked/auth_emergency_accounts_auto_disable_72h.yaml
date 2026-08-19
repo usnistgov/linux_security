@@ -9,6 +9,9 @@ discussion: "Temporary accounts are set up for urgent situations and must be dis
   term privileged access requiring a permanent account."
 references:
   nist:
+    cce:
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - AC-02(02)
   disa:
@@ -18,24 +21,26 @@ references:
     srg:
     - SRG-OS-000002-GPOS-00002
     disa_stig:
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-200250
 platforms:
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: 'awk -F: ''$3 >= 1000 {print $1}'' /etc/passwd | while read u; do exp=$(sudo
-        chage -l "$u" 2>/dev/null | awk -F: ''/account expires/ {print $2}'' | xargs);
-        [[ -z "$exp" || "$exp" == "never" ]] && { echo "$u: no expiration"; exit 1;
-        }; exp_s=$(date -d "$exp" +%s 2>/dev/null); lim_s=$(date -d ''+72 hours''
-        +%s); [[ -z "$exp_s" || "$exp_s" -gt "$lim_s" ]] && { echo "$u: expires $exp
-        (>72h)"; exit 1; }; done; exit 0'
-      expected_output: 0
-    fix:
-      shell: sudo chage -E $(date -d +3days +%Y-%m-%d)
+  ubuntu:
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: 'awk -F: ''$3 >= 1000 {print $1}'' /etc/passwd | while read u; do
+            exp=$(sudo chage -l "$u" 2>/dev/null | awk -F: ''/account expires/ {print
+            $2}'' | xargs); [[ -z "$exp" || "$exp" == "never" ]] && { echo "$u: no
+            expiration"; exit 1; }; exp_s=$(date -d "$exp" +%s 2>/dev/null); lim_s=$(date
+            -d ''+72 hours'' +%s); [[ -z "$exp_s" || "$exp_s" -gt "$lim_s" ]] && {
+            echo "$u: expires $exp (>72h)"; exit 1; }; done; exit 0'
+          result:
+            integer: 0
+        fix:
+          shell: sudo chage -E $(date -d +3days +%Y-%m-%d)
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

@@ -6,6 +6,11 @@ discussion: |
   Generating audit records tailored to the organization's security and mission needs is essential for establishing, correlating, and investigating incidents and identifying responsible parties, and these records can be produced by various system components such as modules or policy filters.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - AU-12
   disa:
@@ -14,36 +19,31 @@ references:
     srg:
     - SRG-OS-000064-GPOS-00033
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-654170
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-900350
-enforcement_info:
-  enforcement_type: full
-  check:
-    shell: auditctl -l | grep "\-a always,exit -F arch=b\S* -S delete_module -F auid>=1000 -F auid!=-1" | wc -l
-    standard_output: "2"
-  fix:
-    shell: echo -e "-a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=unset -k module_chng\n-a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=unset -k module_chng" >> /etc/audit/rules.d/stig.rules && augenrules --load
 platforms:
-- name: ubuntu_2004
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    enforcement_type: inherit
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    enforcement_type: inherit
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    enforcement_type: inherit
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: auditctl -l | grep "\-a always,exit -F arch=b\S* -S delete_module -F auid>=1000 -F auid!=-1" | wc -l
+        result:
+          integer: 2
+      fix:
+        shell: echo -e "-a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=unset -k module_chng\n-a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=unset -k module_chng" >> /etc/audit/rules.d/stig.rules && augenrules --load
+    '20.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
 tags:
 - 800-53r5_low
 - 800-53r5_moderate

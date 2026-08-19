@@ -6,6 +6,11 @@ discussion: Without protection, transmitted information can be intercepted and a
   network communications and can be safeguarded via physical or cryptographic means.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - SC-08(02)
     - SC-08
@@ -17,34 +22,38 @@ references:
     srg:
     - SRG-OS-000423-GPOS-00187
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-255015
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-100810
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: high
-  enforcement_info:
-    check:
-      shell: sudo systemctl is-enabled ssh.service && sudo systemctl is-active ssh.service
-      expected_output: 0
-    fix:
-      shell: sudo systemctl enable ssh.service --now
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: high
-  enforcement_info:
-    check:
-      shell: sudo systemctl is-enabled sshd.service | grep -q enabled && sudo systemctl
-        is-active sshd.service | grep -q active
-      expected_output: 0
-    fix:
-      shell: 'sudo systemctl enable ssh.service
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: high
+      enforcement_info:
+        check:
+          shell: sudo systemctl is-enabled ssh.service && sudo systemctl is-active
+            ssh.service
+          result:
+            integer: 0
+        fix:
+          shell: sudo systemctl enable ssh.service --now
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: high
+      enforcement_info:
+        check:
+          shell: sudo systemctl is-enabled sshd.service | grep -q enabled && sudo
+            systemctl is-active sshd.service | grep -q active
+          result:
+            integer: 0
+        fix:
+          shell: 'sudo systemctl enable ssh.service
 
-        sudo systemctl start ssh.service'
+            sudo systemctl start ssh.service'
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

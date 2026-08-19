@@ -6,6 +6,11 @@ discussion: Inactive identifiers can be exploited for undetected access, and own
   after 35 days.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - AC-02(03)
     - AC-02(03)
@@ -17,32 +22,35 @@ references:
     srg:
     - SRG-OS-000118-GPOS-00060
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-411035
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-200260
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: grep -E '^INACTIVE=35' /etc/default/useradd
-      expected_output: 0
-    fix:
-      shell: sudo useradd -D -f 35
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: awk -F= '$1=="INACTIVE" && $2+0>=1 && $2+0<=35 {exit 0} END {exit 1}'
-        /etc/default/useradd
-      expected_output: 0
-    fix:
-      shell: sudo useradd -D -f 35
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: grep -E '^INACTIVE=35' /etc/default/useradd
+          result:
+            integer: 0
+        fix:
+          shell: sudo useradd -D -f 35
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: awk -F= '$1=="INACTIVE" && $2+0>=1 && $2+0<=35 {exit 0} END {exit
+            1}' /etc/default/useradd
+          result:
+            integer: 0
+        fix:
+          shell: sudo useradd -D -f 35
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

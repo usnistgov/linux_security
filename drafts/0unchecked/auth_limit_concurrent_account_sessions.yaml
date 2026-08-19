@@ -8,6 +8,9 @@ discussion: "Ubuntu 22.04 LTS allows administrators to limit the number of users
   \ accounts used by a single user."
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
     800-53r5:
     - AC-10
   disa:
@@ -16,20 +19,22 @@ references:
     srg:
     - SRG-OS-000027-GPOS-00008
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-412020
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: low
-  enforcement_info:
-    check:
-      shell: sudo grep -r -s '^[^#].*maxlogins' /etc/security/limits.conf /etc/security/limits.d/*.conf
-        | awk '{found=1; for(i=1;i<=NF;i++) if($i=="maxlogins"){if($(i+1)+0 <= 10)
-        exit 0; else exit 1}} END{if(!found) exit 1}'
-      expected_output: 0
-    fix:
-      shell: sudo sed -i '1i* hard maxlogins 10' /etc/security/limits.conf
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+      enforcement_info:
+        check:
+          shell: sudo grep -r -s '^[^#].*maxlogins' /etc/security/limits.conf /etc/security/limits.d/*.conf
+            | awk '{found=1; for(i=1;i<=NF;i++) if($i=="maxlogins"){if($(i+1)+0 <=
+            10) exit 0; else exit 1}} END{if(!found) exit 1}'
+          result:
+            integer: 0
+        fix:
+          shell: sudo sed -i '1i* hard maxlogins 10' /etc/security/limits.conf
 tags:
 - 800-53r5_high

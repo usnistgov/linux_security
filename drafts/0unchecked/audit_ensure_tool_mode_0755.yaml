@@ -6,6 +6,9 @@ discussion: "Protecting audit information requires securing the tools used to vi
   \ queries, and report generators."
 references:
   nist:
+    cce:
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - AU-09
   disa:
@@ -15,20 +18,22 @@ references:
     srg:
     - SRG-OS-000257-GPOS-00098
     disa_stig:
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-901230
 platforms:
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: stat -c "%n %a" /sbin/auditctl /sbin/aureport /sbin/ausearch /sbin/autrace
-        /sbin/auditd /sbin/audispd* /sbin/augenrules | awk '$2 > 755 {exit 1}'
-      expected_output: 0
-    fix:
-      shell: sudo chmod 0755 /usr/sbin/auditd
+  ubuntu:
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: stat -c "%n %a" /sbin/auditctl /sbin/aureport /sbin/ausearch /sbin/autrace
+            /sbin/auditd /sbin/audispd* /sbin/augenrules | awk '$2 > 755 {exit 1}'
+          result:
+            integer: 0
+        fix:
+          shell: sudo chmod 0755 /usr/sbin/auditd
 tags:
 - 800-53r5_low
 - 800-53r5_moderate

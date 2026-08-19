@@ -6,6 +6,11 @@ discussion: |
   Without restricting who can select audited events, unauthorized users could block critical event logging, and misconfigured audits could overload logs and hinder incident investigation.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - AU-12
   disa:
@@ -14,30 +19,27 @@ references:
     srg:
     - SRG-OS-000063-GPOS-00032
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-653070
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-900050
-enforcement_info:
-  enforcement_type: full
-  check:
-    shell: ls -l /etc/audit/audit.rules /etc/audit/auditd.conf /etc/audit/rules.d/* | awk '{print $3}' | grep -q -v "root"
-    status_code: 1
-  fix:
-    shell: chown -R root /etc/audit/audit.rules /etc/audit/auditd.conf /etc/audit/rules.d/*
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    enforcement_type: inherit
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    enforcement_type: inherit
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: ls -l /etc/audit/audit.rules /etc/audit/auditd.conf /etc/audit/rules.d/* | awk '{print $3}' | grep -q -v "root"
+        result:
+          exit_code: 1
+      fix:
+        shell: chown -R root /etc/audit/audit.rules /etc/audit/auditd.conf /etc/audit/rules.d/*
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
 tags:
 - 800-53r5_low
 - 800-53r5_moderate

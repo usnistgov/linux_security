@@ -7,6 +7,9 @@ discussion: Terminating unresponsive SSH sessions quickly limits the window for 
   affecting other sessions or network access.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
     800-53r5:
     - SC-10
   disa:
@@ -15,23 +18,25 @@ references:
     srg:
     - SRG-OS-000163-GPOS-00072
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-255035
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\r'
-        | tr '\n' ' ' | xargs sudo grep -iH 'clientaliveinterval'
-      expected_output: 0
-    fix:
-      shell: 'sudo sed -i ''s/^#*ClientAliveInterval.*/ClientAliveInterval 600/''
-        /etc/ssh/sshd_config
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d
+            '\r' | tr '\n' ' ' | xargs sudo grep -iH 'clientaliveinterval'
+          result:
+            integer: 0
+        fix:
+          shell: 'sudo sed -i ''s/^#*ClientAliveInterval.*/ClientAliveInterval 600/''
+            /etc/ssh/sshd_config
 
-        sudo systemctl restart ssh'
+            sudo systemctl restart ssh'
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

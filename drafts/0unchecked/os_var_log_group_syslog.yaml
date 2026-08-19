@@ -6,6 +6,9 @@ discussion: Only authorized personnel should receive error details, as messages 
   be carefully designed per organizational policy to prevent unauthorized disclosure.
 references:
   nist:
+    cce:
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - SI-11
   disa:
@@ -14,19 +17,21 @@ references:
     srg:
     - SRG-OS-000206-GPOS-00084
     disa_stig:
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-700100
 platforms:
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: '[ "$(stat -c ''%G'' /var/log)" = "syslog" ]'
-      expected_output: 0
-    fix:
-      shell: sudo chgrp syslog /var/log
+  ubuntu:
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: '[ "$(stat -c ''%G'' /var/log)" = "syslog" ]'
+          result:
+            integer: 0
+        fix:
+          shell: sudo chgrp syslog /var/log
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

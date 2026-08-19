@@ -6,6 +6,11 @@ discussion: A session lock temporarily secures a user's session when they step a
   SRG-OS-000030-GPOS-00011 and SRG-OS-000031-GPOS-00012.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - AC-11
     - AC-11(01)
@@ -16,33 +21,36 @@ references:
     - CCI-000060
     srg:
     - SRG-OS-000030-GPOS-00011
-    - - SRG-OS-000031-GPOS-00012
+    - SRG-OS-000031-GPOS-00012
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-412025
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-101000
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: dpkg -s vlock >/dev/null 2>&1
-      expected_output: 0
-    fix:
-      shell: sudo apt-get install vlock
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: medium
-  enforcement_info:
-    check:
-      shell: dpkg -l | grep -q vlock
-      expected_output: 0
-    fix:
-      shell: sudo apt install -y vlock
+  ubuntu:
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: dpkg -s vlock >/dev/null 2>&1
+          result:
+            integer: 0
+        fix:
+          shell: sudo apt-get install vlock
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        check:
+          shell: dpkg -l | grep -q vlock
+          result:
+            integer: 0
+        fix:
+          shell: sudo apt install -y vlock
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

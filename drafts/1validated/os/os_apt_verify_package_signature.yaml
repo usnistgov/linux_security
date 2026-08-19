@@ -6,6 +6,11 @@ discussion: |
   Software components must be signed with an organization-approved certificate to confirm they are untampered and from a trusted vendor;self-signed certificates are not permitted.
 references:
   nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - CM-14
   disa:
@@ -15,29 +20,26 @@ references:
     srg:
     - SRG-OS-000366-GPOS-00153
     disa_stig:
-      ubuntu_2204:
+      ubuntu_22:
       - UBTU-22-214010
-      ubuntu_2404:
+      ubuntu_24:
       - UBTU-24-300001
-enforcement_info:
-  enforcement_type: full
-  check:
-    shell: apt-config dump | grep -q "APT::Get::AllowUnauthenticated \"false\";"
-    status_code: 0
-  fix:
-    shell: echo "APT::Get::AllowUnauthenticated \"false\";" >> /etc/apt/apt.conf.d/99stig-rules
 platforms:
-- name: ubuntu_2204
-  benchmarks:
-  - name: disa_stig
-    severity: low
-  enforcement_info:
-    enforcement_type: inherit
-- name: ubuntu_2404
-  benchmarks:
-  - name: disa_stig
-    severity: low
-  enforcement_info:
-    enforcement_type: inherit
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: apt-config dump | grep -q "APT::Get::AllowUnauthenticated \"false\";"
+        result:
+          exit_code: 0
+      fix:
+        shell: echo "APT::Get::AllowUnauthenticated \"false\";" >> /etc/apt/apt.conf.d/99stig-rules
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
 tags:
 - testing
