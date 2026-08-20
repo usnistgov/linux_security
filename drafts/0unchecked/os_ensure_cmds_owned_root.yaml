@@ -1,9 +1,9 @@
 id: os_ensure_cmds_owned_root
 title: Ubuntu 22.04 LTS must have system commands owned by "root" or a system account.
 discussion: "Allowing any user to modify software libraries in Ubuntu\u202F22.04\u202F\
-  LTS could introduce untested changes that bypass proper change\u2011management testing\
+  LTS could introduce untested changes that bypass proper change-management testing\
   \ and approvals. Only qualified, authorized individuals should be permitted to access\
-  \ and modify these components, including privileged programs and interpreted\u2011\
+  \ and modify these components, including privileged programs and interpreted-\
   language libraries."
 references:
   nist:

@@ -1,9 +1,9 @@
 id: os_enable_address_space_layout_randomization
 title: Ubuntu 22.04 LTS must implement address space layout randomization to protect
   its memory from unauthorized code execution.
-discussion: "Adversaries may attempt to execute code in non\u2011executable or restricted\
+discussion: "Adversaries may attempt to execute code in non-executable or restricted\
   \ memory regions, such as through buffer overflow attacks. Defenses like data execution\
-  \ prevention (hardware\u2011 or software\u2011enforced) and address space layout\
+  \ prevention (hardware- or software-enforced) and address space layout\
   \ randomization help mitigate these threats."
 references:
   nist:

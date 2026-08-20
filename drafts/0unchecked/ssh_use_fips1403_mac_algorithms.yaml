@@ -3,7 +3,7 @@ title: Ubuntu 24.04 LTS SSH client must be configured to use only Message Authen
   Codes (MACs) employing FIPS 140-3 validated cryptographic hash algorithms.
 discussion: "Without cryptographic integrity protections, information can be altered\
   \ by unauthorized users without detection; remote access occurs over external networks,\
-  \ whereas local maintenance is performed on\u2011site. Encrypting data in transit\
+  \ whereas local maintenance is performed on-site. Encrypting data in transit\
   \ using cryptographic hash functions, checksums, or message authentication codes\
   \ protects against unauthorized disclosure and modification."
 references:

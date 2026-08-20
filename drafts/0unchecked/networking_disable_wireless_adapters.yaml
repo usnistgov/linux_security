@@ -2,7 +2,7 @@ id: networking_disable_wireless_adapters
 title: Ubuntu 22.04 LTS must disable all wireless network adapters.
 discussion: "Without protection, wireless peripheral communications can be intercepted,\
   \ altered, or used to compromise the operating system, so they must meet DoD wireless\
-  \ transmission requirements and be AO\u2011approved. Protection can be achieved\
+  \ transmission requirements and be AO-approved. Protection can be achieved\
   \ via physical barriers or cryptographic means, with either method sufficient."
 references:
   nist:

@@ -2,9 +2,9 @@ id: auth_strong_auth_nonlocal_maintenance
 title: Ubuntu 22.04 LTS must use strong authenticators in establishing nonlocal maintenance
   and diagnostic sessions.
 discussion: "Nonlocal maintenance is performed via external or internal networks,\
-  \ while local maintenance is done on\u2011site without network communication. Strong\
-  \ authentication uses replay\u2011resistant multifactor authenticators, such as\
-  \ PKI certificates on a password\u2011protected token."
+  \ while local maintenance is done on-site without network communication. Strong\
+  \ authentication uses replay-resistant multifactor authenticators, such as\
+  \ PKI certificates on a password-protected token."
 references:
   nist:
     cce:

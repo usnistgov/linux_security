@@ -1,9 +1,9 @@
 id: os_require_auth_for_single_user
 title: Ubuntu 22.04 LTS, when booted, must require authentication upon booting into
   single-user and maintenance modes.
-discussion: "DOD systems must be configured so that possessing a DOD\u2011approved\
+discussion: "DOD systems must be configured so that possessing a DOD-approved\
   \ PKI certificate alone does not grant access; after authentication, entities must\
-  \ be authorized through identity\u2011, role\u2011, or attribute\u2011based access\
+  \ be authorized through identity-, role-, or attribute-based access\
   \ controls enforced by mechanisms such as access control lists, matrices, or cryptography."
 references:
   nist:

@@ -1,6 +1,6 @@
 id: os_restrict_kernel_message_buffer
 title: Ubuntu 22.04 LTS must restrict access to the kernel message buffer.
-discussion: "Restricting kernel message buffer access to root prevents non\u2011privileged\
+discussion: "Restricting kernel message buffer access to root prevents non-privileged\
   \ users from obtaining sensitive system information."
 references:
   nist:

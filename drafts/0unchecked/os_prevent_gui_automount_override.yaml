@@ -2,7 +2,7 @@ id: os_prevent_gui_automount_override
 title: Ubuntu 24.04 LTS must prevent a user from overriding the disabling of the graphical
   user interface automount function.
 discussion: "A nonprivileged account is an operating system account that has only\
-  \ the permissions of a regular, non\u2011privileged user."
+  \ the permissions of a regular, non-privileged user."
 references:
   nist:
     cce:

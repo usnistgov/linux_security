@@ -1,7 +1,7 @@
 id: os_system_command_mode_0755
 title: Ubuntu 24.04 LTS must have system commands set to a mode of 0755 or less permissive.
 discussion: "Allowing any user to modify software libraries in Ubuntu 24.04 LTS could\
-  \ lead to untested changes that bypass proper change\u2011management testing and\
+  \ lead to untested changes that bypass proper change-management testing and\
   \ approvals. Only qualified, authorized individuals should be permitted to access\
   \ and modify these components."
 references:

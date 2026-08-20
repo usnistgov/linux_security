@@ -2,7 +2,7 @@ id: os_library_files_group_root
 title: Ubuntu 22.04 LTS library files must be group-owned by "root".
 discussion: "Allowing any user to modify software libraries could bypass required\
   \ testing and approval, so only qualified, authorized personnel should be permitted\
-  \ to access and change these components, including privileged programs and interpreted\u2011\
+  \ to access and change these components, including privileged programs and interpreted-\
   language libraries."
 references:
   nist:

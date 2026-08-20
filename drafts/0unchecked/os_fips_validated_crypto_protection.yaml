@@ -5,7 +5,7 @@ title: 'Ubuntu 22.04 LTS must implement NIST FIPS-validated cryptography to prot
   confidentiality and cryptographic protection in accordance with applicable federal
   laws, Executive Orders, directives, policies, regulations, and standards.'
 discussion: "Using weak or untested encryption algorithms undermines data protection;\
-  \ the operating system must employ government\u2011approved cryptographic modules\
+  \ the operating system must employ government-approved cryptographic modules\
   \ that have been tested and validated."
 references:
   nist:

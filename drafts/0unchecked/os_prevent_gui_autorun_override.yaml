@@ -1,9 +1,9 @@
 id: os_prevent_gui_autorun_override
 title: Ubuntu 24.04 LTS must prevent a user from overriding the disabling of the graphical
   user interface autorun function.
-discussion: "Addressing this involves using nonce\u2011based or challenge\u2011response\
-  \ protocols (e.g., TLS, WS\u2011Security) and time\u2011synchronous or challenge\u2011\
-  response one\u2011time authenticators."
+discussion: "Addressing this involves using nonce-based or challenge-response\
+  \ protocols (e.g., TLS, WS-Security) and time-synchronous or challenge-\
+  response one-time authenticators."
 references:
   nist:
     cce:

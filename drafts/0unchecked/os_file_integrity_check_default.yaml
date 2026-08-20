@@ -4,7 +4,7 @@ title: Ubuntu 24.04 LTS must be configured so that the script which runs each 30
 discussion: "Without verification, security functions\u2014hardware, software, or\
   \ firmware that enforce policy, manage accounts, access, auditing, intrusion detection,\
   \ and provide alerts\u2014may fail unnoticed. This requirement applies to Ubuntu\
-  \ 24.04 LTS and any system needing security\u2011function verification/testing."
+  \ 24.04 LTS and any system needing security-function verification/testing."
 references:
   nist:
     cce:

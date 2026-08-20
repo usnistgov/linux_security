@@ -4,7 +4,7 @@ title: Ubuntu 24.04 LTS must have directories that contain system commands set t
 discussion: "Protecting audit information requires securing the tools used to view\
   \ and manipulate logs to prevent unauthorized actions. Operating systems enforce\
   \ this by using user permissions and roles to control access to audit tools, which\
-  \ include vendor\u2011provided, open\u2011source, and custom query or report generators."
+  \ include vendor-provided, open-source, and custom query or report generators."
 references:
   nist:
     cce:

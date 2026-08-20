@@ -4,7 +4,7 @@ title: Ubuntu 22.04 LTS must have directories that contain system commands group
 discussion: "Protecting audit information requires securing the tools used to view\
   \ and manipulate logs, as unauthorized access could compromise audit data. Operating\
   \ systems enforce this by using user permissions and roles to control access to\
-  \ audit tools, which include vendor\u2011provided, open\u2011source, custom queries,\
+  \ audit tools, which include vendor-provided, open-source, custom queries,\
   \ and report generators."
 references:
   nist:

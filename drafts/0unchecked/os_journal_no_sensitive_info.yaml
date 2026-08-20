@@ -4,7 +4,7 @@ title: Ubuntu 22.04 LTS must generate system journal entries without revealing i
 discussion: "Operating systems that disclose excessive information in error messages\
   \ risk exposing sensitive data, so organizations must carefully control error message\
   \ content. This includes avoiding the release of credentials, personal information,\
-  \ or mission\u2011critical details that adversaries could exploit."
+  \ or mission-critical details that adversaries could exploit."
 references:
   nist:
     cce:

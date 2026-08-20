@@ -5,7 +5,7 @@ discussion: "Without verification, security functions\u2014hardware, software, o
   \ firmware that enforce the system\u2019s security policy and isolate code and data\u2014\
   may fail silently, compromising account management, access controls, auditing, intrusion\
   \ detection, and related notifications. This requirement applies to Ubuntu\u202F\
-  22.04\u202FLTS and any system needing such security\u2011function verification/testing."
+  22.04\u202FLTS and any system needing such security-function verification/testing."
 references:
   nist:
     cce:

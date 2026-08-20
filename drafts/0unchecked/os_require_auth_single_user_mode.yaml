@@ -1,9 +1,9 @@
 id: os_require_auth_single_user_mode
 title: Ubuntu 24.04 LTS when booted must require authentication upon booting into
   single-user and maintenance modes.
-discussion: "DOD systems must be configured so that possession of a DOD\u2011approved\
+discussion: "DOD systems must be configured so that possession of a DOD-approved\
   \ PKI certificate alone does not grant access; after authentication, entities must\
-  \ also be authorized via identity\u2011, role\u2011, or attribute\u2011based access\
+  \ also be authorized via identity-, role-, or attribute-based access\
   \ controls enforced by mechanisms such as ACLs, matrices, or cryptography."
 references:
   nist:

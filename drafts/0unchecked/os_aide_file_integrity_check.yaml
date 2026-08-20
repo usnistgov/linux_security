@@ -4,8 +4,8 @@ title: Ubuntu 22.04 LTS must configure Advanced Intrusion Detection Environment 
 discussion: "Without verification, security functions may fail unnoticed; they encompass\
   \ the hardware, software, or firmware that enforce the system\u2019s security policy,\
   \ manage accounts, configure access authorizations, set auditing events, and define\
-  \ intrusion\u2011detection parameters. This requirement applies to Ubuntu\u202F\
-  22.04\u202FLTS systems that perform security\u2011function verification/testing\
+  \ intrusion-detection parameters. This requirement applies to Ubuntu\u202F\
+  22.04\u202FLTS systems that perform security-function verification/testing\
   \ or operate in environments needing this functionality."
 references:
   nist:

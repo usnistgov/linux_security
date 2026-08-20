@@ -3,9 +3,9 @@ title: Ubuntu 22.04 LTS must implement cryptographic mechanisms to prevent unaut
   disclosure and modification of all information that requires protection at rest.
 discussion: "Operating systems must use cryptographic mechanisms to protect data at\
   \ rest, selecting mechanisms based on the information's security category and integrity\
-  \ needs, with options for full\u2011disk or selective encryption. This satisfies\
-  \ SRG\u2011OS\u2011000185\u2011GPOS\u201100079, SRG\u2011OS\u2011000404\u2011GPOS\u2011\
-  00183, and SRG\u2011OS\u2011000405\u2011GPOS\u201100184."
+  \ needs, with options for full-disk or selective encryption. This satisfies\
+  \ SRG-OS-000185-GPOS-00079, SRG-OS-000404-GPOS-\
+  00183, and SRG-OS-000405-GPOS-00184."
 references:
   nist:
     cce:

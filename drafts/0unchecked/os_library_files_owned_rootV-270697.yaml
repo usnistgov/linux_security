@@ -1,7 +1,7 @@
 id: os_library_files_owned_rootV-270697
 title: Ubuntu 24.04 LTS library files must be owned by root.
 discussion: "Allowing any user to modify software libraries could introduce untested\
-  \ changes that bypass proper change\u2011management controls. Only qualified, authorized\
+  \ changes that bypass proper change-management controls. Only qualified, authorized\
   \ individuals should be permitted to access and alter these components, including\
   \ privileged programs."
 references:

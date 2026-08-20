@@ -1,6 +1,6 @@
 id: os_disable_ctrl_alt_delete
 title: Ubuntu 22.04 LTS must disable the x86 Ctrl-Alt-Delete key sequence.
-discussion: "Pressing Ctrl\u2011Alt\u2011Delete at the console can reboot the system,\
+discussion: "Pressing Ctrl-Alt-Delete at the console can reboot the system,\
   \ and an accidental press may cause unintended loss of availability."
 references:
   nist:

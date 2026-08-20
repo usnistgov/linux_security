@@ -1,9 +1,9 @@
 id: os_system_commands_root_owned
 title: Ubuntu 24.04 LTS must have system commands owned by root or a system account.
 discussion: "Allowing any user to modify software libraries in Ubuntu 24.04 LTS could\
-  \ lead to untested changes that bypass proper change\u2011management testing and\
+  \ lead to untested changes that bypass proper change-management testing and\
   \ approvals. Only qualified, authorized individuals should be permitted to access\
-  \ and modify these components, including privileged programs and interpreted\u2011\
+  \ and modify these components, including privileged programs and interpreted-\
   language libraries."
 references:
   nist:

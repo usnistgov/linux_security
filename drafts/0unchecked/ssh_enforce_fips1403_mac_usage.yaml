@@ -6,8 +6,8 @@ discussion: "Without cryptographic integrity protections, information can be alt
   \ by unauthorized users without detection. Remote access and maintenance activities\
   \ (local or nonlocal) occur over networks, and encrypting transmission protects\
   \ against disclosure and modification, with cryptographic mechanisms like hash functions\
-  \ ensuring integrity, satisfying SRG\u2011OS\u2011000250\u2011GPOS\u201100093, SRG\u2011\
-  OS\u2011000393\u2011GPOS\u201100173, and SRG\u2011OS\u2011000424\u2011GPOS\u2011\
+  \ ensuring integrity, satisfying SRG-OS-000250-GPOS-00093, SRG-\
+  OS-000393-GPOS-00173, and SRG-OS-000424-GPOS-\
   00188."
 references:
   nist:

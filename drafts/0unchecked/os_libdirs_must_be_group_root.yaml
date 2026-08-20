@@ -1,7 +1,7 @@
 id: os_libdirs_must_be_group_root
 title: Ubuntu 24.04 LTS library directories must be group-owned by root.
 discussion: "Allowing any user to modify software libraries could lead to untested\
-  \ changes that bypass proper change\u2011management testing and approvals. Only\
+  \ changes that bypass proper change-management testing and approvals. Only\
   \ qualified, authorized individuals should be permitted to access and modify these\
   \ components, including privileged programs."
 references:

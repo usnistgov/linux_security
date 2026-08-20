@@ -1,9 +1,9 @@
 id: os_enable_hardware_nx_protection
 title: Ubuntu 22.04 LTS must implement nonexecutable data to protect its memory from
   unauthorized code execution.
-discussion: "Adversaries may try to run code in non\u2011executable or protected memory\
+discussion: "Adversaries may try to run code in non-executable or protected memory\
   \ areas, such as via buffer overflow attacks. Defenses like data execution prevention\
-  \ (hardware\u2011 or software\u2011enforced) and address space layout randomization\
+  \ (hardware- or software-enforced) and address space layout randomization\
   \ help block such exploits."
 references:
   nist:

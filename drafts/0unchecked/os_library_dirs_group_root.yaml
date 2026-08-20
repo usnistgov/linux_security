@@ -1,7 +1,7 @@
 id: os_library_dirs_group_root
 title: Ubuntu 22.04 LTS library directories must be group-owned by "root".
 discussion: "Allowing any user to modify software libraries could bypass required\
-  \ testing and approvals, weakening change\u2011management controls. Only qualified,\
+  \ testing and approvals, weakening change-management controls. Only qualified,\
   \ authorized individuals should be permitted to access these components for changes,\
   \ upgrades, or modifications."
 references:

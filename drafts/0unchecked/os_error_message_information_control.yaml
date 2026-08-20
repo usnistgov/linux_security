@@ -4,7 +4,7 @@ title: Ubuntu 22.04 LTS must generate error messages that provide information ne
   adversaries.
 discussion: "Excessive detail in error messages can reveal sensitive information,\
   \ so organizations must restrict what is disclosed according to policy. The /var/log/btmp,\
-  \ /var/log/wtmp, and /var/log/lastlog files require group\u2011write and world\u2011\
+  \ /var/log/wtmp, and /var/log/lastlog files require group-write and world-\
   read permissions for lastlog to function; tighter permissions will break dependent\
   \ services."
 references:

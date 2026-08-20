@@ -1,10 +1,10 @@
 id: ssh_terminate_idle_connections
 title: Ubuntu 24.04 LTS must immediately terminate all network connections associated
   with SSH traffic after a period of inactivity.
-discussion: "Automatic session termination ends user\u2011initiated logical sessions\u2014\
+discussion: "Automatic session termination ends user-initiated logical sessions\u2014\
   including all associated processes except those the user explicitly keeps running\u2014\
   without dropping underlying network connections. It is triggered by inactivity,\
-  \ incident response, or time\u2011of\u2011day policies and is used on Ubuntu\u202F\
+  \ incident response, or time-of-day policies and is used on Ubuntu\u202F\
   24.04 LTS when extra assurance is required."
 references:
   nist:

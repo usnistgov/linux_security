@@ -3,7 +3,7 @@ title: Ubuntu 24.04 LTS handling data requiring "data at rest" protections must 
   cryptographic mechanisms to prevent unauthorized disclosure and modification of
   the information at rest.
 discussion: "Information at rest is data stored on secondary storage devices (e.g.,\
-  \ disks, tapes) within an operating system, including user\u2011generated and OS\
+  \ disks, tapes) within an operating system, including user-generated and OS\
   \ configuration data. Organizations must protect its confidentiality and integrity\
   \ using appropriate mechanisms based on the information\u2019s security category\
   \ or classification."

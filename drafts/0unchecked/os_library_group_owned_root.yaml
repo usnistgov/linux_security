@@ -1,7 +1,7 @@
 id: os_library_group_owned_root
 title: Ubuntu 24.04 LTS library files must be group-owned by root or a system account.
 discussion: "Allowing any user to modify software libraries could introduce untested\
-  \ changes that bypass proper change\u2011management controls. Only authorized personnel\
+  \ changes that bypass proper change-management controls. Only authorized personnel\
   \ should be permitted to access and alter libraries, including privileged programs."
 references:
   nist:
