@@ -1,0 +1,42 @@
+id: auth_pam_no_cache_1day
+title: Ubuntu must be configured such that Pluggable Authentication Module
+  (PAM) prohibits the use of cached authentications after one day.
+discussion: Out-of-date cached authentication information may be invalid.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - IA-05(13)
+  disa:
+    cci:
+    - CCI-002007
+    srg:
+    - SRG-OS-000383-GPOS-00166
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-631015
+      ubuntu_24:
+      - UBTU-24-400340
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: grep -q "^offline_credentials_expiration.*1$" /etc/sssd/sssd.conf
+        result:
+          exit_code: 0
+      fix:
+        shell: sed -i '/\[pam\]/a \offline_credentials_expiration = 1' /etc/sssd/sssd.conf && systemctl restart sssd
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+tags:
+- testing

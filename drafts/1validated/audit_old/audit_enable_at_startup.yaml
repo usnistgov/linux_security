@@ -1,0 +1,43 @@
+id: audit_enable_at_startup
+title: Ubuntu must initiate session audits at system startup.
+discussion: Enabling auditing after startup may miss the actions of early processes
+  and lose required state information, since some audit systems need auditing active
+  before a process is created.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - AU-14(01)
+  disa:
+    cci:
+    - CCI-001464
+    srg:
+    - SRG-OS-000254-GPOS-00095
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-212015
+      ubuntu_24:
+      - UBTU-24-102010
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: '[[ "$(grep "^\s*linux" /boot/grub/grub.cfg | wc -l)" == "$(grep "^\s*linux" /boot/grub/grub.cfg | grep "audit=1" | wc -l)" ]]'
+        result:
+          exit_code: 0
+      fix:
+        shell: echo -e "GRUB_CMDLINE_LINUX_DEFAULT=\"\${GRUB_CMDLINE_LINUX_DEFAULT} audit=1\"\nGRUB_CMDLINE_LINUX=\"\${GRUB_CMDLINE_LINUX} audit=1\"" >> /etc/default/grub.d/99-audit-enabled.cfg && update-grub
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- testing

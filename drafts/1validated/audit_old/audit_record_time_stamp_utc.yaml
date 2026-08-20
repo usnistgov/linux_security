@@ -1,0 +1,47 @@
+id: audit_record_time_stamp_utc
+title: Ubuntu 22.04 LTS must record time stamps for audit records that can be mapped
+  to Coordinated Universal Time (UTC).
+discussion: >
+  Without consistent timestamps and a common time reference, forensic analysis
+  becomes difficult, as operating-system timestamps include date and time typically
+  expressed in UTC or local time with a UTC offset.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - AU-08
+  disa:
+    cci:
+    - CCI-001890
+    srg:
+    - SRG-OS-000359-GPOS-00146
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-252020
+      ubuntu_24:
+      - UBTU-24-901220
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: timedatectl show --property=Timezone | grep -Eq "(UTC|GMT)"
+        result:
+          exit_code: 0
+      fix:
+        shell: timedatectl set-timezone UTC
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+tags:
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

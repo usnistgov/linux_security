@@ -1,0 +1,45 @@
+id: auth_failed_login_delay_four_seconds
+title: Ubuntu must enforce a delay of at least four seconds between logon
+  prompts following a failed logon attempt.
+discussion: Limiting logon attempts within a set time interval reduces the risk of
+  unauthorized account access.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - CM-06
+  disa:
+    cci:
+    - CCI-000366
+    srg:
+    - SRG-OS-000480-GPOS-00226
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-412010
+      ubuntu_24:
+      - UBTU-24-300017
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: grep "pam_faildelay" /etc/pam.d/common-auth | awk -F"delay=" '{ if ($2 >= 4000000) print "pass" }'
+        result:
+          string: pass
+      fix:
+        shell: sed -i '1i auth     required     pam_faildelay.so     delay=4000000' /etc/pam.d/common-auth
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+tags:
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

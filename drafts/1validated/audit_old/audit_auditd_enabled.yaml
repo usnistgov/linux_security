@@ -1,0 +1,85 @@
+id: audit_capture_event_details_real_time
+title: Ubuntu must produce audit records and reports containing information
+  to establish when, where, what type, the source, and the outcome for all DOD-defined
+  auditable events and actions in near real time.
+discussion: >
+  Without detailed audit records-including timestamps, source/destination addresses,
+  user/process IDs, event descriptions, success/failure indicators, filenames, and
+  invoked rules-it is difficult to establish, correlate, and investigate events
+  leading to outages or attacks, hindering forensic analysis and incident response.
+  Associating event types with Ubuntu audit logs enables attack
+  investigation, resource-usage monitoring, and detection of misconfigurations.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - CM-05(01)
+    - AU-03
+    - AU-03
+    - AU-03
+    - AU-07
+    - AU-06(04)
+    - AU-03(01)
+    - AU-12
+    - AU-07
+    - AU-07(01)
+    - AU-12
+    - AU-03
+    - AU-12(03)
+    - AU-03
+  disa:
+    cci:
+    - CCI-000154
+    - CCI-000135
+    - CCI-003938
+    - CCI-001879
+    - CCI-000130
+    - CCI-000133
+    - CCI-000172
+    - CCI-001876
+    - CCI-001881
+    - CCI-000134
+    - CCI-001880
+    - CCI-001882
+    - CCI-000169
+    - CCI-001875
+    - CCI-001814
+    - CCI-001914
+    - CCI-000158
+    - CCI-000131
+    - CCI-000132
+    - CCI-001877
+    - CCI-001878
+    srg:
+    - SRG-OS-000037-GPOS-00015
+    - SRG-OS-000365-GPOS-00152
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-653015
+      ubuntu_24:
+      - UBTU-24-100410
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: '[[ "$(systemctl is-active auditd.service)" == "active" && "$(systemctl is-enabled auditd.service)" == "enabled" ]]'
+        result:
+          exit_code: 0
+      fix:
+        shell: systemctl enable --now auditd.service
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

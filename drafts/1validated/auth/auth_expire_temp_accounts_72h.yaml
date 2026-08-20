@@ -1,0 +1,46 @@
+id: auth_expire_temp_accounts_72h
+title: Ubuntu must automatically expire temporary accounts within 72 hours.
+discussion: >
+  Temporary accounts, created for urgent needs, must be removed or automatically
+  expired within 72 hours; otherwise they weaken system security. Unlike permanent
+  emergency accounts, they are not exempt from expiration and should not be extended
+  indefinitely.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - AC-02(02)
+  disa:
+    cci:
+    - CCI-000016
+    - CCI-001682
+    srg:
+    - SRG-OS-000002-GPOS-00002
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-411040
+      ubuntu_24:
+      - UBTU-24-200250
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        additional_info: If any temporary accounts have "account expires" in `chage -l` set to higher than 72 hours, this is a finding.
+      fix:
+        additional_info: Temporary accounts can be disabled with the `chage` command.
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_moderate
+- 800-53r5_high
+- manual

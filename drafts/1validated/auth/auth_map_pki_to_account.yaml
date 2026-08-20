@@ -1,0 +1,45 @@
+id: auth_map_pki_to_account
+title: Ubuntu must map the authenticated identity to the user or group account
+  for PKI-based authentication.
+discussion: If the authentication certificate isn't mapped to a user account, forensic
+  analysis cannot identify the user or group.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - IA-05(02)
+  disa:
+    cci:
+    - CCI-000187
+    srg:
+    - SRG-OS-000068-GPOS-00036
+    - SRG-OS-000396-GPOS-00176
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-254030
+      ubuntu_24:
+      - UBTU-24-400370
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: grep -q "^ldap_user_certificate=userCertificate;binary" /etc/sssd/sssd.conf
+        result:
+          exit_code: 0
+      fix:
+        shell: sed -i '/\[domain\/.*\]/a \ldap_user_certificate=userCertificate;binary' /etc/sssd/sssd.conf && systemctl restart sssd
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: high
+tags:
+- 800-53r5_moderate
+- 800-53r5_high

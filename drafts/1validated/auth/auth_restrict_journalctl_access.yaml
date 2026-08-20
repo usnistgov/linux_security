@@ -1,0 +1,48 @@
+id: auth_restrict_journalctl_access
+title: Ubuntu must be configured so that the "journalctl" command is not
+  accessible by unauthorized users.
+discussion: >
+  Operating systems that disclose excessive information in error messages
+  risk exposing sensitive data, so organizations must carefully control error-\
+  message content according to policy. This includes avoiding the release of credentials,
+  personal identifiers, or mission-critical details that adversaries could
+  exploit.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - SI-11
+  disa:
+    cci:
+    - CCI-001312
+    srg:
+    - SRG-OS-000205-GPOS-00083
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-232140
+      ubuntu_24:
+      - UBTU-24-700030
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: stat -c '%a' /usr/bin/journalctl | gawk '{mode=strtonum("0"$1); if (and(mode, compl(0740)) == 0) print "pass" }'
+        result:
+          string: pass
+      fix:
+        shell: chmod 740 /usr/bin/journalctl
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_moderate
+- 800-53r5_high

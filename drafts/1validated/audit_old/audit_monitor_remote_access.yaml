@@ -1,0 +1,44 @@
+id: audit_monitor_remote_access
+title: Ubuntu must monitor remote access methods.
+discussion: Remote access services lacking automated monitoring increase risk and
+  hinder effective access management. Automated monitoring of remote sessions enables
+  detection of cyberattacks and ensures compliance by auditing connection activities.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - AC-17(01)
+  disa:
+    cci:
+    - CCI-000067
+    srg:
+    - SRG-OS-000032-GPOS-00013
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-652015
+      ubuntu_24:
+      - UBTU-24-200090
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: grep -Er '^(auth\.\*,authpriv\.\*|daemon\.\*)' /etc/rsyslog.* | wc -l
+        result:
+          integer: 2
+      fix:
+        shell: echo -e "auth.*,authpriv.* /var/log/secure\ndaemon.* /var/log/messages" >> /etc/rsyslog.d/50-default.conf && systemctl restart rsyslog.service
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_moderate
+- 800-53r5_high

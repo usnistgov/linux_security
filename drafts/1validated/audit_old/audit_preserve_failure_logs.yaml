@@ -1,0 +1,43 @@
+id: audit_preserve_failure_logs
+title: Ubuntu must be configured to preserve log records from failure events.
+discussion: Failing to a known secure state safeguards confidentiality, integrity,
+  and availability according to mission needs, and preserving OS state information
+  allows a swift restart with minimal disruption to business processes.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - SC-24
+  disa:
+    cci:
+    - CCI-001665
+    srg:
+    - SRG-OS-000269-GPOS-00103
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-652010
+      ubuntu_24:
+      - UBTU-24-100200
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: '[[ "$(dpkg -l | grep rsyslog)" && "$(systemctl is-enabled rsyslog.service)" == "enabled" && "$(systemctl is-active rsyslog.service)" == "active" ]]'
+        result:
+          exit_code: 0
+      fix:
+        shell: apt install -y rsyslog && systemctl enable rsyslog.service --now
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_high

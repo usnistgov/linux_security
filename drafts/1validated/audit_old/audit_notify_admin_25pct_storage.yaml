@@ -1,0 +1,44 @@
+id: audit_notify_admin_25pct_storage
+title: Ubuntu 22.04 LTS must immediately notify the system administrator (SA) and
+  information system security officer (ISSO) when the audit record storage volume
+  reaches 25 percent remaining of the allocated capacity.
+discussion: Security personnel must be alerted when storage drops to 25% remaining,
+  or they cannot plan the needed audit log capacity expansion.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - AU-05(01)
+  disa:
+    cci:
+    - CCI-001855
+    srg:
+    - SRG-OS-000343-GPOS-00134
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-653040
+      ubuntu_24:
+      - UBTU-24-900960
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: grep -e "^space_left_action.*email" -e "^space_left.*25\%" /etc/audit/auditd.conf | wc -l
+        result:
+          integer: 2
+      fix:
+        additional_info: Ensure "space_left_action" is set to "email" and is set to a valid email address and configured to notify when storage reaches 75% utilization.
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+tags:
+- 800-53r5_high

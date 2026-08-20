@@ -1,0 +1,54 @@
+id: auth_multifactor_smartcard_login
+title: Ubuntu must implement smart card logins for multifactor authentication
+  for local and network access to privileged and nonprivileged accounts.
+discussion: >
+  Without multifactor authentication, access to privileged functions is
+  significantly easier; MFA requires two or more factors: something you know,
+  have, or is exemplified by the DOD CAC with PKI.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - IA-02(06)
+    - IA-02(02)
+    - IA-02(01)
+  disa:
+    cci:
+    - CCI-000766
+    - CCI-004047
+    - CCI-000765
+    - CCI-000767
+    - CCI-000768
+    srg:
+    - SRG-OS-000105-GPOS-00052
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-612020
+      ubuntu_24:
+      - UBTU-24-400020
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: '[[ "$(grep -q pam_pkcs11.so /etc/pam.d/common-auth)" && "$(sshd -T | grep -q "pubkeyauthentication yes")" ]]'
+        result:
+          exit_code: 0
+      fix:
+        shell: echo "PubkeyAuthentication yes" >> /etc/ssh/sshd_config && systemctl restart ssh
+        additional_info: Ensure that "pam_pkcs11.so" is added to /etc/pam.d/common-auth in accordance to agency policy.
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

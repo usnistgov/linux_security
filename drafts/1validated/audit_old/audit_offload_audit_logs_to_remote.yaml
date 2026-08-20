@@ -1,0 +1,46 @@
+id: audit_offload_audit_logs_to_remote
+title: Ubuntu must audit event multiplexor must be configured to offload audit
+  logs onto a different system from the system being audited.
+discussion: >
+  Storing audit data in one location risks accidental deletion or alteration;
+  offloading to a remote server mitigates this risk. Although auditd cannot send
+  records directly, it can use an audit event multiplexor plugin to forward
+  logs to a centralized server
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - AU-04(01)
+  disa:
+    cci:
+    - CCI-001851
+    srg:
+    - SRG-OS-000342-GPOS-00133
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-653020
+      ubuntu_24:
+      - UBTU-24-100450
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: "[[ \"$(dpkg -l | grep -q 'audispd-plugins')\" && \"$(grep '^active.*yes' /etc/audit/plugins.d/au-remote.conf)\" && \"$(grep '^remote_server.*\\w' /etc/audit/audisp-remote.conf)\" ]]"
+        result:
+          exit_code: 0
+      fix:
+        additional_info: Ensure audispd-plugins is installed, remote offloading is enabled, and "remote_server" is set to a valid IP address.
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+tags:
+- testing

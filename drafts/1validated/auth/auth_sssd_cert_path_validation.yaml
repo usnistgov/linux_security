@@ -1,0 +1,48 @@
+id: auth_sssd_cert_path_validation
+title: Ubuntu must ensure SSSD performs certificate path validation, including
+  revocation checking, against a trusted anchor for PKI-based authentication.
+discussion: >
+  Path validation ensures a relying party can verify a certificate's
+  chain to a trusted anchor and obtain revocation status, enabling an informed trust
+  decision for any certificate not explicitly trusted.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - SC-17
+    - IA-05(02)
+  disa:
+    cci:
+    - CCI-004909
+    - CCI-000185
+    srg:
+    - SRG-OS-000396-GPOS-00176
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-254020
+      ubuntu_24:
+      - UBTU-24-400360
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: '[[ "$(grep ^services.*pam /etc/sssd/sssd.conf)" && "$(grep ^pam_cert_auth.*True /etc/sssd/sssd.conf)" && "$(grep ^certificate_verification.*ca_cert /etc/sssd/sssd.conf)" ]]'
+        result:
+          exit_code: 0
+      fix:
+        shell: sed -i "/^services = /s/$/, pam/" /etc/sssd/sssd.conf && sed -i "/\[pam\]/a \pam_cert_auth = True" /etc/sssd/sssd.conf && sed -i "/\[domain\/.*\]/a \certificate_verification = ca_cert,ocsp" /etc/sssd/sssd.conf
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_moderate
+- 800-53r5_high

@@ -1,0 +1,44 @@
+id: auth_dod_pki_ca_required
+title: Ubuntu must use DOD PKI-established certificate authorities for verification
+  of the establishment of protected sessions.
+discussion: >
+  Untrusted CAs may issue certificates that could compromise DoD systems,
+  so only certificates from DoD-approved CAs are trusted for secure sessions
+  such as SSL/TLS.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - SC-23(05)
+  disa:
+    cci:
+    - CCI-002470
+    srg:
+    - SRG-OS-000403-GPOS-00182
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-631010
+      ubuntu_24:
+      - UBTU-24-600060
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        additional_info: If the DOD Root CA is not present in /etc/ssl/certs, this is a finding.
+      fix:
+        additional_info: Download the latest DOD Root CA certificate from official channels.
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- testing
+- manual

@@ -1,0 +1,49 @@
+id: audit_baseline_change_notify_personnel
+title: Ubuntu must notify designated personnel if baseline configurations
+  are changed in an unauthorized manner. The file integrity tool must notify the system
+  administrator (SA) when changes to the baseline configuration or anomalies in the
+  operation of any security functions are discovered.
+discussion: Unauthorized changes to Ubuntu baseline configurations can introduce
+  vulnerabilities and unintended side effects, compromising system security. Automated
+  detection and email or monitoring alerts to the ISSO and SAs are required to mitigate
+  these risks.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - CM-03(05)
+    - SI-06
+  disa:
+    cci:
+    - CCI-001744
+    - CCI-002702
+    srg:
+    - SRG-OS-000447-GPOS-00201
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-651020
+      ubuntu_24:
+      - UBTU-24-100130
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: grep -q "^SILENTREPORTS=no" /etc/default/aide
+        result:
+          exit_code: 0
+      fix:
+        shell: echo "SILENTREPORTS=no" >> /etc/default/aide
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_high
