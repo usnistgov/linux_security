@@ -26,7 +26,7 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: '[[ "$(dpkg -l | grep rsyslog)" && "$(systemctl is-enabled rsyslog.service)" == "enabled" && "$(systemctl is-active rsyslog.service)" == "active" ]]'
+        shell: '[[ "$(dpkg -l rsyslog)" && "$(systemctl is-enabled rsyslog.service)" == "enabled" && "$(systemctl is-active rsyslog.service)" == "active" ]]'
         result:
           exit_code: 0
       fix:

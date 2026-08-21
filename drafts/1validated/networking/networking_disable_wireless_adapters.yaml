@@ -1,0 +1,46 @@
+id: networking_disable_wireless_adapters
+title: Ubuntu must disable all wireless network adapters.
+discussion: >
+  Without protection, wireless peripheral communications can be intercepted,
+  altered, or used to compromise the operating system, so they must meet DoD wireless
+  transmission requirements and be AO-approved. Protection can be achieved
+  via physical barriers or cryptographic means, with either method sufficient.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - SC-08
+  disa:
+    cci:
+    - CCI-002418
+    srg:
+    - SRG-OS-000481-GPOS-00481
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-291015
+      ubuntu_24:
+      - UBTU-24-600230
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: nmcli -t -f DEVICE,TYPE,STATE device | awk -F":" '{ if ($2 == "wifi") print "failed" }' | uniq
+        result:
+          string: pass
+      fix:
+        additional_info: Use modprobe to disable the unapproved Wi-Fi devices.
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_moderate
+- 800-53r5_high

@@ -1,0 +1,48 @@
+id: auth_strong_auth_nonlocal_maintenance
+title: Ubuntu must use strong authenticators in establishing nonlocal maintenance
+  and diagnostic sessions.
+discussion: >
+  Nonlocal maintenance is performed via external or internal networks,
+  while local maintenance is done on-site without network communication. Strong
+  authentication uses replay-resistant multifactor authenticators, such as
+  PKI certificates on a password-protected token.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - MA-04
+  disa:
+    cci:
+    - CCI-000877
+    srg:
+    - SRG-OS-000125-GPOS-00065
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-255065
+      ubuntu_24:
+      - UBTU-24-500050
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: sshd -T | grep -q "usepam yes"
+        result:
+          exit_code: 0
+      fix:
+        shell: echo "UsePAM yes" >> /etc/ssh/sshd_config && systemctl restart ssh
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

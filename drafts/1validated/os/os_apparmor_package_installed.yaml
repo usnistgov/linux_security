@@ -1,5 +1,5 @@
 id: os_apparmor_package_installed
-title: Ubuntu 22.04 LTS must have the "apparmor" package installed.
+title: Ubuntu must have the "apparmor" package installed.
 discussion: Control of program execution prevents unauthorized programs from running,
   especially when default OS functions exceed mission needs or are unnecessary. This
   is achieved by restricting execution based on environment, privileges, subnets,
@@ -8,6 +8,8 @@ references:
   nist:
     cce:
       ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
     - AC-03(04)
@@ -23,19 +25,25 @@ references:
     disa_stig:
       ubuntu_22:
       - UBTU-22-431010
+      ubuntu_24:
+      - UBTU-24-100500
 platforms:
   ubuntu:
+    enforcement_info:
+      check:
+        shell: dpkg -l apparmor
+        result:
+          exit_code: 0
+      fix:
+        shell: apt install -y apparmor
     '22.04':
       benchmarks:
       - name: disa_stig
         severity: medium
-      enforcement_info:
-        check:
-          shell: dpkg -s apparmor >/dev/null 2>&1
-          result:
-            integer: 0
-        fix:
-          shell: sudo apt-get install apparmor
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

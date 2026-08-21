@@ -1,0 +1,48 @@
+id: os_aide_file_integrity_check
+title: Ubuntu must configure Advanced Intrusion Detection Environment (AIDE)
+  to perform file integrity checking on the file system.
+discussion: >
+  Without verification, security functions may fail unnoticed; they encompass
+  the hardware, software, or firmware that enforce the system's security policy,
+  manage accounts, configure access authorizations, set auditing events, and define
+  intrusion-detection parameters. This requirement applies to Ubuntu
+  22.04 LTS systems that perform security-function verification/testing
+  or operate in environments needing this functionality.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - SI-06
+  disa:
+    cci:
+    - CCI-002696
+    srg:
+    - SRG-OS-000445-GPOS-00199
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-651015
+      ubuntu_24:
+      - UBTU-24-100110
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: aide -c /etc/aide/aide.conf --check
+        result:
+          exit_code: 0
+      fix:
+        shell: aide -c /etc/aide/aide.conf --init && cp -p /var/lib/aide/aide.db.new /var/lib/aide/aide.db
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_high

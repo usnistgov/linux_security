@@ -1,9 +1,8 @@
 id: os_allow_user_session_lock
-title: Ubuntu 22.04 LTS must allow users to directly initiate a session lock for all
+title: Ubuntu must allow users to directly initiate a session lock for all
   connection types.
 discussion: A session lock temporarily secures a user's session when they step away
-  without logging out, allowing manual activation in Ubuntu 22.04 LTS. It satisfies
-  SRG-OS-000030-GPOS-00011 and SRG-OS-000031-GPOS-00012.
+  without logging out, allowing manual activation in Ubuntu 22.04 LTS.
 references:
   nist:
     cce:
@@ -29,28 +28,21 @@ references:
       - UBTU-24-101000
 platforms:
   ubuntu:
+    enforcement_info:
+      check:
+        shell: dpkg -l vlock
+        result:
+          exit_code: 0
+      fix:
+        shell: apt install -y vlock
     '22.04':
       benchmarks:
       - name: disa_stig
         severity: medium
-      enforcement_info:
-        check:
-          shell: dpkg -s vlock >/dev/null 2>&1
-          result:
-            integer: 0
-        fix:
-          shell: sudo apt-get install vlock
     '24.04':
       benchmarks:
       - name: disa_stig
         severity: medium
-      enforcement_info:
-        check:
-          shell: dpkg -l | grep -q vlock
-          result:
-            integer: 0
-        fix:
-          shell: sudo apt install -y vlock
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

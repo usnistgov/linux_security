@@ -1,7 +1,8 @@
 id: networking_restrict_ports_protocols_services
-title: "Ubuntu 24.04 LTS must be configured to prohibit or restrict the use of functions,\
-  \ ports, protocols, and/or services, as defined in the Ports, Protocols, and Services\
-  \ Management\xC2\_Category Assurance List (PPSM CAL) and vulnerability assessments."
+title: >
+  Ubuntu must be configured to prohibit or restrict the use of functions,
+  ports, protocols, and/or services, as defined in the Ports, Protocols, and Services
+  Management\xC2\_Category Assurance List (PPSM CAL) and vulnerability assessments.
 discussion: To prevent unauthorized device connections, data transfers, or tunneling,
   Ubuntu 24.04 LTS must disable or restrict unused physical and logical ports/protocols,
   providing only essential services and limiting functionality to authorized, required
@@ -9,6 +10,8 @@ discussion: To prevent unauthorized device connections, data transfers, or tunne
 references:
   nist:
     cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
@@ -19,22 +22,27 @@ references:
     srg:
     - SRG-OS-000096-GPOS-00050
     disa_stig:
+      ubuntu_22:
+      - UBTU-22-251030
       ubuntu_24:
       - UBTU-24-300041
 platforms:
   ubuntu:
+    enforcement_info:
+      check:
+        additional_info: Verify the allowed services with the PPSM Components Local Services Assessment (CLSA).
+      fix:
+        additional_info: Use the commands "ufw allow" and "ufw deny" to comply with PPSM CLSA.
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
     '24.04':
       benchmarks:
       - name: disa_stig
         severity: medium
-      enforcement_info:
-        check:
-          shell: sudo ufw show raw | diff -u /path/to/expected_ufw_raw -
-          result:
-            integer: 0
-        fix:
-          shell: sudo ufw allow
 tags:
 - 800-53r5_low
 - 800-53r5_moderate
 - 800-53r5_high
+- manual

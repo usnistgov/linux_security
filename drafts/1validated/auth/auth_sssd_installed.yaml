@@ -1,0 +1,53 @@
+id: auth_sssd_installed
+title: Ubuntu must have the "SSSD" package installed.
+discussion: >
+  Without multifactor authentication, privileged accounts are more easily
+  accessed over a network, greatly increasing the risk of unauthorized use. MFA
+  requires two or more factors-something you know, have, and are-such
+  as a DOD CAC with approved PKI-to verify identity.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - IA-02(02)
+    - IA-02(06)
+    - IA-02(01)
+  disa:
+    cci:
+    - CCI-004046
+    - CCI-000766
+    - CCI-004047
+    - CCI-000765
+    srg:
+    - SRG-OS-000396-GPOS-00176
+    - SRG-OS-000705-GPOS-00150
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-254010
+      ubuntu_24:
+      - UBTU-24-100650
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: dpkg -l sssd libpam-sss libnss-sss
+        result:
+          exit_code: 0
+      fix:
+        shell: apt install -y sssd libpam-sss libnss-sss
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high
