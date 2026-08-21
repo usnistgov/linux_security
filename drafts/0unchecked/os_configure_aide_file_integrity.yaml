@@ -1,8 +1,8 @@
 id: os_configure_aide_file_integrity
 title: Ubuntu 24.04 LTS must configure AIDE to perform file integrity checking on
   the file system if installed.
-discussion: "Without verification, security functions\u2014hardware, software, or\
-  \ firmware that enforce security policy and isolate code and data\u2014may fail\
+discussion: "Without verification, security functions-hardware, software, or\
+  \ firmware that enforce security policy and isolate code and data-may fail\
   \ unnoticed. This requirement applies to Ubuntu\u202F24.04\u202FLTS and any system\
   \ needing such security-function verification/testing."
 references:

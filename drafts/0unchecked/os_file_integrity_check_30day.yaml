@@ -1,8 +1,8 @@
 id: os_file_integrity_check_30day
 title: Ubuntu 22.04 LTS must be configured so that the script that runs each 30 days
   or less to check file integrity is the default.
-discussion: "Without verification, security functions\u2014hardware, software, or\
-  \ firmware that enforce the system\u2019s security policy and isolate code and data\u2014\
+discussion: "Without verification, security functions-hardware, software, or\
+  \ firmware that enforce the system\u2019s security policy and isolate code and data-\
   may fail silently, compromising account management, access controls, auditing, intrusion\
   \ detection, and related notifications. This requirement applies to Ubuntu\u202F\
   22.04\u202FLTS and any system needing such security-function verification/testing."

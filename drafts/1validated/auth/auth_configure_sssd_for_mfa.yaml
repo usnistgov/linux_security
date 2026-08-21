@@ -3,8 +3,8 @@ title: Ubuntu must use the "SSSD" package for multifactor authentication
   services.
 discussion: >
   Without multifactor authentication, privileged accounts are more easily
-  accessed, increasing security risk. MFA requires two or more factors\u2014something
-  you know, have, or are\u2014and is exemplified by the DOD CAC with PKI.
+  accessed, increasing security risk. MFA requires two or more factors-something
+  you know, have, or are-and is exemplified by the DOD CAC with PKI.
 references:
   nist:
     cce:

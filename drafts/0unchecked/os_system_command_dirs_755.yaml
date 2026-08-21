@@ -1,8 +1,8 @@
 id: os_system_command_dirs_755
 title: Ubuntu 22.04 LTS must have directories that contain system commands set to
   a mode of "755" or less permissive.
-discussion: "Protecting audit tools\u2014such as vendor-provided, open-\
-  source, and custom query/report generators\u2014is essential to prevent unauthorized\
+discussion: "Protecting audit tools-such as vendor-provided, open-\
+  source, and custom query/report generators-is essential to prevent unauthorized\
   \ manipulation of audit information, and operating systems enforce this by using\
   \ user permissions and roles to control access to those tools."
 references:

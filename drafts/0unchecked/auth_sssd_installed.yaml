@@ -2,8 +2,8 @@ id: auth_sssd_installed
 title: Ubuntu 22.04 LTS must have the "SSSD" package installed.
 discussion: "Without multifactor authentication, privileged accounts are more easily\
   \ accessed over a network, greatly increasing the risk of unauthorized use. MFA\
-  \ requires two or more factors\u2014something you know, have, and are\u2014such\
-  \ as a DOD CAC with approved PKI\u2014to verify identity."
+  \ requires two or more factors-something you know, have, and are-such\
+  \ as a DOD CAC with approved PKI-to verify identity."
 references:
   nist:
     cce:

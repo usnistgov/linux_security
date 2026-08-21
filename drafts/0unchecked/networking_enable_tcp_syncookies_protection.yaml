@@ -2,8 +2,8 @@ id: networking_enable_tcp_syncookies_protection
 title: Ubuntu 22.04 LTS must be configured to use TCP syncookies.
 discussion: "A denial-of-service condition makes resources unavailable to legitimate\
   \ users, hindering mission accomplishment or forcing degraded operations. Managing\
-  \ excess capacity\u2014through increased capacity, redundancy, usage priorities,\
-  \ quotas, or partitioning\u2014helps mitigate such attacks."
+  \ excess capacity-through increased capacity, redundancy, usage priorities,\
+  \ quotas, or partitioning-helps mitigate such attacks."
 references:
   nist:
     cce:

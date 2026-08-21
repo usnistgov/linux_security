@@ -3,8 +3,8 @@ title: Ubuntu 22.04 LTS must require the change of at least eight characters whe
   passwords are changed.
 discussion: "If the operating system allows users to reuse large portions of a password,\
   \ it increases the window for guessing and brute-force attacks, raising the\
-  \ risk of compromise. The policy mandates a minimum number of changed characters\u2014\
-  rounded up for odd-length passwords\u2014to ensure sufficient change between\
+  \ risk of compromise. The policy mandates a minimum number of changed characters-\
+  rounded up for odd-length passwords-to ensure sufficient change between\
   \ successive passwords."
 references:
   nist:

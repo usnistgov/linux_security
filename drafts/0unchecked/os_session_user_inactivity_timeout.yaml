@@ -1,8 +1,8 @@
 id: os_session_user_inactivity_timeout
 title: Ubuntu 24.04 LTS must automatically terminate a user session after inactivity
   timeouts have expired.
-discussion: "Automatic session termination ends a user's logical session\u2014including\
-  \ all associated processes\u2014without disconnecting the underlying network connection,\
+discussion: "Automatic session termination ends a user's logical session-including\
+  \ all associated processes-without disconnecting the underlying network connection,\
   \ triggered by conditions such as inactivity, incident response, or time-of-\
   day restrictions."
 references:
