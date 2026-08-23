@@ -1,11 +1,9 @@
 id: audit_passwd_command_success_failure
-title: Ubuntu must generate audit records for successful/unsuccessful uses
-  of the passwd command.
-discussion: >
-  Without organization-specific audit records, it is difficult to
-  trace, correlate, and investigate incidents or identify responsible parties. Audit
-  records can be generated from various system components, such as modules or policy
-  filters.
+title: Audit Records for passwd Command
+discussion: |
+  The system must generate audit records for successful/unsuccessful uses of the passwd command.
+
+  Without organization-specific audit records, it is difficult to trace, correlate, and investigate incidents or identify responsible parties. Audit records can be generated from various system components, such as modules or policy filters.
 references:
   nist:
     cce:

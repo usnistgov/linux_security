@@ -1,11 +1,9 @@
 id: audit_prevent_privilege_escalation
-title: Ubuntu must prevent all software from executing at higher privilege
-  levels than users executing the software and the audit system must be configured
-  to audit the execution of privileged functions.
-discussion: Some software requires elevated privileges to function; if those privileges
-  exceed users' assigned rights, users gain unintended higher access. Therefore, such
-  programs should be reviewed and excluded from the organization's approved software
-  list.
+title: Prevent Higher Privilege Software Executation and Audit Execution
+discussion: 
+  The system must prevent all software from executing at higher privilege levels than users executing the software and the audit system must be configured to audit the execution of privileged functions.
+
+  Some software requires elevated privileges to function; if those privileges exceed users' assigned rights, users gain unintended higher access. Therefore, such programs should be reviewed and excluded from the organization's approved software list.
 references:
   nist:
     cce:
@@ -16,8 +14,8 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - AC-06(09)
-    - AC-06(08)
+    - AC-06(9)
+    - AC-06(8)
   disa:
     cci:
     - CCI-002234

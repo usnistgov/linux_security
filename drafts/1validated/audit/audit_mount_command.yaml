@@ -1,11 +1,9 @@
 id: audit_mount_command
-title: Ubuntu must generate audit records for successful/unsuccessful uses
-  of the mount command.
-discussion: >
-  Without organization-specific audit records, it is difficult to
-  establish, correlate, investigate incidents, or identify responsible parties.
-  Audit records can be generated from various system components, such as modules
-  or policy filters.
+title: Audit Records for Mount Commands
+discussion: |
+  The system must generate audit records for successful/unsuccessful uses of the mount command.
+
+  Without organization-specific audit records, it is difficult to establish, correlate, investigate incidents, or identify responsible parties. Audit records can be generated from various system components, such as modules or policy filters.
 references:
   nist:
     cce:

@@ -1,12 +1,9 @@
 id: audit_privileged_nonlocal_maintenance_diagnostic
-title: Ubuntu must generate audit records for privileged activities, nonlocal
-  maintenance, diagnostic sessions, and other system-level access.
-discussion: >
-  Failure to log events from nonlocal administrative access or diagnostic
-  sessions removes a critical audit capability for detecting and investigating attacks.
-  This requirement mandates logging of such activities for external or internal
-  network-based maintenance tools, excluding built-in system utilities
-  like ping, ls, ipconfig, or Ethernet switch monitoring ports.
+title: Audit Records for Access
+discussion: |
+  The system must generate audit records for privileged activities, nonlocal maintenance, diagnostic sessions, and other system-level access.
+
+  Failure to log events from nonlocal administrative access or diagnostic sessions removes a critical audit capability for detecting and investigating attacks. This requirement mandates logging of such activities for external or internal network-based maintenance tools, excluding built-in system utilities like ping, ls, ipconfig, or Ethernet switch monitoring ports.
 references:
   nist:
     cce:
@@ -17,7 +14,7 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - MA-04(01)
+    - MA-4(1)
     - AU-12
   disa:
     cci:
