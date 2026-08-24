@@ -1,9 +1,9 @@
 id: audit_utmp_file_access_monitoring
-title: Ubuntu must generate audit records for the /var/run/utmp file.
-discussion: Without audit records tailored to the organization's security and mission
-  needs, it is difficult to establish, correlate, investigate incidents, or identify
-  responsible parties. Audit records can be generated from various system components,
-  such as modules or policy filters.
+title: Audit Records for /var/run/utmp File
+discussion: 
+  The system must generate audit records for the /var/run/utmp file.
+
+  Without audit records tailored to the organization's security and mission needs, it is difficult to establish, correlate, investigate incidents, or identify responsible parties. Audit records can be generated from various system components, such as modules or policy filters.
 references:
   nist:
     cce:

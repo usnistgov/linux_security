@@ -1,10 +1,9 @@
 id: audit_sudoers_directory_modify_attempt
-title: Ubuntu must generate audit records when successful/unsuccessful attempts
-  to modify the /etc/sudoers.d directory occur.
-discussion: Without audit records tailored to the organization's security and mission
-  needs, it is difficult to establish, correlate, investigate incidents, or identify
-  responsible parties. Audit records can be generated from various system components,
-  such as modules or policy filters.
+title: Audit Records for Modifying /etc/sudoers.d Directory
+discussion: 
+  The system must generate audit records when successful/unsuccessful attempts to modify the /etc/sudoers.d directory occur.
+
+  Without audit records tailored to the organization's security and mission needs, it is difficult to establish, correlate, investigate incidents, or identify responsible parties. Audit records can be generated from various system components, such as modules or policy filters.
 references:
   nist:
     cce:

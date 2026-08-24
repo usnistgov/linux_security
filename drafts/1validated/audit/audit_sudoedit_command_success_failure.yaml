@@ -1,10 +1,9 @@
 id: audit_sudoedit_command_success_failure
-title: Ubuntu must generate audit records for successful/unsuccessful uses
-  of the sudoedit command.
-discussion: Without audit records tailored to the organization's security and mission
-  needs, it is difficult to establish, correlate, investigate incidents, or identify
-  responsible parties. Audit records can be generated from various system components,
-  such as modules or policy filters.
+title: Audit Records for sudoedit Command
+discussion: 
+  The system must generate audit records for successful/unsuccessful uses of the sudoedit command.
+
+  Without audit records tailored to the organization's security and mission needs, it is difficult to establish, correlate, investigate incidents, or identify responsible parties. Audit records can be generated from various system components, such as modules or policy filters.
 references:
   nist:
     cce:
