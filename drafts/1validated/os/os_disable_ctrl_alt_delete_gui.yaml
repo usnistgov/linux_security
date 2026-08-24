@@ -1,0 +1,48 @@
+id: os_disable_ctrl_alt_delete_gui
+title: Ubuntu must disable the x86 Ctrl-Alt-Delete key sequence if a graphical
+  user interface is installed.
+discussion: >
+  Pressing Ctrl-Alt-Delete at the console can reboot the system,
+  and an accidental press may cause a brief loss of availability. In a graphical
+  environment the action requires confirmation, reducing the risk of unintentional
+  reboot.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - CM-06
+  disa:
+    cci:
+    - CCI-000366
+    srg:
+    - SRG-OS-000480-GPOS-00227
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-271030
+      ubuntu_24:
+      - UBTU-24-300025
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: gsettings get org.gnome.settings-daemon.plugins.media-keys logout | grep -Eq "\[.+\]"
+        result:
+          exit_code: 1
+      fix:
+        shell: mkdir -p /etc/dconf/db/local.d/ && echo -e "[org/gnome/settings-daemon/plugins/media-keys]\nlogout=@as []" >> /etc/dconf/db/local.d/00-mediakeys && dconf update
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: high
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: high
+tags:
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

@@ -1,0 +1,47 @@
+id: os_enable_hardware_nx_protection
+title: Ubuntu must implement nonexecutable data to protect its memory from
+  unauthorized code execution.
+discussion: >
+  Adversaries may try to run code in non-executable or protected memory
+  areas, such as via buffer overflow attacks. Defenses like data execution prevention
+  (hardware- or software-enforced) and address space layout randomization
+  help block such exploits.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - SI-16
+  disa:
+    cci:
+    - CCI-002824
+    srg:
+    - SRG-OS-000433-GPOS-00192
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-213025
+      ubuntu_24:
+      - UBTU-24-700300
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: dmesg | grep -q "NX.*active"
+        result:
+          exit_code: 0
+      fix:
+        additional_info: Configure the BIOS/UEFI to enable the "NX bit", or "No execution bit".
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_moderate
+- 800-53r5_high

@@ -9,6 +9,8 @@ references:
     cce:
       ubuntu_22:
       - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - SI-11
   disa:
@@ -19,19 +21,25 @@ references:
     disa_stig:
       ubuntu_22:
       - UBTU-22-232130
+      ubuntu_24:
+      - UBTU-24-700140
 platforms:
   ubuntu:
+    enforcement_info:
+      check:
+        shell: stat -c '%U' /var/log/syslog
+        result:
+          string: syslog
+      fix:
+        shell: chwon syslog /var/log/syslog
     '22.04':
       benchmarks:
       - name: disa_stig
         severity: medium
-      enforcement_info:
-        check:
-          shell: stat -c "%U" /var/log/syslog | grep -qx syslog
-          result:
-            integer: 0
-        fix:
-          shell: sudo chown syslog /var/log/syslog
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

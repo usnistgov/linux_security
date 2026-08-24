@@ -1,0 +1,47 @@
+id: os_enable_address_space_layout_randomization
+title: Ubuntu must implement address space layout randomization to protect
+  its memory from unauthorized code execution.
+discussion: >
+  Adversaries may attempt to execute code in non-executable or restricted
+  memory regions, such as through buffer overflow attacks. Defenses like data execution
+  prevention (hardware- or software-enforced) and address space layout
+  randomization help mitigate these threats.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - SI-16
+  disa:
+    cci:
+    - CCI-002824
+    srg:
+    - SRG-OS-000433-GPOS-00193
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-213020
+      ubuntu_24:
+      - UBTU-24-700310
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: sysctl kernel.randomize_va_space
+        result:
+          string: kernel.randomize_va_space = 2
+      fix:
+        shell: sed -i 's/kernel.randomize_va_space.*//g' /etc/sysctl.conf && sed -i 's/kernel.randomize_va_space.*//g' /etc/sysctl.d/* && sysctl --system
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_moderate
+- 800-53r5_high

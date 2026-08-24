@@ -1,5 +1,5 @@
 id: os_disable_kernel_core_dumps
-title: Ubuntu 22.04 LTS must disable kernel core dumps so that it can fail to a secure
+title: Ubuntu must disable kernel core dumps so that it can fail to a secure
   state if system initialization fails, shutdown fails or aborts fail.
 discussion: Kernel core dumps can capture the entire system memory at crash, potentially
   consuming large amounts of disk space and causing denial of service by exhausting
@@ -8,6 +8,8 @@ references:
   nist:
     cce:
       ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
     - SC-24
@@ -19,20 +21,25 @@ references:
     disa_stig:
       ubuntu_22:
       - UBTU-22-213015
+      ubuntu_24:
+      - UBTU-24-600070
 platforms:
   ubuntu:
+    enforcement_info:
+      check:
+        shell: systemctl show kdump-tools.service | grep -q -e "NoSuchUnit" -e "UnitFileState=masked"
+        result:
+          exit_code: 0
+      fix:
+        shell: systemctl mask kdump-tools.service --now
     '22.04':
       benchmarks:
       - name: disa_stig
         severity: medium
-      enforcement_info:
-        check:
-          shell: systemctl show kdump-tools.service -p LoadState,ActiveState --value
-            2>/dev/null | awk '{if(NR==1) load=$0; else if(NR==2) active=$0} END{if(load=="masked"
-            && active=="inactive") exit 0; else exit 1}'
-          result:
-            integer: 0
-        fix:
-          shell: sudo systemctl mask kdump-tools --now
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+
 tags:
 - 800-53r5_high

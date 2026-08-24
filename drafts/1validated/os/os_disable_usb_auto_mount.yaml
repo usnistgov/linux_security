@@ -1,0 +1,47 @@
+id: os_disable_usb_auto_mount
+title: Ubuntu must disable automatic mounting of Universal Serial Bus (USB)
+  mass storage driver.
+discussion: Without device authentication, unknown peripherals such as flash drives,
+  external storage, and printers can be introduced, enabling malicious activity.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - CM-07(09)
+    - IA-03
+  disa:
+    cci:
+    - CCI-003959
+    - CCI-001958
+    srg:
+    - SRG-OS-000378-GPOS-00163
+    - SRG-OS-000690-GPOS-00140
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-291010
+      ubuntu_24:
+      - UBTU-24-300039
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: grep "usb-storage" /etc/modprobe.d/* | grep -q "blacklist"
+        result:
+          exit_code: 0
+      fix:
+        shell: echo -e "install usb-storage /bin/false\nblacklist usb-storage" >> /etc/modprobe.d/stig.conf
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_moderate
+- 800-53r5_high
