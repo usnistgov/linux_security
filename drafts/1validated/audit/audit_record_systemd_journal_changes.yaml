@@ -1,11 +1,9 @@
 id: audit_record_systemd_journal_changes
-title: Ubuntu must generate audit records for all events that affect the
-  systemd journal files.
-discussion: >
-  Attackers often maintain persistence by modifying system binaries; auditing
-  systemd journal files logs these changes for forensic analysis. Integrating the
-  OS with enterprise-level authentication, access, and auditing mechanisms
-  helps meet access control policy requirements.
+title: Audit Records for systemd Files
+discussion: |
+  The system must generate audit records for all events that affect the systemd journal files.
+
+  Attackers often maintain persistence by modifying system binaries; auditing systemd journal files logs these changes for forensic analysis. Integrating the OS with enterprise-level authentication, access, and auditing mechanisms helps meet access control policy requirements.
 references:
   nist:
     cce:
@@ -14,7 +12,7 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - CM-06
+    - CM-6
   disa:
     cci:
     - CCI-000366

@@ -1,11 +1,9 @@
 id: audit_setxattr_extended_attributes_syscalls
-title: Ubuntu must generate audit records for any use of the setxattr, fsetxattr,
-  lsetxattr, removexattr, fremovexattr, and lremovexattr system calls.
-discussion: >
-  Generating organization-specific audit records is essential for
-  incident investigation and accountability, and they can be produced from various
-  system components. System call rules should be used sparingly and combined when
-  possible to minimize performance impact.
+title: Audit Records for setxattr, fsetxattr, lsetxattr, removexattr, fremovexattr, and lremovexattr System Calls
+discussion: |
+  The system must generate audit records for any use of the setxattr, fsetxattr, lsetxattr, removexattr, fremovexattr, and lremovexattr system calls.
+
+  Generating organization-specific audit records is essential for incident investigation and accountability, and they can be produced from various system components. System call rules should be used sparingly and combined when possible to minimize performance impact.
 references:
   nist:
     cce:

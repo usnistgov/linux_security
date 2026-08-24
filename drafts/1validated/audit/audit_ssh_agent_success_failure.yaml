@@ -1,10 +1,9 @@
 id: audit_ssh_agent_success_failure
-title: Ubuntu must generate audit records for successful/unsuccessful uses
-  of the ssh-agent command.
-discussion: Without audit records tailored to the organization's security and mission
-  needs, it is difficult to establish, correlate, and investigate incidents or identify
-  responsible parties. Audit records can be generated from various system components
-  such as modules or policy filters.
+title: Audit Records for ssh-agent Command
+discussion: 
+  The system must generate audit records for successful/unsuccessful uses of the ssh-agent command.
+
+  Without audit records tailored to the organization's security and mission needs, it is difficult to establish, correlate, and investigate incidents or identify responsible parties. Audit records can be generated from various system components such as modules or policy filters.
 references:
   nist:
     cce:
