@@ -30,13 +30,51 @@ files with Git history.
 
 ## Validation
 
-Validation works with the `validate.py` script at the base of the repository.
-This project requires PyYAML and Pydantic to be installed (ideally in a Python
-virtual environment. Python 3.10+ is required), as the assessment parses the
-YAML and checks it against Pydantic classes to ensure the script is usable when
-put into the project. THIS MUST PASS FOR SCRIPTS TO MOVE TO `1validated`!!
+Use the mSCP project to validate by putting the rules into the "custom"
+directory and running `python[3] mscp.py admin validate`.
 
-Note that the rules were automatically generated without a higher-level
-`enforcement_info` block. This block must exist to pass validation. This means
-that, at a minimum to leave `0unchecked`, a high-level enforcement block should
-be created with either a rule or "blank" as the specified type.
+mSCP requires that "ubuntu" be added to the schema along with the addition of
+an "exit_code" result. The diff of the file off of the dev_27 branch is below.
+
+```diff
+diff --git a/src/mscp/data/schema/mscp_rule.json b/src/mscp/data/schema/mscp_rule.json
+index e61a04a0..2ccb49e1 100644
+--- a/src/mscp/data/schema/mscp_rule.json
++++ b/src/mscp/data/schema/mscp_rule.json
+@@ -318,6 +318,41 @@
+                         }
+                     },
+                     "additionalProperties": false
++                },
++                "ubuntu": {
++                    "type": "object",
++                    "description": "Schema for identifying components to support Ubuntu",
++                    "properties": {
++                        "enforcement_info": {
++                            "$ref": "#/$defs/enforcement_infoDef"
++                        },
++                        "20.04": {
++                            "$ref": "#/$defs/osDef"
++                        },
++                        "22.04": {
++                            "$ref": "#/$defs/osDef"
++                        },
++                        "24.04": {
++                            "$ref": "#/$defs/osDef"
++                        }
++                    },
++                    "additionalProperties": false
+                 }
+             }
+         },
+@@ -512,6 +547,9 @@
+                 },
+                 "boolean": {
+                     "type": "boolean"
++                },
++                "exit_code": {
++                    "type": "integer"
+                 }
+             }
+         },
+```
