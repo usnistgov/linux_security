@@ -1,5 +1,5 @@
 id: ssh_smartcard_mfa_enforcement_policy
-title: Ubuntu 24.04 LTS must implement smart card logins for multifactor authentication
+title: Ubuntu must implement smart card logins for multifactor authentication
   for local and network access to privileged and nonprivileged accounts over SSH.
 discussion: "Without multifactor authentication, privileged accounts are far easier\
   \ to compromise; MFA requires two or more factors-something you know, have,\

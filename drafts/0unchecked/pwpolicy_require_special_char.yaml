@@ -1,5 +1,5 @@
 id: pwpolicy_require_special_char
-title: Ubuntu 22.04 LTS must enforce password complexity by requiring that at least
+title: Ubuntu must enforce password complexity by requiring that at least
   one special character be used.
 discussion: "A complex password, particularly one that includes special characters,\
   \ increases the time and resources required to crack it by expanding the number\

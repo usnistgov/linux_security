@@ -1,5 +1,5 @@
 id: os_system_command_dirs_group_root
-title: Ubuntu 24.04 LTS must have directories that contain system commands group-owned
+title: Ubuntu must have directories that contain system commands group-owned
   by root.
 discussion: "Protecting audit tools-such as vendor-provided, open-\
   source, and custom query/report generators-is essential to prevent unauthorized\

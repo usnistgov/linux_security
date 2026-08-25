@@ -1,7 +1,7 @@
 id: ssh_banner_acknowledgement_required_for_access
-title: Ubuntu 24.04 LTS must be configured to enforce the acknowledgement of the Standard
+title: Ubuntu must be configured to enforce the acknowledgement of the Standard
   Mandatory DOD Notice and Consent Banner for all SSH connections.
-discussion: "Ubuntu 24.04 LTS must require the user to acknowledge the consent banner\
+discussion: "Ubuntu must require the user to acknowledge the consent banner\
   \ before granting access, ensuring they have seen and accepted the terms; without\
   \ acknowledgment, the system blocks further activity to remain compliant with legal\
   \ system-use notifications."

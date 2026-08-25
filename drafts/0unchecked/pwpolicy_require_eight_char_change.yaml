@@ -1,5 +1,5 @@
 id: pwpolicy_require_eight_char_change
-title: Ubuntu 22.04 LTS must require the change of at least eight characters when
+title: Ubuntu must require the change of at least eight characters when
   passwords are changed.
 discussion: "If the operating system allows users to reuse large portions of a password,\
   \ it increases the window for guessing and brute-force attacks, raising the\

@@ -1,7 +1,7 @@
 id: os_session_lock_after_10min_inactivity
-title: Ubuntu 22.04 LTS must initiate a graphical session lock after 10 minutes of
+title: Ubuntu must initiate a graphical session lock after 10 minutes of
   inactivity.
-discussion: A session lock temporarily secures an Ubuntu 22.04 LTS session when the
+discussion: A session lock temporarily secures an Ubuntu session when the
   user steps away, requiring reauthentication to unlock and allowing no other activity
   to bypass it.
 references:

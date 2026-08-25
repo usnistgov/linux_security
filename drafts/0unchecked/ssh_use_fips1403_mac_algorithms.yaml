@@ -1,5 +1,5 @@
 id: ssh_use_fips1403_mac_algorithms
-title: Ubuntu 24.04 LTS SSH client must be configured to use only Message Authentication
+title: Ubuntu SSH client must be configured to use only Message Authentication
   Codes (MACs) employing FIPS 140-3 validated cryptographic hash algorithms.
 discussion: "Without cryptographic integrity protections, information can be altered\
   \ by unauthorized users without detection; remote access occurs over external networks,\

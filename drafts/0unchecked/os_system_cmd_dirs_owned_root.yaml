@@ -1,5 +1,5 @@
 id: os_system_cmd_dirs_owned_root
-title: Ubuntu 22.04 LTS must have directories that contain system commands owned by
+title: Ubuntu must have directories that contain system commands owned by
   "root".
 discussion: "Protecting audit tools-including vendor-provided, open-\
   source utilities, and custom queries or report generators-is essential to prevent\

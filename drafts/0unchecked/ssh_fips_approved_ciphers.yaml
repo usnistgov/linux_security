@@ -1,5 +1,5 @@
 id: ssh_fips_approved_ciphers
-title: "Ubuntu 22.04 LTS must configure the SSH daemon to use FIPS\xC2\_140-3-approved\
+title: "Ubuntu must configure the SSH daemon to use FIPS\xC2\_140-3-approved\
   \ ciphers to prevent the unauthorized disclosure of information and/or detect changes\
   \ to information during transmission."
 discussion: Without cryptographic integrity protections, unauthorized users can alter

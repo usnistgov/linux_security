@@ -1,5 +1,5 @@
 id: pwpolicy_uppercase_required
-title: Ubuntu 24.04 LTS must enforce password complexity by requiring that at least
+title: Ubuntu must enforce password complexity by requiring that at least
   one uppercase character be used.
 discussion: "Complex passwords increase the time and resources needed to crack them\
   \ by raising the number of possible combinations. This enhances resistance to guessing\

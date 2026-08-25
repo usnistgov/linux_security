@@ -1,5 +1,5 @@
 id: pwpolicy_require_pwquality_on_change
-title: Ubuntu 22.04 LTS must be configured so that when passwords are changed or new
+title: Ubuntu must be configured so that when passwords are changed or new
   passwords are established, pwquality must be used.
 discussion: "Complex passwords increase the time and resources needed to crack them,\
   \ and pwquality enforces strong password construction while limiting brute-\

@@ -1,5 +1,5 @@
 id: ssh_disable_unattended_login
-title: Ubuntu 22.04 LTS must not allow unattended or automatic login via SSH.
+title: Ubuntu must not allow unattended or automatic login via SSH.
 discussion: Not restricting system access to authenticated users weakens Ubuntu 22.04
   LTS security.
 references:

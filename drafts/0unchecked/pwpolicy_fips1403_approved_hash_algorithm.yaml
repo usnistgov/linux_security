@@ -1,5 +1,5 @@
 id: pwpolicy_fips1403_approved_hash_algorithm
-title: Ubuntu 22.04 LTS must encrypt all stored passwords with a FIPS 140-3-approved
+title: Ubuntu must encrypt all stored passwords with a FIPS 140-3-approved
   cryptographic hashing algorithm.
 discussion: Passwords must be protected at all times, and encryption is the standard
   method to prevent them from being readable in clear text. Unencrypted passwords

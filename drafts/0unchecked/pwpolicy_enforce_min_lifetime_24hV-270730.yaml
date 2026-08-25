@@ -1,5 +1,5 @@
 id: pwpolicy_enforce_min_lifetime_24hV-270730
-title: Ubuntu 24.04 LTS must enforce 24 hours/1 day as the minimum password lifetime.
+title: Ubuntu must enforce 24 hours/1 day as the minimum password lifetime.
   Passwords for new users must have a 24 hours/1 day minimum password lifetime restriction.
 discussion: Enforcing a minimum password lifetime prevents users from changing passwords
   too frequently to bypass reuse or history controls. This satisfies SRG-OS-000075-GPOS-00043

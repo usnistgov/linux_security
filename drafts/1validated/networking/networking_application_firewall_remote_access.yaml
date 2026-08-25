@@ -3,7 +3,7 @@ title: Ubuntu must have an application firewall installed in order to control
   remote access methods.
 discussion: >
   Remote access services lacking automated controls increase risk and complicate
-  access management, so Ubuntu 22.04 LTS (e.g., RDP) must enforce actions
+  access management, so Ubuntu (e.g., RDP) must enforce actions
   on unauthorized activity, and automated session controls ensure ongoing compliance
   by enforcing connection rules across servers, workstations, notebooks, smartphones,
   and tablets.

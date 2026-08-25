@@ -1,5 +1,5 @@
 id: ssh_fips1403_cipher_list
-title: Ubuntu 24.04 LTS must configure the SSH client to use FIPS 140-3 approved ciphers
+title: Ubuntu must configure the SSH client to use FIPS 140-3 approved ciphers
   to prevent the unauthorized disclosure of information and/or detect changes to information
   during transmission.
 discussion: Without cryptographic integrity protections, unauthorized users can alter

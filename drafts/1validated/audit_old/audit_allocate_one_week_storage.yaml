@@ -3,7 +3,7 @@ title: Ubuntu must allocate audit record storage capacity to store at least
   one week's worth of audit records, when audit records are not immediately sent to
   a central audit record storage facility.
 discussion: Operating systems must allocate sufficient storage for audit logs, a task
-  typically performed during the initial installation of Ubuntu 24.04 LTS.
+  typically performed during the initial installation of Ubuntu .
 references:
   nist:
     cce:

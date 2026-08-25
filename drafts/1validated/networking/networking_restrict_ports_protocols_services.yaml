@@ -4,7 +4,7 @@ title: >
   ports, protocols, and/or services, as defined in the Ports, Protocols, and Services
   Management\xC2\_Category Assurance List (PPSM CAL) and vulnerability assessments.
 discussion: To prevent unauthorized device connections, data transfers, or tunneling,
-  Ubuntu 24.04 LTS must disable or restrict unused physical and logical ports/protocols,
+  Ubuntu must disable or restrict unused physical and logical ports/protocols,
   providing only essential services and limiting functionality to authorized, required
   capabilities.
 references:

@@ -1,5 +1,5 @@
 id: services_chrony_package_installed
-title: Ubuntu 22.04 LTS must have the "chrony" package installed.
+title: Ubuntu must have the "chrony" package installed.
 discussion: Inaccurate timestamps hinder event correlation and forensic analysis,
   especially when sources drift beyond allowed limits. Organizations must account
   for endpoints lacking regular access to authoritative time servers.

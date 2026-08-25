@@ -1,7 +1,7 @@
 id: os_system_commands_root_owned
 title: Ubuntu must have system commands owned by root or a system account.
 discussion: >
-  Allowing any user to modify software libraries in Ubuntu 24.04 LTS could
+  Allowing any user to modify software libraries in Ubuntu could
   lead to untested changes that bypass proper change-management testing and
   approvals. Only qualified, authorized individuals should be permitted to access
   and modify these components, including privileged programs and interpreted-

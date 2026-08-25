@@ -1,5 +1,5 @@
 id: os_system_cmd_dir_perm
-title: Ubuntu 24.04 LTS must have directories that contain system commands set to
+title: Ubuntu must have directories that contain system commands set to
   a mode of "0755" or less permissive.
 discussion: "Protecting audit information requires securing the tools used to view\
   \ and manipulate logs to prevent unauthorized actions. Operating systems enforce\

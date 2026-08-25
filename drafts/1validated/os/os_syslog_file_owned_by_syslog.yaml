@@ -1,5 +1,5 @@
 id: os_syslog_file_owned_by_syslog
-title: Ubuntu 22.04 LTS must configure "/var/log/syslog" file to be owned by "syslog".
+title: Ubuntu must configure "/var/log/syslog" file to be owned by "syslog".
 discussion: Only authorized personnel should see error details, as messages can reveal
   an organization's operational state, OS/platform, PII, or other sensitive information.
   Error message content must be designed according to organizational policy to limit

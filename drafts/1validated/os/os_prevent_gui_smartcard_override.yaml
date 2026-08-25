@@ -2,7 +2,7 @@ id: os_prevent_gui_smartcard_override
 title: Ubuntu must prevent a user from overriding the disabling of the graphical
   user smart card removal action.
 discussion: A session lock temporarily secures a user's session when they step away
-  without logging out. Ubuntu 24.04 LTS must allow users to manually invoke a session
+  without logging out. Ubuntu must allow users to manually invoke a session
   lock at any time to secure their session when needed.
 references:
   nist:

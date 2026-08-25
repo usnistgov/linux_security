@@ -1,5 +1,5 @@
 id: os_syscmd_dirs_grp_root
-title: Ubuntu 22.04 LTS must have directories that contain system commands group-owned
+title: Ubuntu must have directories that contain system commands group-owned
   by "root".
 discussion: "Protecting audit information requires securing the tools used to view\
   \ and manipulate logs, as unauthorized access could compromise audit data. Operating\

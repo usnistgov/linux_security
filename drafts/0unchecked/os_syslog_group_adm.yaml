@@ -1,5 +1,5 @@
 id: os_syslog_group_adm
-title: Ubuntu 22.04 LTS must configure the "/var/log/syslog" file to be group-owned
+title: Ubuntu must configure the "/var/log/syslog" file to be group-owned
   by "adm".
 discussion: Only authorized personnel should see error details, as messages can reveal
   operational state, OS/platform, PII, or other sensitive information. Error message

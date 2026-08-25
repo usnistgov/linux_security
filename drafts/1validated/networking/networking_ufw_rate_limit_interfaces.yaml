@@ -1,5 +1,5 @@
 id: networking_ufw_rate_limit_interfaces
-title: Ubuntu 22.04 LTS must configure the Uncomplicated Firewall (ufw) to rate-limit
+title: Ubuntu must configure the Uncomplicated Firewall (ufw) to rate-limit
   impacted network interfaces.
 discussion: Denial of service (DoS) makes resources unavailable to legitimate users,
   impairing mission capability. This requirement mandates configuring the OS to mitigate

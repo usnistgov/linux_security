@@ -6,7 +6,7 @@ discussion: >
   the hardware, software, or firmware that enforce the system's security policy,
   manage accounts, configure access authorizations, set auditing events, and define
   intrusion-detection parameters. This requirement applies to Ubuntu
-  22.04 LTS systems that perform security-function verification/testing
+   systems that perform security-function verification/testing
   or operate in environments needing this functionality.
 references:
   nist:

@@ -1,5 +1,5 @@
 id: auth_require_reauth_for_privilege_escalation
-title: Ubuntu 22.04 LTS must require users to reauthenticate for privilege escalation
+title: Ubuntu must require users to reauthenticate for privilege escalation
   or when changing roles.
 discussion: Without reauthentication, users could access unauthorized resources or
   perform unauthorized tasks. Systems that allow privilege escalation must require

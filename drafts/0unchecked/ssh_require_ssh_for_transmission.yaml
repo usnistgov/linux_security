@@ -1,5 +1,5 @@
 id: ssh_require_ssh_for_transmission
-title: Ubuntu 22.04 LTS must use SSH to protect the confidentiality and integrity
+title: Ubuntu must use SSH to protect the confidentiality and integrity
   of transmitted information.
 discussion: Without protection, transmitted information can be intercepted and altered,
   compromising confidentiality and integrity. This applies to all internal and external

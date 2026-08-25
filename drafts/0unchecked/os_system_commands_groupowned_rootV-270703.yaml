@@ -1,7 +1,7 @@
 id: os_system_commands_groupowned_rootV-270703
-title: Ubuntu 24.04 LTS must have system commands group-owned by root or a system
+title: Ubuntu must have system commands group-owned by root or a system
   account.
-discussion: "Allowing any user to modify software libraries in Ubuntu 24.04 LTS could\
+discussion: "Allowing any user to modify software libraries in Ubuntu could\
   \ lead to untested changes that bypass proper change-management testing and\
   \ approvals. Only qualified and authorized individuals should be permitted to access\
   \ and alter these components."

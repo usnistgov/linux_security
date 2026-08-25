@@ -1,5 +1,5 @@
 id: ssh_fips_ciphers
-title: Ubuntu 24.04 LTS must configure the SSH daemon to use FIPS 140-3 approved ciphers
+title: Ubuntu must configure the SSH daemon to use FIPS 140-3 approved ciphers
   to prevent the unauthorized disclosure of information and/or detect changes to information
   during transmission.
 discussion: Without cryptographic integrity protections, information can be altered

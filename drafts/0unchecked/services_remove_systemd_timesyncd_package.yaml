@@ -1,5 +1,5 @@
 id: services_remove_systemd_timesyncd_package
-title: Ubuntu 22.04 LTS must not have the "systemd-timesyncd" package installed.
+title: Ubuntu must not have the "systemd-timesyncd" package installed.
 discussion: Inaccurate timestamps hinder event correlation and analysis, making correct
   time determination essential for forensic investigations. Organizations must account
   for endpoints lacking regular access to authoritative time servers, such as mobile

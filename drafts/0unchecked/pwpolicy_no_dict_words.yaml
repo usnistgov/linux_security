@@ -1,6 +1,6 @@
 id: pwpolicy_no_dict_words
-title: Ubuntu 22.04 LTS must prevent the use of dictionary words for passwords.
-discussion: "Allowing dictionary-based passwords in Ubuntu 22.04 LTS raises the risk\
+title: Ubuntu must prevent the use of dictionary words for passwords.
+discussion: "Allowing dictionary-based passwords in Ubuntu raises the risk\
   \ of compromise by making passwords easier to guess or brute-force."
 references:
   nist:

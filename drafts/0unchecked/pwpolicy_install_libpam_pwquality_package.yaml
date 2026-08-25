@@ -1,5 +1,5 @@
 id: pwpolicy_install_libpam_pwquality_package
-title: Ubuntu 22.04 LTS must have the "libpam-pwquality" package installed.
+title: Ubuntu must have the "libpam-pwquality" package installed.
 discussion: "Complex passwords increase the time and resources needed to crack them,\
   \ and pwquality enforces such complexity to limit brute-force attacks."
 references:

@@ -1,5 +1,5 @@
 id: pwpolicy_require_at_least_one_lowercase
-title: Ubuntu 24.04 LTS must enforce password complexity by requiring that at least
+title: Ubuntu must enforce password complexity by requiring that at least
   one lowercase character be used.
 discussion: "A complex password increases the time and resources required to compromise\
   \ it by expanding the number of possible combinations, thereby resisting guessing\

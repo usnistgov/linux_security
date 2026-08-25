@@ -1,5 +1,5 @@
 id: os_system_cmd_dirs_root
-title: Ubuntu 24.04 LTS must have directories that contain system commands owned by
+title: Ubuntu must have directories that contain system commands owned by
   root.
 discussion: "Protecting audit information requires securing the tools used to view\
   \ and manipulate logs, as unauthorized access could alter audit data. Operating\

@@ -1,5 +1,5 @@
 id: os_use_apparmor
-title: Ubuntu 22.04 LTS must be configured to use AppArmor.
+title: Ubuntu must be configured to use AppArmor.
 discussion: Control of program execution prevents unauthorized programs from running,
   particularly when default OS functions exceed mission requirements or cannot be
   removed. Compliance is achieved by restricting execution based on environments,

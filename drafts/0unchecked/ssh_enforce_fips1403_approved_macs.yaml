@@ -1,5 +1,5 @@
 id: ssh_enforce_fips1403_approved_macs
-title: Ubuntu 22.04 LTS must configure the SSH daemon to use Message Authentication
+title: Ubuntu must configure the SSH daemon to use Message Authentication
   Codes (MACs) employing FIPS 140-3-approved cryptographic hashes to prevent the unauthorized
   disclosure of information and/or detect changes to information during transmission.
 discussion: Without cryptographic integrity protections, information can be altered

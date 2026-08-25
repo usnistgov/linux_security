@@ -1,5 +1,5 @@
 id: services_ensure_telnet_not_installed
-title: Ubuntu 22.04 LTS must not have the "telnet" package installed.
+title: Ubuntu must not have the "telnet" package installed.
 discussion: "Unnecessary default services expand the attack surface, and Telnet-\
   an unencrypted remote access protocol-can expose passwords and session data\
   \ if enabled. Removing the telnetd package lowers the risk of accidental or intentional\

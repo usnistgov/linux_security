@@ -1,5 +1,5 @@
 id: audit_notify_admin_25pct_storage
-title: Ubuntu 22.04 LTS must immediately notify the system administrator (SA) and
+title: Ubuntu must immediately notify the system administrator (SA) and
   information system security officer (ISSO) when the audit record storage volume
   reaches 25 percent remaining of the allocated capacity.
 discussion: Security personnel must be alerted when storage drops to 25% remaining,

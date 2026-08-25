@@ -1,5 +1,5 @@
 id: ssh_idle_session_timeout_enable
-title: Ubuntu 22.04 LTS must be configured so that all network connections associated
+title: Ubuntu must be configured so that all network connections associated
   with SSH traffic terminate after becoming unresponsive.
 discussion: Terminating unresponsive SSH sessions quickly limits the window for attackers
   to hijack an unattended console session and frees up system resources. It ends only

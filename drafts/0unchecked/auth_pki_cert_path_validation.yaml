@@ -1,5 +1,5 @@
 id: auth_pki_cert_path_validation
-title: Ubuntu 22.04 LTS, for PKI-based authentication, must validate certificates
+title: Ubuntu , for PKI-based authentication, must validate certificates
   by constructing a certification path (which includes status information) to an accepted
   trust anchor.
 discussion: This requirement ensures that certificate validation uses a certification

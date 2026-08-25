@@ -1,5 +1,5 @@
 id: pwpolicy_require_numeric_char
-title: Ubuntu 22.04 LTS must enforce password complexity by requiring that at least
+title: Ubuntu must enforce password complexity by requiring that at least
   one numeric character be used.
 discussion: "A complex password increases the time and resources needed to crack it\
   \ by raising the number of possible combinations. Password complexity thus measures\

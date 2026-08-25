@@ -1,7 +1,7 @@
 id: networking_enable_ufw
 title: Ubuntu must enable and run the Uncomplicated Firewall (ufw).
 discussion: Remote access services without automated controls increase risk and complicate
-  user access management. Ubuntu 22.04 LTS must enforce actions on detected unauthorized
+  user access management. Ubuntu must enforce actions on detected unauthorized
   activity to ensure compliance with remote access policies.
 references:
   nist:

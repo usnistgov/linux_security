@@ -1,5 +1,5 @@
 id: audit_record_time_stamp_utc
-title: Ubuntu 22.04 LTS must record time stamps for audit records that can be mapped
+title: Ubuntu must record time stamps for audit records that can be mapped
   to Coordinated Universal Time (UTC).
 discussion: >
   Without consistent timestamps and a common time reference, forensic analysis

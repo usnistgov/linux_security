@@ -1,5 +1,5 @@
 id: services_remove_telnet_package_installed
-title: Ubuntu 24.04 LTS must not have the telnet package installed.
+title: Ubuntu must not have the telnet package installed.
 discussion: "Remote access services lacking automated controls increase risk and complicate\
   \ management; Ubuntu\u202F24.04\u202FLTS (e.g., RDP) must enforce actions when audits\
   \ reveal unauthorized activity. Automated control of remote access sessions ensures\

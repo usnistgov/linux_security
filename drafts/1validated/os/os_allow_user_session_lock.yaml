@@ -2,7 +2,7 @@ id: os_allow_user_session_lock
 title: Ubuntu must allow users to directly initiate a session lock for all
   connection types.
 discussion: A session lock temporarily secures a user's session when they step away
-  without logging out, allowing manual activation in Ubuntu 22.04 LTS.
+  without logging out, allowing manual activation in Ubuntu .
 references:
   nist:
     cce:

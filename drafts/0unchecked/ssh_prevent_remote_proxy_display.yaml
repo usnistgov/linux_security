@@ -1,5 +1,5 @@
 id: ssh_prevent_remote_proxy_display
-title: Ubuntu 22.04 LTS SSH daemon must prevent remote hosts from connecting to the
+title: Ubuntu SSH daemon must prevent remote hosts from connecting to the
   proxy display.
 discussion: Enabling X11 forwarding can expose displays if sshd listens on the wildcard
   address; by default it binds to the loopback address and sets DISPLAY to localhost,

@@ -1,5 +1,5 @@
 id: os_varlog_owned_by_root
-title: Ubuntu 24.04 LTS must configure the /var/log directory to be owned by root.
+title: Ubuntu must configure the /var/log directory to be owned by root.
 discussion: Only authorized personnel should receive error details, as error messages
   can reveal the operating system, PII, or operational information. Their structure
   and content must be carefully designed according to organizational policy and operational

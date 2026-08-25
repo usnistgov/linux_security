@@ -1,5 +1,5 @@
 id: pwpolicy_require_lowercase
-title: Ubuntu 22.04 LTS must enforce password complexity by requiring at least one
+title: Ubuntu must enforce password complexity by requiring at least one
   lowercase character be used.
 discussion: "A complex password increases the time and resources needed to crack it\
   \ by raising the number of possible combinations. Password complexity thus measures\

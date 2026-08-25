@@ -1,7 +1,7 @@
 id: os_display_gui_login_banner
-title: Ubuntu 22.04 LTS must display the Standard Mandatory DOD Notice and Consent
+title: Ubuntu must display the Standard Mandatory DOD Notice and Consent
   Banner before granting local access to the system via a graphical user logon.
-discussion: "Ubuntu 22.04 LTS must display a standardized use notification before\
+discussion: "Ubuntu must display a standardized use notification before\
   \ granting access, consistent with federal and DOD policies, for human-user\
   \ logon interfaces; the full banner text is required when space allows, otherwise\
   \ a shortened version may be used."
