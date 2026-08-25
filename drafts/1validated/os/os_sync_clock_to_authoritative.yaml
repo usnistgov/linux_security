@@ -1,0 +1,47 @@
+id: os_sync_clock_to_authoritative
+title: Ubuntu must synchronize internal information system clocks to the
+  authoritative time source when the time difference is greater than one second.
+discussion: >
+  Accurate timestamps are essential for correlating events and conducting
+  reliable forensic analysis. Synchronizing internal system clocks-including
+  endpoints with intermittent access to the authoritative time server-ensures
+  uniform time stamps across networked systems.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - SC-45(01)
+  disa:
+    cci:
+    - CCI-002046
+    - CCI-004926
+    srg:
+    - SRG-OS-000356-GPOS-00144
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-252015
+      ubuntu_24:
+      - UBTU-24-600180
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: grep -rq "makestep 1 -1" /etc/chrony*
+        result:
+          exit_code: 0
+      fix:
+        shell: echo "makestep 1 -1" >> /etc/chrony/chrony.conf && systemctl restart chrony.service
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+tags:
+- testing

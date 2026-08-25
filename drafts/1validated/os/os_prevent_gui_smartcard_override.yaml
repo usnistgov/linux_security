@@ -1,5 +1,5 @@
 id: os_prevent_gui_smartcard_override
-title: Ubuntu 24.04 LTS must prevent a user from overriding the disabling of the graphical
+title: Ubuntu must prevent a user from overriding the disabling of the graphical
   user smart card removal action.
 discussion: A session lock temporarily secures a user's session when they step away
   without logging out. Ubuntu 24.04 LTS must allow users to manually invoke a session
@@ -24,21 +24,17 @@ references:
       - UBTU-24-200042
 platforms:
   ubuntu:
+    enforcement_info:
+      check:
+        shell: gsettings writable org.gnome.settings-daemon.peripherals.smartcard removal-action
+        result:
+          bool: false
+      fix:
+        shell: mkdir -p /etc/dconf/db/local.d/locks && echo "/org/gnome/settings-daemon/peripherals/smartcard/removal-action" >> /etc/dconf/db/local.d/locks/00-security-settings-lock && dconf update
     '24.04':
       benchmarks:
       - name: disa_stig
         severity: medium
-      enforcement_info:
-        check:
-          shell: test "$(gsettings writable org.gnome.settings-daemon.peripherals.smartcard
-            removal-action)" = "false"
-          result:
-            integer: 0
-        fix:
-          shell: 'echo ''/org/gnome/settings-daemon/peripherals/smartcard/removal-action''
-            >> /etc/dconf/db/local.d/locks/00-security-settings-lock
-
-            sudo dconf update'
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

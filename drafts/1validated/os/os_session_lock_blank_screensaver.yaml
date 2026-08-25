@@ -1,0 +1,35 @@
+id: os_session_lock_blank_screensaver
+title: Ubuntu must conceal, via the session lock, information previously
+  visible on the display with a publicly viewable image.
+discussion: Setting the screensaver to blank-only hides the screen contents from passersby.
+references:
+  nist:
+    cce:
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - AC-11(01)
+  disa:
+    cci:
+    - CCI-000060
+    srg:
+    - SRG-OS-000031-GPOS-00012
+    disa_stig:
+      ubuntu_24:
+      - UBTU-24-200043
+platforms:
+  ubuntu:
+    enforcement_info: 
+      check:
+        shell: gsettings writable org.gnome.desktop.screensaver picture-uri
+        result:
+          bool: false
+      fix:
+        shell: mkdir -p /etc/dconf/db/local.d/locks && && echo -e "[org/gnome/desktop/screensaver]\npicture-uri=\"\"" >> /etc/dconf/db/local.d/00-security-settings && echo "/org/gnome/desktop/screensaver/picture-uri" >> /etc/dconf/db/local.d/locks/00-security-settings-lock && dconf update
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_moderate
+- 800-53r5_high

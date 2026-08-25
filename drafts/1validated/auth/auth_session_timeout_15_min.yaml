@@ -8,6 +8,8 @@ references:
     cce:
       ubuntu_22:
       - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - AC-12
   disa:
@@ -18,6 +20,8 @@ references:
     disa_stig:
       ubuntu_22:
       - UBTU-22-412030
+      ubuntu_24:
+      - UBTU-24-200060
 platforms:
   ubuntu:
     enforcement_info:
@@ -31,6 +35,13 @@ platforms:
       benchmarks:
       - name: disa_stig
         severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        fix:
+          shell: echo TMOUT=600 >> /etc/profile.d/99-terminal_tmout.sh
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

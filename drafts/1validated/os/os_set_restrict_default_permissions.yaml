@@ -1,5 +1,5 @@
 id: os_set_restrict_default_permissions
-title: Ubuntu 22.04 LTS default filesystem permissions must be defined in such a way
+title: Ubuntu default filesystem permissions must be defined in such a way
   that all authenticated users can read and modify only their own files.
 discussion: Setting the most restrictive default permissions prevents new accounts
   from gaining unnecessary access.
@@ -24,28 +24,21 @@ references:
       - UBTU-24-300030
 platforms:
   ubuntu:
+    enforcement_info:
+      check:
+        shell: grep "^UMASK" /etc/login.defs | awk '{print $2}'
+        result:
+          string: "077"
+      fix:
+        shell: sed -i 's/^UMASK.*/UMASK 077/g' /etc/login.defs
     '22.04':
       benchmarks:
       - name: disa_stig
         severity: medium
-      enforcement_info:
-        check:
-          shell: grep -E '^\s*UMASK\s+077' /etc/login.defs
-          result:
-            integer: 0
-        fix:
-          shell: sudo sed -i 's/^UMASK.*/UMASK 077/' /etc/login.defs
     '24.04':
       benchmarks:
       - name: disa_stig
         severity: medium
-      enforcement_info:
-        check:
-          shell: grep -iq '^\s*umask\s\+077' /etc/login.defs
-          result:
-            integer: 0
-        fix:
-          shell: sed -i 's/^UMASK.*/UMASK 077/' /etc/login.defs
 tags:
 - 800-53r5_low
 - 800-53r5_moderate

@@ -1,0 +1,49 @@
+id: os_set_sticky_bit_public_dirs
+title: Ubuntu must set a sticky bit on all public directories to prevent
+  unauthorized and unintended information transferred via shared system resources.
+discussion: >
+  Preventing unauthorized information transfers ensures that data-
+  including encrypted data-left by previous users or processes on shared resources
+  (registers, memory, disks) is not accessible to subsequent users or processes
+  after those resources are released. This concept, known as object reuse or residual
+  information protection, applies to IT product design and component configuration
+  and can be validated through acceptance/verification processes.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - SC-04
+  disa:
+    cci:
+    - CCI-001090
+    srg:
+    - SRG-OS-000138-GPOS-00069
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-232145
+      ubuntu_24:
+      - UBTU-24-600150
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: find / -type d -perm -002 ! -perm -1000 | wc -l
+        result:
+          integer: 0
+      fix:
+        shell: find / -type d -perm -002 ! -perm -1000 | xargs chmod +t
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_moderate
+- 800-53r5_high

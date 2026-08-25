@@ -1,0 +1,43 @@
+id: os_library_file_permissions_755
+title: Ubuntu library files must have mode "755" or less permissive.
+discussion: Allowing any user to modify software libraries could bypass required testing
+  and approvals, undermining change management. Only qualified, authorized personnel
+  should have access to modify these libraries, including privileged programs.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - CM-05(06)
+  disa:
+    cci:
+    - CCI-001499
+    srg:
+    - SRG-OS-000259-GPOS-00100
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-232020
+      ubuntu_24:
+      - UBTU-24-300006
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: stat -c "%a" /lib/**/*.so /usr/lib/**/*.so /lib64/**/*.so 2> /dev/null | gawk '{mode=strtonum("0"$1); if (and(mode, compl(0755)) != 0) print $1 }' | wc -l
+        result:
+          integer: 0
+      fix:
+        shell: stat -c "%n %a" /lib/**/*.so /usr/lib/**/*.so /lib64/**/*.so 2> /dev/null | gawk '{mode=strtonum("0"$2); if (and(mode, compl(0755)) != 0) print $1 }' | xargs chmod 755
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- testing

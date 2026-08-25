@@ -1,0 +1,35 @@
+id: os_prevent_gui_automount_override
+title: Ubuntu must prevent a user from overriding the disabling of the graphical
+  user interface automount function.
+discussion: A nonprivileged account is an operating system account that has only the permissions of a regular, non-privileged user.
+references:
+  nist:
+    cce:
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - AC-11
+  disa:
+    cci:
+    - CCI-000056
+    srg:
+    - SRG-OS-000028-GPOS-00009
+    disa_stig:
+      ubuntu_24:
+      - UBTU-24-200040
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: grep -rq "automount-open" /etc/dconf/db/*
+        result:
+          exit_code: 0
+      fix:
+        shell: mkdir -p /etc/dconf/db/local.d/locks && echo "/org/gnome/desktop/media-handling/automount-open" >> /etc/dconf/db/local.d/locks/00-security-settings-lock && dconf update
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_moderate
+- 800-53r5_high

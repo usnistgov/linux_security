@@ -1,0 +1,42 @@
+id: os_restrict_kernel_message_buffer
+title: Ubuntu must restrict access to the kernel message buffer.
+discussion: Restricting kernel message buffer access to root prevents non-privileged users from obtaining sensitive system information.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - SC-04
+  disa:
+    cci:
+    - CCI-001090
+    srg:
+    - SRG-OS-000138-GPOS-00069
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-213010
+      ubuntu_24:
+      - UBTU-24-600140
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: sysctl kernel.dmesg_restrict
+        result:
+          string: kernel.dmesg_restrict = 1
+      fix:
+        shell: echo "kernel.dmesg_restrict = 1" >> /etc/sysctl.conf && sysctl --system
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+tags:
+- 800-53r5_moderate
+- 800-53r5_high

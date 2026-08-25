@@ -1,5 +1,5 @@
 id: services_remove_rsh_server
-title: Ubuntu 22.04 LTS must not have the "rsh-server" package installed.
+title: Ubuntu must not have the "rsh-server" package installed.
 discussion: Unnecessary services increase the attack surface; RSH provides unencrypted
   remote access that can expose privileged passwords and session data. Removing the
   rsh-server package reduces the risk of accidental or intentional activation of this
@@ -8,6 +8,8 @@ references:
   nist:
     cce:
       ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
     - CM-07
@@ -19,19 +21,25 @@ references:
     disa_stig:
       ubuntu_22:
       - UBTU-22-215030
+      ubuntu_24:
+      - UBTU-24-100040
 platforms:
   ubuntu:
+    enforcement_info:
+      check:
+        shell: dpkg -l rsh-server
+        result:
+          exit_code: 1
+      fix:
+        shell: apt purge -y rsh-server
     '22.04':
       benchmarks:
       - name: disa_stig
         severity: high
-      enforcement_info:
-        check:
-          shell: dpkg -l | grep rsh-server
-          result:
-            integer: 1
-        fix:
-          shell: sudo apt-get remove rsh-server
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: high
 tags:
 - 800-53r5_low
 - 800-53r5_moderate

@@ -1,0 +1,39 @@
+id: os_session_lock_must_require_reauth
+title: Ubuntu must retain a user's session lock until that user reestablishes
+  access using established identification and authentication procedures.
+discussion: >
+  A session lock is a temporary action taken when a user steps away from
+  the system but does not want to log out. Once invoked on Ubuntu 22.04
+  LTS, it remains in place until the user reauthenticates, with no other activity
+  able to unlock it.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+    800-53r5:
+    - AC-11
+  disa:
+    cci:
+    - CCI-000056
+    srg:
+    - SRG-OS-000028-GPOS-00009
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-271020
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: gsettings get org.gnome.desktop.screensaver lock-enabled
+        result:
+          bool: true
+      fix:
+        shell: mkdir -p /etc/dconf/db/local.d/ && echo "[org/gnome/desktop/screensaver]\nlock-enabled=true" >> /etc/dconf/db/local.d/00-screensaver && dconf update
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_moderate
+- 800-53r5_high

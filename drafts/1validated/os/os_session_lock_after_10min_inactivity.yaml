@@ -1,0 +1,45 @@
+id: os_session_lock_after_10min_inactivity
+title: Ubuntu 22.04 LTS must initiate a graphical session lock after 10 minutes of
+  inactivity.
+discussion: A session lock temporarily secures an Ubuntu 22.04 LTS session when the
+  user steps away, requiring reauthentication to unlock and allowing no other activity
+  to bypass it.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - AC-11
+  disa:
+    cci:
+    - CCI-000057
+    srg:
+    - SRG-OS-000029-GPOS-00010
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-271025
+      ubuntu_24:
+      - UBTU-24-200020
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: '[[ "$(gsettings get org.gnome.desktop.screensaver lock-enabled)" == "true" && "$(gsettings get org.gnome.desktop.screensaver lock-delay)" == "uint32 0" && "$(gsettings get org.gnome.desktop.session idle-delay | sed "s/uint32 //g")" < "601" ]]'
+        result:
+          exit_code: 0
+      fix:
+        shell: mkdir -p /etc/dconf/db/local.d/ && echo -e "[org/gnome/desktop/screensaver]\nlock-enabled=true\nlock-delay=0\n\n[org/gnome/desktop/session]\nidle-delay=600" >> /etc/dconf/db/local.d/00-screensaver && dconf update
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_moderate
+- 800-53r5_high
