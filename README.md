@@ -2,7 +2,7 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="lscp/data/images/lscp_readme_banner_dark.png">
     <source media="(prefers-color-scheme: light)" srcset="lscp/data/images/lscp_readme_banner.png">
-    <img src="lscp/data/images/lscp_readme_banner.png" alt="Linux Security Compliance" width="550">
+    <img src="lscp/data/images/lscp_readme_banner.png" alt="Linux Security Compliance" width="600">
   </picture>
 </p>
 
@@ -47,7 +47,7 @@ If you would like to contribute, see the [contributor guidance](CONTRIBUTING.md)
 
 |Country of Origin|Framework Name|OS Supported|
 |--------------------|---------------------|--------------------------|
-|<a href="https://disa.mil"><img src="https://badgen.net/badge/US/Origin?icon=https%3A%2F%2Fraw.githubusercontent.com%2Flipis%2Fflag-icons%2F086f7e97d657358203916dbe84f61c2bccaa81eb%2Fflags%2F1x1%2Fus.svg" alt="DISA"></a>|DISA STIG|<a href="https://ubuntu.com/"><img src="https://badgen.net/badge/icon/Ubuntu%2020.04%20LTS/orange?label" alt="Ubuntu 20.04 LTS"></a><a href="https://ubuntu.com/"><img src="https://badgen.net/badge/icon/Ubuntu%2022.04%20LTS/orange?label" alt="Ubuntu 22.04 LTS"></a><a href="https://ubuntu.com/"><img src="https://badgen.net/badge/icon/Ubuntu%2024.04%20LTS/orange?label" alt="Ubuntu 24.04 LTS"></a>|
+|<a href="https://disa.mil"><img src="https://badgen.net/badge/US/Origin?icon=https%3A%2F%2Fraw.githubusercontent.com%2Flipis%2Fflag-icons%2F086f7e97d657358203916dbe84f61c2bccaa81eb%2Fflags%2F1x1%2Fus.svg" alt="DISA"></a>|DISA STIG|<a href="https://ubuntu.com/"><img src="https://badgen.net/badge/icon/Ubuntu%2020.04%20LTS/orange?label" alt="Ubuntu 20.04 LTS"></a> <a href="https://ubuntu.com/"><img src="https://badgen.net/badge/icon/Ubuntu%2022.04%20LTS/orange?label" alt="Ubuntu 22.04 LTS"></a> <a href="https://ubuntu.com/"><img src="https://badgen.net/badge/icon/Ubuntu%2024.04%20LTS/orange?label" alt="Ubuntu 24.04 LTS"></a>|
 
 Don't see your framework listed? Reach out through the [contributor
 guidance](CONTRIBUTING.md) or open an
