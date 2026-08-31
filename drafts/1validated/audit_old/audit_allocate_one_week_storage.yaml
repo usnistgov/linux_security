@@ -1,9 +1,9 @@
 id: audit_allocate_one_week_storage
-title: Ubuntu must allocate audit record storage capacity to store at least
-  one week's worth of audit records, when audit records are not immediately sent to
-  a central audit record storage facility.
-discussion: Operating systems must allocate sufficient storage for audit logs, a task
-  typically performed during the initial installation of Ubuntu .
+title: Audit Capacity One Week
+discussion: |
+  The system must allocate audit record storage capacity to store at least one week's worth of audit records, when audit records are not immediately sent to a central audit record storage facility.
+
+  Operating systems must allocate sufficient storage for audit logs, a task typically performed during the initial installation.
 references:
   nist:
     cce:
@@ -12,7 +12,7 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - AU-04
+    - AU-4
   disa:
     cci:
     - CCI-001849
