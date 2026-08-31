@@ -1,0 +1,50 @@
+id: os_system_cmd_dir_perm
+title: Ubuntu must have directories that contain system commands set to
+  a mode of "0755" or less permissive.
+discussion: >
+  Protecting audit information requires securing the tools used to view
+  and manipulate logs to prevent unauthorized actions. Operating systems enforce
+  this by using user permissions and roles to control access to audit tools, which
+  include vendor-provided, open-source, and custom query or report generators.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - AU-09
+  disa:
+    cci:
+    - CCI-001495
+    srg:
+    - SRG-OS-000258-GPOS-00099
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-232010
+      - UBTU-22-232015
+      ubuntu_24:
+      - UBTU-24-901260
+      - UBTU-24-300011
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: stat -c '%n %a' /bin /bin/* /sbin /sbin/* /usr/bin /usr/bin/* /usr/sbin /usr/sbin/* /usr/local/bin /usr/local/bin/* /usr/local/sbin /usr/local/sbin/* 2> /dev/null | gawk '{mode=strtonum("0"$2); if (and(mode, compl(0755)) != 0) print $1 }' | wc -l
+        result:
+          integer: 0
+      fix:
+        shell: stat -c '%n %a' /bin /bin/* /sbin /sbin/* /usr/bin /usr/bin/* /usr/sbin /usr/sbin/* /usr/local/bin /usr/local/bin/* /usr/local/sbin /usr/local/sbin/* 2> /dev/null | gawk '{mode=strtonum("0"$2); if (and(mode, compl(0755)) != 0) print $1 }' | xargs chmod 755
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high

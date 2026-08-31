@@ -22,18 +22,20 @@ references:
     - SRG-OS-000259-GPOS-00100
     disa_stig:
       ubuntu_22:
+      - UBTU-22-232040
       - UBTU-22-232050
       ubuntu_24:
+      - UBTU-24-901270
       - UBTU-24-300012
 platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: stat -c '%U' /bin/* /sbin/* /usr/bin/* /usr/sbin/* /usr/local/bin/* /usr/local/sbin/* 2> /dev/null | sort | uniq
+        shell: stat -c '%U' /bin /bin/* /sbin /sbin/* /usr/bin /usr/bin/* /usr/sbin /usr/sbin/* /usr/local/bin /usr/local/bin/* /usr/local/sbin /usr/local/sbin/* 2> /dev/null | sort | uniq
         result:
           string: root
       fix:
-        shell: stat -c \'%n %U\' /bin/* /sbin/* /usr/bin/* /usr/sbin/* /usr/local/bin/* /usr/local/sbin/* 2> /dev/null | awk \'{ if ($2 != "root") print $1 }\' | xargs chown root
+        shell: stat -c \'%n %U\' /bin /bin/* /sbin /sbin/* /usr/bin /usr/bin/* /usr/sbin /usr/sbin/* /usr/local/bin /usr/local/bin/* /usr/local/sbin /usr/local/sbin/* 2> /dev/null | awk \'{ if ($2 != "root") print $1 }\' | xargs chown root
     '22.04':
       benchmarks:
       - name: disa_stig

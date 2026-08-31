@@ -1,5 +1,6 @@
-id: os_var_log_directory_root_owned
-title: Ubuntu must configure the "/var/log" directory to be owned by "root".
+id: os_syslog_file_mode_640
+title: Ubuntu must configure "/var/log/syslog" file with mode "640" or less
+  permissive.
 discussion: Only authorized personnel should see error details, as messages can reveal
   an organization's operational state, OS/platform, PII, or other sensitive information.
   Error message content must be carefully designed according to organizational policy
@@ -8,6 +9,8 @@ references:
   nist:
     cce:
       ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
     - SI-11
@@ -18,20 +21,26 @@ references:
     - SRG-OS-000206-GPOS-00084
     disa_stig:
       ubuntu_22:
-      - UBTU-22-232120
+      - UBTU-22-232030
+      ubuntu_24:
+      - UBTU-24-700150
 platforms:
   ubuntu:
+    enforcement_info:
+      check:
+        shell: stat -c '%a' /var/log/syslog | gawk '{mode=strtonum("0"$1); if (and(mode, compl(0640)) == 0) print "passed" }'
+        result:
+          string: passed
+      fix:
+        shell: chmod 640 /var/log/syslog
     '22.04':
       benchmarks:
       - name: disa_stig
         severity: medium
-      enforcement_info:
-        check:
-          shell: stat -c '%U' /var/log | grep -q '^root$'
-          result:
-            integer: 0
-        fix:
-          shell: sudo chown root /var/log
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

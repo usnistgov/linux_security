@@ -1,0 +1,47 @@
+id: os_verify_security_functions_integrity
+title: Ubuntu must use a file integrity tool to verify correct operation
+  of all security functions.
+discussion: >
+  Without verification, security functions may fail unnoticed; they encompass
+  the hardware, software, or firmware that enforce the system security policy, manage
+  accounts, permissions, auditing, and intrusion detection. This requirement applies
+  to Ubuntu 22.04 LTS systems performing security function verification/testing
+  or environments that need this functionality.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - SI-06
+  disa:
+    cci:
+    - CCI-002696
+    srg:
+    - SRG-OS-000445-GPOS-00199
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-651010
+      ubuntu_24:
+      - UBTU-24-100100
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: dpkg -l aide
+        result:
+          exit_code: 0
+      fix:
+        shell: apt install -y aide
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_high

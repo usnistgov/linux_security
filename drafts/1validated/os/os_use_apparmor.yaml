@@ -29,36 +29,21 @@ references:
       - UBTU-24-100510
 platforms:
   ubuntu:
+    enforcement_info:
+      check:
+        shell: apparmor_status | grep "profiles are in enforce mode." | awk '{ if ($1 > 0) print "passed" }'
+        result:
+          string: passed
+      fix:
+        shell: systemctl enable apparmor.service --now
     '22.04':
       benchmarks:
       - name: disa_stig
         severity: medium
-      enforcement_info:
-        check:
-          shell: systemctl is-enabled apparmor.service | grep -q ^enabled$ && systemctl
-            is-active apparmor.service | grep -q ^active$ && sudo apparmor_status
-            | awk '/profiles are loaded/ {if ($1>0) loaded=1} /profiles are in enforce
-            mode/ {if ($1>0) enforce=1} END {exit !(loaded && enforce)}'
-          result:
-            integer: 0
-        fix:
-          shell: sudo systemctl enable apparmor.service --now
     '24.04':
       benchmarks:
       - name: disa_stig
         severity: medium
-      enforcement_info:
-        check:
-          shell: 'systemctl is-active apparmor.service
-
-
-            systemctl is-enabled apparmor.service'
-          result:
-            string: active
-        fix:
-          shell: 'sudo systemctl enable apparmor.service
-
-            sudo systemctl start apparmor.service'
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

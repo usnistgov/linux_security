@@ -1,10 +1,9 @@
-id: os_syslog_group_adm
-title: Ubuntu must configure the "/var/log/syslog" file to be group-owned
-  by "adm".
+id: os_var_log_directory_group_syslog
+title: Ubuntu must configure the "/var/log" directory to be group-owned
+  by "syslog".
 discussion: Only authorized personnel should see error details, as messages can reveal
   operational state, OS/platform, PII, or other sensitive information. Error message
-  content must be carefully designed per organizational policy to prevent unauthorized
-  disclosure.
+  design must align with organizational policy and operational requirements.
 references:
   nist:
     cce:
@@ -19,20 +18,26 @@ references:
     - SRG-OS-000206-GPOS-00084
     disa_stig:
       ubuntu_22:
-      - UBTU-22-232135
+      - UBTU-22-232125
+      ubuntu_24:
+      - UBTU-24-700100
 platforms:
   ubuntu:
+    enforcement_info:
+      check:
+        shell: stat -c '%G' /var/log
+        result:
+          string: syslog
+      fix:
+        shell: chown :syslog /var/log
     '22.04':
       benchmarks:
       - name: disa_stig
         severity: medium
-      enforcement_info:
-        check:
-          shell: stat -c "%G" /var/log/syslog | grep -q adm
-          result:
-            integer: 0
-        fix:
-          shell: sudo chgrp adm /var/log/syslog
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
 tags:
 - 800-53r5_moderate
 - 800-53r5_high
