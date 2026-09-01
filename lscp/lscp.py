@@ -2,12 +2,13 @@ import argparse
 from typing import List
 
 import yaml
-from classes.rule import Rule
 from classes.baseline import Baseline, BaselinePlatform, Section
+from classes.rule import Rule
 from generate import GeneratorEngine
 from generate.shell import ShellGenerator
-from utils.directories import get_custom_path
 from utils.data_search import get_rule_from_string
+from utils.directories import get_custom_path
+from utils.rules import compute_sections
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -46,7 +47,7 @@ if __name__ == "__main__":
     baseline = subparsers.add_parser("baseline")
     baseline.add_argument(
         "keywords",
-        nargs=1,
+        nargs="*",
         help="keyword to be used to collect associated rules",
     )
     baseline.add_argument(
@@ -82,7 +83,7 @@ if __name__ == "__main__":
 
     elif args.command == "baseline":
         all_rules: List[Rule]
-        if args.list_tags or len(args.keywords) > 0:
+        if args.list_tags or len(args.keywords) == 1:
             all_rules = get_rule_from_string()
         else:
             parser.error("Keywords must contain a value, or -l should be passed.")
@@ -104,7 +105,7 @@ if __name__ == "__main__":
                 title=f"{default_platform.os} {default_platform.version}: Security Configuration - {args.keywords[0]}",
                 parent_values="recommended",
                 platform=default_platform,
-                profile=[Section(section="Uncategorized", rules=new_rules)],
+                profile=compute_sections(new_rules),
             )
 
             output_path = get_custom_path(

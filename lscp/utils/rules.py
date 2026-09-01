@@ -1,5 +1,17 @@
-from classes.baseline import BaselinePlatform
+from typing import List
+
+from classes.baseline import BaselinePlatform, Section
 from classes.rule import EnforcementInfo, Rule
+
+SECTION_REFERENCES = {
+    "audit": "Auditing",
+    "auth": "Authentication",
+    "os": "Operating System",
+    "pwpolicy": "Password Policies",
+    "ssh": "Secure Shell",
+    "services": "Services",
+    "networking": "Networking",
+}
 
 
 def get_enforcement_block(
@@ -22,3 +34,23 @@ def get_enforcement_block(
         enforcement_block = rule_platform_version.enforcement_info
 
     return enforcement_block
+
+
+def compute_sections(rules: List[Rule]) -> List[Section]:
+    section_lst: List[Section] = []
+
+    for rule in rules:
+        section_id = rule.rule_id.split("_")[0]
+
+        section_name = SECTION_REFERENCES.get(section_id, "Uncategorized")
+
+        filtered_section_lst = [
+            section for section in section_lst if section.section == section_name
+        ]
+        if len(filtered_section_lst) == 0:
+            section_lst.append(Section(section=section_name, rules=[rule]))
+        else:
+            existing_section = filtered_section_lst[0]
+            existing_section.rules.append(rule)
+
+    return sorted(section_lst, key=lambda section: section.section)
