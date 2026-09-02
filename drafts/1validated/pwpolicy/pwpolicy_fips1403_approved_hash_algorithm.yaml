@@ -9,6 +9,8 @@ references:
     cce:
       ubuntu_22:
       - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - IA-07
   disa:
@@ -19,19 +21,25 @@ references:
     disa_stig:
       ubuntu_22:
       - UBTU-22-611070
+      ubuntu_24:
+      - UBTU-24-400400
 platforms:
   ubuntu:
+    enforcement_info:
+      check:
+        shell: grep "^ENCRYPT_METHOD" /etc/login.defs | awk '{print $2}'
+        result:
+          string: SHA512
+      fix:
+        shell: echo "ENCRYPT_METHOD SHA512" >> /etc/login.defs
     '22.04':
       benchmarks:
       - name: disa_stig
         severity: medium
-      enforcement_info:
-        check:
-          shell: grep -E '^\s*[^#]' /etc/login.defs | grep -iq '^\s*encrypt_method\s*[=:]\s*sha512\s*$'
-          result:
-            integer: 0
-        fix:
-          shell: sudo sed -i 's/^#*ENCRYPT_METHOD.*/ENCRYPT_METHOD SHA512/' /etc/login.defs
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
 tags:
 - 800-53r5_low
 - 800-53r5_moderate

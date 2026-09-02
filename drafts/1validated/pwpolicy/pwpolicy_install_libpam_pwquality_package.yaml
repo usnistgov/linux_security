@@ -1,7 +1,6 @@
 id: pwpolicy_install_libpam_pwquality_package
 title: Ubuntu must have the "libpam-pwquality" package installed.
-discussion: "Complex passwords increase the time and resources needed to crack them,\
-  \ and pwquality enforces such complexity to limit brute-force attacks."
+discussion: Complex passwords increase the time and resources needed to crack them, and pwquality enforces such complexity to limit brute-force attacks.
 references:
   nist:
     cce:
@@ -23,28 +22,21 @@ references:
       - UBTU-24-100600
 platforms:
   ubuntu:
+    enforcement_info:
+      check:
+        shell: dpkg -l libpam-pwquality
+        result:
+          exit_code: 0
+      fix:
+        shell: apt install -y libpam-pwquality
     '22.04':
       benchmarks:
       - name: disa_stig
         severity: medium
-      enforcement_info:
-        check:
-          shell: dpkg -l | grep -q libpam-pwquality
-          result:
-            integer: 0
-        fix:
-          shell: sudo apt-get install libpam-pwquality
     '24.04':
       benchmarks:
       - name: disa_stig
         severity: medium
-      enforcement_info:
-        check:
-          shell: dpkg -l | grep -q libpam-pwquality
-          result:
-            integer: 0
-        fix:
-          shell: sudo apt install -y libpam-pwquality
 tags:
 - 800-53r5_low
 - 800-53r5_moderate

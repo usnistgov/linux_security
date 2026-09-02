@@ -1,0 +1,50 @@
+id: pwpolicy_require_eight_char_change
+title: Ubuntu must require the change of at least eight characters when
+  passwords are changed.
+discussion: >
+  If the operating system allows users to reuse large portions of a password,
+  it increases the window for guessing and brute-force attacks, raising the
+  risk of compromise. The policy mandates a minimum number of changed characters-
+  rounded up for odd-length passwords-to ensure sufficient change between
+  successive passwords."
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - IA-05(01)
+  disa:
+    cci:
+    - CCI-004066
+    - CCI-000195
+    srg:
+    - SRG-OS-000072-GPOS-00040
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-611040
+      ubuntu_24:
+      - UBTU-24-400290
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: grep "^difok" /etc/security/pwquality.conf | awk -F" = " '{print $2}'
+        result:
+          integer: 8
+      fix:
+        shell: echo "difok = 8" >> /etc/security/pwquality.conf
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high
