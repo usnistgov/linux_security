@@ -1,0 +1,51 @@
+id: ssh_fips_approved_ciphers
+title: >
+  Ubuntu must configure the SSH daemon to use FIPS 140-3-approved
+  ciphers to prevent the unauthorized disclosure of information and/or detect changes
+  to information during transmission.
+discussion: Without cryptographic integrity protections, unauthorized users can alter
+  information without detection; encrypting transmission and ordering ciphers from
+  strongest to weakest ensures SSH connections use the strongest available cipher.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - AC-17(02)
+    - MA-04(06)
+    - SC-08(01)
+  disa:
+    cci:
+    - CCI-000068
+    - CCI-002421
+    - CCI-003123
+    srg:
+    - SRG-OS-000033-GPOS-00014
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-255050
+      ubuntu_24:
+      - UBTU-24-100820
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: sshd -T 2> /dev/null | grep "ciphers" | awk '{print $2}'
+        result:
+          string: aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes128-ctr
+      fix:
+        shell: echo "Ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes128-ctr" >> /etc/ssh/sshd_config && systemctl restart ssh
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_moderate
+- 800-53r5_high

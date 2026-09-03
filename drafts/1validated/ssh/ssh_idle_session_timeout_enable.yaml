@@ -10,6 +10,8 @@ references:
     cce:
       ubuntu_22:
       - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - SC-10
   disa:
@@ -17,24 +19,29 @@ references:
     - CCI-001133
     srg:
     - SRG-OS-000126-GPOS-00066
+    - SRG-OS-000163-GPOS-00072
     disa_stig:
       ubuntu_22:
       - UBTU-22-255030
+      ubuntu_24:
+      - UBTU-24-600000
 platforms:
   ubuntu:
+    enforcement_info:
+      check:
+        shell: sshd -T 2> /dev/null | grep "clientalivecountmax" | awk '{print $2}'
+        result:
+          integer: 1
+      fix:
+        shell: echo "ClientAliveCountMax 1" >> /etc/ssh/sshd_config && systemctl restart ssh
     '22.04':
       benchmarks:
       - name: disa_stig
         severity: medium
-      enforcement_info:
-        check:
-          shell: sudo grep -iH 'clientalivecountmax' /etc/ssh/sshd_config
-          result:
-            string: ClientAliveCountMax 1
-        fix:
-          shell: 'echo "ClientAliveCountMax 1" | sudo tee -a /etc/ssh/sshd_config
-
-            sudo systemctl restart ssh'
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

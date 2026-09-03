@@ -12,6 +12,8 @@ references:
     cce:
       ubuntu_22:
       - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - AC-17(02)
     - MA-04(06)
@@ -26,23 +28,25 @@ references:
     disa_stig:
       ubuntu_22:
       - UBTU-22-255055
+      ubuntu_24:
+      - UBTU-24-100830
 platforms:
   ubuntu:
+    enforcement_info:
+      check:
+        shell: sshd -T 2> /dev/null | grep "macs" | awk '{print $2}'
+        result:
+          string: hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256
+      fix:
+        shell: echo "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256" >> /etc/ssh/sshd_config && systemctl restart ssh
     '22.04':
       benchmarks:
       - name: disa_stig
         severity: medium
-      enforcement_info:
-        check:
-          shell: sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d
-            '\r' | tr '\n' ' ' | xargs sudo grep -iH 'macs'
-          result:
-            string: /etc/ssh/sshd_config:MACs hmac-sha2-512,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha2-256-etm@openssh.com
-        fix:
-          shell: 'sudo sed -i ''/^MACs /c\MACs hmac-sha2-512,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha2-256-etm@openssh.com''
-            /etc/ssh/sshd_config
-
-            sudo systemctl reload sshd.service'
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
 tags:
 - 800-53r5_moderate
 - 800-53r5_high
