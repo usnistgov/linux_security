@@ -28,32 +28,21 @@ references:
       - UBTU-24-100810
 platforms:
   ubuntu:
+    enforcement_info:
+      check:
+        shell: systemctl is-enabled ssh && systemctl is-active ssh
+        result:
+          exit_code: 0
+      fix:
+        shell: systemctl enable --now ssh
     '22.04':
       benchmarks:
       - name: disa_stig
         severity: high
-      enforcement_info:
-        check:
-          shell: sudo systemctl is-enabled ssh.service && sudo systemctl is-active
-            ssh.service
-          result:
-            integer: 0
-        fix:
-          shell: sudo systemctl enable ssh.service --now
     '24.04':
       benchmarks:
       - name: disa_stig
         severity: high
-      enforcement_info:
-        check:
-          shell: sudo systemctl is-enabled sshd.service | grep -q enabled && sudo
-            systemctl is-active sshd.service | grep -q active
-          result:
-            integer: 0
-        fix:
-          shell: 'sudo systemctl enable ssh.service
-
-            sudo systemctl start ssh.service'
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

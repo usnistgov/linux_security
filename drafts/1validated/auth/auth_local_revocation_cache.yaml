@@ -1,0 +1,46 @@
+id: auth_local_revocation_cache
+title: Ubuntu for PKI-based authentication, must implement a local cache
+  of revocation data in case of the inability to access revocation information via
+  the network.
+discussion: Failing to configure a local revocation cache may permit access by users
+  whose certificates have been revoked.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - IA-05(02)
+  disa:
+    cci:
+    - CCI-004068
+    - CCI-001991
+    srg:
+    - SRG-OS-000384-GPOS-00167
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-612035
+      ubuntu_24:
+      - UBTU-24-400380
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: grep cert_policy /etc/pam_pkcs11/pam_pkcs11.conf | grep  -qE -- 'crl_auto|crl_offline'
+        result:
+          exit_code: 0
+      fix:
+        additional_info: Ensure all cert_policy lines contain either "crl_auto" or "crl_offline".
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_moderate
+- 800-53r5_high

@@ -31,9 +31,9 @@ platforms:
       check:
         shell: grep "^PASS_MIN_DAYS" /etc/login.defs | awk '{print $2}'
         result:
-          string: 1
+          integer: 1
       fix:
-        shelL: echo "PASS_MIN_DAYS 1" >> /etc/login.defs
+        shell: echo "PASS_MIN_DAYS 1" >> /etc/login.defs
     '22.04':
       benchmarks:
       - name: disa_stig

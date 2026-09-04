@@ -11,6 +11,8 @@ references:
     cce:
       ubuntu_22:
       - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
     800-53r5:
     - SC-17
     - IA-05(02)
@@ -23,26 +25,21 @@ references:
     disa_stig:
       ubuntu_22:
       - UBTU-22-612030
+      ubuntu_24:
+      - UBTU-24-400375
 platforms:
   ubuntu:
+    enforcement_info:
+      check:
+        shell: grep use_pkcs11_module /etc/pam_pkcs11/pam_pkcs11.conf | awk '/pkcs11_module opensc {/,/}/' /etc/pam_pkcs11/pam_pkcs11.conf | grep cert_policy | grep -q ca
+        result:
+          exit_code: 0
+      fix:
+        additional_info: Ensure all cert_policy lines contain "ca" verification to an accepted trust anchor.
     '22.04':
       benchmarks:
       - name: disa_stig
         severity: medium
-      enforcement_info:
-        check:
-          shell: sudo bash -c 'module=$(awk -F"=" '\''/use_pkcs11_module/ {gsub(/[
-            \t]+$/,"",$2); gsub(/^[ \t]+/,"",$2); print $2}'\'' /etc/pam_pkcs11/pam_pkcs11.conf);
-            awk -v mod="$module" '\''$0 ~ "^pkcs11_module" mod " {" {found=1; next}
-            found && /^}/ {exit} found && /cert_policy/ {if ($0 ~ /ca/) {exit 0} else
-            {exit 1}}'\'' /etc/pam_pkcs11/pam_pkcs11.conf'
-          result:
-            integer: 0
-        fix:
-          shell: mkdir -p /etc/pam_pkcs11 && [ -f /etc/pam_pkcs11/pam_pkcs11.conf
-            ] || gunzip -c /usr/share/doc/libpam-pkcs11/examples/pam_pkcs11.conf.example.gz
-            > /etc/pam_pkcs11/pam_pkcs11.conf && sed -i 's/^\s*cert_policy\s*=.*/cert_policy
-            = ca,signature,ocsp_on;/' /etc/pam_pkcs11/pam_pkcs11.conf
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

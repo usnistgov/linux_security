@@ -1,0 +1,40 @@
+id: ssh_use_fips1403_mac_algorithms
+title: Ubuntu SSH client must be configured to use only Message Authentication
+  Codes (MACs) employing FIPS 140-3 validated cryptographic hash algorithms.
+discussion: >
+  Without cryptographic integrity protections, information can be altered
+  by unauthorized users without detection; remote access occurs over external networks,
+  whereas local maintenance is performed on-site. Encrypting data in transit
+  using cryptographic hash functions, checksums, or message authentication codes
+  protects against unauthorized disclosure and modification.
+references:
+  nist:
+    cce:
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - AC-17(02)
+  disa:
+    cci:
+    - CCI-001453
+    srg:
+    - SRG-OS-000250-GPOS-00093
+    disa_stig:
+      ubuntu_24:
+      - UBTU-24-100860
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: grep "^MACs" /etc/ssh/ssh_config | awk '{print $2}'
+        result:
+          string: hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256
+      fix:
+        shell: echo "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256" >> /etc/ssh/ssh_config
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_moderate
+- 800-53r5_high
