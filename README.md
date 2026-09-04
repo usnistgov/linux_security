@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <a href="https://ubuntu.com/"><img src="https://badgen.net/badge/Ubuntu/22.04%20%26%2024.04%20LTS/orange" alt="Ubuntu"></a>
+  <a href="https://ubuntu.com/"><img src="https://badgen.net/badge/Ubuntu/22.04%20%26%2024.04%20LTS/E95420" alt="Ubuntu"></a>
   <a href="LICENSE"><img src="https://badgen.net/badge/license/NIST/green" alt="License"></a>
   <a href="https://github.com/usnistgov/linux_security/stargazers"><img src="https://badgen.net/github/stars/usnistgov/linux_security" alt="Stars"></a>
 </p>
@@ -46,13 +46,13 @@ If you would like to contribute, see the [contributor guidance](CONTRIBUTING.md)
 
 |Distribution|Versions Supported|Release Type|
 |--------------------|---------------------|--------------------------|
-|<a href="https://ubuntu.com/"><img src="https://badgen.net/badge/icon/Ubuntu?icon=https%3A%2F%2Fraw.githubusercontent.com%2Fsimple-icons%2Fsimple-icons%2F14.15.0%2Ficons%2Fubuntu.svg&label" alt="Ubuntu"></a>|<a href="https://ubuntu.com/"><img src="https://badgen.net/badge/icon/24.04%20LTS/orange?label" alt="Ubuntu 24.04 LTS"></a> <a href="https://ubuntu.com/"><img src="https://badgen.net/badge/icon/22.04%20LTS/orange?label" alt="Ubuntu 22.04 LTS"></a>|Long Term Support (LTS) releases only|
+|<a href="https://ubuntu.com/"><img src="https://badgen.net/badge/icon/Ubuntu?icon=https%3A%2F%2Fraw.githubusercontent.com%2Fsimple-icons%2Fsimple-icons%2F14.15.0%2Ficons%2Fubuntu.svg&label" alt="Ubuntu"></a>|<a href="https://ubuntu.com/"><img src="https://badgen.net/badge/icon/24.04%20LTS/E95420?label" alt="Ubuntu 24.04 LTS"></a> <a href="https://ubuntu.com/"><img src="https://badgen.net/badge/icon/22.04%20LTS/E95420?label" alt="Ubuntu 22.04 LTS"></a>|Long Term Support (LTS) releases only|
 
 ## Supported Frameworks
 
 |Country of Origin|Framework Name|OS Supported|
 |--------------------|---------------------|--------------------------|
-|<a href="https://disa.mil"><img src="https://badgen.net/badge/US/Origin?icon=https%3A%2F%2Fraw.githubusercontent.com%2Flipis%2Fflag-icons%2F086f7e97d657358203916dbe84f61c2bccaa81eb%2Fflags%2F1x1%2Fus.svg" alt="DISA"></a>|DISA STIG|<a href="https://ubuntu.com/"><img src="https://badgen.net/badge/icon/Ubuntu%2022.04%20LTS/orange?label" alt="Ubuntu 22.04 LTS"></a> <a href="https://ubuntu.com/"><img src="https://badgen.net/badge/icon/Ubuntu%2024.04%20LTS/orange?label" alt="Ubuntu 24.04 LTS"></a>|
+|<a href="https://disa.mil"><img src="https://badgen.net/badge/US/Origin?icon=https%3A%2F%2Fraw.githubusercontent.com%2Flipis%2Fflag-icons%2F086f7e97d657358203916dbe84f61c2bccaa81eb%2Fflags%2F1x1%2Fus.svg" alt="DISA"></a>|DISA STIG|<a href="https://ubuntu.com/"><img src="https://badgen.net/badge/icon/Ubuntu%2022.04%20LTS/E95420?label" alt="Ubuntu 22.04 LTS"></a> <a href="https://ubuntu.com/"><img src="https://badgen.net/badge/icon/Ubuntu%2024.04%20LTS/E95420?label" alt="Ubuntu 24.04 LTS"></a>|
 
 Don't see your framework listed? Reach out through the [contributor
 guidance](CONTRIBUTING.md) or open an
