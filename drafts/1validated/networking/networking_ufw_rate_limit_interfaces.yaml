@@ -1,10 +1,9 @@
 id: networking_ufw_rate_limit_interfaces
-title: Ubuntu must configure the Uncomplicated Firewall (ufw) to rate-limit
-  impacted network interfaces.
-discussion: Denial of service (DoS) makes resources unavailable to legitimate users,
-  impairing mission capability. This requirement mandates configuring the OS to mitigate
-  ongoing or past DoS attacks by identifying threats and applying solutions such as
-  process limits, memory partitions, increased capacity, bandwidth, and service redundancy.
+title: Rate Limit Network Interfaces
+discussion: 
+  The system must configure the Uncomplicated Firewall (ufw) to rate-limit impacted network interfaces.
+
+  Denial of service (DoS) makes resources unavailable to legitimate users, impairing mission capability. This requirement mandates configuring the OS to mitigate ongoing or past DoS attacks by identifying threats and applying solutions such as process limits, memory partitions, increased capacity, bandwidth, and service redundancy.
 references:
   nist:
     cce:
@@ -13,7 +12,7 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - SC-05
+    - SC-5
   disa:
     cci:
     - CCI-002385

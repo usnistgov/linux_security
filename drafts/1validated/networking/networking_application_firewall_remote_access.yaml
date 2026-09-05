@@ -1,12 +1,9 @@
 id: networking_application_firewall_remote_access
-title: Ubuntu must have an application firewall installed in order to control
-  remote access methods.
-discussion: >
-  Remote access services lacking automated controls increase risk and complicate
-  access management, so Ubuntu (e.g., RDP) must enforce actions
-  on unauthorized activity, and automated session controls ensure ongoing compliance
-  by enforcing connection rules across servers, workstations, notebooks, smartphones,
-  and tablets.
+title: Application Firewall for Remote Access
+discussion: |
+  The system must have an application firewall installed in order to control remote access methods.
+
+  Remote access services lacking automated controls increase risk and complicate access management, so the system (e.g., RDP) must enforce actions on unauthorized activity, and automated session controls ensure ongoing compliance by enforcing connection rules across servers, workstations, notebooks, smartphones, and tablets.
 references:
   nist:
     cce:
@@ -15,8 +12,8 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - AC-17(01)
-    - CM-06
+    - AC-17(1)
+    - CM-6
   disa:
     cci:
     - CCI-002314

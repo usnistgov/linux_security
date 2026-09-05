@@ -1,8 +1,9 @@
 id: networking_enable_ufw
-title: Ubuntu must enable and run the Uncomplicated Firewall (ufw).
-discussion: Remote access services without automated controls increase risk and complicate
-  user access management. Ubuntu must enforce actions on detected unauthorized
-  activity to ensure compliance with remote access policies.
+title: Enable Uncomplicated Firewall (ufw)
+discussion: |
+  The system must enable and run the Uncomplicated Firewall (ufw).
+
+  Remote access services without automated controls increase risk and complicate user access management. The system must enforce actions on detected unauthorized activity to ensure compliance with remote access policies.
 references:
   nist:
     cce:
@@ -11,8 +12,8 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - CM-06
-    - AC-17(01)
+    - CM-6
+    - AC-17(1)
   disa:
     cci:
     - CCI-002314

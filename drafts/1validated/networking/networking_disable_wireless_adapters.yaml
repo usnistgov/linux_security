@@ -1,10 +1,9 @@
 id: networking_disable_wireless_adapters
-title: Ubuntu must disable all wireless network adapters.
-discussion: >
-  Without protection, wireless peripheral communications can be intercepted,
-  altered, or used to compromise the operating system, so they must meet DoD wireless
-  transmission requirements and be AO-approved. Protection can be achieved
-  via physical barriers or cryptographic means, with either method sufficient.
+title: Disable Wireless Adapters
+discussion: |
+  The system must disable all wireless network adapters.
+
+  Without protection, wireless peripheral communications can be intercepted, altered, or used to compromise the operating system, so they must meet wireless transmission requirements and be AO-approved. Protection can be achieved via physical barriers or cryptographic means, with either method sufficient.
 references:
   nist:
     cce:
@@ -13,7 +12,7 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - SC-08
+    - SC-8
   disa:
     cci:
     - CCI-002418

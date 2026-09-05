@@ -1,10 +1,9 @@
 id: networking_enable_tcp_syncookies_protection
-title: Ubuntu must be configured to use TCP syncookies.
-discussion: >
-  A denial-of-service condition makes resources unavailable to legitimate
-  users, hindering mission accomplishment or forcing degraded operations. Managing
-  excess capacity-through increased capacity, redundancy, usage priorities,
-  quotas, or partitioning-helps mitigate such attacks.
+title: Enable TCP SYN Cookies Protection
+discussion: |
+  The system must be configured to use TCP syncookies.
+
+  A denial-of-service condition makes resources unavailable to legitimate users, hindering mission accomplishment or forcing degraded operations. Managing excess capacity-through increased capacity, redundancy, usage priorities, quotas, or partitioning-helps mitigate such attacks.
 references:
   nist:
     cce:
@@ -13,7 +12,7 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - SC-05(02)
+    - SC-05(2)
   disa:
     cci:
     - CCI-001095

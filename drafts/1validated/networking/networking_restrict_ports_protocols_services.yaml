@@ -1,12 +1,9 @@
 id: networking_restrict_ports_protocols_services
-title: >
-  Ubuntu must be configured to prohibit or restrict the use of functions,
-  ports, protocols, and/or services, as defined in the Ports, Protocols, and Services
-  Management\xC2\_Category Assurance List (PPSM CAL) and vulnerability assessments.
-discussion: To prevent unauthorized device connections, data transfers, or tunneling,
-  Ubuntu must disable or restrict unused physical and logical ports/protocols,
-  providing only essential services and limiting functionality to authorized, required
-  capabilities.
+title: Restrict Ports, Protocols, and Services
+discussion: 
+  The system must be configured to prohibit or restrict the use of functions, ports, protocols, and/or services, as defined in the Ports, Protocols, and Services Management\xC2\_Category Assurance List (PPSM CAL) and vulnerability assessments.
+
+  To prevent unauthorized device connections, data transfers, or tunneling, Ubuntu must disable or restrict unused physical and logical ports/protocols, providing only essential services and limiting functionality to authorized, required capabilities.
 references:
   nist:
     cce:
@@ -15,7 +12,7 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - CM-07
+    - CM-7
   disa:
     cci:
     - CCI-000382
