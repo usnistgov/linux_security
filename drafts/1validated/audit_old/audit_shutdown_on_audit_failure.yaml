@@ -1,16 +1,16 @@
 id: audit_shutdown_on_audit_failure
-title: Ubuntu must shut down by default upon audit failure.
-discussion: If the OS risks failing to process audit logs, it must mitigate failures
-  by overwriting the oldest records when storage is full and queuing records locally
-  when a central server is unreachable, then synchronizing once the connection is
-  restored.
+title: Shutdown on Audit Failure
+discussion: 
+  The system must shut down by default upon audit failure.
+
+  If the OS risks failing to process audit logs, it must mitigate failures by overwriting the oldest records when storage is full and queuing records locally when a central server is unreachable, then synchronizing once the connection is restored.
 references:
   nist:
     cce:
       ubuntu_22:
       - CCE-XXXXX-X
     800-53r5:
-    - AU-05
+    - AU-5
   disa:
     cci:
     - CCI-000140

@@ -1,10 +1,9 @@
 id: audit_crypto_protect_audit_tools
-title: Ubuntu must use cryptographic mechanisms to protect the integrity
-  of audit tools.
-discussion: Protecting audit tool integrity is essential to ensure audit information
-  remains trustworthy, as attackers may replace or tamper with tools to hide or erase
-  system activity. Therefore, audit tools must be cryptographically signed (e.g.,
-  via checksum hashes) to detect any modifications, manipulation, or replacement.
+title: Audit Tools Must Be Cryptographically Protected
+discussion: |
+  The system must use cryptographic mechanisms to protect the integrity of audit tools.
+
+  Protecting audit tool integrity is essential to ensure audit information remains trustworthy, as attackers may replace or tamper with tools to hide or erase system activity. Therefore, audit tools must be cryptographically signed (e.g., via checksum hashes) to detect any modifications, manipulation, or replacement.
 references:
   nist:
     cce:
@@ -13,7 +12,7 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - AU-09(03)
+    - AU-9(3)
   disa:
     cci:
     - CCI-001496

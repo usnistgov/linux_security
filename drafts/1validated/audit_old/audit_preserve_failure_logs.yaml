@@ -1,8 +1,9 @@
 id: audit_preserve_failure_logs
-title: Ubuntu must be configured to preserve log records from failure events.
-discussion: Failing to a known secure state safeguards confidentiality, integrity,
-  and availability according to mission needs, and preserving OS state information
-  allows a swift restart with minimal disruption to business processes.
+title: Audit Preserve Failure Logs
+discussion: |
+  The system must be configured to preserve log records from failure events.
+
+  Failing to a known secure state safeguards confidentiality, integrity, and availability according to mission needs, and preserving OS state information allows a swift restart with minimal disruption to business processes.
 references:
   nist:
     cce:

@@ -1,16 +1,16 @@
 id: audit_prevent_unauthorized_rule_changes
-title: Ubuntu audit system must protect auditing rules from unauthorized
-  change.
-discussion: Unauthorized disclosure of audit records can expose system and configuration
-  data, compromising confidentiality. In immutable mode, users cannot alter audit
-  settings to hide malicious activity, and any reboot would be noticeable for investigation.
+title: Audit Prevent Unauthorized Rule Changes
+discussion: |
+  The system audit system must protect auditing rules from unauthorized change.
+
+  Unauthorized disclosure of audit records can expose system and configuration data, compromising confidentiality. In immutable mode, users cannot alter audit settings to hide malicious activity, and any reboot would be noticeable for investigation.
 references:
   nist:
     cce:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - AU-09
+    - AU-9
   disa:
     cci:
     - CCI-000163

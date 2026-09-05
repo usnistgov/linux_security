@@ -1,9 +1,9 @@
 id: audit_log_file_access_control
-title: Ubuntu must be configured so that audit log files are not read or write-accessible by unauthorized users.
-discussion: >
-  Unauthorized disclosure of audit records can expose system and configuration
-  data, compromising confidentiality. Audit information-including records,
-  settings, and reports-is essential for auditing operating system activity.
+title: Audit Log File Access Control
+discussion: |
+  The system must be configured so that audit log files are not read or write-accessible by unauthorized users.
+
+  Unauthorized disclosure of audit records can expose system and configuration data, compromising confidentiality. Audit information-including records, settings, and reports-is essential for auditing operating system activity.
 references:
   nist:
     cce:
@@ -12,7 +12,7 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - AU-09
+    - AU-9
   disa:
     cci:
     - CCI-000163

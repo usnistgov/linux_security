@@ -1,8 +1,9 @@
 id: audit_monitor_remote_access
-title: Ubuntu must monitor remote access methods.
-discussion: Remote access services lacking automated monitoring increase risk and
-  hinder effective access management. Automated monitoring of remote sessions enables
-  detection of cyberattacks and ensures compliance by auditing connection activities.
+title: Audit Remote Access Monitoring
+discussion: |
+  The system must monitor remote access methods.
+
+  Remote access services lacking automated monitoring increase risk and hinder effective access management. Automated monitoring of remote sessions enables detection of cyberattacks and ensures compliance by auditing connection activities.
 references:
   nist:
     cce:
@@ -11,7 +12,7 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - AC-17(01)
+    - AC-17(1)
   disa:
     cci:
     - CCI-000067

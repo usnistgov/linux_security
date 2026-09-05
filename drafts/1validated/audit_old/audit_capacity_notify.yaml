@@ -1,0 +1,54 @@
+id: audit_capacity_notify
+title: Audit Notify Admin $ODV Storage
+discussion: |
+  The system must immediately notify the system administrator (SA) and information system security officer (ISSO) when the audit record storage volume
+  reaches $ODV percent remaining of the allocated capacity.
+
+  Security personnel must be alerted when storage drops to $ODV% remaining, or they cannot plan the needed audit log capacity expansion.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - AU-5(1)
+  disa:
+    cci:
+    - CCI-001855
+    srg:
+    - SRG-OS-000343-GPOS-00134
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-653040
+      ubuntu_24:
+      - UBTU-24-900960
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: grep -e "^space_left_action.*email" -e "^space_left.*$ODV\%" /etc/audit/auditd.conf | wc -l
+        result:
+          integer: 2
+      fix:
+        additional_info: Ensure "space_left_action" is set to "email" and is set to a valid email address and configured to notify when storage reaches 75% utilization.
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: low
+odv:
+  hint:
+    datatype: number
+    description: Percentage of storage remaining before notifying the system administrator and information system security officer.
+    validation:
+      min: 1
+      max: 100
+  recommended: 25
+  disa_stig: 25
+tags:
+- 800-53r5_high

@@ -1,11 +1,9 @@
 id: audit_offload_audit_logs_to_remote
-title: Ubuntu must audit event multiplexor must be configured to offload audit
-  logs onto a different system from the system being audited.
-discussion: >
-  Storing audit data in one location risks accidental deletion or alteration;
-  offloading to a remote server mitigates this risk. Although auditd cannot send
-  records directly, it can use an audit event multiplexor plugin to forward
-  logs to a centralized server
+title: Audit Offload Audit Logs to Remote
+discussion: |
+  The system must audit event multiplexor must be configured to offload audit logs onto a different system from the system being audited.
+
+  Storing audit data in one location risks accidental deletion or alteration; offloading to a remote server mitigates this risk. Although auditd cannot send records directly, it can use an audit event multiplexor plugin to forward logs to a centralized server
 references:
   nist:
     cce:
@@ -14,7 +12,7 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - AU-04(01)
+    - AU-4(1)
   disa:
     cci:
     - CCI-001851

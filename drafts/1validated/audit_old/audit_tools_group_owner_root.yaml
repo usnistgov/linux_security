@@ -1,17 +1,16 @@
 id: audit_tools_group_owner_root
-title: Ubuntu must configure the audit tools to be group owned by root.
-discussion: >
-  Protecting audit information requires securing the tools used to view
-  and manipulate logs, ensuring only authorized users can access them via permissions
-  and roles. Audit tools include vendor-provided, open-source, custom
-  queries, and report generators.
+title: Group Ownership of Audit Tools
+discussion: |
+  The system must configure the audit tools to be group owned by root.
+
+  Protecting audit information requires securing the tools used to view and manipulate logs, ensuring only authorized users can access them via permissions and roles. Audit tools include vendor-provided, open-source, custom queries, and report generators.
 references:
   nist:
     cce:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - AU-09
+    - AU-9
   disa:
     cci:
     - CCI-001494

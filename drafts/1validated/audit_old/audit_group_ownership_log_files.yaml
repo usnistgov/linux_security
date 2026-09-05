@@ -1,10 +1,9 @@
 id: audit_group_ownership_log_files
-title: Ubuntu must permit only authorized groups ownership of the audit
-  log files.
-discussion: >
-  Unauthorized disclosure of audit records can expose system and configuration
-  data to attackers, compromising confidentiality. Audit information-including
-  records, settings, and reports-is required to audit operating system activity.
+title: Audit Group Ownership of Log Files
+discussion: |
+  The system must permit only authorized groups ownership of the audit log files.
+
+  Unauthorized disclosure of audit records can expose system and configuration data to attackers, compromising confidentiality. Audit information-including records, settings, and reports-is required to audit operating system activity.
 references:
   nist:
     cce:
@@ -13,7 +12,7 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - AU-09
+    - AU-9
   disa:
     cci:
     - CCI-000163
