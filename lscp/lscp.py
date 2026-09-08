@@ -2,13 +2,13 @@ import argparse
 from typing import List
 
 import yaml
-from classes import Baseline, Rule
-from classes.baseline import Author, Section
-from classes.platforms import SupportedPlatform
+from classes.baseline import Baseline, BaselinePlatform, Section
+from classes.rule import Rule
 from generate import GeneratorEngine
 from generate.shell import ShellGenerator
-from utils.dir_utils import get_data_path
-from utils.rules import get_rule_from_string
+from utils.data_search import get_rule_from_string
+from utils.directories import get_custom_path
+from utils.rules import compute_sections
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -57,6 +57,13 @@ if __name__ == "__main__":
         action="store_true",
         help="list the available keywords that can be used to generate a baseline YAML file",
     )
+    baseline.add_argument(
+        "-p",
+        "--platform",
+        required=True,
+        default="ubuntu:22.04",
+        help="select the target platform for rules"
+    )
 
     args = parser.parse_args()
 
@@ -66,9 +73,6 @@ if __name__ == "__main__":
         with open(args.baseline, "r") as file:
             baseline_yaml = yaml.safe_load(file)
             baseline_data = Baseline.model_validate(baseline_yaml)
-
-        for section in baseline_data.profile:
-            rules += [get_rule_from_string(rule)[0] for rule in section.rules]
 
         # generate_files = ["pdf", "html"]
         generate_files = []
@@ -82,10 +86,11 @@ if __name__ == "__main__":
 
         engine = GeneratorEngine()
         engine.register_generator(ShellGenerator)
-        engine.generate(generate_files, baseline_data, rules)
+        engine.generate(generate_files, baseline_data)
+
     elif args.command == "baseline":
         all_rules: List[Rule]
-        if args.list_tags or len(args.keywords) > 0:
+        if args.list_tags or len(args.keywords) == 1:
             all_rules = get_rule_from_string()
         else:
             parser.error("Keywords must contain a value, or -l should be passed.")
@@ -98,28 +103,31 @@ if __name__ == "__main__":
                 print(tag)
         else:
             new_rules = [
-                rule.id
-                for rule in all_rules
-                for tag in rule.tags
-                if tag in args.keywords
+                rule for rule in all_rules for tag in rule.tags if tag in args.keywords
             ]
 
+            platform, version = tuple(args.platform.split(":"))
+
+            default_platform = BaselinePlatform(os=platform, version=float(version))
+
             new_baseline = Baseline(
-                title="Unknown",
-                description="Unknown",
-                authors=[
-                    Author(
-                        name="Jane Doe",
-                        organization="Example Organization",
-                    )
-                ],
-                platform=SupportedPlatform.ubuntu_2204,
-                profile=[Section(section="Uncategorized", rules=new_rules)],
+                title=f"{default_platform.os} {default_platform.version}: Security Configuration - {args.keywords[0]}",
+                parent_values="recommended",
+                platform=default_platform,
+                profile=compute_sections(new_rules, default_platform),
             )
 
-            output_path = get_data_path("baselines", "unknown.yaml")
+            output_path = get_custom_path(
+                "baselines",
+                f"{args.keywords[0]}_{default_platform.os}_{default_platform.version}.yaml",
+            )
             with open(output_path, "w+") as file:
-                file.write(yaml.safe_dump(new_baseline.model_dump(), sort_keys=False))
+                file.write(
+                    yaml.safe_dump(
+                        new_baseline.model_dump(exclude_none=True, by_alias=True),
+                        sort_keys=False,
+                    )
+                )
 
     else:
         parser.print_help()

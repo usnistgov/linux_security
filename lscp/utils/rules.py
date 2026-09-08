@@ -1,50 +1,63 @@
-from pathlib import Path
 from typing import List
 
-import yaml
-from classes import Rule, SupportedPlatform
-from classes.rule import EnforcementInfo, EnforcementType
+from classes.baseline import BaselinePlatform, Section
+from classes.rule import EnforcementInfo, Rule
 
-from .dir_utils import get_data_path
+SECTION_REFERENCES = {
+    "audit": "Auditing",
+    "auth": "Authentication",
+    "os": "Operating System",
+    "pwpolicy": "Password Policies",
+    "ssh": "Secure Shell",
+    "services": "Services",
+    "networking": "Networking",
+}
 
 
-def get_enforcement_block(rule: Rule, platform: SupportedPlatform) -> EnforcementInfo:
-    high_level_block = rule.enforcement_info
-    current_platform_lst = [
-        p_rule for p_rule in rule.platforms if p_rule.name == platform
+def get_enforcement_block(
+    rule: Rule, platform: BaselinePlatform
+) -> EnforcementInfo | None:
+    if platform.os not in rule.platforms.keys():
+        raise ValueError(
+            f"Rule {rule.rule_id} does not support the supplied platform, {platform.os}"
+        )
+    if str(platform.version) not in rule.platforms[platform.os].versions.keys():
+        raise ValueError(
+            f"Rule {rule.rule_id} does not support the supplied platform, {platform.os}"
+        )
+
+    rule_platform = rule.platforms[platform.os]
+    rule_platform_version = rule_platform.versions[str(platform.version)]
+
+    enforcement_block = rule_platform.enforcement_info
+    if rule_platform_version.enforcement_info:
+        enforcement_block = rule_platform_version.enforcement_info
+
+    return enforcement_block
+
+
+def compute_sections(rules: List[Rule], platform: BaselinePlatform) -> List[Section]:
+    section_lst: List[Section] = []
+
+    filtered_rules = [
+        rule
+        for rule in rules
+        if platform.os in rule.platforms.keys()
+        and str(platform.version) in rule.platforms[platform.os].versions.keys()
     ]
-    if len(current_platform_lst) == 0:
-        raise ValueError(f"Rule {rule.id} does not support platform {platform.name}")
 
-    current_enforcement = current_platform_lst[0].enforcement_info
+    for rule in filtered_rules:
+        section_id = rule.rule_id.split("_")[0]
 
-    if current_enforcement.enforcement_type == EnforcementType.inherit:
-        return high_level_block
-    elif current_enforcement.enforcement_type == EnforcementType.full:
-        return current_enforcement
-    elif current_enforcement.enforcement_type == EnforcementType.vars:
-        high_level_block.vars = current_enforcement.vars
-        return high_level_block
-    else:
-        raise ValueError('Enforcement type for current platform is null or "blank" ')
+        section_name = SECTION_REFERENCES.get(section_id, "Uncategorized")
 
+        filtered_section_lst = [
+            section for section in section_lst if section.section == section_name
+        ]
+        if len(filtered_section_lst) == 0:
+            section_lst.append(Section(section=section_name, rules=[rule]))
+        else:
+            existing_section = filtered_section_lst[0]
+            existing_section.rules.append(rule)
 
-def get_rule_from_string(rule_name: str | None = None) -> List[Rule]:
-    glob_search = "*.yaml"
-    rules: List[Rule] = []
-    if rule_name:
-        glob_search = f"*{rule_name}.yaml"
-
-    rule_files = get_data_path("rules")
-    rule_path = Path(rule_files)
-
-    search_results = list(rule_path.rglob(glob_search))
-    if len(search_results) == 0:
-        raise NameError("Could not find rule name in data rules paths", name=rule_name)
-
-    for found_yaml in search_results:
-        with open(found_yaml, "r") as file:
-            yaml_file = yaml.safe_load(file)
-            rules.append(Rule.model_validate(yaml_file))
-
-    return rules
+    return sorted(section_lst, key=lambda section: section.section)
