@@ -31,7 +31,7 @@ platforms:
         result:
           integer: 6
       fix:
-        shell: echo -e "# Audit Tools\n/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512"
+        shell: printf "%s\\n" "# Audit Tools" "/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512" "/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512" "/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512" "/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512" "/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512" "/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512" >> /etc/aide/aide.conf
     '22.04':
       benchmarks:
       - name: disa_stig

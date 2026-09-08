@@ -29,7 +29,7 @@ platforms:
         result:
           integer: 2
       fix:
-        shell: echo -e "PermitEmptyPasswords no\nPermitUserEnvironment no" >> /etc/ssh/sshd_config && systemctl restart ssh
+        shell: printf "%s\\n" "PermitEmptyPasswords no" "PermitUserEnvironment no" >> /etc/ssh/sshd_config && systemctl restart ssh
     '22.04':
       benchmarks:
       - name: disa_stig

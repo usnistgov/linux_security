@@ -26,9 +26,9 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: dpkg -l nfs-kernel-server
+        shell: dpkg -l nfs-kernel-server | grep -q "^un"
         result:
-          exit_code: 1
+          exit_code: 0
       fix:
         shell: apt purge -y nfs-kernel-server
     '22.04':

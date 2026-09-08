@@ -29,7 +29,7 @@ platforms:
       check:
         shell: nmcli -t -f DEVICE,TYPE,STATE device | awk -F":" '{ if ($2 == "wifi") print "failed" }' | uniq
         result:
-          string: pass
+          string: ""
       fix:
         additional_info: Use modprobe to disable the unapproved Wi-Fi devices.
     '22.04':

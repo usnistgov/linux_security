@@ -7,6 +7,8 @@ discussion: Without multifactor authentication, privileged accounts are far easi
 references:
   nist:
     cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
@@ -19,6 +21,8 @@ references:
     srg:
     - SRG-OS-000105-GPOS-00052
     disa_stig:
+      ubuntu_22:
+      - UBTU-22-612020
       ubuntu_24:
       - UBTU-24-400030
 platforms:
@@ -30,6 +34,10 @@ platforms:
           string: "yes"
       fix:
         shell: echo "PubkeyAuthentication yes" >> /etc/ssh/sshd_config && systemctl restart ssh
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
     '24.04':
       benchmarks:
       - name: disa_stig

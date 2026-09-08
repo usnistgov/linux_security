@@ -31,7 +31,7 @@ platforms:
         result:
           integer: 2
       fix:
-        shell: echo -e "-a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=unset -k module_chng\n-a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=unset -k module_chng" >> /etc/audit/rules.d/stig.rules && augenrules --load
+        shell: printf "%s\\n" "-a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=unset -k module_chng" "-a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=unset -k module_chng" >> /etc/audit/rules.d/stig.rules && augenrules --load
     '20.04':
       benchmarks:
       - name: disa_stig

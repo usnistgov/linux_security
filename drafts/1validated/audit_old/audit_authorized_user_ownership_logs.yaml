@@ -33,7 +33,7 @@ platforms:
         result:
           exit_code: 1
       fix:
-        shell: chown root $(grep "^log_file" /etc/audit/auditd.conf | awk -F" = " '{print $2}')*
+        shell: chown root $(grep "^log_file" /etc/audit/auditd.conf | awk -F" = " \'{print $2}\')*
     '22.04':
       benchmarks:
       - name: disa_stig

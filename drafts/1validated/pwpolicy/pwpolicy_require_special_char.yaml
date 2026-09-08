@@ -34,7 +34,7 @@ platforms:
         result:
           integer: -1
       fix:
-        shell: echo "ocredit = 1" >> /etc/security/pwquality.conf
+        shell: echo "ocredit = -1" >> /etc/security/pwquality.conf
     '22.04':
       benchmarks:
       - name: disa_stig

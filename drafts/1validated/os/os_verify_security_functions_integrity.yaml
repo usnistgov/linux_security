@@ -34,7 +34,7 @@ platforms:
         result:
           exit_code: 0
       fix:
-        shell: apt install -y aide
+        shell: debconf-set-selections <<< "postfix postfix/main_mailer_type string \'No configuration\'" && DEBIAN_FRONTEND=noninteractive apt install -y aide
     '22.04':
       benchmarks:
       - name: disa_stig

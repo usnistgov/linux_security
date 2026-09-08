@@ -35,7 +35,7 @@ platforms:
         result:
           string: pass
       fix:
-        shell: sed -i '1i * hard maxlogins 10' /etc/security/limits.conf
+        shell: sed -i "1i \* hard maxlogins 10" /etc/security/limits.conf
     '22.04':
       benchmarks:
       - name: disa_stig

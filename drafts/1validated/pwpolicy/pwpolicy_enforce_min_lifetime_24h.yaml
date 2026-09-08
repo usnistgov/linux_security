@@ -29,7 +29,7 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: grep "^PASS_MIN_DAYS" /etc/login.defs | awk '{print $2}'
+        shell: grep "^PASS_MIN_DAYS" /etc/login.defs | tail -n 1 | awk '{print $2}'
         result:
           integer: 1
       fix:

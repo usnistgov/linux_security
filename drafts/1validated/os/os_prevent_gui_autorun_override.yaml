@@ -27,7 +27,7 @@ platforms:
       check:
         shell: gsettings writable org.gnome.desktop.media-handling autorun-never
         result:
-          bool: false
+          boolean: false
       fix:
         shell: mkdir -p /etc/dconf/db/local.d/locks && echo "/org/gnome/desktop/media-handling/autorun-never" >> /etc/dconf/db/local.d/locks/00-security-settings-lock && dconf update
     '24.04':

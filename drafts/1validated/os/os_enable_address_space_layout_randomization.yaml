@@ -33,7 +33,7 @@ platforms:
         result:
           string: kernel.randomize_va_space = 2
       fix:
-        shell: sed -i 's/kernel.randomize_va_space.*//g' /etc/sysctl.conf && sed -i 's/kernel.randomize_va_space.*//g' /etc/sysctl.d/* && sysctl --system
+        shell: sed -i "s/kernel.randomize_va_space.*//g" /etc/sysctl.conf && sed -i "s/kernel.randomize_va_space.*//g" /etc/sysctl.d/* && sysctl --system
     '22.04':
       benchmarks:
       - name: disa_stig

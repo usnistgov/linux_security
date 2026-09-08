@@ -1,4 +1,4 @@
-id: ssh_banner_display
+id: auth_display_dod_banner_cli
 title: Ubuntu must display the Standard Mandatory DOD Notice and Consent
   Banner before granting access to via an SSH logon.
 discussion: >

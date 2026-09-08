@@ -1,4 +1,4 @@
-id: audit_capture_event_details_real_time
+id: audit_auditd_enabled
 title: Audit Events with Details
 discussion: |
   The system must produce audit records and reports containing information to establish when, where, what type, the source, and the outcome for all defined auditable events and actions in near real time.

@@ -29,7 +29,7 @@ platforms:
         result:
           exit_code: 0
       fix:
-        shell: sed -i '/\[pam\]/a \offline_credentials_expiration = 1' /etc/sssd/sssd.conf && systemctl restart sssd
+        shell: sed -i "/\[pam\]/a \offline_credentials_expiration = 1" /etc/sssd/sssd.conf && systemctl restart sssd
     '22.04':
       benchmarks:
       - name: disa_stig

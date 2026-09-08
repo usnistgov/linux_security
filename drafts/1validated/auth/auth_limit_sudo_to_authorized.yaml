@@ -30,9 +30,9 @@ platforms:
       check:
         shell: grep -Rhq "^ALL" /etc/sudoers /etc/sudoers.d/*
         result:
-          exit_code: 0
+          exit_code: 1
       fix:
-        shell: sed -i 's/^ALL.*//g' /etc/sudoers && sed -i 's/^ALL.*//g' /etc/sudoers.d/*
+        shell: sed -i "s/^ALL.*//g" /etc/sudoers && sed -i "s/^ALL.*//g" /etc/sudoers.d/*
     '22.04':
       benchmarks:
       - name: disa_stig

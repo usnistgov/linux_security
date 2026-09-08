@@ -31,7 +31,7 @@ platforms:
         result:
           integer: 2
       fix:
-        shell: echo -e "auth.*,authpriv.* /var/log/secure\ndaemon.* /var/log/messages" >> /etc/rsyslog.d/50-default.conf && systemctl restart rsyslog.service
+        shell: printf "%s\\n" "auth.*,authpriv.* /var/log/secure" "daemon.* /var/log/messages" >> /etc/rsyslog.d/50-default.conf && systemctl restart rsyslog.service
     '22.04':
       benchmarks:
       - name: disa_stig

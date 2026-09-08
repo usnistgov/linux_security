@@ -32,7 +32,7 @@ platforms:
         result:
           integer: 0
       fix:
-        shell: chmod 600 $(dirname $(grep "^log_file = " /etc/audit/auditd.conf | awk -F" = " '{print $2}'))/*
+        shell: chmod 600 $(dirname $(grep "^log_file = " /etc/audit/auditd.conf | awk -F" = " \'{print $2}\'))/*
     '22.04':
       benchmarks:
       - name: disa_stig
