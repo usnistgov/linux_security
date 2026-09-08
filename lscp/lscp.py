@@ -57,6 +57,13 @@ if __name__ == "__main__":
         action="store_true",
         help="list the available keywords that can be used to generate a baseline YAML file",
     )
+    baseline.add_argument(
+        "-p",
+        "--platform",
+        required=True,
+        default="ubuntu:22.04",
+        help="select the target platform for rules"
+    )
 
     args = parser.parse_args()
 
@@ -99,13 +106,15 @@ if __name__ == "__main__":
                 rule for rule in all_rules for tag in rule.tags if tag in args.keywords
             ]
 
-            default_platform = BaselinePlatform(os="ubuntu", version=22.04)
+            platform, version = tuple(args.platform.split(":"))
+
+            default_platform = BaselinePlatform(os=platform, version=float(version))
 
             new_baseline = Baseline(
                 title=f"{default_platform.os} {default_platform.version}: Security Configuration - {args.keywords[0]}",
                 parent_values="recommended",
                 platform=default_platform,
-                profile=compute_sections(new_rules),
+                profile=compute_sections(new_rules, default_platform),
             )
 
             output_path = get_custom_path(

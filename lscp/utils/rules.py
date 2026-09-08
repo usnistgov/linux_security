@@ -36,10 +36,17 @@ def get_enforcement_block(
     return enforcement_block
 
 
-def compute_sections(rules: List[Rule]) -> List[Section]:
+def compute_sections(rules: List[Rule], platform: BaselinePlatform) -> List[Section]:
     section_lst: List[Section] = []
 
-    for rule in rules:
+    filtered_rules = [
+        rule
+        for rule in rules
+        if platform.os in rule.platforms.keys()
+        and str(platform.version) in rule.platforms[platform.os].versions.keys()
+    ]
+
+    for rule in filtered_rules:
         section_id = rule.rule_id.split("_")[0]
 
         section_name = SECTION_REFERENCES.get(section_id, "Uncategorized")

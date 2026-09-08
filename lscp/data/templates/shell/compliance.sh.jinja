@@ -94,7 +94,7 @@ log_csv(){
         echo "Rule,Status,Result,Status Code,Expected Output,Expected Status Code" > "$audit_csv"
     fi
 
-    echo "$rule_name,$result_status,$result,$status_code,$expected_standard_out,$expected_status_code" >> "$audit_csv"
+    echo "$rule_name,$result_status,\"$result\",$status_code,\"$expected_standard_out\",$expected_status_code" >> "$audit_csv"
 }
 
 clear_logs(){
@@ -111,7 +111,7 @@ compliance_count(){
 
     local total_rules=$(tail -n +2 $LAST_RUN)
     local compliant_count=$(echo "$total_rules" | awk -F"," '{if ($2 == "passed") print $1}' | wc -l)
-    local non_compliant_count=$(($(echo "$total_rules" | wc -l) - $compliant_count))
+    local non_compliant_count=$(echo "$total_rules" | awk -F"," '{if ($2 == "failed") print $1}' | wc -l)
 
     if [[ $1 == "compliant" ]]; then
         echo $compliant_count
@@ -165,7 +165,7 @@ run_scan(){
 
 {% for profile in baseline.profile %}
 {% for rule in profile.rules %}
-{% if "manual" not in rule.tags and "Excluded" not in rule.section %}
+{% if "manual" not in rule.tags and "Excluded" not in rule.section and rule.check is not none %}
 
 {% include "check.sh.jinja" %}
 
@@ -191,7 +191,7 @@ run_fix(){
 
 {% for profile in baseline.profile %}
 {% for rule in profile.rules %}
-{% if "manual" not in rule.tags and "Excluded" not in rule.section %}
+{% if "manual" not in rule.tags and "Excluded" not in rule.section and rule.fix is not none %}
 
 {% include "fix.sh.jinja" %}
 

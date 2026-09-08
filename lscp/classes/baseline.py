@@ -44,6 +44,11 @@ class Section(BaseModel):
     def _output_rules(self, rules: List[Rule]):
         return [rule.rule_id for rule in rules]
 
+    def __eq__(self, value: object) -> bool:
+        if not isinstance(value, Section):
+            return NotImplemented
+        return value.section == self.section
+
 
 class Author(BaseModel):
     """Author(s) for the specified baseline.
@@ -80,6 +85,12 @@ class BaselinePlatform(BaseModel):
 
     os: str
     version: str | float
+
+    def __eq__(self, value: object) -> bool:
+        if not isinstance(value, BaselinePlatform):
+            return NotImplemented
+        else:
+            return self.os == value.os and str(self.version) == str(value.version)
 
 
 class Baseline(BaseModel):

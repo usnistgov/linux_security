@@ -64,7 +64,7 @@ def baseline_to_template(baseline: Baseline) -> TemplateBaseline:
                         result_value = [value for value in values if value is not None][
                             0
                         ]
-                if enforcement.fix:
+                if enforcement.fix and enforcement.fix.shell:
                     new_fix = enforcement.fix.shell
 
             new_rules.append(
@@ -82,6 +82,7 @@ def baseline_to_template(baseline: Baseline) -> TemplateBaseline:
                     discussion=rule.discussion,
                     references=rule.references,
                     platforms=rule.platforms,
+                    tags=rule.tags
                 )
             )
 

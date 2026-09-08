@@ -16,6 +16,6 @@ if $using_whiptail; then
 fi
 ((rule_count++))
 
-rule_fix "$rule_id" '{{ rule.fix }}'
+rule_fix "$rule_id" $'{{ rule.fix }}'
 
 sleep 0.1

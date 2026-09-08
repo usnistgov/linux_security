@@ -18,6 +18,13 @@ class ShellGenerator(BaseGenerator):
         env = Environment(loader=FileSystemLoader(get_data_path("templates", "shell")))
         template = env.get_template("compliance.sh.jinja")
 
+        new_baseline = baseline.model_copy()
+
+        packages_section = [section for section in new_baseline.profile if section.section == "Packages"]
+        if len(packages_section) != 0:
+            new_baseline.profile.remove(packages_section[0])
+            new_baseline.profile.insert(0, packages_section[0])
+
         baseline_id = baseline.title.split(" ")[-1]
 
         render_out = (
