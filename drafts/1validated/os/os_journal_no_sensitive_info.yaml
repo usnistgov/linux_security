@@ -29,11 +29,11 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: stat -c '%a' /run/log/journal /run/log/journal/**/* /var/log/journal /var/log/journal/**/* 2> /dev/null | gawk '{mode=strtonum("0"$1); if (and(mode, compl(0640)) != 0) print $1 }' | grep -v "2755" | wc -l
+        shell: stat -L -c "%n %a" /run/log/journal /run/log/journal/**/* /var/log/journal /var/log/journal/**/* 2> /dev/null | perl -ane 'chomp; $mode = (oct($F[1]) & 0777); print "$F[0] $F[1]\n" if ($mode & ~0640) != 0' | grep -v "2755"
         result:
-          integer: 0
+          string: ""
       fix:
-        shell: echo -e "z /run/log/journal 2750 root systemd-journal - -\nZ /run/log/journal/%m ~2750 root systemd-journal - -\nz /var/log/journal 2750 root systemd-journal - -\nz /var/log/journal/%m 2750 root systemd-journal - -\nz /var/log/journal/%m/system.journal 0640 root systemd-journal - -" >> /etc/tmpfiles.d/zzz-systemd-stig.conf
+        shell: printf "%s\\n" "z /run/log/journal 2750 root systemd-journal - -" "Z /run/log/journal/%m ~2750 root systemd-journal - -" "z /var/log/journal 2750 root systemd-journal - -" "z /var/log/journal/%m 2750 root systemd-journal - -" "z /var/log/journal/%m/system.journal 0640 root systemd-journal - -" >> /etc/tmpfiles.d/zzz-systemd-stig.conf
     '22.04':
       benchmarks:
       - name: disa_stig

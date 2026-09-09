@@ -33,7 +33,7 @@ platforms:
         result:
           string: "yes"
       fix:
-        shell: echo "PubkeyAuthentication yes" >> /etc/ssh/sshd_config && systemctl restart ssh
+        shell: echo "PubkeyAuthentication yes" >> /etc/ssh/sshd_config && systemctl reset-failed ssh && systemctl restart ssh
     '22.04':
       benchmarks:
       - name: disa_stig

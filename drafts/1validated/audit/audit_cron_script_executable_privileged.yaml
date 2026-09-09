@@ -36,7 +36,7 @@ platforms:
         result:
           integer: 2
       fix:
-        shell: printf "%s\\n" "-w /etc/cron.d/ -p wa -k cronjobs" "-w /var/spool/cron/ -p wa -k cronjobs" >> /etc/audit/rules.d/stig.rules && augenrules --load
+        shell: printf "%s\\n" "-w /etc/cron.d/ -p wa -k cronjobs" "-w /var/spool/cron/ -p wa -k cronjobs" >> /etc/audit/rules.d/stig.rules && chmod 640 /etc/audit/rules.d/stig.rules && augenrules --load
     '20.04':
       benchmarks:
       - name: disa_stig

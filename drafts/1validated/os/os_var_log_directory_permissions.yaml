@@ -27,9 +27,9 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: stat -c '%a' /var/log | gawk '{mode=strtonum("0"$1); if (and(mode, compl(0755)) == 0) print "passed" }'
+        shell: stat -L -c "%n %a" /var/log | stat -L -c "%n %a" /bin /bin/* /sbin /sbin/* /usr/bin /usr/bin/* /usr/sbin /usr/sbin/* /usr/local/bin /usr/local/bin/* /usr/local/sbin /usr/local/sbin/* 2> /dev/null | perl -ane 'chomp; $mode = (oct($F[1]) & 0777); print "$F[0]\n" if ($mode & ~0755) != 0'
         result:
-          string: passed
+          string: ""
       fix:
         shell: chmod 755 /var/log
     '22.04':

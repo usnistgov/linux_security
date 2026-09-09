@@ -33,7 +33,7 @@ platforms:
         result:
           integer: 1
       fix:
-        shell: echo "ClientAliveCountMax 1" >> /etc/ssh/sshd_config && systemctl restart ssh
+        shell: echo "ClientAliveCountMax 1" >> /etc/ssh/sshd_config && systemctl reset-failed ssh && systemctl restart ssh
     '22.04':
       benchmarks:
       - name: disa_stig

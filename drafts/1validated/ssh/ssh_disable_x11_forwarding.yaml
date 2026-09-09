@@ -31,7 +31,7 @@ platforms:
         result:
           exit_code: 0
       fix:
-        shell: sed -i "s/X11Forwarding yes//g" /etc/ssh/sshd_config && echo "X11Forwarding no" >> /etc/ssh/sshd_config && systemctl restart ssh
+        shell: sed -i "s/X11Forwarding yes//g" /etc/ssh/sshd_config && echo "X11Forwarding no" >> /etc/ssh/sshd_config && systemctl reset-failed ssh && systemctl restart ssh
     '22.04':
       benchmarks:
       - name: disa_stig

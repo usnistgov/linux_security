@@ -35,7 +35,7 @@ platforms:
         result:
           exit_code: 0
       fix:
-        shell: echo "-a always,exit -F path=/usr/bin/sudoedit -F perm=x -F auid>=1000 -F auid!=unset -k priv_cmd" >> /etc/audit/rules.d/stig.rules && augenrules --load
+        shell: echo "-a always,exit -F path=/usr/bin/sudoedit -F perm=x -F auid>=1000 -F auid!=unset -k priv_cmd" >> /etc/audit/rules.d/stig.rules && chmod 640 /etc/audit/rules.d/stig.rules && augenrules --load
     '20.04':
       benchmarks:
       - name: disa_stig

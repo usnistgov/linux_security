@@ -24,7 +24,7 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: grep "^ciphers" /etc/ssh/ssh_config | awk '{print $2}'
+        shell: grep "^Ciphers" /etc/ssh/ssh_config | awk '{print $2}'
         result:
           string: aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes128-ctr
       fix:

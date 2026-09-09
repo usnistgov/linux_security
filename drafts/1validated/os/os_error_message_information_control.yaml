@@ -31,9 +31,9 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: find /var/log -perm /137 ! -name '*[bw]tmp' ! -name '*lastlog' -type f -exec stat -c "%n %a" {} \; | wc -l
+        shell: find /var/log -perm /137 ! -name '*[bw]tmp' ! -name '*lastlog' -type f -exec stat -L -c "%n %a" {} \;
         result:
-          integer: 0
+          string: ""
       fix:
         shell: find /var/log -perm /137 ! -name "*[bw]tmp" ! -name "*lastlog" -type f -exec chmod 640 "{}" \;
     '22.04':

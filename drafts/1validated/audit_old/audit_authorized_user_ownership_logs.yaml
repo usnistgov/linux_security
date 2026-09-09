@@ -29,7 +29,7 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: stat -c "%U" $(grep "^log_file" /etc/audit/auditd.conf | awk -F" = " '{print $2}')* | grep -q -v "^root$"
+        shell: stat -L -c "%U" $(grep "^log_file" /etc/audit/auditd.conf | awk -F" = " '{print $2}')* | grep -q -v "^root$"
         result:
           exit_code: 1
       fix:

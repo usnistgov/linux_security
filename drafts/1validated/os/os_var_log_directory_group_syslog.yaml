@@ -25,7 +25,7 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: stat -c '%G' /var/log
+        shell: stat -L -c '%G' /var/log
         result:
           string: syslog
       fix:

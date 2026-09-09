@@ -27,7 +27,7 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: stat -c '%U' /var/log
+        shell: stat -L -c '%U' /var/log
         result:
           string: root
       fix:

@@ -38,7 +38,7 @@ platforms:
         result:
           string: hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256
       fix:
-        shell: echo "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256" >> /etc/ssh/sshd_config && systemctl restart ssh
+        shell: echo "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256" >> /etc/ssh/sshd_config && systemctl reset-failed ssh && systemctl restart ssh
     '22.04':
       benchmarks:
       - name: disa_stig

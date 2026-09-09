@@ -39,7 +39,7 @@ platforms:
         result:
           exit_code: 0
       fix:
-        shell: systemctl enable --now sssd
+        additional_info: Ensure SSSD is configured appropriately for the environment, then enable with systemctl enable --now sssd.
     '22.04':
       benchmarks:
       - name: disa_stig

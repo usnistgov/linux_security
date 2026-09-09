@@ -30,9 +30,9 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: stat -c '%a' /usr/bin/journalctl | gawk '{mode=strtonum("0"$1); if (and(mode, compl(0740)) == 0) print "pass" }'
+        shell: stat -L -c "%n %a" /usr/bin/journalctl | perl -ane 'chomp; $mode = (oct($F[1]) & 0777); print "$F[0]\n" if ($mode & ~0740) != 0'
         result:
-          string: pass
+          string: ""
       fix:
         shell: chmod 740 /usr/bin/journalctl
     '22.04':

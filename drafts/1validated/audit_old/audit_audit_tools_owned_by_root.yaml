@@ -28,7 +28,7 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: stat -c "%U" /sbin/auditctl /sbin/aureport /sbin/ausearch /sbin/autrace /sbin/auditd /sbin/audisp* /sbin/augenrules | grep -q -v "^root$"
+        shell: stat -L -c "%U" /sbin/auditctl /sbin/aureport /sbin/ausearch /sbin/autrace /sbin/auditd /sbin/audisp* /sbin/augenrules | grep -q -v "^root$"
         result:
           exit_code: 1
       fix:

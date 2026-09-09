@@ -27,9 +27,9 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: stat -c '%a' /etc/audit/audit.rules /etc/audit/auditd.conf /etc/audit/rules.d/* | gawk '{mode=strtonum("0"$1); if (and(mode, compl(0640)) != 0) print $1 }' | wc -l
+        shell: stat -L -c "%n %a" /etc/audit/audit.rules /etc/audit/auditd.conf /etc/audit/rules.d/* | perl -ane 'chomp; $mode = (oct($F[1]) & 0777); print "$F[0]\n" if ($mode & ~0640) != 0'
         result:
-          integer: 0
+          string: ""
       fix:
         shell: chmod -R 640 /etc/audit/audit.rules /etc/audit/auditd.conf /etc/audit/rules.d/*
     '22.04':

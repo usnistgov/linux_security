@@ -31,7 +31,7 @@ platforms:
         result:
           integer: 2
       fix:
-        shell: echo -e "Unattended-Upgrade::Remove-Unused-Kernel-Packages \"true\";\nUnattended-Upgrade::Remove-Unused-Dependencies \"true\";" >> /etc/apt/apt.conf.d/50unattended-upgrades
+        shell: printf "%s\\n" "Unattended-Upgrade::Remove-Unused-Kernel-Packages \"true\";" "Unattended-Upgrade::Remove-Unused-Dependencies \"true\";" >> /etc/apt/apt.conf.d/50unattended-upgrades
     '22.04':
       benchmarks:
       - name: disa_stig

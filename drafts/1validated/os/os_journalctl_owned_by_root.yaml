@@ -28,7 +28,7 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: stat -c '%U' /usr/bin/journalctl
+        shell: stat -L -c '%U' /usr/bin/journalctl
         result:
           string: root
       fix:

@@ -35,7 +35,7 @@ platforms:
           result:
             string: ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256
         fix:
-          shell: echo "KexAlgorithms ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256" >> /etc/ssh/sshd_config && systemctl restart ssh
+          shell: echo "KexAlgorithms ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256" >> /etc/ssh/sshd_config && systemctl reset-failed ssh && systemctl restart ssh
     '24.04':
       benchmarks:
       - name: disa_stig
@@ -46,7 +46,7 @@ platforms:
           result:
             string: ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group14-sha256
         fix:
-          shell: echo "KexAlgorithms ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group14-sha256" >> /etc/ssh/sshd_config && systemctl restart ssh
+          shell: echo "KexAlgorithms ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group14-sha256" >> /etc/ssh/sshd_config && systemctl reset-failed ssh && systemctl restart ssh
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

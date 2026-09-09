@@ -31,7 +31,12 @@ platforms:
         result:
           exit_code: 0
       fix:
-        shell: mkdir -p /etc/dconf/db/local.d/ && echo -e "[org/gnome/desktop/screensaver]\nlock-enabled=true\nlock-delay=0\n\n[org/gnome/desktop/session]\nidle-delay=600" >> /etc/dconf/db/local.d/00-screensaver && dconf update
+        shell: >
+          printf "%s\\n" "user-db:user" "system-db:local" > /etc/dconf/profile/user &&
+          chmod 644 /etc/dconf/profile/user &&
+          mkdir -p /etc/dconf/db/local.d &&
+          printf "%s\\n" "[org/gnome/desktop/screensaver]" "lock-enabled=true" "lock-delay=0" "[org/gnome/desktop/session]" "idle-delay=600" >> /etc/dconf/db/local.d/00-screensaver
+          dconf update
     '22.04':
       benchmarks:
       - name: disa_stig

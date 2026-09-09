@@ -35,7 +35,7 @@ platforms:
         result:
           exit_code: 0
       fix:
-        shell: echo "-w /var/log/btmp -p wa -k logins" >> /etc/audit/rules.d/stig.rules && augenrules --load
+        shell: echo "-w /var/log/btmp -p wa -k logins" >> /etc/audit/rules.d/stig.rules && chmod 640 /etc/audit/rules.d/stig.rules && augenrules --load
     '20.04':
       benchmarks:
       - name: disa_stig

@@ -34,7 +34,7 @@ platforms:
         result:
           exit_code: 1
       fix:
-        shell: echo -e "audit\nsilent\ndeny = 3\nfail_interval = 900\nunlock_time = 0" >> /etc/security/faillock.conf
+        shell: printf "%s\\n" "audit" "silent" "deny = 3" "fail_interval = 900" "unlock_time = 0" >> /etc/security/faillock.conf
         additional_info: You must manually configure /etc/pam.d/common-auth to load faillock, if not doing that already.
     '22.04':
       benchmarks:

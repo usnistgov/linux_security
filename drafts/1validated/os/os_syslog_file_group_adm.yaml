@@ -27,7 +27,7 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: stat -c '%G' /var/log/syslog
+        shell: stat -L -c '%G' /var/log/syslog
         result:
           string: adm
       fix:

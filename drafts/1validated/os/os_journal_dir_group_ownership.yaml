@@ -30,11 +30,11 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: stat -c '%G' /run/log/journal /run/log/journal/**/* /var/log/journal /var/log/journal/**/* 2> /dev/null | sort | uniq
+        shell: stat -L -c '%G' /run/log/journal /run/log/journal/**/* /var/log/journal /var/log/journal/**/* 2> /dev/null | sort | uniq
         result:
           string: systemd-journal
       fix:
-        shell: echo -e "z /var/log/journal/%m/system.journal 0640 root systemd-journal - -\nz /run/log/journal 2750 root systemd-journal - -\nz /var/log/journal 2750 root systemd-journal - -\nz /var/log/journal/%m 2750 root systemd-journal - -" >> /etc/tmpfiles.d/zzz-systemd-stig.conf
+        shell: printf "%s\\n" "z /var/log/journal/%m/system.journal 0640 root systemd-journal - -" "z /run/log/journal 2750 root systemd-journal - -" "z /var/log/journal 2750 root systemd-journal - -" "z /var/log/journal/%m 2750 root systemd-journal - -" >> /etc/tmpfiles.d/zzz-systemd-stig.conf
     '22.04':
       benchmarks:
       - name: disa_stig

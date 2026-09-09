@@ -29,7 +29,7 @@ platforms:
         result:
           boolean: true
       fix:
-        shell: mkdir -p /etc/dconf/db/local.d/ && echo "[org/gnome/desktop/screensaver]\nlock-enabled=true" >> /etc/dconf/db/local.d/00-screensaver && dconf update
+        shell: mkdir -p /etc/dconf/db/local.d/ && printf "%s\\n" "[org/gnome/desktop/screensaver]" "lock-enabled=true" >> /etc/dconf/db/local.d/00-screensaver && dconf update
     '22.04':
       benchmarks:
       - name: disa_stig

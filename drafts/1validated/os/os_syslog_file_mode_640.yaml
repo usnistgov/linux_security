@@ -28,9 +28,9 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: stat -c '%a' /var/log/syslog | gawk '{mode=strtonum("0"$1); if (and(mode, compl(0640)) == 0) print "passed" }'
+        shell: stat -L -c "%n %a" /var/log/syslog | perl -ane 'chomp; $mode = (oct($F[1]) & 0777); print "$F[0]\n" if ($mode & ~0640) != 0'
         result:
-          string: passed
+          string: ""
       fix:
         shell: chmod 640 /var/log/syslog
     '22.04':
