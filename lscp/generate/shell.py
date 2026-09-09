@@ -25,11 +25,11 @@ class ShellGenerator(BaseGenerator):
             new_baseline.profile.remove(packages_section[0])
             new_baseline.profile.insert(0, packages_section[0])
 
-        baseline_id = baseline.title.split(" ")[-1]
+        baseline_id = new_baseline.title.split(" ")[-1]
 
         render_out = (
             template.render(
-                baseline=baseline_to_template(baseline),
+                baseline=baseline_to_template(new_baseline, shell_syntax=True),
                 baseline_name=baseline.title.split(" ")[-1],
                 rule_count=len(
                     [

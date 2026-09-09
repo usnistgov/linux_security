@@ -9,7 +9,7 @@
 #    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 #    OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SCRIPT, EVEN IF ADVISED
 #    OF THE POSSIBILITY OF SUCH DAMAGE.
-#    
+#
 #######################################################################################
 
 LOG_PATH="/var/log/lscp"
@@ -60,6 +60,7 @@ log_check(){
 
 log_message(){
     mkdir -p "/var/log/lscp"
+    chmod 640 "$audit_log"
 
     local level="${2:-INFO}"
     local timestamp=$(date -Iseconds)
@@ -82,19 +83,22 @@ log_message(){
 
 log_csv(){
     mkdir -p "/var/log/lscp"
+    chmod 640 "$audit_csv"
 
     local rule_name="$1"
     local result_status="$2"
-    local result="$3"
-    local status_code="$4"
-    local expected_standard_out="$5"
-    local expected_status_code="$6"
+    local requires_reboot="$3"
+    local manual_fix="$4"
+    local result="$5"
+    local status_code="$6"
+    local expected_standard_out="$7"
+    local expected_status_code="$8"
 
     if [[ ! -f "$audit_csv" ]]; then
-        echo "Rule,Status,Result,Status Code,Expected Output,Expected Status Code" > "$audit_csv"
+        printf "Rule\tStatus\tRequires Reboot\tManual Fix\tResult\tExpected Result\tStatus Code\tExpected Status Code\n" > "$audit_csv"
     fi
 
-    echo "$rule_name,$result_status,\"$result\",$status_code,\"$expected_standard_out\",$expected_status_code" >> "$audit_csv"
+    printf "$rule_name\t$result_status\t$requires_reboot\t$manual_fix\t\"$result\"\t\"$expected_standard_out\"\t$status_code\t$expected_status_code\n" >> "$audit_csv"
 }
 
 clear_logs(){
@@ -110,8 +114,8 @@ compliance_count(){
     fi
 
     local total_rules=$(tail -n +2 $LAST_RUN)
-    local compliant_count=$(echo "$total_rules" | awk -F"," '{if ($2 == "passed") print $1}' | wc -l)
-    local non_compliant_count=$(echo "$total_rules" | awk -F"," '{if ($2 == "failed") print $1}' | wc -l)
+    local compliant_count=$(echo "$total_rules" | awk -F"\t" '{if ($2 == "passed") print $1}' | wc -l)
+    local non_compliant_count=$(echo "$total_rules" | awk -F"\t" '{if ($2 == "failed") print $1}' | wc -l)
 
     if [[ $1 == "compliant" ]]; then
         echo $compliant_count
@@ -139,16 +143,16 @@ generate_report(){
 }
 
 rule_fix() {
-    local pass_fail=$(tail -n +2 $LAST_RUN  | awk -F"," -v rule_id=$1 '{if ($1 == rule_id) print $2}')
+    local pass_fail=$(tail -n +2 $LAST_RUN  | awk -F"\t" -v rule_id=$1 '{if ($1 == rule_id) print $2}')
     if [[ $pass_fail == "failed" ]]; then
-        log_message "Running the command to configure the settings for: $1 ..."
+        log_message "[FIX] Configuring $1"
         if $dry_run; then
-            log_message "This command would have been run, if not configured for dry-run: $2" "DEBUG"
+            log_message "[FIX] [DRY] Command $1: $2" "DEBUG"
         else
-            eval $2
+            eval "${@:2}"
         fi
     elif [[ $pass_fail == "passed" ]]; then
-        log_message "Settings for $1 already configured, continuing..."
+        log_message "[FIX] Skipping $1"
     fi
 }
 

@@ -42,7 +42,7 @@ class TemplateBaseline(Baseline):
     profile: List[TemplateSection]  # type: ignore
 
 
-def baseline_to_template(baseline: Baseline) -> TemplateBaseline:
+def baseline_to_template(baseline: Baseline, shell_syntax: bool = False) -> TemplateBaseline:
     list_of_new_sections: List[TemplateSection] = []
     for section in baseline.profile:
         new_rules: List[TemplateRules] = []
@@ -64,6 +64,9 @@ def baseline_to_template(baseline: Baseline) -> TemplateBaseline:
                         result_value = [value for value in values if value is not None][
                             0
                         ]
+                        if type(result_value) == bool:
+                            result_value = "true" if result_value else "false"
+
                 if enforcement.fix and enforcement.fix.shell:
                     new_fix = enforcement.fix.shell
 
