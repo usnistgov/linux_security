@@ -1,8 +1,8 @@
 # LICENSE
 
-This work includes contributions from the United States Government and members
-of the public. Except as otherwise noted, this work is licensed under Creative
-Commons Attribution 4.0 International Public License
+This work includes contributions from the United States Government, members of
+the public, and vendors. Except as otherwise noted, this work is licensed under
+Creative Commons Attribution 4.0 International Public License
 ([CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)).
 
 Pursuant to title 17 United States Code Section 105(a), works of the United
@@ -14,6 +14,12 @@ perpetual, non-exclusive, no-charge, royalty-free, irrevocable license to
 reproduce, prepare derivative works of, publicly display, publicly perform,
 sublicense, and distribute any such contributions and derivatives, outside of
 the United States.
+
+**NOTE:** Certain portions of this work are provided by third-party vendors. Any
+content bearing a copyright notice (such as "Vendor Description content
+Copyright [Date] [Vendor Name]. All rights reserved") is excluded from the
+Licensed Material under the CC BY 4.0 licensing schema, and no rights,
+permissions, or transfers of ownership are granted hereunder.
 
 ## Creative Commons Attribution 4.0 International Public License ([CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)).
 
