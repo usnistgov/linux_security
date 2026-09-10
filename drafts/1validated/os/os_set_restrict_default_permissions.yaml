@@ -30,7 +30,7 @@ platforms:
         result:
           string: "077"
       fix:
-        shell: sed -i "s/^UMASK.*/UMASK 077/g" /etc/login.defs
+        shell: sed -i "s/^UMASK.*/UMASK 077/g" /etc/login.defs && if [[ ! "$(grep "^UMASK" /etc/login.defs)" ]]; then echo "UMASK 077" >> /etc/login.defs; fi
     '22.04':
       benchmarks:
       - name: disa_stig

@@ -31,7 +31,7 @@ platforms:
         result:
           string: SHA512
       fix:
-        shell: echo "ENCRYPT_METHOD SHA512" >> /etc/login.defs
+        shell: sed -i "s/^ENCRYPT_METHOD.*/ENCRYPT_METHOD SHA512/g" /etc/login.defs && if [[ ! "$(grep "^ENCRYPT_METHOD" /etc/login.defs)" ]]; then echo "ENCRYPT_METHOD SHA512" >> /etc/login.defs; fi
     '22.04':
       benchmarks:
       - name: disa_stig
