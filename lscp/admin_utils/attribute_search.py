@@ -41,18 +41,32 @@ def get_nested(obj: Rule, path: str, default=[]):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Rule Search")
-    parser.add_argument("-t", dest="search_key", help="Key to search for. Format like Python, for example: references.disa['disa_stig']")
-    parser.add_argument("value", nargs="+", help="Value to match for")
+    parser.add_argument(
+        "-t",
+        dest="search_key",
+        required=True,
+        help="Key to search for. Format like Python, for example: references.disa['disa_stig']",
+    )
+    parser.add_argument("value", nargs="*", help="Value to match for")
     args = parser.parse_args()
 
     all_rules = get_rule_from_string()
 
-    for value in args.value:
-        search_res = [
-            rule for rule in all_rules if value in get_nested(rule, args.search_key)
-        ]
+    if len(args.value) == 0:
+        for rule in all_rules:
+            nested_value = get_nested(rule, args.search_key)
+            if type(nested_value) == list:
+                for value in nested_value:
+                    print(value)
+            else:
+                print(nested_value)
+    else:
+        for value in args.value:
+            search_res = [
+                rule for rule in all_rules if value in get_nested(rule, args.search_key)
+            ]
 
-        if len(search_res) > 0:
-            print(f"{value} in {search_res[0].rule_id}")
-        else:
-            print(f"{value} NOT FOUND")
+            if len(search_res) > 0:
+                print(f"{value} in {search_res[0].rule_id}")
+            else:
+                print(f"{value} NOT FOUND")
