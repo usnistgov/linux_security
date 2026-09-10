@@ -67,6 +67,6 @@ if __name__ == "__main__":
             ]
 
             if len(search_res) > 0:
-                print(f"{value} in {search_res[0].rule_id}")
+                print(f"{value} in {", ".join([rule.rule_id for rule in search_res])}")
             else:
                 print(f"{value} NOT FOUND")
