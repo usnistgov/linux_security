@@ -13,7 +13,7 @@ such, these classes exist to map Pydantic rule files to template variables.
 """
 
 from pathlib import Path
-from typing import List
+from typing import Any, List
 
 from utils.rules import get_enforcement_block
 
@@ -42,7 +42,7 @@ class TemplateBaseline(Baseline):
     profile: List[TemplateSection]  # type: ignore
 
 
-def baseline_to_template(baseline: Baseline, shell_syntax: bool = False) -> TemplateBaseline:
+def baseline_to_template(baseline: Baseline) -> TemplateBaseline:
     list_of_new_sections: List[TemplateSection] = []
     for section in baseline.profile:
         new_rules: List[TemplateRules] = []
@@ -70,6 +70,19 @@ def baseline_to_template(baseline: Baseline, shell_syntax: bool = False) -> Temp
                 if enforcement.fix and enforcement.fix.shell:
                     new_fix = enforcement.fix.shell
 
+                if rule.odv:
+                    replace_value: Any = None
+                    if baseline.parent_values == "recommended":
+                        replace_value = rule.odv.recommended
+                    elif baseline.parent_values in rule.odv.benchmarks.keys():
+                        replace_value = rule.odv.benchmarks[baseline.parent_values]
+
+                    if replace_value is not None:
+                        if new_check is not None:
+                            new_check = new_check.replace("$ODV", str(replace_value))
+                        if new_fix is not None:
+                            new_fix = new_fix.replace("$ODV", str(replace_value))
+
             new_rules.append(
                 TemplateRules(
                     result_value=result_value,
@@ -85,7 +98,8 @@ def baseline_to_template(baseline: Baseline, shell_syntax: bool = False) -> Temp
                     discussion=rule.discussion,
                     references=rule.references,
                     platforms=rule.platforms,
-                    tags=rule.tags
+                    odv=rule.odv,
+                    tags=rule.tags,
                 )
             )
 

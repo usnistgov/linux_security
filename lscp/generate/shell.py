@@ -29,7 +29,7 @@ class ShellGenerator(BaseGenerator):
 
         render_out = (
             template.render(
-                baseline=baseline_to_template(new_baseline, shell_syntax=True),
+                baseline=baseline_to_template(new_baseline),
                 baseline_name=baseline.title.split(" ")[-1],
                 rule_count=len(
                     [
