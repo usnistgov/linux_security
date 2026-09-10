@@ -13,7 +13,7 @@ such, these classes exist to map Pydantic rule files to template variables.
 """
 
 from pathlib import Path
-from typing import List
+from typing import Any, List
 
 from utils.rules import get_enforcement_block
 
@@ -64,8 +64,24 @@ def baseline_to_template(baseline: Baseline) -> TemplateBaseline:
                         result_value = [value for value in values if value is not None][
                             0
                         ]
+                        if type(result_value) == bool:
+                            result_value = "true" if result_value else "false"
+
                 if enforcement.fix and enforcement.fix.shell:
                     new_fix = enforcement.fix.shell
+
+                if rule.odv:
+                    replace_value: Any = None
+                    if baseline.parent_values == "recommended":
+                        replace_value = rule.odv.recommended
+                    elif baseline.parent_values in rule.odv.benchmarks.keys():
+                        replace_value = rule.odv.benchmarks[baseline.parent_values]
+
+                    if replace_value is not None:
+                        if new_check is not None:
+                            new_check = new_check.replace("$ODV", str(replace_value))
+                        if new_fix is not None:
+                            new_fix = new_fix.replace("$ODV", str(replace_value))
 
             new_rules.append(
                 TemplateRules(
@@ -82,7 +98,8 @@ def baseline_to_template(baseline: Baseline) -> TemplateBaseline:
                     discussion=rule.discussion,
                     references=rule.references,
                     platforms=rule.platforms,
-                    tags=rule.tags
+                    odv=rule.odv,
+                    tags=rule.tags,
                 )
             )
 

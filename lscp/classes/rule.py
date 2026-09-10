@@ -18,6 +18,99 @@ from pydantic import (
 )
 
 
+class ODVValidation(BaseModel):
+    """Validation checks for ODV values.
+
+    This class contains an index of all the attributes that can be used to
+    check if an ODV is valid. Like ODVHint, this is unused in this project,
+    but is used in mSCP.
+
+    Attributes:
+        min: Minimum value for numbers.
+        max: Maximum value for numbers. 
+        regex: Regex pattern for strings.
+        enumValues: List of possible values for strings.
+    """
+    min: float | None = None
+    max: float | None = None
+    regex: str | None = None
+    enumValues: List[str] | None = None
+
+
+class ODVHint(BaseModel):
+    """Hint detailing ODV values.
+    
+    These values are currently unused, as this script is not checking if
+    something is valid. Despite this, it's done by mSCP, so should be at least
+    ingested here.
+
+    Attributes:
+        datatype: Valid datatype for the ODV value.
+        description: Description of what the ODV value represents.
+        validation: Attributes that can define whether the value is valid.
+    """
+    datatype: str
+    description: str
+    validation: ODVValidation
+
+
+class ODV(BaseModel):
+    """ODV Information.
+
+    ODVs are used to set specific variables per benchmark. By allowing for this
+    level of control, one can reuse the same rule for different benchmarks that
+    may require different values to be set. This class is a light
+    implementation of the one mSCP uses, mostly to keep the minimal script
+    generation working when encountering ODVs.
+
+    Attributes:
+        hint: The ODV hint class that details the type of data supplied.
+        recommended: The recommended, or default, value for any ODV.
+        benchmarks: A dictionary containing the benchmark name and its desired
+            value.
+    """
+    hint: ODVHint
+    recommended: Any
+    benchmarks: dict[str, Any]
+
+    @model_validator(mode="wrap")
+    @classmethod
+    def _fix_odv_values(
+        cls, value: Any, handler: ModelWrapValidatorHandler["ODV"]
+    ) -> "ODV":
+        if isinstance(value, dict) and "benchmarks" not in value.keys():
+            copy = value.copy()
+            hint_info = copy.pop("hint")
+            recommended_value = copy.pop("recommended")
+
+            return handler(
+                {
+                    "hint": hint_info,
+                    "recommended": recommended_value,
+                    "benchmarks": copy,
+                }
+            )
+        return handler(value)
+
+    @model_serializer(mode="wrap")
+    def _fix_odv_output(self, handler) -> Dict[str, Any]:
+        data = handler(self)
+        result = {}
+
+        hint = data["hint"] if "hint" in data.keys() else None
+        recommended = data["recommended"] if "recommended" in data.keys() else None
+        benchmarks = data["benchmarks"]
+
+        result = {}
+        if hint:
+            result["hint"] = hint
+        if recommended:
+            result["recommended"] = recommended
+        result.update(benchmarks)
+
+        return result
+
+
 class References(BaseModel):
     """Reference information.
 
@@ -217,6 +310,7 @@ class Rule(BaseModel):
     discussion: str
     references: References
     platforms: Dict[str, Platform]
+    odv: ODV | None = None
     tags: List[str] = []
 
     def __eq__(self, object) -> bool:
