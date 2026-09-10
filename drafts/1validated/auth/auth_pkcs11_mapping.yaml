@@ -1,0 +1,34 @@
+id: auth_local_revocation_cache
+title: Ubuntu for PKI-based authentication, must map the authenticated identity to the user or group account for PKI-based authentication.
+discussion: Without mapping the certificate used to authenticate to the user account, the ability to determine the identity of the individual user or group will not be available for forensic analysis.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+    800-53r5:
+    - IA-05(02)
+  disa:
+    cci:
+    - CCI-000187
+    srg:
+    - SRG-OS-000384-GPOS-00167
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-612040
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: grep use_mappers /etc/pam_pkcs11/pam_pkcs11.conf | awk -F" = " '{print $2}'
+        result:
+          string: pwent
+      fix:
+        additional_info: Ensure "use_mappers" is set to "pwent" for all providers.
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_moderate
+- 800-53r5_high

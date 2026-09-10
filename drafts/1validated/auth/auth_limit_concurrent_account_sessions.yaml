@@ -24,7 +24,6 @@ references:
     disa_stig:
       ubuntu_22:
       - UBTU-22-412020
-    disa_stig:
       ubuntu_24:
       - UBTU-24-200000
 platforms:
