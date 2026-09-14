@@ -12,7 +12,7 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - IA-07
+    - IA-7
   disa:
     cci:
     - CCI-000803

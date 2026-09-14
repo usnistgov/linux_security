@@ -7,7 +7,7 @@ references:
       ubuntu_22:
       - CCE-XXXXX-X
     800-53r5:
-    - IA-05(02)
+    - IA-5(2)
   disa:
     cci:
     - CCI-000187

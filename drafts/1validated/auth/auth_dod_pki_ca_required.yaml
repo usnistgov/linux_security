@@ -13,7 +13,7 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - SC-23(05)
+    - SC-23(5)
   disa:
     cci:
     - CCI-002470

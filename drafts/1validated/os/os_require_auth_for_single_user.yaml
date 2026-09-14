@@ -14,7 +14,7 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - AC-03
+    - AC-3
   disa:
     cci:
     - CCI-000213

@@ -16,8 +16,8 @@ references:
       redhat_9:
       - CCE-XXXXX-X
     800-53r5:
-    - AC-06(9)
-    - AC-06(8)
+    - AC-6(9)
+    - AC-6(8)
   disa:
     cci:
     - CCI-002234

@@ -15,10 +15,10 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - AC-08
-    - AC-08
-    - AC-08
-    - AC-08
+    - AC-8
+    - AC-8
+    - AC-8
+    - AC-8
   disa:
     cci:
     - CCI-001388

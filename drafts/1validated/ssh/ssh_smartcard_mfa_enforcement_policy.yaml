@@ -12,8 +12,8 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - IA-02(02)
-    - IA-02(01)
+    - IA-2(2)
+    - IA-2(1)
   disa:
     cci:
     - CCI-000766

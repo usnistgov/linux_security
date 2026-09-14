@@ -9,7 +9,7 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - SC-04
+    - SC-4
   disa:
     cci:
     - CCI-001090

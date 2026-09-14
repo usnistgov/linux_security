@@ -8,7 +8,7 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - AC-11(01)
+    - AC-11(1)
   disa:
     cci:
     - CCI-000060

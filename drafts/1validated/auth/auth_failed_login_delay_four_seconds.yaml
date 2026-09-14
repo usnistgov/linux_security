@@ -11,7 +11,7 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - CM-06
+    - CM-6
   disa:
     cci:
     - CCI-000366

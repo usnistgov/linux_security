@@ -14,7 +14,7 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - MA-04
+    - MA-4
   disa:
     cci:
     - CCI-000877

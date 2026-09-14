@@ -16,7 +16,7 @@ references:
       redhat_9:
       - CCE-XXXXX-X
     800-53r5:
-    - AC-02(04)
+    - AC-2(4)
     - AU-12
   disa:
     cci:

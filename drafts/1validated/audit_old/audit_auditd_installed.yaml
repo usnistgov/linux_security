@@ -12,20 +12,20 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - CM-05(01)
-    - AU-03
-    - AU-03
-    - AU-03
-    - AU-07
-    - AU-06(04)
-    - AU-03(01)
+    - CM-5(1)
+    - AU-3
+    - AU-3
+    - AU-3
+    - AU-7
+    - AU-6(4)
+    - AU-3(1)
     - AU-12
-    - AU-07
-    - AU-07(01)
+    - AU-7
+    - AU-7(1)
     - AU-12
-    - AU-03
-    - AU-12(03)
-    - AU-03
+    - AU-3
+    - AU-12(3)
+    - AU-3
   disa:
     cci:
     - CCI-000154

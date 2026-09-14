@@ -13,9 +13,9 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - SC-28(01)
+    - SC-28(1)
     - SC-28
-    - SC-28(03)
+    - SC-28(3)
   disa:
     cci:
     - CCI-002475
