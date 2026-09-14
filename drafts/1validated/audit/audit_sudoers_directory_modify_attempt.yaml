@@ -1,6 +1,6 @@
 id: audit_sudoers_directory_modify_attempt
 title: Audit Records for Modifying /etc/sudoers.d Directory
-discussion: 
+discussion: |
   The system must generate audit records when successful/unsuccessful attempts to modify the /etc/sudoers.d directory occur.
 
   Without audit records tailored to the organization's security and mission needs, it is difficult to establish, correlate, investigate incidents, or identify responsible parties. Audit records can be generated from various system components, such as modules or policy filters.
@@ -10,6 +10,8 @@ references:
       ubuntu_22:
       - CCE-XXXXX-X
       ubuntu_24:
+      - CCE-XXXXX-X
+      redhat_9:
       - CCE-XXXXX-X
     800-53r5:
     - AU-12
@@ -23,6 +25,8 @@ references:
       - UBTU-22-654225
       ubuntu_24:
       - UBTU-24-900520
+      redhat_9:
+      - RHEL-09-654220
 platforms:
   ubuntu:
     enforcement_info:
@@ -37,6 +41,18 @@ platforms:
       - name: disa_stig
         severity: medium
     '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+  redhat:
+    enforcement_info:
+      check:
+        shell: auditctl -l | grep -q "\-w /etc/sudoers.d -p wa"
+        result:
+          exit_code: 0
+      fix:
+        shell: echo "-w /etc/sudoers.d -p wa -k privilege_modification" >> /etc/audit/rules.d/stig.rules && chmod 640 /etc/audit/rules.d/stig.rules && augenrules --load
+    '9':
       benchmarks:
       - name: disa_stig
         severity: medium

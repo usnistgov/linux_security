@@ -13,6 +13,8 @@ references:
       - CCE-XXXXX-X
       ubuntu_24:
       - CCE-XXXXX-X
+      redhat_9:
+      - CCE-XXXXX-X
     800-53r5:
     - AU-12
   disa:
@@ -27,6 +29,8 @@ references:
       - UBTU-22-654065
       ubuntu_24:
       - UBTU-24-900090
+      redhat_9:
+      - RHEL-09-654180
 platforms:
   ubuntu:
     enforcement_info:
@@ -45,6 +49,18 @@ platforms:
       - name: disa_stig
         severity: medium
     '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+  redhat:
+    enforcement_info:
+      check:
+        shell: auditctl -l | grep -q "\-a always,exit -S all -F path=/usr/bin/mount -F perm=x -F auid>=1000 -F auid!=-1"
+        result:
+          exit_code: 0
+      fix:
+        shell: echo "-a always,exit -F path=/usr/bin/mount -F perm=x -F auid>=1000 -F auid!=unset -k privileged-mount" >> /etc/audit/rules.d/stig.rules && chmod 640 /etc/audit/rules.d/stig.rules && augenrules --load
+    '9':
       benchmarks:
       - name: disa_stig
         severity: medium

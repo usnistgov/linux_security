@@ -13,6 +13,8 @@ references:
       - CCE-XXXXX-X
       ubuntu_24:
       - CCE-XXXXX-X
+      redhat_9:
+      - CCE-XXXXX-X
     800-53r5:
     - AU-12
   disa:
@@ -27,6 +29,8 @@ references:
       - UBTU-22-654165
       ubuntu_24:
       - UBTU-24-900160
+      redhat_9:
+      - RHEL-09-654070
 platforms:
   ubuntu:
     enforcement_info:
@@ -45,6 +49,18 @@ platforms:
       - name: disa_stig
         severity: medium
     '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+  redhat:
+    enforcement_info:
+      check:
+        shell: auditctl -l | auditctl -l | grep -F "creat" | grep -F "open" | grep -F "openat" | grep -F "open_by_handle_at" | grep -F "truncate" | grep -F "ftruncate" | grep -E "\-a always,exit -F arch=\S* -S .* -F exit=-(EPERM|EACCES) -F auid>=1000 -F auid!=-1 -F" | wc -l
+        result:
+          integer: 4
+      fix:
+        shell: printf "%s\\n" "-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1 -F key=perm_access" "-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1 -F key=perm_access" "-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1 -F key=perm_access" "-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1 -F key=perm_access" >> /etc/audit/rules.d/stig.rules && chmod 640 /etc/audit/rules.d/stig.rules && augenrules --load
+    '9':
       benchmarks:
       - name: disa_stig
         severity: medium

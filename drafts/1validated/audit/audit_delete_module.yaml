@@ -11,6 +11,8 @@ references:
       - CCE-XXXXX-X
       ubuntu_24:
       - CCE-XXXXX-X
+      redhat_9:
+      - CCE-XXXXX-X
     800-53r5:
     - AU-12
   disa:
@@ -23,6 +25,8 @@ references:
       - UBTU-22-654170
       ubuntu_24:
       - UBTU-24-900350
+      redhat_9:
+      - RHEL-09-654075
 platforms:
   ubuntu:
     enforcement_info:
@@ -32,15 +36,23 @@ platforms:
           integer: 2
       fix:
         shell: printf "%s\\n" "-a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=unset -k module_chng" "-a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=unset -k module_chng" >> /etc/audit/rules.d/stig.rules && chmod 640 /etc/audit/rules.d/stig.rules && augenrules --load
-    '20.04':
-      benchmarks:
-      - name: disa_stig
-        severity: medium
     '22.04':
       benchmarks:
       - name: disa_stig
         severity: medium
     '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+  redhat:
+    enforcement_info:
+      check:
+        shell: auditctl -l | grep "\-a always,exit -F arch=b\S* -S delete_module -F auid>=1000 -F auid!=-1" | wc -l
+        result:
+          integer: 2
+      fix:
+        shell: printf "%s\\n" "-a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=unset -k module_chng" "-a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=unset -k module_chng" >> /etc/audit/rules.d/stig.rules && chmod 640 /etc/audit/rules.d/stig.rules && augenrules --load
+    '9':
       benchmarks:
       - name: disa_stig
         severity: medium

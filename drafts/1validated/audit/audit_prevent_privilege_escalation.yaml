@@ -1,6 +1,6 @@
 id: audit_prevent_privilege_escalation
 title: Prevent Higher Privilege Software Executation and Audit Execution
-discussion: 
+discussion: |
   The system must prevent all software from executing at higher privilege levels than users executing the software and the audit system must be configured to audit the execution of privileged functions.
 
   Some software requires elevated privileges to function; if those privileges exceed users' assigned rights, users gain unintended higher access. Therefore, such programs should be reviewed and excluded from the organization's approved software list.
@@ -12,6 +12,8 @@ references:
       ubuntu_22:
       - CCE-XXXXX-X
       ubuntu_24:
+      - CCE-XXXXX-X
+      redhat_9:
       - CCE-XXXXX-X
     800-53r5:
     - AC-06(9)
@@ -29,6 +31,8 @@ references:
       - UBTU-22-654230
       ubuntu_24:
       - UBTU-24-200580
+      redhat_9:
+      - RHEL-09-654010
 platforms:
   ubuntu:
     enforcement_info:
@@ -47,6 +51,18 @@ platforms:
       - name: disa_stig
         severity: medium
     '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+  redhat:
+    enforcement_info:
+      check:
+        shell: auditctl -l | grep "\-a always,exit -F arch=b\S* -S execve -C uid!=euid -F euid=0" | wc -l
+        result:
+          integer: 2
+      fix:
+        shell: printf "%s\\n" "-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -k execpriv" "-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -k execpriv" >> /etc/audit/rules.d/stig.rules && chmod 640 /etc/audit/rules.d/stig.rules && augenrules --load
+    '9':
       benchmarks:
       - name: disa_stig
         severity: medium

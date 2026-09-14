@@ -1,6 +1,6 @@
 id: audit_chacl_success_fail_record
 title: Authorized chacl Command Execution Events
-discussion: 
+discussion: |
   The system must generate audit records for successful/unsuccessful uses of the chacl command.
 
   Without audit records tailored to the organization's security and mission needs, it is difficult to establish, correlate, investigate incidents, or identify responsible parties. Audit records can be generated from various system components, such as modules or policy filters.
@@ -12,6 +12,8 @@ references:
       ubuntu_22:
       - CCE-XXXXX-X
       ubuntu_24:
+      - CCE-XXXXX-X
+      redhat_9:
       - CCE-XXXXX-X
     800-53r5:
     - AU-12
@@ -27,6 +29,8 @@ references:
       - UBTU-22-654015
       ubuntu_24:
       - UBTU-24-900240
+      redhat_9:
+      - RHEL-09-654035
 platforms:
   ubuntu:
     enforcement_info:
@@ -45,6 +49,18 @@ platforms:
       - name: disa_stig
         severity: medium
     '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+  redhat:
+    enforcement_info:
+      check:
+        shell: auditctl -l | grep -q "\-a always,exit -S all -F path=/usr/bin/chacl -F perm=x -F auid>=1000 -F auid!=-1"
+        result:
+          exit_code: 0
+      fix:
+        shell: echo "-a always,exit -F path=/usr/bin/chacl -F perm=x -F auid>=1000 -F auid!=unset -k perm_chng" >> /etc/audit/rules.d/stig.rules && chmod 640 /etc/audit/rules.d/stig.rules && augenrules --load
+    '9':
       benchmarks:
       - name: disa_stig
         severity: medium

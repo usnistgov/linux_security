@@ -13,6 +13,8 @@ references:
       - CCE-XXXXX-X
       ubuntu_24:
       - CCE-XXXXX-X
+      redhat_9:
+      - CCE-XXXXX-X
     800-53r5:
     - AC-02(04)
     - AU-12
@@ -33,6 +35,8 @@ references:
       - UBTU-22-654130
       ubuntu_24:
       - UBTU-24-200290
+      redhat_9:
+      - RHEL-09-654225
 platforms:
   ubuntu:
     enforcement_info:
@@ -51,6 +55,18 @@ platforms:
       - name: disa_stig
         severity: medium
     '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+  redhat:
+    enforcement_info:
+      check:
+        shell: auditctl -l | grep -q "\-w /etc/group -p wa"
+        result:
+          exit_code: 0
+      fix:
+        shell: echo "-w /etc/group -p wa -k usergroup_modification" >> /etc/audit/rules.d/stig.rules && chmod 640 /etc/audit/rules.d/stig.rules && augenrules --load
+    '9':
       benchmarks:
       - name: disa_stig
         severity: medium
