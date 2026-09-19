@@ -1,8 +1,9 @@
 id: auth_unique_user_account_identification
-title: Ubuntu must uniquely identify interactive users.
-discussion: Organizational users must be uniquely identified and authenticated for
-  all system accesses, except for documented exceptions or authorized group authenticator
-  use where individual authentication may not be required.
+title: Unique User Account Identification
+discussion: |
+  The system must uniquely identify interactive users.
+  
+  Organizational users must be uniquely identified and authenticated for all system accesses, except for documented exceptions or authorized group authenticator use where individual authentication may not be required.
 references:
   nist:
     cce:

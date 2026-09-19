@@ -1,10 +1,9 @@
 id: auth_sssd_installed
-title: Ubuntu must have the "SSSD" package installed.
-discussion: >
-  Without multifactor authentication, privileged accounts are more easily
-  accessed over a network, greatly increasing the risk of unauthorized use. MFA
-  requires two or more factors-something you know, have, and are-such
-  as a DOD CAC with approved PKI-to verify identity.
+title: SSSD Installation
+discussion: |
+  The system must have the "SSSD" package installed.
+
+  Without multifactor authentication, privileged accounts are more easily accessed over a network, greatly increasing the risk of unauthorized use. MFA requires two or more factors-something you know, have, and are-such as a DOD CAC or PIV with approved PKI-to verify identity.
 references:
   nist:
     cce:

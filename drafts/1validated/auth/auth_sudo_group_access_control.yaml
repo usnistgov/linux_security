@@ -1,13 +1,11 @@
 id: auth_sudo_group_access_control
-title: Ubuntu must ensure only users who need access to security functions
-  are part of sudo group.
-discussion: >
-  An isolation boundary enforces access control to protect the integrity
-  of the hardware, software, and firmware that perform security functions, which
-  enforce the system security policy and isolate code and data. Ubuntu 22.04
-  LTS restricts access to these functions through access-control mechanisms and
-  least-privilege capabilities, leveraging kernel separation, file-system
-  and address-space protections, and disciplined development practices.
+title: Sudo Group Access Control
+discussion: |
+  The system must ensure only users who need access to security functions are part of sudo group.
+
+  An isolation boundary enforces access control to protect the integrity of the hardware, software, and firmware that perform security functions, which enforce the system security policy and isolate code and data. 
+  
+  Ubuntu 22.04 LTS restricts access to these functions through access-control mechanisms and least-privilege capabilities, leveraging kernel separation, file-system and address-space protections, and disciplined development practices.
 references:
   nist:
     cce:

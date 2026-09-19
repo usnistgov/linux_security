@@ -1,6 +1,9 @@
 id: auth_local_revocation_cache
-title: Ubuntu for PKI-based authentication, must map the authenticated identity to the user or group account for PKI-based authentication.
-discussion: Without mapping the certificate used to authenticate to the user account, the ability to determine the identity of the individual user or group will not be available for forensic analysis.
+title: Implement Local Revocation Cache
+discussion: |
+  The system's PKI-based authentication, must map the authenticated identity to the user or group account for PKI-based authentication.
+
+  Without mapping the certificate used to authenticate to the user account, the ability to determine the identity of the individual user or group will not be available for forensic analysis.
 references:
   nist:
     cce:

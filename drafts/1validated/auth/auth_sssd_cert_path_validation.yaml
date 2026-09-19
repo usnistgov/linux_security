@@ -1,10 +1,9 @@
 id: auth_sssd_cert_path_validation
-title: Ubuntu must ensure SSSD performs certificate path validation, including
-  revocation checking, against a trusted anchor for PKI-based authentication.
-discussion: >
-  Path validation ensures a relying party can verify a certificate's
-  chain to a trusted anchor and obtain revocation status, enabling an informed trust
-  decision for any certificate not explicitly trusted.
+title: SSSD Certificate Path Validation
+discussion: |
+  The system must ensure SSSD performs certificate path validation, including revocation checking, against a trusted anchor for PKI-based authentication.
+
+  Path validation ensures a relying party can verify a certificate's chain to a trusted anchor and obtain revocation status, enabling an informed trust decision for any certificate not explicitly trusted.
 references:
   nist:
     cce:

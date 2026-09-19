@@ -1,9 +1,9 @@
 id: auth_require_reauth_for_privilege_escalation
-title: Ubuntu must require users to reauthenticate for privilege escalation
-  or when changing roles.
-discussion: Without reauthentication, users could access unauthorized resources or
-  perform unauthorized tasks. Systems that allow privilege escalation must require
-  reauthentication.
+title: Require Reauthentication for Privilege Escalation
+discussion: 
+  The system must require users to reauthenticate for privilege escalation or when changing roles.
+  
+  Without reauthentication, users could access unauthorized resources or perform unauthorized tasks. Systems that allow privilege escalation must require reauthentication.
 references:
   nist:
     cce:

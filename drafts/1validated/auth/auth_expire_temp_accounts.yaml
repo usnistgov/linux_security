@@ -1,10 +1,9 @@
-id: auth_expire_temp_accounts_72h
-title: Ubuntu must automatically expire temporary accounts within 72 hours.
-discussion: >
-  Temporary accounts, created for urgent needs, must be removed or automatically
-  expired within 72 hours; otherwise they weaken system security. Unlike permanent
-  emergency accounts, they are not exempt from expiration and should not be extended
-  indefinitely.
+id: auth_expire_temp_accounts
+title: Automatically Expire Temporary Accounts
+discussion: |
+  TThe system must automatically expire temporary accounts within $ODB hours.
+
+  Temporary accounts, created for urgent needs, must be removed or automatically expired within $ODV hours; otherwise they weaken system security. Unlike permanent emergency accounts, they are not exempt from expiration and should not be extended indefinitely.
 references:
   nist:
     cce:
@@ -40,6 +39,14 @@ platforms:
       benchmarks:
       - name: disa_stig
         severity: medium
+odv:
+  hint:
+    datatype: number
+    description: Hours to automatically expire temporary accounts, e.g. 72
+    validation:
+      min: 0
+  recommended: 72
+  disa_stig: 72
 tags:
 - 800-53r5_moderate
 - 800-53r5_high

@@ -1,10 +1,9 @@
 id: auth_account_lock_three_failed_attempts
-title: Ubuntu must automatically lock an account until the locked account
-  is released by an administrator when three unsuccessful logon attempts have been
-  made.
-discussion: >
-  Limiting failed logon attempts reduces the risk of brute-force attacks
-  by locking accounts after too many failures.
+title: Account Lock After Three Failed Attempts
+discussion: |
+  The system must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made.
+
+  Limiting failed logon attempts reduces the risk of brute-force attacks by locking accounts after too many failures.
 references:
   nist:
     cce:

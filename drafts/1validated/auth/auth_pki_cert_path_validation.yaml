@@ -1,11 +1,9 @@
 id: auth_pki_cert_path_validation
-title: Ubuntu , for PKI-based authentication, must validate certificates
-  by constructing a certification path (which includes status information) to an accepted
-  trust anchor.
-discussion: This requirement ensures that certificate validation uses a certification
-  path to an accepted trust anchor and includes status information (such as CRL or
-  OCSP), allowing the relying party to make an informed trust decision for certificates
-  not already explicitly trusted.
+title: Validate PKI Certificates by Constructing a Certification Path
+discussion: 
+  The system must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.
+
+  This requirement ensures that certificate validation uses a certification path to an accepted trust anchor and includes status information (such as CRL or OCSP), allowing the relying party to make an informed trust decision for certificates not already explicitly trusted.
 references:
   nist:
     cce:

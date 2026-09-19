@@ -1,9 +1,9 @@
 id: auth_local_revocation_cache
-title: Ubuntu for PKI-based authentication, must implement a local cache
-  of revocation data in case of the inability to access revocation information via
-  the network.
-discussion: Failing to configure a local revocation cache may permit access by users
-  whose certificates have been revoked.
+title: Implement Local Revocation Cache
+discussion: 
+  The system's PKI-based authentication, must implement a local cache of revocation data in case of the inability to access revocation information via the network.
+
+  Failing to configure a local revocation cache may permit access by users whose certificates have been revoked.
 references:
   nist:
     cce:

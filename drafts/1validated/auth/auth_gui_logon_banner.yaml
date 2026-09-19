@@ -1,11 +1,9 @@
 id: auth_gui_logon_banner
-title: Ubuntu must enable the graphical user logon banner to display the
-  Standard Mandatory DOD Notice and Consent Banner before granting local access to
-  the system via a graphical user logon.
-discussion: Ubuntu must display a standardized use notification before granting
-  access, consistent with federal laws and DOD policy, for human logon interfaces
-  only; the full banner text is required when space allows, otherwise a shortened
-  version may be used.
+title: Enable Graphical User Logon Banner
+discussion: |
+  The system must enable the graphical user logon banner to display a Standard Mandatory Notice and Consent Banner before granting local access to the system via a graphical user logon.
+
+  The system must display a standardized use notification before granting access, consistent with federal laws and organizational policy, for human logon interfaces only; the full banner text is required when space allows, otherwise a shortened version may be used.
 references:
   nist:
     cce:

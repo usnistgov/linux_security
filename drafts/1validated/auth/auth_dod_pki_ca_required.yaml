@@ -1,10 +1,9 @@
 id: auth_dod_pki_ca_required
-title: Ubuntu must use DOD PKI-established certificate authorities for verification
-  of the establishment of protected sessions.
-discussion: >
-  Untrusted CAs may issue certificates that could compromise DoD systems,
-  so only certificates from DoD-approved CAs are trusted for secure sessions
-  such as SSL/TLS.
+title: Use PKI-established Certificate Authorities
+discussion: |
+  The system must use PKI-established certificate authorities for verification of the establishment of protected sessions.
+
+  Untrusted CAs may issue certificates that could compromise systems, so only certificates from approved CAs are trusted for secure sessions such as SSL/TLS.
 references:
   nist:
     cce:

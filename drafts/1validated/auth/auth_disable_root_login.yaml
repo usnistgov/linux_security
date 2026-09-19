@@ -1,9 +1,9 @@
 id: auth_disable_root_login
-title: Ubuntu must prevent direct login to the root account.
-discussion: Organizational users must be individually identified and authenticated
-  before using any group authenticator (e.g., root, Administrator, sa, helpdesk) to
-  ensure accountability and traceability. Exceptions are only those accesses explicitly
-  documented by the organization as not requiring identification or authentication.
+title: Disable Direct Root Login
+discussion: 
+  The system must prevent direct login to the root account.
+
+  Organizational users must be individually identified and authenticated before using any group authenticator (e.g., root, Administrator, sa, helpdesk) to ensure accountability and traceability. Exceptions are only those accesses explicitly documented by the organization as not requiring identification or authentication.
 references:
   nist:
     cce:

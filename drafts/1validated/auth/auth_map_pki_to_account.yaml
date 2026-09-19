@@ -1,8 +1,9 @@
 id: auth_map_pki_to_account
-title: Ubuntu must map the authenticated identity to the user or group account
-  for PKI-based authentication.
-discussion: If the authentication certificate isn't mapped to a user account, forensic
-  analysis cannot identify the user or group.
+title: Map PKI Authentication to User or Group Account
+discussion: 
+  The system must map the authenticated identity to the user or group account for PKI-based authentication.
+  
+  If the authentication certificate isn't mapped to a user account, forensic analysis cannot identify the user or group.
 references:
   nist:
     cce:

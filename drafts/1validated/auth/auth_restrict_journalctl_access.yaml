@@ -1,12 +1,9 @@
 id: auth_restrict_journalctl_access
-title: Ubuntu must be configured so that the "journalctl" command is not
-  accessible by unauthorized users.
-discussion: >
-  Operating systems that disclose excessive information in error messages
-  risk exposing sensitive data, so organizations must carefully control error-\
-  message content according to policy. This includes avoiding the release of credentials,
-  personal identifiers, or mission-critical details that adversaries could
-  exploit.
+title: Restrict Journalctl Access
+discussion: |
+  The system must be configured so that the "journalctl" command is not accessible by unauthorized users.
+
+  Operating systems that disclose excessive information in error messages risk exposing sensitive data, so organizations must carefully control error message content according to policy. This includes avoiding the release of credentials, personal identifiers, or mission-critical details that adversaries could exploit.
 references:
   nist:
     cce:

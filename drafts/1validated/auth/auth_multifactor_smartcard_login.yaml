@@ -1,10 +1,9 @@
 id: auth_multifactor_smartcard_login
-title: Ubuntu must implement smart card logins for multifactor authentication
-  for local and network access to privileged and nonprivileged accounts.
-discussion: >
-  Without multifactor authentication, access to privileged functions is
-  significantly easier; MFA requires two or more factors: something you know,
-  have, or is exemplified by the DOD CAC with PKI.
+title: Implement Multifactor Authentication with Smart Cards
+discussion: |
+  The system must implement smart card logins for multifactor authentication for local and network access to privileged and nonprivileged accounts.
+
+  Without multifactor authentication, access to privileged functions is significantly easier; MFA requires two or more factors: something you know, have, or is exemplified by a CAC or PIV with PKI.
 references:
   nist:
     cce:

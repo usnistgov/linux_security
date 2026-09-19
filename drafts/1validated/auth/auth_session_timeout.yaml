@@ -1,0 +1,56 @@
+id: auth_session_timeout
+title: Session Timeout
+discussion: |
+  The system must automatically exit interactive command shell user sessions after $ODV seconds of inactivity.
+
+  Ending idle interactive shell sessions quickly limits the time unauthorized users could hijack an unattended terminal or console.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - AC-12
+  disa:
+    cci:
+    - CCI-002361
+    srg:
+    - SRG-OS-000279-GPOS-00109
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-412030
+      ubuntu_24:
+      - UBTU-24-200060
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: grep -rh "TMOUT=" /etc/bash.bashrc /etc/profile.d/* | awk -F"=" '{ if ($2 <= $ODV) print "pass" }'
+        result:
+          string: pass
+      fix:
+        shell: echo TMOUT=$ODV >> /etc/profile.d/99-terminal_tmout.sh
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+      enforcement_info:
+        fix:
+          shell: echo TMOUT=$ODV >> /etc/profile.d/99-terminal_tmout.sh
+odv:
+  hint:
+    datatype: number
+    description: Seconds of inactivity before automatically exiting interactive command shell user sessions, e.g. 900
+    validation:
+      min: 1
+  recommended: 900
+  disa_stig: 900
+tags:
+- 800-53r5_moderate
+- 800-53r5_high

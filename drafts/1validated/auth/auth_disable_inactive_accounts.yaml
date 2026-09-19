@@ -1,9 +1,9 @@
-id: auth_disable_inactive_accounts_35days
-title: Ubuntu must disable account identifiers (individuals, groups, roles,
-  and devices) after 35 days of inactivity.
-discussion: Inactive identifiers can be exploited for undetected access, and owners
-  may not notice unauthorized use. Systems should track inactivity and disable identifiers
-  after 35 days.
+id: auth_disable_inactive_accounts
+title: Disable Inactive Accounts After $ODV Days
+discussion: |
+  The system must disable account identifiers (individuals, groups, roles, and devices) after $ODV days of inactivity.
+
+  Inactive identifiers can be exploited for undetected access, and owners may not notice unauthorized use. Systems should track inactivity and disable identifiers after $ODV days.
 references:
   nist:
     cce:
@@ -30,7 +30,7 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: grep "^INACTIVE" /etc/default/useradd | awk -F"=" '{ if ($2 <= 35) print "pass" }'
+        shell: grep "^INACTIVE" /etc/default/useradd | awk -F"=" '{ if ($2 <= $ODV) print "pass" }'
         result:
           string: pass
       fix:
@@ -43,6 +43,14 @@ platforms:
       benchmarks:
       - name: disa_stig
         severity: medium
+odv:
+  hint:
+    datatype: number
+    description: Days of inactivity before disabling accounts, e.g. 35
+    validation:
+      min: 0
+  recommended: 35
+  disa_stig: 35        
 tags:
 - 800-53r5_moderate
 - 800-53r5_high
