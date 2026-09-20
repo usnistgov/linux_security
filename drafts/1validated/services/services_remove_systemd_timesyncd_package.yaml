@@ -1,8 +1,9 @@
 id: services_remove_systemd_timesyncd_package
-title: Ubuntu must not have the "systemd-timesyncd" package installed.
-discussion: Inaccurate timestamps hinder event correlation and analysis, making correct
-  time determination essential for forensic investigations. Organizations must account
-  for endpoints lacking regular access to authoritative time servers, such as mobile
+title: Remove systemd-timesyncd Package
+discussion: |
+  The system must not have the "systemd-timesyncd" package installed.
+
+  Inaccurate timestamps hinder event correlation and analysis, making correct time determination essential for forensic investigations. Organizations must account for endpoints lacking regular access to authoritative time servers, such as mobile
   or tactical devices.
 references:
   nist:

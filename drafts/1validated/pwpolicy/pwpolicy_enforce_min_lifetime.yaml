@@ -1,9 +1,9 @@
-id: pwpolicy_enforce_min_lifetime_24h
-title: Ubuntu must enforce 24 hours/one day as the minimum password lifetime.
-  Passwords for new users must have a 24 hours/one day minimum password lifetime restriction.
-discussion: Enforcing a minimum password lifetime prevents users from changing passwords
-  too frequently to bypass reuse or history policies. It stops rapid successive changes
-  that could defeat password reuse controls.
+id: pwpolicy_enforce_min_lifetime
+title: Enforce Minimum Password Lifetime
+discussion: 
+  The system must enforce $ODV hours as the minimum password lifetime. Passwords for new users must have a $ODV hours minimum password lifetime restriction.
+  
+  Enforcing a minimum password lifetime prevents users from changing passwords too frequently to bypass reuse or history policies. It stops rapid successive changes that could defeat password reuse controls.
 references:
   nist:
     cce:

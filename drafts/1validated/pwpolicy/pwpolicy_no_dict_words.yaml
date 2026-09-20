@@ -1,8 +1,9 @@
 id: pwpolicy_no_dict_words
-title: Ubuntu must prevent the use of dictionary words for passwords.
-discussion: >
-  Allowing dictionary-based passwords in Ubuntu raises the risk
-  of compromise by making passwords easier to guess or brute-force.
+title: Enforce No Dictionary Words in Passwords
+discussion: |
+  The system must prevent the use of dictionary words for passwords.
+
+  Allowing dictionary-based passwords in Ubuntu raises the risk of compromise by making passwords easier to guess or brute-force.
 references:
   nist:
     cce:

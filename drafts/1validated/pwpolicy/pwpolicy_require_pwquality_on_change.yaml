@@ -1,10 +1,9 @@
 id: pwpolicy_require_pwquality_on_change
-title: Ubuntu must be configured so that when passwords are changed or new
-  passwords are established, pwquality must be used.
-discussion: >
-  Complex passwords increase the time and resources needed to crack them,
-  and pwquality enforces strong password construction while limiting brute-
-  force attacks on the system.
+title: Require pwquality to be Used for Password Changes
+discussion: |
+  The system must be configured so that when passwords are changed or new passwords are established, pwquality must be used.
+
+  Complex passwords increase the time and resources needed to crack them, and pwquality enforces strong password construction while limiting brute force attacks on the system.
 references:
   nist:
     cce:
@@ -28,7 +27,8 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: "[[ \"$(grep \"pam_pwquality.so\" /etc/pam.d/common-password | grep -E \"retry=(1|2|3)\" | wc -l)\" > \"0\" && \"$(grep \"^enforcing\" /etc/security/pwquality.conf | awk -F\" = \" '{print $2}')\" == 1 ]]"
+        shell: |
+          [[ "$(grep "pam_pwquality.so" /etc/pam.d/common-password | grep -E "retry=(1|2|3)" | wc -l)" > "0" && "$(grep "^enforcing\" /etc/security/pwquality.conf | awk -F" = " '{print $2}')" == 1 ]]
         result:
           exit_code: 0
       fix:

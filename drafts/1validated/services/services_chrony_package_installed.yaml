@@ -1,8 +1,9 @@
 id: services_chrony_package_installed
-title: Ubuntu must have the "chrony" package installed.
-discussion: Inaccurate timestamps hinder event correlation and forensic analysis,
-  especially when sources drift beyond allowed limits. Organizations must account
-  for endpoints lacking regular access to authoritative time servers.
+title: Ensure Chrony Package is Installed
+discussion:
+  The system must have the "chrony" package installed.
+
+  Inaccurate timestamps hinder event correlation and forensic analysis, especially when sources drift beyond allowed limits. Organizations must account for endpoints lacking regular access to authoritative time servers.
 references:
   nist:
     cce:

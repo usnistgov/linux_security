@@ -1,11 +1,9 @@
 id: pwpolicy_require_special_char
-title: Ubuntu must enforce password complexity by requiring that at least
-  one special character be used.
-discussion: >
-  A complex password, particularly one that includes special characters,
-  increases the time and resources required to crack it by expanding the number
-  of possible combinations. Password complexity thus measures its resistance to
-  guessing and brute-force attacks.
+title: Require Special Characters in Passwords
+discussion: |
+  The system must enforce password complexity by requiring that at least $ODV special character be used.
+
+  A complex password, particularly one that includes special characters, increases the time and resources required to crack it by expanding the number of possible combinations. Password complexity thus measures its resistance to guessing and brute-force attacks.
 references:
   nist:
     cce:
@@ -32,9 +30,9 @@ platforms:
       check:
         shell: grep "^ocredit" /etc/security/pwquality.conf | awk -F" = " '{print $2}'
         result:
-          integer: -1
+          integer: -$ODV
       fix:
-        shell: echo "ocredit = -1" >> /etc/security/pwquality.conf
+        shell: echo "ocredit = -$ODV" >> /etc/security/pwquality.conf
     '22.04':
       benchmarks:
       - name: disa_stig
@@ -43,6 +41,14 @@ platforms:
       benchmarks:
       - name: disa_stig
         severity: medium
+odv:
+  hint:
+    datatype: number
+    description: Minimum number of special characters that must be used in a password, e.g. 1
+    validation:
+      min: 0
+  recommended: 0
+  disa_stig: 1        
 tags:
 - 800-53r5_low
 - 800-53r5_moderate

@@ -28,7 +28,7 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        additional_info: If any temporary accounts have "account expires" in `chage -l` set to higher than 72 hours, this is a finding.
+        additional_info: If any temporary accounts have "account expires" in `chage -l` set to higher than $ODV hours, this is a finding.
       fix:
         additional_info: Temporary accounts can be disabled with the `chage` command.
     '22.04':

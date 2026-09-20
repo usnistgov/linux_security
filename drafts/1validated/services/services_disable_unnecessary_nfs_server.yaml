@@ -1,8 +1,9 @@
 id: services_disable_unnecessary_nfs_server
-title: Ubuntu must not have the nfs-kernel-server package installed.
-discussion: Operating systems should not install unnecessary default functionality,
-  as unneeded services increase the attack surface and risk. Examples include games,
-  tools, and demo software not required for mission objectives.
+title: Disable Unnecessary NFS Server
+discussion: 
+  The system must not have the nfs-kernel-server package installed.
+
+  Operating systems should not install unnecessary default functionality, as unneeded services increase the attack surface and risk. Examples include games, tools, and demo software not required for mission objectives.
 references:
   nist:
     cce:

@@ -47,7 +47,7 @@ odv:
     validation:
       min: 0
   recommended: 4
-  disa_stig: 4        
+  disa_stig: 4
 tags:
 - 800-53r5_low
 - 800-53r5_moderate

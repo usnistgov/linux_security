@@ -1,9 +1,9 @@
-id: pwpolicy_fips1403_approved_hash_algorithm
-title: Ubuntu must encrypt all stored passwords with a FIPS 140-3-approved
-  cryptographic hashing algorithm.
-discussion: Passwords must be protected at all times, and encryption is the standard
-  method to prevent them from being readable in clear text. Unencrypted passwords
-  can be easily compromised.
+id: pwpolicy_approved_hash_algorithm
+title: Use FIPS 140-3-Approved Hash Algorithm
+discussion: |
+  The system must encrypt all stored passwords with a FIPS 140-3-approved cryptographic hashing algorithm.
+
+  Passwords must be protected at all times, and encryption is the standard method to prevent them from being readable in clear text. Unencrypted passwords can be easily compromised.
 references:
   nist:
     cce:

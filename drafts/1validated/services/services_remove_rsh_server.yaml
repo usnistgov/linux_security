@@ -1,8 +1,9 @@
 id: services_remove_rsh_server
-title: Ubuntu must not have the "rsh-server" package installed.
-discussion: Unnecessary services increase the attack surface; RSH provides unencrypted
-  remote access that can expose privileged passwords and session data. Removing the
-  rsh-server package reduces the risk of accidental or intentional activation of this
+title: Remove RSH Server Package
+discussion: 
+  The system must not have the "rsh-server" package installed.
+
+  Unnecessary services increase the attack surface; RSH provides unencrypted remote access that can expose privileged passwords and session data. Removing the rsh-server package reduces the risk of accidental or intentional activation of this
   insecure service.
 references:
   nist:
