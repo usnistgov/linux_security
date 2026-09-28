@@ -13,6 +13,8 @@ references:
       - CCE-XXXXX-X
       ubuntu_24:
       - CCE-XXXXX-X
+      redhat_9:
+      - CCE-XXXXX-X
     800-53r5:
     - AU-12
   disa:
@@ -28,6 +30,8 @@ references:
       - UBTU-22-654041
       ubuntu_24:
       - UBTU-24-200270
+      redhat_9:
+      - RHEL-09-654097
 platforms:
   ubuntu:
     enforcement_info:
@@ -49,6 +53,19 @@ platforms:
       benchmarks:
       - name: disa_stig
         severity: medium
+  redhat:
+    enforcement_info:
+      check:
+        shell: auditctl -l | grep "subj_type=crond_t" | wc -l
+        result:
+          integer: 4
+      fix:
+        shell: printf "%s\\n" "-a always,exit -F arch=b64 -S execve -F subj_type=crond_t -F euid=0 -k cron_exec" "-a always,exit -F arch=b32 -S execve -F subj_type=crond_t -F euid=0 -k cron_exec" "-a always,exit -F arch=b64 -S execve -F subj_type=crond_t -F auid>=1000 -F auid!=unset -k cron_exec" "-a always,exit -F arch=b32 -S execve -F subj_type=crond_t -F auid>=1000 -F auid!=unset -k cron_exec" >> /etc/audit/rules.d/stig.rules && chmod 640 /etc/audit/rules.d/stig.rules && augenrules --load
+    '9':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+   
 tags:
 - 800-53r5_low
 - 800-53r5_moderate

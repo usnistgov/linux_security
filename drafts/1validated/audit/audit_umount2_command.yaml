@@ -1,0 +1,41 @@
+id: audit_umount2_command
+title: Authorized umount2 Command Execution Events
+discussion: |
+  The system must generate audit records for successful/unsuccessful uses of the umount2 command.
+
+  Without audit records tailored to the organization's security and mission needs, it is difficult to establish, correlate, investigate incidents, or identify responsible parties. These records can be generated from various system components, such as modules or policy filters.
+references:
+  nist:
+    cce:
+      redhat_9:
+      - CCE-XXXXX-X
+    800-53r5:
+    - AU-12
+  disa:
+    cci:
+    - CCI-000130
+    - CCI-000169
+    - CCI-000172
+    - CCI-002884
+    srg:
+    - SRG-OS-000037-GPOS-00015
+    disa_stig:
+      redhat_9:
+      - RHEL-09-654210
+platforms:
+  redhat:
+    enforcement_info:
+      check:
+        shell: auditctl -l | grep "umount2" | wc -l
+        result:
+          integer: 2
+      fix:
+        shell: printf "%s\n" "-a always,exit -F arch=b32 -S umount2 -F auid>=1000 -F auid!=unset -k privileged-umount" "-a always,exit -F arch=b64 -S umount2 -F auid>=1000 -F auid!=unset -k privileged-umount" >> /etc/audit/rules.d/stig.rules && chmod 640 /etc/audit/rules.d/stig.rules && augenrules --load
+    '9':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+tags:
+- 800-53r5_low
+- 800-53r5_moderate
+- 800-53r5_high
