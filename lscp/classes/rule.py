@@ -51,7 +51,7 @@ class ODVHint(BaseModel):
     """
     datatype: str
     description: str
-    validation: ODVValidation
+    validation: ODVValidation | None = None
 
 
 class ODV(BaseModel):
@@ -146,7 +146,7 @@ class CheckResult(BaseModel):
     """
 
     string: str | None = None
-    integer: int | None = None
+    integer: int | Literal["$ODV"] | Literal["-$ODV"] | None = None
     boolean: bool | None = None
     exit_code: int | None = None
 

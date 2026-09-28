@@ -78,8 +78,13 @@ def baseline_to_template(baseline: Baseline) -> TemplateBaseline:
                         replace_value = rule.odv.benchmarks[baseline.parent_values]
 
                     if replace_value is not None:
+                        if type(replace_value) == str:
+                            replace_value = replace_value.strip()
+
                         if new_check is not None:
                             new_check = new_check.replace("$ODV", str(replace_value))
+                        if result_value is not None and type(result_value) == str:
+                            result_value = result_value.replace("$ODV", str(replace_value))
                         if new_fix is not None:
                             new_fix = new_fix.replace("$ODV", str(replace_value))
 
