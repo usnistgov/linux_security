@@ -1,11 +1,9 @@
 id: os_session_lock_must_require_reauth
-title: Ubuntu must retain a user's session lock until that user reestablishes
-  access using established identification and authentication procedures.
-discussion: >
-  A session lock is a temporary action taken when a user steps away from
-  the system but does not want to log out. Once invoked on Ubuntu 22.04
-  LTS, it remains in place until the user reauthenticates, with no other activity
-  able to unlock it.
+title: Require Reauthentication to Unlock Session
+discussion: |
+  The system must retain a user's session lock until that user reestablishes access using established identification and authentication procedures.
+
+  A session lock is a temporary action taken when a user steps away from the system but does not want to log out. Once invoked, it remains in place until the user reauthenticates, with no other activity able to unlock it.
 references:
   nist:
     cce:

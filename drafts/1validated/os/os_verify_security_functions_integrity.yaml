@@ -1,12 +1,9 @@
 id: os_verify_security_functions_integrity
-title: Ubuntu must use a file integrity tool to verify correct operation
-  of all security functions.
-discussion: >
-  Without verification, security functions may fail unnoticed; they encompass
-  the hardware, software, or firmware that enforce the system security policy, manage
-  accounts, permissions, auditing, and intrusion detection. This requirement applies
-  to Ubuntu 22.04 LTS systems performing security function verification/testing
-  or environments that need this functionality.
+title: Ensure Security Functions Integrity is Verified
+discussion: |
+  The system must use a file integrity tool to verify correct operation of all security functions.
+
+  Without verification, security functions may fail unnoticed; they encompass the hardware, software, or firmware that enforce the system security policy, manage accounts, permissions, auditing, and intrusion detection. 
 references:
   nist:
     cce:

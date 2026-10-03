@@ -1,6 +1,9 @@
 id: os_restrict_kernel_message_buffer
-title: Ubuntu must restrict access to the kernel message buffer.
-discussion: Restricting kernel message buffer access to root prevents non-privileged users from obtaining sensitive system information.
+title: Restrict Access to the Kernel Message Buffer
+discussion: |
+  The system must restrict access to the kernel message buffer.
+
+  Restricting kernel message buffer access to root prevents non-privileged users from obtaining sensitive system information.
 references:
   nist:
     cce:

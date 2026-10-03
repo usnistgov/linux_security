@@ -1,9 +1,9 @@
 id: os_var_log_directory_group_syslog
-title: Ubuntu must configure the "/var/log" directory to be group-owned
-  by "syslog".
-discussion: Only authorized personnel should see error details, as messages can reveal
-  operational state, OS/platform, PII, or other sensitive information. Error message
-  design must align with organizational policy and operational requirements.
+title: Ensure the "/var/log" Directory is Group-Owned by "syslog"
+discussion: |
+  The system must configure the "/var/log" directory to be group-owned by "syslog".
+
+  Only authorized personnel should see error details, as messages can reveal operational state, OS/platform, PII, or other sensitive information. Error message design must align with organizational policy and operational requirements.
 references:
   nist:
     cce:

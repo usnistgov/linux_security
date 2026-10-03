@@ -1,8 +1,9 @@
 id: os_remove_ntp_package_installed
-title: Ubuntu must not have the "ntp" package installed.
-discussion: Inaccurate timestamps hinder event correlation and forensic analysis,
-  especially when sources drift beyond allowed limits. Organizations must account
-  for endpoints lacking regular access to authoritative time servers.
+title: Remove "ntp" Package if Installed
+discussion: |
+  The system must not have the "ntp" package installed.
+
+  Inaccurate timestamps hinder event correlation and forensic analysis, especially when sources drift beyond allowed limits. Organizations must account for endpoints lacking regular access to authoritative time servers.
 references:
   nist:
     cce:

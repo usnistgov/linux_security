@@ -1,11 +1,9 @@
 id: os_sync_clock_to_authoritative
-title: Ubuntu must synchronize internal information system clocks to the
-  authoritative time source when the time difference is greater than one second.
-discussion: >
-  Accurate timestamps are essential for correlating events and conducting
-  reliable forensic analysis. Synchronizing internal system clocks-including
-  endpoints with intermittent access to the authoritative time server-ensures
-  uniform time stamps across networked systems.
+title: Synchronize System Clock to Authoritative Time Source
+discussion: |
+  The system must synchronize internal information system clocks to the authoritative time source when the time difference is greater than one second.
+
+  Accurate timestamps are essential for correlating events and conducting reliable forensic analysis. Synchronizing internal system clocks-including endpoints with intermittent access to the authoritative time server-ensures uniform time stamps across networked systems.
 references:
   nist:
     cce:

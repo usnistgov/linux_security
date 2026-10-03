@@ -1,9 +1,9 @@
 id: os_apparmor_package_installed
-title: Ubuntu must have the "apparmor" package installed.
-discussion: Control of program execution prevents unauthorized programs from running,
-  especially when default OS functions exceed mission needs or are unnecessary. This
-  is achieved by restricting execution based on environment, privileges, subnets,
-  sandboxing, or roles.
+title: AppArmor Must Be Installed
+discussion: |
+  The system must have the "apparmor" package installed.
+
+  Control of program execution prevents unauthorized programs from running, especially when default OS functions exceed mission needs or are unnecessary. This is achieved by restricting execution based on environment, privileges, subnets, sandboxing, or roles.
 references:
   nist:
     cce:

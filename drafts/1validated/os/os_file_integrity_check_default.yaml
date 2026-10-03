@@ -1,11 +1,9 @@
 id: os_file_integrity_check_default
-title: Ubuntu must be configured so that the script which runs each 30 days
-  or less to check file integrity is the default one.
-discussion: >
-  Without verification, security functions-hardware, software, or
-  firmware that enforce policy, manage accounts, access, auditing, intrusion detection,
-  and provide alerts-may fail unnoticed. This requirement applies to Ubuntu
-   and any system needing security-function verification/testing.
+title: File Integrity Check Must Use Default Script
+discussion: |
+  The system must be configured so that the script which runs each 30 days or less to check file integrity is the default one.
+
+  Without verification, security functions-hardware, software, or firmware that enforce policy, manage accounts, access, auditing, intrusion detection, and provide alerts-may fail unnoticed. This requirement applies to any system needing security-function verification/testing.
 references:
   nist:
     cce:

@@ -1,9 +1,9 @@
 id: os_syslog_file_group_adm
-title: Ubuntu must configure the /var/log/syslog file to be group-owned
-  by adm.
-discussion: Only authorized personnel should receive error details, as messages can
-  reveal the operating system, platform, or PII. Error message content must be carefully
-  designed per organizational policy to avoid exposing sensitive or operational information.
+title: Ensure syslog is Group-Owned by "adm"
+discussion: 
+  The system must configure the /var/log/syslog file to be group-owned by adm.
+
+  Only authorized personnel should receive error details, as messages can reveal the operating system, platform, or PII. Error message content must be carefully designed per organizational policy to avoid exposing sensitive or operational information.
 references:
   nist:
     cce:

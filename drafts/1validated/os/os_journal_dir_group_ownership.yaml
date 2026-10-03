@@ -1,10 +1,9 @@
 id: os_journal_dir_group_ownership
-title: Ubuntu must configure the directories used by the system journal
-  to be group-owned by "systemd-journal".
-discussion: Only authorized personnel should see error details, as messages can reveal
-  operational state, OS/platform, PII, or other sensitive information. Error message
-  content must be carefully designed per organizational policy to prevent unauthorized
-  disclosure.
+title: System journal directories must be group-owned by "systemd-journal".
+discussion: 
+  The system must configure the directories used by the system journal to be group-owned by "systemd-journal".
+
+  Only authorized personnel should see error details, as messages can reveal operational state, OS/platform, PII, or other sensitive information. Error message content must be carefully designed per organizational policy to prevent unauthorized disclosure.
 references:
   nist:
     cce:

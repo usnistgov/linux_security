@@ -1,10 +1,9 @@
 id: os_time_sync_every_24h
-title: Ubuntu must compare internal information system clocks at least every
-  24 hours with an authoritative time server.
-discussion: Accurate time stamps are essential for correlating events and conducting
-  forensic analysis; unsynchronized clocks can drift and produce inaccurate timestamps.
-  Synchronizing internal system clocks ensures uniformity across networked systems,
-  particularly for endpoints that lack regular access to an authoritative time server.
+title: Ensure Internal System Clocks are Synchronized with an Authoritative Time Server Every 24 Hours
+discussion: |
+  The system must compare internal information system clocks at least every 24 hours with an authoritative time server.
+
+  Accurate time stamps are essential for correlating events and conducting forensic analysis; unsynchronized clocks can drift and produce inaccurate timestamps. Synchronizing internal system clocks ensures uniformity across networked systems, particularly for endpoints that lack regular access to an authoritative time server.
 references:
   nist:
     cce:

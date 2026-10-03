@@ -5,7 +5,7 @@ discussion: |
 
   An isolation boundary enforces access control to protect the integrity of the hardware, software, and firmware that perform security functions, which enforce the system security policy and isolate code and data. 
   
-  Ubuntu 22.04 LTS restricts access to these functions through access-control mechanisms and least-privilege capabilities, leveraging kernel separation, file-system and address-space protections, and disciplined development practices.
+  Linux restricts access to these functions through access-control mechanisms and least-privilege capabilities, leveraging kernel separation, file-system and address-space protections, and disciplined development practices.
 references:
   nist:
     cce:

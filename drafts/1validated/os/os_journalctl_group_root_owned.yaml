@@ -1,10 +1,9 @@
 id: os_journalctl_group_root_owned
-title: Ubuntu must be configured so that the "journalctl" command is group-owned
-  by "root".
-discussion: Only authorized personnel should see error details, as error messages
-  can reveal an organization's operational state, OS/platform information, PII, or
-  other sensitive data. Their structure and content must be carefully designed per
-  organizational policy to prevent unauthorized disclosure.
+title: System "journalctl" command must be group-owned by "root".
+discussion: |
+  The system must be configured so that the "journalctl" command is group-owned by "root".
+
+  Only authorized personnel should see error details, as error messages can reveal an organization's operational state, OS/platform information, PII, or other sensitive data. Their structure and content must be carefully designed per organizational policy to prevent unauthorized disclosure.
 references:
   nist:
     cce:

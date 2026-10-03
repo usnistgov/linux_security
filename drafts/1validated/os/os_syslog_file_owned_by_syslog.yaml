@@ -1,9 +1,9 @@
 id: os_syslog_file_owned_by_syslog
-title: Ubuntu must configure "/var/log/syslog" file to be owned by "syslog".
-discussion: Only authorized personnel should see error details, as messages can reveal
-  an organization's operational state, OS/platform, PII, or other sensitive information.
-  Error message content must be designed according to organizational policy to limit
-  disclosure and ensure proper handling.
+title: Ensure syslog File is Owned by "syslog"
+discussion: 
+  The system must configure "/var/log/syslog" file to be owned by "syslog".
+
+  Only authorized personnel should see error details, as messages can reveal an organization's operational state, OS/platform, PII, or other sensitive information. Error message content must be designed according to organizational policy to limit disclosure and ensure proper handling.
 references:
   nist:
     cce:
@@ -31,7 +31,7 @@ platforms:
         result:
           string: syslog
       fix:
-        shell: chwon syslog /var/log/syslog
+        shell: chown syslog /var/log/syslog
     '22.04':
       benchmarks:
       - name: disa_stig

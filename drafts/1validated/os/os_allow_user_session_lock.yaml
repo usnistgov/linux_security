@@ -1,8 +1,9 @@
 id: os_allow_user_session_lock
-title: Ubuntu must allow users to directly initiate a session lock for all
-  connection types.
-discussion: A session lock temporarily secures a user's session when they step away
-  without logging out, allowing manual activation in Ubuntu .
+title: Allow Users to Initiate Session Lock
+discussion: |
+  The system must allow users to directly initiate a session lock for all connection types.
+
+  A session lock temporarily secures a user's session when they step away without logging out, allowing manual activation in Ubuntu .
 references:
   nist:
     cce:

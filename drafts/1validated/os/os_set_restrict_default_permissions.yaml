@@ -1,8 +1,9 @@
 id: os_set_restrict_default_permissions
-title: Ubuntu default filesystem permissions must be defined in such a way
-  that all authenticated users can read and modify only their own files.
-discussion: Setting the most restrictive default permissions prevents new accounts
-  from gaining unnecessary access.
+title: Restrict Default Filesystem Permissions
+discussion: |
+  The system's default filesystem permissions must be defined in such a way that all authenticated users can read and modify only their own files.
+  
+  Setting the most restrictive default permissions prevents new accounts from gaining unnecessary access.
 references:
   nist:
     cce:

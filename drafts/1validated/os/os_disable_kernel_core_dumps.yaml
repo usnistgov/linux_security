@@ -1,9 +1,9 @@
 id: os_disable_kernel_core_dumps
-title: Ubuntu must disable kernel core dumps so that it can fail to a secure
-  state if system initialization fails, shutdown fails or aborts fail.
-discussion: Kernel core dumps can capture the entire system memory at crash, potentially
-  consuming large amounts of disk space and causing denial of service by exhausting
-  the file system.
+title: Disable Kernel Core Dumps
+discussion: |
+  The system must disable kernel core dumps so that it can fail to a secure state if system initialization fails, shutdown fails or aborts fail.
+
+  Kernel core dumps can capture the entire system memory at crash, potentially consuming large amounts of disk space and causing denial of service by exhausting the file system.
 references:
   nist:
     cce:

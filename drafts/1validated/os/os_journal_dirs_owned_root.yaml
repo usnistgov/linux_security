@@ -1,10 +1,9 @@
 id: os_journal_dirs_owned_root
-title: Ubuntu must configure the directories used by the system journal
-  to be owned by "root".
-discussion: Only authorized personnel should see error details, as error messages
-  can reveal system state, OS, PII, or operational information. Organizations must
-  design error messages according to policy to prevent exposing sensitive data to
-  unauthorized users.
+title: System journal directories must be owned by "root".
+discussion: |
+  The system must configure the directories used by the system journal to be owned by "root".
+
+  Only authorized personnel should see error details, as error messages can reveal system state, OS, PII, or operational information. Organizations must design error messages according to policy to prevent exposing sensitive data to unauthorized users.
 references:
   nist:
     cce:

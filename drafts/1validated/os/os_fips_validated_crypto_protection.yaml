@@ -1,8 +1,9 @@
 id: os_fips_validated_crypto_protection
 title: NIST FIPS-validated cryptography must be in use.
-discussion: Using weak or untested encryption algorithms undermines data protection;
-  the operating system must employ government-approved cryptographic modules
-  that have been tested and validated.
+discussion: |
+  NIST FIPS-validated cryptography must be in use.
+
+  Using weak or untested encryption algorithms undermines data protection; the operating system must employ government-approved cryptographic modules that have been tested and validated.
 references:
   nist:
     cce:

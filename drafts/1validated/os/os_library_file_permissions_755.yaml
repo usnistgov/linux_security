@@ -1,6 +1,9 @@
 id: os_library_file_permissions_755
 title: Ubuntu library files must have mode "755" or less permissive.
-discussion: Allowing any user to modify software libraries could bypass required testing
+discussion: |
+  The system's library files must have mode "755" or less permissive.
+
+  Allowing any user to modify software libraries could bypass required testing
   and approvals, undermining change management. Only qualified, authorized personnel
   should have access to modify these libraries, including privileged programs.
 references:

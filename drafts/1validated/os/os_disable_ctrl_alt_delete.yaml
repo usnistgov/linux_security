@@ -1,8 +1,9 @@
 id: os_disable_ctrl_alt_delete
-title: Ubuntu must disable the x86 Ctrl-Alt-Delete key sequence.
-discussion: >
-  Pressing Ctrl-Alt-Delete at the console can reboot the system,
-  and an accidental press may cause unintended loss of availability.
+title: Disable Ctrl-Alt-Delete Key Sequence
+discussion: |
+  The system must disable the x86 Ctrl-Alt-Delete key sequence.
+
+  Pressing Ctrl-Alt-Delete at the console can reboot the system, and an accidental press may cause unintended loss of availability.
 references:
   nist:
     cce:

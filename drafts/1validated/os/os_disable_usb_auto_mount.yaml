@@ -1,8 +1,9 @@
 id: os_disable_usb_auto_mount
-title: Ubuntu must disable automatic mounting of Universal Serial Bus (USB)
-  mass storage driver.
-discussion: Without device authentication, unknown peripherals such as flash drives,
-  external storage, and printers can be introduced, enabling malicious activity.
+title: Disable Automatic Mounting of USB Mass Storage Drivers
+discussion: |
+  The system must disable automatic mounting of Universal Serial Bus (USB) mass storage driver.
+  
+  Without device authentication, unknown peripherals such as flash drives, external storage, and printers can be introduced, enabling malicious activity.
 references:
   nist:
     cce:

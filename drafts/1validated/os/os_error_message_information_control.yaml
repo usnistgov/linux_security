@@ -1,13 +1,9 @@
 id: os_error_message_information_control
-title: Ubuntu must generate error messages that provide information necessary
-  for corrective actions without revealing information that could be exploited by
-  adversaries.
-discussion: >
-  Excessive detail in error messages can reveal sensitive information,
-  so organizations must restrict what is disclosed according to policy. The /var/log/btmp,
-  /var/log/wtmp, and /var/log/lastlog files require group-write and world-
-  read permissions for lastlog to function; tighter permissions will break dependent
-  services.
+title: Error Message Information Control
+discussion: |
+  The system must generate error messages that provide information necessary for corrective actions without revealing information that could be exploited by adversaries.
+
+  Excessive detail in error messages can reveal sensitive information, so organizations must restrict what is disclosed according to policy. The /var/log/btmp, /var/log/wtmp, and /var/log/lastlog files require group-write and world- read permissions for lastlog to function; tighter permissions will break dependent services.
 references:
   nist:
     cce:

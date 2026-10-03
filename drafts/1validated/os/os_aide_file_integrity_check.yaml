@@ -1,13 +1,9 @@
 id: os_aide_file_integrity_check
-title: Ubuntu must configure Advanced Intrusion Detection Environment (AIDE)
-  to perform file integrity checking on the file system.
-discussion: >
-  Without verification, security functions may fail unnoticed; they encompass
-  the hardware, software, or firmware that enforce the system's security policy,
-  manage accounts, configure access authorizations, set auditing events, and define
-  intrusion-detection parameters. This requirement applies to Ubuntu
-   systems that perform security-function verification/testing
-  or operate in environments needing this functionality.
+title: AIDE Must Be Configured
+discussion: |
+  The system must configure Advanced Intrusion Detection Environment (AIDE) to perform file integrity checking on the file system.
+
+  Without verification, security functions may fail unnoticed; they encompass the hardware, software, or firmware that enforce the system's security policy, manage accounts, configure access authorizations, set auditing events, and define intrusion-detection parameters. This requirement applies to Ubuntu systems that perform security-function verification/testing or operate in environments needing this functionality.
 references:
   nist:
     cce:

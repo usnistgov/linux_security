@@ -1,7 +1,9 @@
 id: os_session_lock_blank_screensaver
-title: Ubuntu must conceal, via the session lock, information previously
-  visible on the display with a publicly viewable image.
-discussion: Setting the screensaver to blank-only hides the screen contents from passersby.
+title: Require Blank Screensaver to Conceal Information on the Display
+discussion: |
+  The system must conceal, via the session lock, information previouslyvisible on the display with a publicly viewable image.
+  
+  Setting the screensaver to blank-only hides the screen contents from passersby.
 references:
   nist:
     cce:

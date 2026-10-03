@@ -1,9 +1,9 @@
 id: os_use_apparmor
-title: Ubuntu must be configured to use AppArmor.
-discussion: Control of program execution prevents unauthorized programs from running,
-  particularly when default OS functions exceed mission requirements or cannot be
-  removed. Compliance is achieved by restricting execution based on environments,
-  privileges, subnets, sandboxing, or roles.
+title: Ensure AppArmor is Enabled and Enforcing
+discussion: |
+  The system must be configured to use AppArmor.
+
+  Control of program execution prevents unauthorized programs from running, particularly when default OS functions exceed mission requirements or cannot be removed. Compliance is achieved by restricting execution based on environments, privileges, subnets, sandboxing, or roles.
 references:
   nist:
     cce:

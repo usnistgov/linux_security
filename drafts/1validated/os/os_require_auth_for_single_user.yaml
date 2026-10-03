@@ -1,11 +1,9 @@
 id: os_require_auth_for_single_user
-title: Ubuntu, when booted, must require authentication upon booting into
-  single-user and maintenance modes.
-discussion: >
-  DOD systems must be configured so that possessing a DOD-approved
-  PKI certificate alone does not grant access; after authentication, entities must
-  be authorized through identity-, role-, or attribute-based access
-  controls enforced by mechanisms such as access control lists, matrices, or cryptography.
+title: Require Authentication for Single-User and Maintenance Modes
+discussion: |
+  The system, when booted, must require authentication upon booting into single-user and maintenance modes.
+
+  Systems must be configured so that possessing an approved PKI certificate alone does not grant access; after authentication, entities must be authorized through identity, role, or attribute-based access controls enforced by mechanisms such as access control lists, matrices, or cryptography.
 references:
   nist:
     cce:

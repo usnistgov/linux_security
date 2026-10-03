@@ -1,10 +1,9 @@
 id: os_encrypt_data_at_rest
-title: Ubuntu must implement cryptographic mechanisms to prevent unauthorized
-  disclosure and modification of all information that requires protection at rest.
-discussion: >
-  Operating systems must use cryptographic mechanisms to protect data at
-  rest, selecting mechanisms based on the information's security category and integrity
-  needs, with options for full-disk or selective encryption.
+title: Encrypt Data at Rest
+discussion: |
+  The system must implement cryptographic mechanisms to prevent unauthorized disclosure and modification of all information that requires protection at rest.
+
+  Operating systems must use cryptographic mechanisms to protect data at rest, selecting mechanisms based on the information's security category and integrity needs, with options for full-disk or selective encryption.
 references:
   nist:
     cce:
