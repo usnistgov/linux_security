@@ -48,5 +48,6 @@ fi
 
 log_message "[CHECK] $rule_id $result_status"
 log_csv "$rule_id" "$result_status" "$reboot_req" "$is_manual" "$result_value" "$status_code" "$expected_standard_out" "$expected_status_code"
+log_json "$rule_id" "$result_status"
 
 sleep 0.1

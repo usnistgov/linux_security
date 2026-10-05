@@ -19,6 +19,9 @@ LAST_RUN="$LOG_PATH/lastrun.csv"
 audit_log="$LOG_PATH/$LOG_REF.log"
 audit_csv="$LOG_PATH/$LOG_REF.csv"
 
+TMP_JSON_STORE="/tmp/{{ baseline_name }}.json"
+JSON_STORE="/etc/lscp/{{ baseline_name }}.json"
+
 verbosity=0
 using_whiptail=false
 dry_run=false
@@ -48,7 +51,7 @@ define_logs(){
 }
 
 log_check(){
-    if [[ ! -h $LAST_RUN ]]; then
+    if [[ ! -f $JSON_STORE ]]; then
         if $using_whiptail; then
             whiptail --title "File Error" --msgbox "No prior run exists, cannot continue." 10 40;
         else
@@ -81,6 +84,39 @@ log_message(){
     fi
 }
 
+log_json(){
+    mkdir -p "/etc/lscp"
+
+    local rule_name="$1"
+    local finding="$2"
+
+    if [[ "$finding" == "passed" ]]; then
+        finding=false
+    elif [[ "$finding" == "failed" ]]; then
+        finding=true
+    fi
+
+    if [[ ! -f $JSON_STORE ]]; then
+        jq -cn --arg name "$(hostname)" '{"hostname": $name, "baseline": "{{ baseline_name }}", "findings": {}}' > $JSON_STORE
+    fi
+
+    chmod 600 $JSON_STORE
+
+    local exemption=$(jq -r --arg rule_name "$rule_name" '.findings | to_entries[] | select(.key == "$rule_name") .value.exempt' $JSON_STORE)
+    if [[ -z "$exemption" ]]; then
+        exemption=false
+    fi
+
+    local exempt_reason=$(jq -r --arg rule_name "$rule_name" '.findings | to_entries[] | select(.key == "$rule_name") .value.exempt_reason' $JSON_STORE)
+    if [[ -z "$exempt_reason" ]]; then
+        exempt_reason="null"
+    fi
+
+    cp $JSON_STORE $TMP_JSON_STORE
+    jq -c --arg name "$rule_name" --argjson finding "$finding" --argjson exemption "$exemption" --argjson exempt_reason "$exempt_reason" '.findings += {$name:{"finding": $finding, "exempt": $exemption, "exempt_reason": $exempt_reason}}' $JSON_STORE > $TMP_JSON_STORE
+    mv $TMP_JSON_STORE $JSON_STORE
+}
+
 log_csv(){
     mkdir -p "/var/log/lscp"
     chmod 640 "$audit_csv"
@@ -107,15 +143,14 @@ clear_logs(){
 }
 
 compliance_count(){
-    if [[ ! -h $LAST_RUN ]]; then
+    if [[ ! -f $JSON_STORE ]]; then
         # Because some scripts can (currently) be run as root, it's possible to hit this line without permission to write log files, thus this cannot be logged there.
         echo "ERROR: No prior run exists"
         return 127
     fi
 
-    local total_rules=$(tail -n +2 $LAST_RUN)
-    local compliant_count=$(echo "$total_rules" | awk -F"\t" '{if ($2 == "passed") print $1}' | wc -l)
-    local non_compliant_count=$(echo "$total_rules" | awk -F"\t" '{if ($2 == "failed") print $1}' | wc -l)
+    local compliant_count=$(jq -r '.findings | to_entries[] | select(.value.finding == false) | .key' $JSON_STORE | wc -l)
+    local non_compliant_count=$(jq -r '.findings | to_entries[] | select(.value.finding == true) | .key' $JSON_STORE | wc -l)
 
     if [[ $1 == "compliant" ]]; then
         echo $compliant_count
@@ -143,15 +178,15 @@ generate_report(){
 }
 
 rule_fix() {
-    local pass_fail=$(tail -n +2 $LAST_RUN  | awk -F"\t" -v rule_id=$1 '{if ($1 == rule_id) print $2}')
-    if [[ $pass_fail == "failed" ]]; then
+    local pass_fail=$(jq -r --arg rule_id "$1" '.findings.[$rule_id].finding' $JSON_STORE)
+    if [[ $pass_fail == "true" ]]; then
         log_message "[FIX] Configuring $1"
         if $dry_run; then
             log_message "[FIX] [DRY] Command $1: $2" "DEBUG"
         else
             eval "${@:2}"
         fi
-    elif [[ $pass_fail == "passed" ]]; then
+    elif [[ $pass_fail == "false" ]]; then
         log_message "[FIX] Skipping $1"
     fi
 }
