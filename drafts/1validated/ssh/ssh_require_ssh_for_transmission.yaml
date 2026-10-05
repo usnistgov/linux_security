@@ -1,9 +1,9 @@
 id: ssh_require_ssh_for_transmission
-title: Ubuntu must use SSH to protect the confidentiality and integrity
-  of transmitted information.
-discussion: Without protection, transmitted information can be intercepted and altered,
-  compromising confidentiality and integrity. This applies to all internal and external
-  network communications and can be safeguarded via physical or cryptographic means.
+title: Require SSH for Transmission
+discussion: |
+  The system must use SSH to protect the confidentiality and integrity of transmitted information.
+
+  Without protection, transmitted information can be intercepted and altered, compromising confidentiality and integrity. This applies to all internal and external network communications and can be safeguarded via physical or cryptographic means.
 references:
   nist:
     cce:

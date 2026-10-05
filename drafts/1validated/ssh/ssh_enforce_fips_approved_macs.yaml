@@ -1,12 +1,9 @@
-id: ssh_enforce_fips1403_approved_macs
-title: Ubuntu must configure the SSH daemon to use Message Authentication
-  Codes (MACs) employing FIPS 140-3-approved cryptographic hashes to prevent the unauthorized
-  disclosure of information and/or detect changes to information during transmission.
-discussion: Without cryptographic integrity protections, information can be altered
-  by unauthorized users without detection, particularly during remote access, nonlocal
-  or local maintenance, and transmission. Encrypting data and using cryptographic
-  mechanisms such as hash functions (for digital signatures, checksums, and MACs)
-  safeguards against unauthorized disclosure and modification.
+id: ssh_enforce_fips_approved_macs
+title: SSH Enforce FIPS Approved MACs
+discussion: |
+  The system must configure the SSH daemon to use Message Authentication Codes (MACs) employing FIPS 140-3-approved cryptographic hashes to prevent the unauthorized disclosure of information and/or detect changes to information during transmission.
+
+  Without cryptographic integrity protections, information can be altered by unauthorized users without detection, particularly during remote access, nonlocal or local maintenance, and transmission. Encrypting data and using cryptographic mechanisms such as hash functions (for digital signatures, checksums, and MACs safeguards against unauthorized disclosure and modification.
 references:
   nist:
     cce:

@@ -1,9 +1,9 @@
 id: ssh_fips_keyexchange_algorithms
-title: Ubuntu SSH server must be configured to use only FIPS-validated key
-  exchange algorithms.
-discussion: Without FIPS-validated cryptographic integrity protections, data can be
-  read or altered undetected; ordering algorithms from strongest to weakest ensures
-  the system selects the strongest available for SSH.
+title: SSH Enforce FIPS-Validated Key Exchange Algorithms
+discussion: |
+  The system SSH server must be configured to use only FIPS-validated key exchange algorithms.
+
+  Without FIPS-validated cryptographic integrity protections, data can be read or altered undetected; ordering algorithms from strongest to weakest ensures the system selects the strongest available for SSH.
 references:
   nist:
     cce:

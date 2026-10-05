@@ -5,7 +5,7 @@ discussion: |
 
   An OS release is considered supported only while the vendor provides security patches; unsupported releases cannot receive fixes for discovered vulnerabilities.
   
-  For Ubuntu 22.04, standard support ends April 2027, and Extended Security Maintenance (available via an Ubuntu Pro subscription) extends support to April 2032."
+  For Ubuntu 22.04, standard support ends April 2027, and Extended Security Maintenance (available via an Ubuntu Pro subscription) extends support to April 2032.
 references:
   nist:
     cce:

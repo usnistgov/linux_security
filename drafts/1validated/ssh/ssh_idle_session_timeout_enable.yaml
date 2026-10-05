@@ -1,10 +1,9 @@
 id: ssh_idle_session_timeout_enable
-title: Ubuntu must be configured so that all network connections associated
-  with SSH traffic terminate after becoming unresponsive.
-discussion: Terminating unresponsive SSH sessions quickly limits the window for attackers
-  to hijack an unattended console session and frees up system resources. It ends only
-  the idle session, releasing its TCP/IP and application resources without affecting
-  other connections.
+title: SSH Idle Session Timeout Enable
+discussion: |
+  The system must be configured so that all network connections associated with SSH traffic terminate after becoming unresponsive.
+
+  Terminating unresponsive SSH sessions quickly limits the window for attackers to hijack an unattended console session and frees up system resources. It ends only the idle session, releasing its TCP/IP and application resources without affecting other connections.
 references:
   nist:
     cce:

@@ -1,0 +1,53 @@
+id: ssh_idle_timeout
+title: SSH Idle Timeout
+discussion: |
+  The system must immediately terminate all network connections associated with SSH traffic at the end of the session or after $ODV Seconds of inactivity.
+
+  Terminating idle sessions quickly limits the window for unauthorized access and frees up resources. It ends only the inactive session, releasing associated TCP/IP ports and application-level allocations without affecting other sessions or network access.
+references:
+  nist:
+    cce:
+      ubuntu_22:
+      - CCE-XXXXX-X
+      ubuntu_24:
+      - CCE-XXXXX-X
+    800-53r5:
+    - SC-10
+  disa:
+    cci:
+    - CCI-001133
+    srg:
+    - SRG-OS-000163-GPOS-00072
+    disa_stig:
+      ubuntu_22:
+      - UBTU-22-255035
+      ubuntu_24:
+      - UBTU-24-600010
+platforms:
+  ubuntu:
+    enforcement_info:
+      check:
+        shell: sshd -T 2> /dev/null | grep "clientaliveinterval" | awk '{print $2}'
+        result:
+          integer: $ODV
+      fix:
+        shell: echo "ClientAliveInterval $ODV" >> /etc/ssh/sshd_config && systemctl reset-failed ssh && systemctl restart ssh
+    '22.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+    '24.04':
+      benchmarks:
+      - name: disa_stig
+        severity: medium
+odv:
+  hint:
+    datatype: number
+    description: Time in seconds after which an idle SSH session will be terminated.
+    validation:
+      min: 1
+  recommended: 600
+  disa_stig: 600
+tags:
+- 800-53r5_moderate
+- 800-53r5_high

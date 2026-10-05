@@ -1,9 +1,9 @@
 id: ssh_smartcard_mfa_enforcement_policy
-title: Ubuntu must implement smart card logins for multifactor authentication
-  for local and network access to privileged and nonprivileged accounts over SSH.
-discussion: Without multifactor authentication, privileged accounts are far easier
-  to compromise; MFA requires two or more factors-something you know, have,
-  or are-and is exemplified by the DOD CAC with PKI.
+title: SSH Smartcard MFA Enforcement Policy
+discussion: |
+  The system must implement smart card logins for multifactor authentication for local and network access to privileged and nonprivileged accounts over SSH.
+
+  Without multifactor authentication, privileged accounts are far easier to compromise; MFA requires two or more factors-something you know, have, or are-and is exemplified by the DOD CAC with PKI.
 references:
   nist:
     cce:

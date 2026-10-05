@@ -1,9 +1,9 @@
 id: ssh_prevent_remote_proxy_display
-title: Ubuntu SSH daemon must prevent remote hosts from connecting to the
-  proxy display.
-discussion: Enabling X11 forwarding can expose displays if sshd listens on the wildcard
-  address; by default it binds to the loopback address and sets DISPLAY to localhost,
-  preventing remote connections.
+title: Prevent Remote Proxy Display
+discussion: |
+  The SSH daemon must prevent remote hosts from connecting to the proxy display.
+
+  Enabling X11 forwarding can expose displays if sshd listens on the wildcard address; by default it binds to the loopback address and sets DISPLAY to localhost, preventing remote connections.
 references:
   nist:
     cce:

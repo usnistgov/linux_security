@@ -1,10 +1,9 @@
 id: ssh_banner_acknowledgement_required_for_access
-title: Ubuntu must be configured to enforce the acknowledgement of the Standard
-  Mandatory DOD Notice and Consent Banner for all SSH connections.
-discussion: Ubuntu must require the user to acknowledge the consent banner
-  before granting access, ensuring they have seen and accepted the terms; without
-  acknowledgment, the system blocks further activity to remain compliant with legal
-  system-use notifications.
+title: SSH Banner Acknowledgement Required for Access
+discussion: |
+  The system must be configured to enforce the acknowledgement of the Standard Mandatory Notice and Consent Banner for all SSH connections.
+
+  The system must require the user to acknowledge the consent banner before granting access, ensuring they have seen and accepted the terms; without acknowledgment, the system blocks further activity to remain compliant with legal system-use notifications.
 references:
   nist:
     cce:

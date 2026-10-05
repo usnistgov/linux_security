@@ -1,9 +1,9 @@
 id: ssh_disable_x11_forwarding
-title: Ubuntu must be configured so that remote X connections are disabled,
-  unless to fulfill documented and validated mission requirements.
-discussion: X11 forwarding can expose the client's display to attack, allowing unauthorized
-  access and possible keystroke monitoring if trusted forwarding is enabled, so it
-  should be used cautiously or disabled when not required.
+title: SSH X11 Forwarding Disabled
+discussion: 
+  The system must be configured so that remote X connections are disabled, unless to fulfill documented and validated mission requirements.
+
+  X11 forwarding can expose the client's display to attack, allowing unauthorized access and possible keystroke monitoring if trusted forwarding is enabled, so it should be used cautiously or disabled when not required.
 references:
   nist:
     cce:

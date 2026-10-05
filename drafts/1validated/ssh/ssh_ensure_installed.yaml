@@ -1,8 +1,9 @@
 id: ssh_ensure_installed
-title: Ubuntu must have SSH installed.
-discussion: Without protection, transmitted information can be intercepted and altered,
-  compromising confidentiality and integrity. This applies to all internal and external
-  network communications and can be safeguarded by physical or cryptographic means.
+title: SSH Ensure Installed
+discussion: |
+  The system must have SSH installed.
+
+  Without protection, transmitted information can be intercepted and altered, compromising confidentiality and integrity. This applies to all internal and external network communications and can be safeguarded by physical or cryptographic means.
 references:
   nist:
     cce:

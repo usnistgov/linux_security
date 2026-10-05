@@ -1,10 +1,9 @@
-id: ssh_fips1403_cipher_list
-title: Ubuntu must configure the SSH client to use FIPS 140-3 approved ciphers
-  to prevent the unauthorized disclosure of information and/or detect changes to information
-  during transmission.
-discussion: Without cryptographic integrity protections, unauthorized users can alter
-  information without detection; encrypting transmission and configuring cipher lists
-  from strongest to weakest (e.g., for SSH) helps prevent disclosure and modification.
+id: ssh_fips_ciphers
+title: SSH Enforce FIPS-Validated Ciphers
+discussion: |
+  The system must configure the SSH client to use FIPS 140-3 approved ciphers to prevent the unauthorized disclosure of information and/or detect changes to information during transmission.
+
+  Without cryptographic integrity protections, unauthorized users can alter information without detection; encrypting transmission and configuring cipher lists from strongest to weakest (e.g., for SSH) helps prevent disclosure and modification.
 references:
   nist:
     cce:
