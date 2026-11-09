@@ -27,9 +27,14 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: '[[ "$(dpkg -l rsyslog)" && "$(systemctl is-enabled rsyslog.service)" == "enabled" && "$(systemctl is-active rsyslog.service)" == "active" ]]'
+        shell: |
+          if test "$(dpkg -l rsyslog)" && "$(systemctl is-enabled rsyslog.service)" = "enabled" && "$(systemctl is-active rsyslog.service)" = "active"; then
+            echo "passed"
+          else
+            echo "failed"
+          fi
         result:
-          exit_code: 0
+          string: passed
       fix:
         shell: apt install -y rsyslog && systemctl enable rsyslog.service --now
     '22.04':
@@ -42,3 +47,4 @@ platforms:
         severity: medium
 tags:
 - 800-53r5_high
+- package

@@ -27,9 +27,14 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: '[[ "$(grep "^\s*linux" /boot/grub/grub.cfg | wc -l)" == "$(grep "^\s*linux" /boot/grub/grub.cfg | grep "audit=1" | wc -l)" ]]'
+        shell: |
+          if test "$(grep "^\s*linux" /boot/grub/grub.cfg | wc -l)" == "$(grep "^\s*linux" /boot/grub/grub.cfg | grep "audit=1" | wc -l)"; then
+            echo "passed"
+          else
+            echo "failed"
+          fi
         result:
-          exit_code: 0
+          string: passed
       fix:
         shell: printf "%s\\n" "GRUB_CMDLINE_LINUX_DEFAULT=\"\${GRUB_CMDLINE_LINUX_DEFAULT} audit=1\"" "GRUB_CMDLINE_LINUX=\"\${GRUB_CMDLINE_LINUX} audit=1\"" >> /etc/default/grub.d/99-audit-enabled.cfg && update-grub
     '22.04':

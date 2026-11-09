@@ -31,7 +31,7 @@ platforms:
         result:
           string: net.ipv4.tcp_syncookies = 1
       fix:
-        shell: sysctl -w net.ipv4.tcp_syncookies=1
+        shell: echo "net.ipv4.tcp_syncookies = 1" >> /etc/sysctl.d/99-stig.conf && sysctl --system
     '22.04':
       benchmarks:
       - name: disa_stig

@@ -62,9 +62,14 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: '[[ "$(systemctl is-active auditd.service)" == "active" && "$(systemctl is-enabled auditd.service)" == "enabled" ]]'
+        shell: |
+          if test "$(systemctl is-active auditd.service)" = "active" && test "$(systemctl is-enabled auditd.service)" = "enabled"; then
+            echo "passed"
+          else
+            echo "failed"
+          fi
         result:
-          exit_code: 0
+          string: passed
       fix:
         shell: systemctl enable --now auditd.service
     '22.04':

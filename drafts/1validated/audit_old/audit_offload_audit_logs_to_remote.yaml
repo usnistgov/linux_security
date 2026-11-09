@@ -27,9 +27,14 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: "[[ \"$(dpkg -l audispd-plugins)\" && \"$(grep '^active.*yes' /etc/audit/plugins.d/au-remote.conf)\" && \"$(grep '^remote_server.*\\w' /etc/audit/audisp-remote.conf)\" ]]"
+        shell: |
+          if test "$(dpkg -l audispd-plugins)" && "$(grep ^"active.*yes")" /etc/audit/plugins.d/au-remote.conf && "$(grep "^remote_server.*\w" /etc/audit/audisp-remote.conf)"; then
+            echo "passed"
+          else
+            echo "failed"
+          fi
         result:
-          exit_code: 0
+          string: passed
       fix:
         additional_info: Ensure audispd-plugins is installed, remote offloading is enabled, and "remote_server" is set to a valid IP address.
     '22.04':

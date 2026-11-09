@@ -29,9 +29,14 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: '[[ "$(grep "faillock" /etc/pam.d/common-auth)" && "$(grep -Ew "^(silent|audit|deny.*3|fail_interval|unlock_time)" /etc/security/faillock.conf | wc -l)" == "5" ]]'
+        shell: |
+          if test "$(grep "faillock" /etc/pam.d/common-auth)" && "$(grep -Ew "^(silent|audit|deny.*3|fail_interval|unlock_time)" /etc/security/faillock.conf | wc -l)" = "5"; then
+            echo "passed"
+          else
+            echo "failed"
+          fi
         result:
-          exit_code: 1
+          string: passed
       fix:
         shell: printf "%s\\n" "audit" "silent" "deny = 3" "fail_interval = 900" "unlock_time = 0" >> /etc/security/faillock.conf
         additional_info: You must manually configure /etc/pam.d/common-auth to load faillock, if not doing that already.

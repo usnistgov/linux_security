@@ -24,11 +24,11 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: ls -l /sbin/auditctl /sbin/aureport /sbin/ausearch /sbin/autrace /sbin/auditd /sbin/audispd* /sbin/augenrules | awk '{print $4}' | grep -qv "root"
+        shell: ls -l /usr/sbin/auditctl /usr/sbin/aureport /usr/sbin/ausearch /usr/sbin/autrace /usr/sbin/auditd /usr/sbin/audispd* /usr/sbin/augenrules | awk '{print $4}' | grep -qv "root"
         result:
           exit_code: 1
       fix:
-        shell: chown :root /sbin/auditctl /sbin/aureport /sbin/ausearch /sbin/autrace /sbin/auditd /sbin/audispd* /sbin/augenrules
+        shell: chown :root /usr/sbin/auditctl /usr/sbin/aureport /usr/sbin/ausearch /usr/sbin/autrace /usr/sbin/auditd /usr/sbin/audispd* /usr/sbin/augenrules
     '24.04':
       benchmarks:
       - name: disa_stig

@@ -28,9 +28,13 @@ platforms:
     enforcement_info:
       check:
         shell: |
-          [[ "$(grep "pam_pwquality.so" /etc/pam.d/common-password | grep -E "retry=(1|2|3)" | wc -l)" > "0" && "$(grep "^enforcing\" /etc/security/pwquality.conf | awk -F" = " '{print $2}')" == 1 ]]
+          if test "$(grep "pam_pwquality.so" /etc/pam.d/common-password | grep -E "retry=(1|2|3)" | wc -l)" > "0" && "$(grep "^enforcing" /etc/security/pwquality.conf | awk -F" = " '{print $2}')" = "1"; then
+            echo "passed"
+          else
+            echo "failed"
+          fi
         result:
-          exit_code: 0
+          string: passed
       fix:
         shell: sed -i "1i password requisite pam_pwquality.so retry=3" /etc/pam.d/common-password && echo "enforcing = 1" >> /etc/security/pwquality.conf
     '22.04':

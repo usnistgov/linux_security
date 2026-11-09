@@ -29,9 +29,14 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: '[[ "$(grep ^services.*pam /etc/sssd/sssd.conf)" && "$(grep ^pam_cert_auth.*True /etc/sssd/sssd.conf)" && "$(grep ^certificate_verification.*ca_cert /etc/sssd/sssd.conf)" ]]'
+        shell: |
+          if test "$(grep ^services.*pam /etc/sssd/sssd.conf)" && "$(grep ^pam_cert_auth.*True /etc/sssd/sssd.conf)" && "$(grep ^certificate_verification.*ca_cert /etc/sssd/sssd.conf)"; then
+            echo "passed"
+          else
+            echo "failed"
+          fi
         result:
-          exit_code: 0
+          string: passed
       fix:
         additional_info: Ensure SSSD is configured to allow PAM authentication, PAM certificate authentication is used, and certificate verification utilizes OCSP.
     '22.04':

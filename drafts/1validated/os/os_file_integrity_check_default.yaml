@@ -27,9 +27,14 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: '[[ "$(</etc/cron.daily/aide md5sum)" == "$(</usr/share/aide/config/cron.daily/aide md5sum)" ]]'
+        shell: |
+          if test "$(</etc/cron.daily/aide md5sum)" = "$(</usr/share/aide/config/cron.daily/aide md5sum)"; then
+            echo "passed"
+          else
+            echo "failed"
+          fi
         result:
-          exit_code: 0
+          string: passed
       fix:
         shell: cp /usr/share/aide/config/cron.daily/aide /etc/cron.daily/aide
     '22.04':

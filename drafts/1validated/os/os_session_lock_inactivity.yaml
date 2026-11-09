@@ -27,9 +27,14 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: '[[ "$(gsettings get org.gnome.desktop.screensaver lock-enabled)" == "true" && "$(gsettings get org.gnome.desktop.screensaver lock-delay)" == "uint32 0" && "$(gsettings get org.gnome.desktop.session idle-delay | sed "s/uint32 //g")" < "$ODV" ]]'
+        shell: |
+          if test "$(gsettings get org.gnome.desktop.screensaver lock-enabled)" == "true" && "$(gsettings get org.gnome.desktop.screensaver lock-delay)" == "uint32 0" && "$(gsettings get org.gnome.desktop.session idle-delay | sed "s/uint32 //g")" < "$ODV"; then
+            echo "passed"
+          else
+            echo "failed"
+          fi
         result:
-          exit_code: 0
+          string: passed
       fix:
         shell: >
           printf "%s\\n" "user-db:user" "system-db:local" > /etc/dconf/profile/user &&

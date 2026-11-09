@@ -28,11 +28,11 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: stat -L -c "%U" /sbin/auditctl /sbin/aureport /sbin/ausearch /sbin/autrace /sbin/auditd /sbin/audisp* /sbin/augenrules | grep -q -v "^root$"
+        shell: stat -L -c "%U" /usr/sbin/auditctl /usr/sbin/aureport /usr/sbin/ausearch /usr/sbin/autrace /usr/sbin/auditd /usr/sbin/audisp* /usr/sbin/augenrules | grep -q -v "^root$"
         result:
           exit_code: 1
       fix:
-        shell: chown root /sbin/auditctl /sbin/aureport /sbin/ausearch /sbin/autrace /sbin/auditd /sbin/audisp* /sbin/augenrules
+        shell: chown root /usr/sbin/auditctl /usr/sbin/aureport /usr/sbin/ausearch /usr/sbin/autrace /usr/sbin/auditd /usr/sbin/audisp* /usr/sbin/augenrules
     '22.04':
       benchmarks:
       - name: disa_stig

@@ -42,3 +42,4 @@ platforms:
         severity: medium
 tags:
 - 800-53r5_high
+- package

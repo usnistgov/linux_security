@@ -34,9 +34,15 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: '[[ "$(systemctl is-enabled sssd)" == "enabled" && "$(systemctl is-active sssd)" == "active" ]]'
+      check:
+        shell: |
+          if test "$(systemctl is-active sssd.service)" = "active" && test "$(systemctl is-enabled sssd.service)" = "enabled"; then
+            echo "passed"
+          else
+            echo "failed"
+          fi
         result:
-          exit_code: 0
+          string: passed
       fix:
         additional_info: Ensure SSSD is configured appropriately for the environment, then enable with systemctl enable --now sssd.
     '22.04':

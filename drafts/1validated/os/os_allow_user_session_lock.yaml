@@ -47,3 +47,4 @@ platforms:
 tags:
 - 800-53r5_moderate
 - 800-53r5_high
+- package

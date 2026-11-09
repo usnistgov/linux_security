@@ -31,11 +31,11 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: auditctl -l | grep -q "\-w /sbin/modprobe -p x"
+        shell: auditctl -l | grep -q "\-w /usr/sbin/modprobe -p x"
         result:
           exit_code: 0
       fix:
-        shell: echo "-w /sbin/modprobe -p x -k modules" >> /etc/audit/rules.d/stig.rules && chmod 640 /etc/audit/rules.d/stig.rules && augenrules --load
+        shell: echo "-w /usr/sbin/modprobe -p x -k modules" >> /etc/audit/rules.d/stig.rules && chmod 640 /etc/audit/rules.d/stig.rules && augenrules --load
     '20.04':
       benchmarks:
       - name: disa_stig
