@@ -55,7 +55,8 @@ def baseline_to_template(baseline: Baseline) -> TemplateBaseline:
             enforcement = get_enforcement_block(rule, baseline.platform)
             if enforcement:
                 if enforcement.check and enforcement.check.result:
-                    new_check = enforcement.check.shell
+                    if enforcement.check.shell:
+                        new_check = enforcement.check.shell.strip()
                     if enforcement.check.result.exit_code is not None:
                         exit_code = enforcement.check.result.exit_code
                     else:
@@ -68,7 +69,7 @@ def baseline_to_template(baseline: Baseline) -> TemplateBaseline:
                             result_value = "true" if result_value else "false"
 
                 if enforcement.fix and enforcement.fix.shell:
-                    new_fix = enforcement.fix.shell
+                    new_fix = enforcement.fix.shell.strip()
 
                 if rule.odv:
                     replace_value: Any = None

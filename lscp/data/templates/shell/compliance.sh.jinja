@@ -202,15 +202,15 @@ run_scan(){
         echo "XXX"; echo "0"; echo "Starting Scan..."; echo "XXX"
     fi
 
-{% for profile in baseline.profile %}
-{% for rule in profile.rules %}
-{% if "manual" not in rule.tags and "Excluded" not in rule.section and rule.check is not none %}
+{%- for profile in baseline.profile %}
+{%- for rule in profile.rules %}
+{%- if "manual" not in rule.tags and "Excluded" not in rule.section and rule.check is not none %}
 
 {% include "check.sh.jinja" %}
 
-{% endif %}
-{% endfor %}
-{% endfor %}
+{%- endif %}
+{%- endfor %}
+{%- endfor %}
 
     if [[ -h $LAST_RUN ]]; then
         unlink $LAST_RUN > /dev/null
@@ -228,15 +228,15 @@ run_fix(){
         echo "XXX"; echo "0"; echo "Beginning Remediation..."; echo "XXX"
     fi
 
-{% for profile in baseline.profile %}
-{% for rule in profile.rules %}
-{% if "manual" not in rule.tags and "Excluded" not in rule.section and rule.fix is not none %}
+{%- for profile in baseline.profile %}
+{%- for rule in profile.rules %}
+{%- if "manual" not in rule.tags and "Excluded" not in rule.section and rule.fix is not none %}
 
 {% include "fix.sh.jinja" %}
 
-{% endif %}
-{% endfor %}
-{% endfor %}
+{%- endif %}
+{%- endfor %}
+{%- endfor %}
 } 2> /dev/null
 
 usage="Usage: ./compliance.sh [--check] [--stats] [--compliant] [--non_compliant] [--clear] [--help] [-v[v]]

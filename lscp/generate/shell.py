@@ -1,7 +1,7 @@
 from os.path import join
 from typing import Literal
 
-from classes.baseline import Baseline
+from classes.baseline import Baseline, Section
 from classes.templates import baseline_to_template
 from jinja2 import Environment, FileSystemLoader
 from utils.directories import get_build_path, get_data_path
@@ -20,10 +20,20 @@ class ShellGenerator(BaseGenerator):
 
         new_baseline = baseline.model_copy()
 
-        packages_section = [section for section in new_baseline.profile if section.section == "Packages"]
-        if len(packages_section) != 0:
-            new_baseline.profile.remove(packages_section[0])
-            new_baseline.profile.insert(0, packages_section[0])
+        package_rules = [
+            rule
+            for section in new_baseline.profile
+            for rule in section.rules
+            if "package" in rule.tags
+        ]
+
+        package_rules = []
+        for section in new_baseline.profile:
+            package_rules += [rule for rule in section.rules if "package" in rule.tags]
+            section.rules = [rule for rule in section.rules if "package" not in rule.tags]
+
+        package_section = Section(section="Packages", rules=package_rules)
+        new_baseline.profile.insert(0, package_section) 
 
         baseline_id = new_baseline.title.split(" ")[-1]
 

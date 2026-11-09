@@ -17,13 +17,13 @@ local status_code=""
 local expected_standard_out=""
 local expected_status_code=""
 
-{% if rule.fix is none %}
+{%- if rule.fix is none %}
 is_manual=true
-{% endif %}
+{%- endif %}
 
-{% if "reboot_required" in rule.tags %}
+{%- if "reboot_required" in rule.tags %}
 reboot_req=true
-{% endif %}
+{%- endif %}
 
 if $using_whiptail; then
     local percent_complete=$(echo "scale=2; ($rule_count / $total_checks) * 100" | bc | xargs printf "%.0f")
@@ -34,17 +34,17 @@ fi
 result_value=$({{ rule.check }})
 status_code=$?
 
-{% if rule.exit_code is not none %}
+{%- if rule.exit_code is not none %}
 expected_status_code="{{ rule.exit_code }}"
 if [[ "$status_code" != "$expected_status_code" ]]; then
     result_status="failed"
 fi
-{% elif rule.result_value is not none %}
+{%- elif rule.result_value is not none %}
 expected_standard_out="{{ rule.result_value }}"
 if [[ "$result_value" != "$expected_standard_out" ]]; then
     result_status="failed"
 fi
-{% endif %}
+{%- endif %}
 
 log_message "[CHECK] $rule_id $result_status"
 log_csv "$rule_id" "$result_status" "$reboot_req" "$is_manual" "$result_value" "$status_code" "$expected_standard_out" "$expected_status_code"

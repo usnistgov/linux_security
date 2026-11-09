@@ -64,6 +64,11 @@ if __name__ == "__main__":
         default="ubuntu:22.04",
         help="select the target platform for rules"
     )
+    baseline.add_argument(
+        "--exclude",
+        nargs="*",
+        help="exclude rules with a tag"
+    )
 
     args = parser.parse_args()
 
@@ -102,8 +107,9 @@ if __name__ == "__main__":
             for tag in tags:
                 print(tag)
         else:
+            print(args.exclude)
             new_rules = [
-                rule for rule in all_rules for tag in rule.tags if tag in args.keywords
+                rule for rule in all_rules if not set(rule.tags).isdisjoint(args.keywords) and set(rule.tags).isdisjoint(args.exclude)
             ]
 
             platform, version = tuple(args.platform.split(":"))
