@@ -30,7 +30,7 @@ platforms:
     enforcement_info:
       check:
         shell: |
-          if test "$(grep ^services.*pam /etc/sssd/sssd.conf)" && "$(grep ^pam_cert_auth.*True /etc/sssd/sssd.conf)" && "$(grep ^certificate_verification.*ca_cert /etc/sssd/sssd.conf)"; then
+          if test "$(grep ^services.*pam /etc/sssd/sssd.conf)" && test "$(grep ^pam_cert_auth.*True /etc/sssd/sssd.conf)" && test "$(grep ^certificate_verification.*ca_cert /etc/sssd/sssd.conf)"; then
             echo "passed"
           else
             echo "failed"

@@ -28,7 +28,7 @@ platforms:
     enforcement_info:
       check:
         shell: |
-          if test "$(grep "pam_pwquality.so" /etc/pam.d/common-password | grep -E "retry=(1|2|3)" | wc -l)" > "0" && "$(grep "^enforcing" /etc/security/pwquality.conf | awk -F" = " '{print $2}')" = "1"; then
+          if test "$(grep "pam_pwquality.so" /etc/pam.d/common-password | grep -E "retry=(1|2|3)" | wc -l)" -gt "0" && test "$(grep "^enforcing" /etc/security/pwquality.conf | awk -F" = " '{print $2}')" = "1"; then
             echo "passed"
           else
             echo "failed"
@@ -36,7 +36,12 @@ platforms:
         result:
           string: passed
       fix:
-        shell: sed -i "1i password requisite pam_pwquality.so retry=3" /etc/pam.d/common-password && echo "enforcing = 1" >> /etc/security/pwquality.conf
+        shell: |
+          if test "$(grep "pam_pwquality.so" /etc/pam.d/common-password | grep -E "retry=(1|2|3)" | wc -l)" -eq "0"; then
+            sed -i "1i password requisite pam_pwquality.so retry=3" /etc/pam.d/common-password
+          fi;
+          sed -i "s/^enforcing.*//g" /etc/security/pwquality.conf;
+          echo "enforcing = 1" >> /etc/security/pwquality.conf
     '22.04':
       benchmarks:
       - name: disa_stig

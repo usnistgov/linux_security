@@ -28,7 +28,7 @@ platforms:
     enforcement_info:
       check:
         shell: |
-          if test "$(gsettings get org.gnome.desktop.screensaver lock-enabled)" == "true" && "$(gsettings get org.gnome.desktop.screensaver lock-delay)" == "uint32 0" && "$(gsettings get org.gnome.desktop.session idle-delay | sed "s/uint32 //g")" < "$ODV"; then
+          if test "$(gsettings get org.gnome.desktop.screensaver lock-enabled)" == "true" && test "$(gsettings get org.gnome.desktop.screensaver lock-delay)" == "uint32 0" && test "$(gsettings get org.gnome.desktop.session idle-delay | sed "s/uint32 //g")" < "$ODV"; then
             echo "passed"
           else
             echo "failed"

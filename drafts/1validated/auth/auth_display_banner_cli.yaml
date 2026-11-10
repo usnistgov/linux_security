@@ -1,7 +1,7 @@
 id: auth_display_banner_cli
 title: Display Standard Mandatory Notice and Consent Banner
 discussion: |
-  The system must display a Standard Mandatory Notice and Consent Banner before granting access to via an SSH logon.
+  The system must display a Standard Mandatory Notice and Consent Banner before granting access to via a CLI login.
 
   A standardized, approved use notification must be displayed before granting access to a publicly accessible operating system to ensure privacy and security, consistent with federal laws and DOD policy, and is required only for human logon interfaces. The banner uses either the full 1300-character text or the abbreviated version for systems with severe character limits.
 references:
@@ -12,9 +12,6 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
-    - AC-8
-    - AC-8
-    - AC-8
     - AC-8
   disa:
     cci:
@@ -35,11 +32,14 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: cat /etc/issue.net
+        shell: cat /etc/issue
         result:
           string: $ODV
       fix:
-        shell: echo -e "$ODV" > /etc/issue.net && systemctl reset-failed ssh && systemctl restart ssh
+        shell: |
+          cat > /etc/issue << 'EOF'
+          $ODV
+          EOF
     '22.04':
       benchmarks:
       - name: disa_stig
@@ -53,7 +53,7 @@ odv:
     datatype: string 
     description: Warning banner displayed on login.
   recommended: You are accessing a monitored system, and have no reasonable expectation of privacy.
-  disa_stig: >
+  disa_stig: |
     You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.
     By using this IS (which includes any device attached to this IS), you consent to the following conditions:
     -The USG routinely intercepts and monitors communications on this IS for purposes including, but not limited to, penetration testing, COMSEC monitoring, network operations and defense, personnel misconduct (PM), law enforcement (LE), and counterintelligence (CI) investigations.

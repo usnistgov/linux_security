@@ -27,7 +27,7 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: stat -L -c "%n %a" /var/log | stat -L -c "%n %a" /bin /bin/* /usr/sbin /usr/sbin/* /usr/bin /usr/bin/* /usr/sbin /usr/sbin/* /usr/local/bin /usr/local/bin/* /usr/local/sbin /usr/local/sbin/* 2> /dev/null | perl -ane 'chomp; $mode = (oct($F[1]) & 0777); print "$F[0]\n" if ($mode & ~0755) != 0'
+        shell: stat -L -c "%n %a" /var/log | perl -ane 'chomp; $mode = (oct($F[1]) & 0777); print "$F[0]\n" if ($mode & ~0755) != 0'
         result:
           string: ""
       fix:

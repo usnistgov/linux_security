@@ -28,7 +28,7 @@ platforms:
     enforcement_info:
       check:
         shell: |
-          if test "$(grep "^\s*linux" /boot/grub/grub.cfg | wc -l)" == "$(grep "^\s*linux" /boot/grub/grub.cfg | grep "audit=1" | wc -l)"; then
+          if test "$(grep "^\s*linux" /boot/grub/grub.cfg | wc -l)" = "$(grep "^\s*linux" /boot/grub/grub.cfg | grep "audit=1" | wc -l)"; then
             echo "passed"
           else
             echo "failed"

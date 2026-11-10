@@ -30,7 +30,7 @@ platforms:
     enforcement_info:
       check:
         shell: |
-          if test "$(grep "faillock" /etc/pam.d/common-auth)" && "$(grep -Ew "^(silent|audit|deny.*3|fail_interval|unlock_time)" /etc/security/faillock.conf | wc -l)" = "5"; then
+          if test "$(grep "faillock" /etc/pam.d/common-auth)" && test "$(grep -Ew "^(silent|audit|deny.*3|fail_interval|unlock_time)" /etc/security/faillock.conf | wc -l)" = "5"; then
             echo "passed"
           else
             echo "failed"

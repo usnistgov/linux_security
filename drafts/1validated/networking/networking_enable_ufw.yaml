@@ -35,7 +35,7 @@ platforms:
         result:
           exit_code: 0
       fix:
-        shell: yes | ufw enable
+        shell: if test "$(systemctl is-active ssh)" = "active"; then ufw allow ssh; fi && yes | ufw enable
     '22.04':
       benchmarks:
       - name: disa_stig
