@@ -326,9 +326,9 @@ if $will_clear; then root_check; clear_logs; fi
 if $will_check; then root_check; run_scan; fi
 if $will_fix; then root_check; log_check; run_fix; fi
 if $will_cfc; then root_check; run_scan; run_fix; run_scan; fi
-if $print_stats; then generate_report
-elif $compliant_count_opt; then compliance_count "compliant"
-elif $non_compliant_count_opt; then compliance_count "non-compliant"
+if $print_stats; then root_check; generate_report
+elif $compliant_count_opt; then root_check; compliance_count "compliant"
+elif $non_compliant_count_opt; then root_check; compliance_count "non-compliant"
 elif ! $will_clear && ! $will_check && ! $will_fix && ! $will_cfc; then
     if [[ ! $(which whiptail) ]]; then
         echo "You can't use interactive mode without 'whiptail' installed. Use flags to navigate non-interactively."
@@ -359,6 +359,7 @@ elif ! $will_clear && ! $will_check && ! $will_fix && ! $will_cfc; then
                 whiptail --title "Results" --msgbox "$(generate_report)" 10 40
                 ;;
             2)
+                root_check
                 whiptail --title "Last Scan Statistics" --msgbox "$(generate_report)" 10 40
                 ;;
             3)

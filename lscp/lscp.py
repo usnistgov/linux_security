@@ -107,7 +107,6 @@ if __name__ == "__main__":
             for tag in tags:
                 print(tag)
         else:
-            print(args.exclude)
             new_rules = [
                 rule for rule in all_rules if not set(rule.tags).isdisjoint(args.keywords) and set(rule.tags).isdisjoint(args.exclude)
             ]
