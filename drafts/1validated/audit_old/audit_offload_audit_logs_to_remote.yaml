@@ -28,7 +28,7 @@ platforms:
     enforcement_info:
       check:
         shell: |
-          if test "$(dpkg -l audispd-plugins)" && test "$(grep ^"active.*yes")" /etc/audit/plugins.d/au-remote.conf && test "$(grep "^remote_server.*\w" /etc/audit/audisp-remote.conf)"; then
+          if test "$(dpkg-query -W -f='${db:Status-Status}\n' audispd-plugins 2>/dev/null || echo "not-installed")" = "installed" && test "$(grep ^"active.*yes")" /etc/audit/plugins.d/au-remote.conf && test "$(grep "^remote_server.*\w" /etc/audit/audisp-remote.conf)"; then
             echo "passed"
           else
             echo "failed"

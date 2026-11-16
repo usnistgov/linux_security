@@ -31,9 +31,9 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: dpkg -l apparmor
+        shell: dpkg-query -W -f='${db:Status-Status}\n' apparmor 2>/dev/null || echo "not-installed"
         result:
-          exit_code: 0
+          string: installed
       fix:
         shell: apt install -y apparmor
     '22.04':

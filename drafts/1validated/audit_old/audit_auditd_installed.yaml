@@ -61,9 +61,9 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: dpkg -l auditd
+        shell: dpkg-query -W -f='${db:Status-Status}\n' auditd 2>/dev/null || echo "not-installed"
         result:
-          exit_code: 0
+          string: installed
       fix:
         shell: apt install -y auditd
     '22.04':

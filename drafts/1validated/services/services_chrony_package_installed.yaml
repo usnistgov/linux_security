@@ -27,11 +27,11 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: dpkg -l chrony
+        shell: dpkg-query -W -f='${db:Status-Status}\n' chrony 2>/dev/null || echo "not-installed"
         result:
-          exit_code: 0
+          string: installed
       fix:
-        shell: DEBIAN_FRONTEND=noninteractive apt install -y chrony && systemctl enable --now chrony
+        shell: apt install -y chrony && systemctl enable --now chrony
     '22.04':
       benchmarks:
       - name: disa_stig

@@ -27,9 +27,9 @@ platforms:
   ubuntu:
     enforcement_info:
       check:
-        shell: dpkg -l libpam-pwquality
+        shell: dpkg-query -W -f='${db:Status-Status}\n' libpam-pwquality 2>/dev/null || echo "not-installed"
         result:
-          exit_code: 0
+          string: installed
       fix:
         shell: apt install -y libpam-pwquality
     '22.04':
