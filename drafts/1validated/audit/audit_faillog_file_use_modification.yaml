@@ -3,7 +3,7 @@ title: Authorized Faillog File Use and Modification Events
 discussion: |
   The system must generate audit records for the use and modification of faillog file.
 
-  Generating audit records that meet the organization's security and mission requirements is necessary to establish, correlate, and investigate incidents and identify those responsible. These records can be produced by various system components (e.g., modules or policy filters) and satisfy SRG-OS-000064-GPOS-00033, SRG-OS-000470-GPOS-00214, and SRG-OS-000473-GPOS-00218.
+  Generating audit records that meet the organization's security and mission requirements is necessary to establish, correlate, and investigate incidents and identify those responsible. These records can be produced by various system components (e.g., modules or policy filters).
 references:
   nist:
     cce:
@@ -14,6 +14,9 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
+    - AC-2(4)
+    - AU-2
+    - AU-3
     - AU-12
   disa:
     cci:

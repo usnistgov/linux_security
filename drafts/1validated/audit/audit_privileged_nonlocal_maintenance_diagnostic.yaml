@@ -14,8 +14,11 @@ references:
       ubuntu_24:
       - CCE-XXXXX-X
     800-53r5:
+    - AC-2(4)
+    - AU-2
+    - AU-3
+    - AU-12    
     - MA-4(1)
-    - AU-12
   disa:
     cci:
     - CCI-000172
